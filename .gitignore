@@ -1,0 +1,24 @@
+# dependencies and build output
+node_modules/
+dist/
+.astro/
+.venv/
+__pycache__/
+*.pyc
+
+# local data: database, evidence files, posters, media indexes
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# secrets and local config
+.env
+.env.*
+!.env.example
+*.local.json
+
+# editor and OS noise
+.DS_Store
+.idea/
+.vscode/
