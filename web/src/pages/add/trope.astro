@@ -1,0 +1,35 @@
+---
+import { actions } from 'astro:actions';
+import Base from '../../layouts/Base.astro';
+import { afterAction } from '../../lib/after-action';
+
+if (!Astro.locals.owner) return Astro.redirect('/login');
+const { redirect, error } = afterAction(Astro);
+if (redirect) return redirect;
+---
+
+<Base title="Add a trope" current="add-trope">
+  <h1>Add a trope</h1>
+  <p class="quiet" style="margin: 4px 0 0; font-size: 15px">Describe it. The scan across the library arrives with the pipeline; until then the trope is created empty and instances are added by hand.</p>
+  <form method="POST" action={actions.createTrope} style="max-width: 680px; margin-top: 32px; display: flex; flex-direction: column; gap: 22px">
+    <div>
+      <label for="n" style="display: block; font-weight: 600; margin-bottom: 4px">Name</label>
+      <input id="n" name="name" class="fld" type="text" required />
+    </div>
+    <div>
+      <label for="d" style="display: block; font-weight: 600">Description</label>
+      <p class="quiet" style="margin: 0 0 6px; font-size: 15px">A sentence or two. Write [[Trope name]] to link another trope.</p>
+      <textarea id="d" name="description" class="fld" rows="3"></textarea>
+    </div>
+    <div>
+      <label for="e" style="display: block; font-weight: 600">Examples</label>
+      <p class="quiet" style="margin: 0 0 6px; font-size: 15px">One per line. Used to check the scan, so pick clear ones.</p>
+      <textarea id="e" name="examples" class="fld" rows="3"></textarea>
+    </div>
+    {error && <p class="quiet" style="margin: 0; font-size: 15px">{error}</p>}
+    <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+      <button type="submit" class="go">Create trope</button>
+      <a href="/tropes" style="font-size: 16px">Cancel</a>
+    </div>
+  </form>
+</Base>

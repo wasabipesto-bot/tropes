@@ -1,5 +1,7 @@
 ---
+import { actions } from 'astro:actions';
 import '../styles/global.css';
+import Spoilers from '../components/Spoilers.astro';
 
 interface Props {
   title: string;
@@ -45,9 +47,16 @@ const at = (page: Props['current']) => (current === page ? 'page' : undefined);
           <span>Trope Log</span>
           <a href="/tropes">Tropes</a>
           <a href="/library">Library</a>
+          {owner && (
+            <form method="POST" action={actions.logout} style="display: inline">
+              <input type="hidden" name="returnTo" value={Astro.url.pathname} />
+              <button type="submit" class="t" style="color: inherit">Log out</button>
+            </form>
+          )}
           <a href="https://wasabipesto.com" class="home">wasabipesto.com</a>
         </div>
       </footer>
     </div>
+    <Spoilers />
   </body>
 </html>

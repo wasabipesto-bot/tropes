@@ -1,0 +1,34 @@
+---
+import { actions } from 'astro:actions';
+import Base from '../../layouts/Base.astro';
+import { MEDIA_TYPES } from '../../db/schema';
+import { afterAction } from '../../lib/after-action';
+
+if (!Astro.locals.owner) return Astro.redirect('/login');
+const { redirect, error } = afterAction(Astro);
+if (redirect) return redirect;
+---
+
+<Base title="Add a media item" current="add-media">
+  <h1>Add a media item</h1>
+  <p class="quiet" style="margin: 4px 0 0; font-size: 15px">The lookup against external sources arrives with the pipeline. Until then an entry is created from what you type here; entries in Notion arrive through the importer instead.</p>
+  <form method="POST" action={actions.createMedia} style="max-width: 680px; margin-top: 28px; display: flex; flex-direction: column; gap: 22px">
+    <div>
+      <label for="t" style="display: block; font-weight: 600; margin-bottom: 4px">Title</label>
+      <input id="t" name="title" class="fld" type="text" required />
+    </div>
+    <div>
+      <label for="ty" style="display: block; font-weight: 600; margin-bottom: 4px">Type</label>
+      <select id="ty" name="type" class="fld" style="width: auto">{MEDIA_TYPES.map((t) => <option value={t}>{t}</option>)}</select>
+    </div>
+    <div>
+      <label for="c" style="display: block; font-weight: 600; margin-bottom: 4px">Creator</label>
+      <input id="c" name="creator" class="fld" type="text" />
+    </div>
+    {error && <p class="quiet" style="margin: 0; font-size: 15px">{error}</p>}
+    <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+      <button type="submit" class="go">Add to library</button>
+      <a href="/library" style="font-size: 16px">Cancel</a>
+    </div>
+  </form>
+</Base>

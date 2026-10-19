@@ -469,6 +469,15 @@ match spec 6.4; rating bars match the shade and height rules.
 
 ### Phase 2: tropes, manual authoring, auth (L)
 
+Status: built 2026-10-19. Auth is password + session cookie (scrypt hash in
+`OWNER_PASSWORD_HASH`, colon-separated so .env loaders leave it alone). All
+editing is server-rendered forms through Astro Actions; the only client
+script is the spoiler toggle. The seed (`web/seed/tropes.json`, 27 tropes,
+178 instances, 10 series) carries the owner's examples as verified and my
+additions as unverified, with bracketed placeholders where the reason for an
+example is not known. "Add trope" and "Add media" exist as manual forms
+until the pipeline replaces them in Phase 3.
+
 - Auth as in section 6 (password, sessions, middleware, 403 on mutations).
 - Tropes index, trope page, media page trope list, both in the margin layout
   with the 1100px collapse.
@@ -610,7 +619,8 @@ The Claude Design export was unpacked (nine artboards, templates in
 - Spoilers are inline anchors (`href="#spoiler"`) toggled in place; the open
   state is a dotted underline in `#B5B3AB` with text cursor.
 - Library: average shown to one decimal, "–" when unrated; default sort is
-  logged date descending with undated last; title and type sort ascending by
+  rating descending (owner's choice, 2026-10-19; the canvas had logged date)
+  with missing values last; title and type sort ascending by
   default, everything else descending; count line reads "778 entries, showing
   the first 100" or "n of 778 match"; trope filter is a substring match and
   "Core theme only" narrows it to core instances of that trope (or to any core

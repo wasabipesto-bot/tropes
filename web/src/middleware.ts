@@ -1,8 +1,8 @@
 import { defineMiddleware } from 'astro:middleware';
+import { db } from './db';
+import { SESSION_COOKIE, sessionIsValid } from './lib/auth';
 
-// Phase 2 replaces this with session-cookie resolution. Until then every
-// request is anonymous, so the owner controls never render.
 export const onRequest = defineMiddleware((context, next) => {
-  context.locals.owner = false;
+  context.locals.owner = sessionIsValid(db, context.cookies.get(SESSION_COOKIE)?.value);
   return next();
 });

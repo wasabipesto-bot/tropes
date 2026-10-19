@@ -1,0 +1,72 @@
+---
+import { actions } from 'astro:actions';
+import Base from '../../layouts/Base.astro';
+import InstanceList from '../../components/InstanceList.astro';
+import { db } from '../../db';
+import { afterAction } from '../../lib/after-action';
+import { allTropes, instancesForSeries, seriesBySlug, seriesMembers, tropeHrefResolver } from '../../lib/queries';
+import { renderText } from '../../lib/text';
+
+const s = seriesBySlug(db, Astro.params.slug ?? '');
+if (!s) return new Response(null, { status: 404 });
+const { redirect, error } = afterAction(Astro);
+if (redirect) return redirect;
+
+const owner = Astro.locals.owner;
+const p = Astro.url.searchParams;
+const editDesc = owner && p.get('edit') === 'desc';
+const editing = owner && /^\d+$/.test(p.get('edit') ?? '') ? Number(p.get('edit')) : null;
+const render = { tropeHref: tropeHrefResolver(db) };
+const members = seriesMembers(db, s.id);
+const items = instancesForSeries(db, s.id);
+const here = `/series/${s.slug}`;
+const returnTo = Astro.url.pathname + Astro.url.search;
+---
+
+<Base title={s.name} wide>
+  <div class="row">
+    <div class="lab"></div>
+    <div>
+      <h1>{s.name}</h1>
+      <p class="quiet" style="margin: 4px 0 0; font-size: 15px">Series of {members.length}: {members.map((m, i) => <><a href={`/media/${m.id}`} style="color: inherit">{m.title}</a>{i < members.length - 1 ? ', ' : '.'}</>)}</p>
+      {editDesc ? (
+        <form method="POST" action={actions.updateSeriesDescription} style="margin-top: 20px">
+          <input type="hidden" name="seriesId" value={s.id} />
+          <input type="hidden" name="returnTo" value={here} />
+          <textarea name="description" class="fld" rows="4" aria-label="Description">{s.description}</textarea>
+          <p style="margin: 8px 0 0; font-size: 16px; display: flex; gap: 16px"><button type="submit" class="t" style="padding: 8px 0">Save</button><a href={here} class="quiet" style="padding: 8px 0">Cancel</a></p>
+        </form>
+      ) : (
+        <>
+          {s.description && <Fragment set:html={renderText(s.description, render, ' style="margin: 20px 0 0"')} />}
+          {owner && <p style="margin: 8px 0 0; font-size: 15px"><a href={`${here}?edit=desc`} style="padding: 6px 0">Edit description</a></p>}
+        </>
+      )}
+      {error && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">{error}</p>}
+    </div>
+    <div></div>
+  </div>
+
+  {items.length === 0 && <div class="row" style="margin-top: 48px"><div class="lab"></div><p class="quiet" style="margin: 0">No tropes attached to the series itself.</p><div></div></div>}
+  <InstanceList items={items} mode="subject" owner={owner} render={render} returnTo={returnTo} editing={editing} textEdit={p.get('text') === '1'} evidenceAdd={p.get('evidence') === '1'} />
+
+  {owner && (
+    <div class="row" style="margin-top: 56px">
+      <div class="lab"></div>
+      <form method="POST" action={actions.addInstanceByTrope} class="add">
+        <input type="hidden" name="subjectKind" value="series" />
+        <input type="hidden" name="subjectId" value={s.id} />
+        <input type="hidden" name="returnTo" value={here} />
+        <label for="addt" class="quiet">Add a trope</label>
+        <input id="addt" name="tropeName" list="tropelist" placeholder="Trope name" class="line" style="width: 260px" autocomplete="off" />
+        <datalist id="tropelist">{allTropes(db).map((t) => <option value={t.name}></option>)}</datalist>
+        <button type="submit" class="t" style="padding: 8px 0">Add</button>
+      </form>
+      <div></div>
+    </div>
+  )}
+</Base>
+
+<style>
+  .add { border-top: 1px solid #1B1B1B; padding-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; font-size: 16px; }
+</style>

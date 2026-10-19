@@ -5,8 +5,9 @@ describing it and listing every logged work where it appears; each work has a
 page listing its tropes, ratings and links. Associations are proposed by a
 language model that reads the log and the source material, then verified by hand.
 
-Status: Phase 0 (scaffold). The site serves its page frame and a health
-endpoint; nothing is imported yet. See `docs/ROADMAP.md` for the phases.
+Status: Phases 0 to 2 built. Library, media pages, search, tropes with
+instances and evidence, owner login and inline editing. The matching
+pipeline (Phase 3) is next. See `docs/ROADMAP.md` for the phases.
 
 ## Layout
 
@@ -39,3 +40,28 @@ Export the Notion "Media Log" as CSV and run `just import path/to/export.csv`.
 Re-running is safe: rows match by Notion id when the file has one, otherwise by
 title and type, and only Notion-owned fields (title, type, creator, ratings,
 date, links) are overwritten. Add `--dry-run` to see what would change.
+
+## Owner login
+
+The site is public and read-only; editing needs the owner session. Put a
+password hash in `web/.env` (or the container's environment):
+
+```
+just hash-password 'your password'      # prints OWNER_PASSWORD_HASH=…
+```
+
+Then log in at `/login`. Sessions last 90 days. There is one owner and no
+user table by design.
+
+## Seed content
+
+`web/seed/tropes.json` holds the starting tropes, series and instances.
+`just seed` loads whatever is not already present; `just seed --replace`
+reloads tropes that exist, replacing their instances.
+
+## Backups
+
+`just backup` snapshots the database with `VACUUM INTO` (safe while the site
+runs), tars the evidence directory, keeps the newest 14 of each in
+`backups/`, and rsyncs that directory to `TROPES_BACKUP_REMOTE` (default
+`braize:tropes-backups`). Set the variable empty to skip the copy.

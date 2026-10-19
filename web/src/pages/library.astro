@@ -5,6 +5,7 @@ import { db } from '../db';
 import { media, type Media } from '../db/schema';
 import { typeLabel } from '../lib/media';
 import { AXES, average, ratingsOf, type Ratings } from '../lib/rating';
+import { tropesByMedia } from '../lib/queries';
 
 const p = Astro.url.searchParams;
 const TYPES = ['All', 'Book', 'TV', 'Movie', 'Game', 'Podcast', 'Album', 'Other'] as const;
@@ -19,22 +20,28 @@ const detail = p.get('detail') === '1';
 const all = p.get('all') === '1';
 const SORT_KEYS = ['title', 'type', 'date', 'avg', 'ax0', 'ax1', 'ax2', 'ax3', 'ax4'] as const;
 type SortKey = (typeof SORT_KEYS)[number];
-const sortKey = pick(SORT_KEYS, p.get('sort'), 'date');
+const sortKey = pick(SORT_KEYS, p.get('sort'), 'avg');
 const ascByDefault = (k: SortKey) => k === 'title' || k === 'type';
 const dir: 'asc' | 'desc' = pick(['asc', 'desc'] as const, p.get('dir'), ascByDefault(sortKey) ? 'asc' : 'desc');
 
-interface Row { m: Media; r: Ratings; avg: number | null; label: string }
+interface TropeTag { name: string; slug: string; prominence: string }
+interface Row { m: Media; r: Ratings; avg: number | null; label: string; tropes: TropeTag[] }
+const tagged = tropesByMedia(db);
 const everything: Row[] = db.select().from(media).all().map((m) => {
   const r = ratingsOf(m);
-  return { m, r, avg: average(r), label: typeLabel(m) };
+  return { m, r, avg: average(r), label: typeLabel(m), tropes: tagged.get(m.id) ?? [] };
 });
+const tropeNames = [...new Set([...tagged.values()].flat().map((t) => t.name))].sort();
 const total = everything.length;
 
 let list = everything
   .filter((x) => type === 'All' || (type === 'TV' ? x.m.type === 'TV Series' : x.m.type === type))
   .filter((x) => MINS[min] < 0 || (x.avg !== null && x.avg >= MINS[min]))
-  // Tropes arrive in Phase 2; until then a trope filter matches nothing.
-  .filter(() => !tropeQ && !coreOnly);
+  .filter((x) => {
+    const q = tropeQ.toLowerCase();
+    if (q) return x.tropes.some((t) => t.name.toLowerCase().includes(q) && (!coreOnly || t.prominence === 'core'));
+    return !coreOnly || x.tropes.some((t) => t.prominence === 'core');
+  });
 
 const value = (x: Row): string | number | null => {
   switch (sortKey) {
@@ -98,7 +105,8 @@ const fmt = (v: number | null) => (v === null ? '–' : String(v));
       {min !== 'Any' && <input type="hidden" name="min" value={min} />}
       {detail && <input type="hidden" name="detail" value="1" />}
       <label for="tf" class="quiet">Trope</label>
-      <input id="tf" name="trope" value={tropeQ} placeholder="any" class="line" style="width: 260px" />
+      <input id="tf" name="trope" list="tropenames" value={tropeQ} placeholder="any" class="line" style="width: 260px" autocomplete="off" />
+      <datalist id="tropenames">{tropeNames.map((n) => <option value={n}></option>)}</datalist>
       {coreOnly
         ? <button type="submit" class="t on" name="core" value="">Core theme only</button>
         : <button type="submit" class="t" name="core" value="1">Core theme only</button>}
@@ -124,21 +132,23 @@ const fmt = (v: number | null) => (v === null ? '–' : String(v));
         </tr>
       </thead>
       <tbody>
-        {shown.map(({ m, r, label }) => (
+        {shown.map(({ m, r, label, tropes }) => (
           <tr>
             <td style="min-width: 240px"><a href={`/media/${m.id}`} class="title">{m.title}</a> {m.creator && <span class="quiet" style="font-size: 15px">{m.creator}</span>}</td>
             <td class="quiet" style="font-size: 15px">{label}</td>
             <td class="quiet num" style="font-size: 15px">{m.loggedDate ? m.loggedDate.slice(0, 4) : ''}</td>
             {detail && AXES.map((a) => <td class="num" style="text-align: right; font-size: 15px">{fmt(r[a])}</td>)}
             <td style="white-space: nowrap"><RatingMark ratings={r} /></td>
-            <td style="font-size: 16px; min-width: 240px"></td>
+            <td style="font-size: 16px; min-width: 240px">
+              {tropes.slice(0, 3).map((t, i) => <><a href={`/tropes/${t.slug}`} class:list={['trope', { core: t.prominence === 'core' }]}>{t.name}</a>{i < Math.min(tropes.length, 3) - 1 ? ', ' : ''}</>)}
+              {tropes.length > 3 && <span class="quiet"> +{tropes.length - 3}</span>}
+            </td>
           </tr>
         ))}
       </tbody>
     </table>
   </div>
   {truncated && <p style="margin: 20px 0 0; font-size: 16px"><a href={link({ all: '1' })}>Show all {matching}</a></p>}
-  <p class="quiet" style="margin: 16px 0 0; font-size: 15px">The bars after each average are Medium, Story, Tone, Enjoyability and Effect, in that order. In the trope column, core themes are bold.</p>
 </Base>
 
 <style>
@@ -151,4 +161,6 @@ const fmt = (v: number | null) => (v === null ? '–' : String(v));
   .right { margin-left: auto; }
   td a.title { color: #1B1B1B; font-weight: 600; }
   a.th { text-decoration: none; display: inline-block; }
+  a.trope { color: #1B1B1B; }
+  a.trope.core { font-weight: 600; }
 </style>

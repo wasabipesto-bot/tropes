@@ -1,0 +1,11 @@
+<script>
+  // Spoilers reveal in place: same element, only the class changes, so nothing shifts.
+  document.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement).closest('a.sp');
+    if (!a) return;
+    e.preventDefault();
+    const open = a.classList.toggle('open');
+    a.setAttribute('aria-expanded', String(open));
+    a.setAttribute('title', open ? 'Spoiler' : 'Spoiler. Click to reveal.');
+  });
+</script>

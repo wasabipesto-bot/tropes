@@ -1,0 +1,64 @@
+---
+import Base from '../../layouts/Base.astro';
+import { db } from '../../db';
+import { tropesIndex } from '../../lib/queries';
+
+const p = Astro.url.searchParams;
+const q = (p.get('q') ?? '').trim();
+const sortKey = p.get('sort') === 'count' ? 'count' : 'name';
+const dir = p.get('dir') === 'desc' ? 'desc' : p.get('dir') === 'asc' ? 'asc' : sortKey === 'count' ? 'desc' : 'asc';
+
+const all = tropesIndex(db);
+const ql = q.toLowerCase();
+let rows = all.filter((r) => !ql || r.trope.name.toLowerCase().includes(ql) || r.examples.some((e) => e.toLowerCase().includes(ql)));
+const sign = dir === 'asc' ? 1 : -1;
+rows = rows.slice().sort((a, b) => (sortKey === 'name' ? a.trope.name.localeCompare(b.trope.name) * sign : (a.count - b.count) * sign || a.trope.name.localeCompare(b.trope.name)));
+
+const link = (patch: Record<string, string | null>) => {
+  const u = new URL(Astro.url);
+  for (const [k, v] of Object.entries(patch)) v === null ? u.searchParams.delete(k) : u.searchParams.set(k, v);
+  return u.pathname + u.search;
+};
+const sortLink = (k: 'name' | 'count') => link({ sort: k, dir: k === sortKey ? (dir === 'asc' ? 'desc' : 'asc') : k === 'name' ? 'asc' : 'desc' });
+const arrow = (k: string) => (k === sortKey ? (dir === 'asc' ? ' ↑' : ' ↓') : '');
+---
+
+<Base title="Tropes" current="tropes">
+  <div style="display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline">
+    <h1>Tropes</h1>
+    <span class="quiet" style="font-size: 15px">{rows.length} of {all.length}</span>
+    <form method="get" action="/tropes" style="margin-left: auto; display: inline-flex; gap: 10px; align-items: baseline; font-size: 16px">
+      <label for="f" class="quiet">Filter</label>
+      <input id="f" name="q" value={q} placeholder="trope or title" class="line" style="width: 200px" />
+    </form>
+  </div>
+
+  {all.length === 0 ? (
+    <p class="quiet" style="margin: 28px 0 0">No tropes yet.{Astro.locals.owner && <> <a href="/add/trope">Add the first one.</a></>}</p>
+  ) : (
+    <div style="overflow-x: auto; overflow-y: hidden; margin-top: 28px">
+      <table style="min-width: 560px">
+        <thead>
+          <tr>
+            <th scope="col" style="width: 36%"><a class="th" href={sortLink('name')} aria-sort={sortKey === 'name' ? (dir === 'asc' ? 'ascending' : 'descending') : undefined}>Trope{arrow('name')}</a></th>
+            <th scope="col" style="width: 12%; text-align: right"><a class="th" href={sortLink('count')} aria-sort={sortKey === 'count' ? (dir === 'asc' ? 'ascending' : 'descending') : undefined}>Instances{arrow('count')}</a></th>
+            <th scope="col"><span class="th">Examples</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr>
+              <td><a href={`/tropes/${r.trope.slug}`} style="font-weight: 600">{r.trope.name}</a></td>
+              <td class="num" style="text-align: right">{r.count}</td>
+              <td style="font-size: 16px">{r.examples.slice(0, 3).join(', ')}{r.examples.length > 3 && <span class="quiet">, +{r.examples.length - 3}</span>}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</Base>
+
+<style>
+  a.th { text-decoration: none; display: inline-block; }
+</style>

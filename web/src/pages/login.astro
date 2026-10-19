@@ -1,0 +1,19 @@
+---
+import { actions } from 'astro:actions';
+import Base from '../layouts/Base.astro';
+import { afterAction } from '../lib/after-action';
+
+if (Astro.locals.owner) return Astro.redirect('/tropes');
+const { redirect, error } = afterAction(Astro);
+if (redirect) return redirect;
+---
+
+<Base title="Log in">
+  <h1>Log in</h1>
+  <form method="POST" action={actions.login} style="max-width: 420px; margin-top: 28px; display: flex; flex-direction: column; gap: 12px">
+    <label for="pw" style="font-weight: 600">Password</label>
+    <input id="pw" name="password" type="password" class="fld" autocomplete="current-password" autofocus />
+    {error && <p class="quiet" style="margin: 0; font-size: 15px">{error}</p>}
+    <div><button type="submit" class="go">Log in</button></div>
+  </form>
+</Base>

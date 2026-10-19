@@ -4,6 +4,10 @@ set shell := ["bash", "-cu"]
 # Checkout location on remote hosts, for `just on <host> <recipe>`.
 REPO_DIR := env("TROPES_REPO_DIR", "~/projects/tropes")
 SITE := env("TROPES_SITE_URL", "http://127.0.0.1:4321")
+DB := env("DATABASE_PATH", "web/data/tropes.db")
+# rsync destination for off-host copies of the backups; empty skips the copy.
+BACKUP_REMOTE := env("TROPES_BACKUP_REMOTE", "braize:tropes-backups")
+BACKUP_KEEP := env("TROPES_BACKUP_KEEP", "14")
 
 default:
     @just --list
@@ -13,17 +17,20 @@ setup:
     cd web && npm ci --no-audit --no-fund
     cd worker && uv sync
 
-# Serve the site locally with live reload.
-dev:
-    cd web && npm run dev -- --host 127.0.0.1
+# Serve the site locally with live reload. Pass a host to expose it: just dev 100.109.36.42
+[working-directory('web')]
+dev host="127.0.0.1":
+    npm run dev -- --host {{host}}
 
 # Build the site into web/dist.
+[working-directory('web')]
 build:
-    cd web && npm run build
+    npm run build
 
 # Run the built site from web/dist (needs `just build`).
+[working-directory('web')]
 start:
-    cd web && npm run start
+    npm run start
 
 # Type-check the site and lint the worker.
 lint:
@@ -39,22 +46,52 @@ test:
 ci: lint test build
 
 # Create a new SQL migration from schema changes: just db-generate add-tropes
+[working-directory('web')]
 db-generate name:
-    cd web && npx drizzle-kit generate --name {{name}}
+    npx drizzle-kit generate --name {{name}}
 
 # Apply pending migrations to the configured database (the site also does this at startup).
+[working-directory('web')]
 db-migrate:
-    cd web && npm run db:migrate
+    npm run db:migrate
 
-# Import a Notion CSV export into the database: just import path/to/export.csv [--dry-run]
+# Import a Notion CSV export: just import path/to/export.csv [--dry-run]
+[working-directory('web')]
 import file *flags:
-    cd web && npx tsx scripts/import.ts {{file}} {{flags}}
+    npx tsx scripts/import.ts {{file}} {{flags}}
+
+# Load the seed tropes and instances from web/seed/ (skips anything already present).
+[working-directory('web')]
+seed *flags:
+    npx tsx scripts/seed.ts {{flags}}
+
+# Print a password hash for OWNER_PASSWORD_HASH: just hash-password 'secret'
+[working-directory('web')]
+hash-password password:
+    npx tsx scripts/hash-password.ts '{{password}}'
+
+# Snapshot the database and evidence files into backups/ and copy them off-host (VACUUM INTO, so the site keeps running).
+backup:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    stamp=$(date -u +%Y%m%d-%H%M%S)
+    mkdir -p backups
+    rm -f "backups/tropes-${stamp}.db"
+    sqlite3 "{{DB}}" "VACUUM INTO 'backups/tropes-${stamp}.db'"
+    if [ -d web/data/evidence ]; then tar -czf "backups/evidence-${stamp}.tar.gz" -C web/data evidence; fi
+    prune() { find backups -maxdepth 1 -name "$1" -printf '%T@ %p\n' | sort -rn | tail -n +$(( {{BACKUP_KEEP}} + 1 )) | cut -d' ' -f2- | xargs -r rm -f; }
+    prune 'tropes-*.db'; prune 'evidence-*.tar.gz'
+    echo "snapshot backups/tropes-${stamp}.db ($(du -h "backups/tropes-${stamp}.db" | cut -f1)), $(ls backups | wc -l) files kept locally"
+    if [ -n "{{BACKUP_REMOTE}}" ]; then
+        rsync -a --mkpath --delete backups/ "{{BACKUP_REMOTE}}/" && echo "copied to {{BACKUP_REMOTE}}"
+    fi
 
 # Build and start the containers.
 up:
     docker compose up --build -d
 
 # Stop the containers.
+[confirm("Stop the site containers?")]
 down:
     docker compose down
 
@@ -67,11 +104,13 @@ health:
     curl -sf {{SITE}}/api/health && echo
 
 # Ask the worker to ping the site.
+[working-directory('worker')]
 ping:
-    cd worker && uv run tropes-worker ping --site {{SITE}}
+    uv run tropes-worker ping --site {{SITE}}
 
-# Run a recipe on another host: just on ivory health
-# `bash -lc` so a `just` installed under ~/.cargo/bin is found by non-interactive ssh.
+# `bash -lc` below so a `just` installed under ~/.cargo/bin is found by non-interactive ssh.
+
+# Run a recipe on another host: just on shalash health
 on host recipe *args:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -80,6 +119,7 @@ on host recipe *args:
     exec ssh $tty "{{host}}" "bash -lc 'cd {{REPO_DIR}} && just {{recipe}} {{args}}'"
 
 # Pull main, rebuild and restart the containers, then check health. Run on the host.
+[confirm("Pull main and redeploy the containers here?")]
 deploy:
     git pull --ff-only
     docker compose up --build -d

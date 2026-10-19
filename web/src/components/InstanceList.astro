@@ -1,0 +1,153 @@
+---
+import { actions } from 'astro:actions';
+import type { Evidence } from '../db/schema';
+import { PROMINENCES } from '../db/schema';
+import { PROMINENCE_LABEL, groupByProminence, type InstanceView } from '../lib/queries';
+import { renderInline, type RenderOptions } from '../lib/text';
+import VerifyMark from './VerifyMark.astro';
+
+interface Props {
+  items: InstanceView[];
+  /** On a trope page the row title is the work; on a media or series page it is the trope. */
+  mode: 'trope' | 'subject';
+  owner: boolean;
+  render: RenderOptions;
+  /** The current page path with its query string, for post-action redirects. */
+  returnTo: string;
+  /** Owner UI state from the query string. */
+  editing?: number | null;
+  textEdit?: boolean;
+  evidenceAdd?: boolean;
+}
+
+const { items, mode, owner, render, returnTo, editing = null, textEdit = false, evidenceAdd = false } = Astro.props;
+const groups = groupByProminence(items);
+const base = returnTo.split('?')[0];
+const withEdit = (id: number, extra = '') => `${base}?edit=${id}${extra}`;
+const frames = (ev: Evidence[]) => ev.filter((e) => e.kind !== 'quote');
+const quotes = (ev: Evidence[]) => ev.filter((e) => e.kind === 'quote');
+---
+
+{groups.map((g) => g.items.map((v, i) => (
+  <article class="row" style={`padding-top: ${i === 0 ? 48 : 20}px`}>
+    <div class="lab" style="padding-top: 3px">
+      {i === 0 && <div class="sc group">{g.label}<span class="quiet" style="font-weight: 400">{g.items.length}</span></div>}
+    </div>
+    <div class="body">
+      <div class="head">
+        {owner && <VerifyMark instanceId={v.inst.id} verified={v.inst.verified} returnTo={returnTo} />}
+        {mode === 'trope'
+          ? <a href={v.subject.href} class="name">{v.subject.title}</a>
+          : <a href={`/tropes/${v.trope.slug}`} class="name">{v.trope.name}</a>}
+        {mode === 'trope' && <span class="quiet" style="font-size: 15px">{v.subject.label}</span>}
+        {mode !== 'trope' && v.viaSeries && <span class="quiet" style="font-size: 15px">as part of <a href={`/series/${v.viaSeries.slug}`} style="color: inherit">{v.viaSeries.name}</a></span>}
+        {owner && (editing === v.inst.id
+          ? <a href={base} class="edit">Done</a>
+          : <a href={withEdit(v.inst.id)} class="edit">Edit</a>)}
+      </div>
+
+      {owner && editing === v.inst.id && textEdit ? (
+        <form method="POST" action={actions.updateInstanceText} class="textedit">
+          <input type="hidden" name="instanceId" value={v.inst.id} />
+          <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
+          <label for={`who-${v.inst.id}`} class="quiet" style="font-size: 15px">Who</label>
+          <input id={`who-${v.inst.id}`} name="who" class="fld" value={v.inst.who} placeholder="The character, pair or element" />
+          <label for={`text-${v.inst.id}`} class="quiet" style="font-size: 15px">Text</label>
+          <textarea id={`text-${v.inst.id}`} name="text" class="fld" rows="4">{v.inst.text}</textarea>
+          <p class="quiet" style="margin: 0; font-size: 15px">||double bars|| hide a spoiler.</p>
+          <p class="buttons"><button type="submit" class="t">Save</button><a href={withEdit(v.inst.id)} class="quiet">Cancel</a></p>
+        </form>
+      ) : (
+        <p style="margin: 2px 0 0">
+          {v.inst.who && <span style="font-style: italic">{v.inst.who}.</span>}
+          {v.inst.who && ' '}
+          <Fragment set:html={renderInline(v.inst.text, render)} />
+        </p>
+      )}
+
+      {owner && editing === v.inst.id && (
+        <div class="panel">
+          <form method="POST" action={actions.setProminence} class="line-form">
+            <input type="hidden" name="instanceId" value={v.inst.id} />
+            <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
+            <span class="quiet">Prominence</span>
+            {PROMINENCES.map((p) => p === v.inst.prominence
+              ? <span class="on">{PROMINENCE_LABEL[p]}</span>
+              : <button type="submit" name="prominence" value={p} class="t">{PROMINENCE_LABEL[p]}</button>)}
+          </form>
+          <div class="line-form">
+            <a href={withEdit(v.inst.id, '&text=1')}>Edit text</a>
+            <a href={withEdit(v.inst.id, '&evidence=1')}>Add evidence</a>
+            <form method="POST" action={actions.toggleNotable}>
+              <input type="hidden" name="instanceId" value={v.inst.id} />
+              <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
+              <button type="submit" class="t">{v.notable ? 'Unpin from notable' : 'Pin as notable'}</button>
+            </form>
+            <form method="POST" action={actions.removeInstance} onsubmit="return confirm('Remove this instance? There is no undo.')">
+              <input type="hidden" name="instanceId" value={v.inst.id} />
+              <input type="hidden" name="returnTo" value={base} />
+              <button type="submit" class="t danger">Remove</button>
+            </form>
+          </div>
+          {evidenceAdd && (
+            <form method="POST" action={actions.addQuote} class="textedit">
+              <input type="hidden" name="instanceId" value={v.inst.id} />
+              <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
+              <label for={`q-${v.inst.id}`} class="quiet" style="font-size: 15px">Quote</label>
+              <textarea id={`q-${v.inst.id}`} name="content" class="fld" rows="3"></textarea>
+              <label for={`c-${v.inst.id}`} class="quiet" style="font-size: 15px">Citation</label>
+              <input id={`c-${v.inst.id}`} name="locator" class="fld" placeholder="ch. 12, p. 203, S01E03 12:40" />
+              <p class="buttons"><button type="submit" class="t">Add quote</button><a href={withEdit(v.inst.id)} class="quiet">Cancel</a></p>
+            </form>
+          )}
+          {evidenceAdd && v.evidence.length > 0 && (
+            <div class="line-form" style="margin-top: 6px">
+              {v.evidence.map((e) => (
+                <form method="POST" action={actions.removeEvidence}>
+                  <input type="hidden" name="evidenceId" value={e.id} />
+                  <input type="hidden" name="returnTo" value={withEdit(v.inst.id, '&evidence=1')} />
+                  <button type="submit" class="t danger">Remove {e.kind} {e.locator || ''}</button>
+                </form>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+    <aside class="mar">
+      {quotes(v.evidence).map((q) => (
+        <p class="quote"><Fragment set:html={renderInline(q.content ?? '', render)} /> <span class="quiet" style="font-style: normal">{q.locator}</span></p>
+      ))}
+      {frames(v.evidence).length > 0 && (
+        <div class="gal">
+          {frames(v.evidence).map((f) => (
+            <figure style="margin: 0">
+              {f.filePath
+                ? <img src={`/evidence/${f.filePath}`} alt={f.locator} style="display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover" loading="lazy" />
+                : <div class="fr">{f.kind === 'clip' && <svg width="22" height="22" viewBox="0 0 22 22" aria-label="Play clip" role="img"><path d="M7 4l11 7-11 7z" fill="currentColor"></path></svg>}</div>}
+              <figcaption class="quiet" style="font-size: 14px; margin-top: 2px">{f.locator}</figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
+    </aside>
+  </article>
+)))}
+
+<style>
+  .group { font-weight: 700; font-size: 19px; border-top: 2px solid #1B1B1B; padding-top: 6px; display: flex; justify-content: space-between; gap: 8px; }
+  .body { border-top: 1px solid #E4E3DF; padding-top: 10px; min-width: 0; }
+  .head { display: flex; flex-wrap: wrap; gap: 0 10px; align-items: baseline; }
+  .name { font-weight: 700; color: #1B1B1B; }
+  .edit { margin-left: auto; font-size: 15px; padding: 8px 0; }
+  .mar { border-top: 1px solid #E4E3DF; padding-top: 12px; font-size: 15px; line-height: 1.5; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .quote { margin: 0; font-style: italic; color: #3A3A36; max-width: 640px; }
+  .panel { margin: 12px 0 8px; padding: 10px 0 10px 16px; border-left: 1px solid #C9C7C0; font-size: 16px; }
+  .line-form { display: flex; flex-wrap: wrap; gap: 0 16px; align-items: baseline; }
+  .line-form a, .line-form .t, .line-form .on { padding: 10px 0; }
+  .line-form form { display: inline; }
+  .on { font-weight: 700; }
+  .textedit { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .buttons { margin: 4px 0 0; font-size: 16px; display: flex; gap: 16px; }
+  .buttons .t, .buttons a { padding: 8px 0; }
+</style>

@@ -1,0 +1,18 @@
+---
+import { actions } from 'astro:actions';
+
+interface Props { instanceId: number; verified: boolean; returnTo: string }
+const { instanceId, verified, returnTo } = Astro.props;
+---
+
+<form method="POST" action={actions.toggleVerified} style="display: inline-flex">
+  <input type="hidden" name="instanceId" value={instanceId} />
+  <input type="hidden" name="returnTo" value={returnTo} />
+  {verified
+    ? <button type="submit" class="ico" aria-label="Verified. Click to unverify." title="Verified">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"></path></svg>
+      </button>
+    : <button type="submit" class="ico" aria-label="Unverified. Click to verify." title="Not verified yet. Click to verify.">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="5" stroke-dasharray="2 2"></circle></svg>
+      </button>}
+</form>

@@ -1,0 +1,80 @@
+---
+import { actions } from 'astro:actions';
+import Base from '../../layouts/Base.astro';
+import InstanceList from '../../components/InstanceList.astro';
+import { db } from '../../db';
+import { afterAction } from '../../lib/after-action';
+import { instancesForTrope, notableFor, subjectTitles, tropeBySlug, tropeHrefResolver } from '../../lib/queries';
+import { renderText } from '../../lib/text';
+
+const t = tropeBySlug(db, Astro.params.slug ?? '');
+if (!t) return new Response(null, { status: 404 });
+const { redirect, error } = afterAction(Astro);
+if (redirect) return redirect;
+
+const owner = Astro.locals.owner;
+const p = Astro.url.searchParams;
+const editDesc = owner && p.get('edit') === 'desc';
+const editing = owner && /^\d+$/.test(p.get('edit') ?? '') ? Number(p.get('edit')) : null;
+const textEdit = owner && p.get('text') === '1';
+const evidenceAdd = owner && p.get('evidence') === '1';
+
+const render = { tropeHref: tropeHrefResolver(db) };
+const items = instancesForTrope(db, t.id);
+const notable = notableFor(db, t.id, items);
+const here = `/tropes/${t.slug}`;
+const returnTo = Astro.url.pathname + Astro.url.search;
+---
+
+<Base title={t.name} wide>
+  <div class="row">
+    <div class="lab"></div>
+    <div>
+      <h1>{t.name}</h1>
+      {editDesc ? (
+        <form method="POST" action={actions.updateTropeDescription} style="margin-top: 20px">
+          <input type="hidden" name="tropeId" value={t.id} />
+          <input type="hidden" name="returnTo" value={here} />
+          <label for="desc" class="visually-hidden">Description</label>
+          <textarea id="desc" name="description" class="fld" rows="5">{t.description}</textarea>
+          <p class="quiet" style="margin: 4px 0 0; font-size: 15px">[[Trope name]] links to another trope.</p>
+          <p style="margin: 8px 0 0; font-size: 16px; display: flex; gap: 16px"><button type="submit" class="t" style="padding: 8px 0">Save</button><a href={here} class="quiet" style="padding: 8px 0">Cancel</a></p>
+        </form>
+      ) : (
+        <>
+          {t.description
+            ? <div class="desc"><Fragment set:html={renderText(t.description, render, ' style="margin: 20px 0 0"')} /></div>
+            : owner && <p class="quiet" style="margin: 20px 0 0">No description yet.</p>}
+          {owner && <p style="margin: 8px 0 0; font-size: 15px; display: flex; gap: 16px; flex-wrap: wrap"><a href={`${here}?edit=desc`} style="padding: 6px 0">Edit description</a><a href={`/recheck/trope/${t.slug}`} style="padding: 6px 0">Recheck instances</a></p>}
+        </>
+      )}
+      {error && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">{error}</p>}
+      {notable.length > 0 && <p style="margin: 16px 0 0">Notable: {notable.map((v, i) => <><a href={v.subject.href}>{v.subject.title}</a>{i < notable.length - 1 ? ', ' : '.'}</>)}</p>}
+    </div>
+    <div></div>
+  </div>
+
+  {items.length === 0 && (
+    <div class="row" style="margin-top: 48px"><div class="lab"></div><p class="quiet" style="margin: 0">No instances yet.</p><div></div></div>
+  )}
+  <InstanceList items={items} mode="trope" owner={owner} render={render} returnTo={returnTo} editing={editing} textEdit={textEdit} evidenceAdd={evidenceAdd} />
+
+  {owner && (
+    <div class="row" style="margin-top: 56px">
+      <div class="lab"></div>
+      <form method="POST" action={actions.addInstanceByTitle} class="add">
+        <input type="hidden" name="tropeId" value={t.id} />
+        <input type="hidden" name="returnTo" value={here} />
+        <label for="addm" class="quiet">Add media to this trope</label>
+        <input id="addm" name="title" list="subjects" placeholder="Title" class="line" style="width: 260px" autocomplete="off" />
+        <datalist id="subjects">{subjectTitles(db).map((s) => <option value={s}></option>)}</datalist>
+        <button type="submit" class="t" style="padding: 8px 0">Add</button>
+      </form>
+      <div></div>
+    </div>
+  )}
+</Base>
+
+<style>
+  .add { border-top: 1px solid #1B1B1B; padding-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; font-size: 16px; }
+</style>

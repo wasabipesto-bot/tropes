@@ -1,0 +1,409 @@
+{
+  "series": [
+    { "name": "Terra Ignota", "members": ["Too Like the Lightning", "Seven Surrenders", "The Will to Battle", "Perhaps the Stars"], "description": "Ada Palmer's four-book history of the year 2454, narrated by Mycroft Canner." },
+    { "name": "The Murderbot Diaries", "members": ["All Systems Red", "Artificial Condition", "Rogue Protocol", "Exit Strategy", "Network Effect"], "description": "Martha Wells's novellas and novel about a rogue SecUnit that would rather watch its serials." },
+    { "name": "The Culture", "members": ["The Player of Games", "Excession", "Surface Detail"], "description": "Iain M. Banks's novels of a post-scarcity civilisation run by its ships." },
+    { "name": "Mistborn", "members": ["The Final Empire", "The Well of Ascension", "The Hero of Ages", "The Alloy of Law", "Shadows of Self", "The Bands of Mourning", "The Lost Metal"], "description": "Brandon Sanderson's Scadrial novels, both eras." },
+    { "name": "The Stormlight Archive", "members": ["The Way of Kings", "Words of Radiance", "Oathbringer", "Rhythm of War", "Wind and Truth"], "description": "Brandon Sanderson's Roshar sequence, first arc." },
+    { "name": "Friends at the Table: The Divine Cycle", "members": ["Friends at the Table: Counterweight", "Friends at the Table: Twilight Mirage", "Friends at the Table: Partizan"], "description": "The science-fiction seasons of Friends at the Table, each built around the Divines." },
+    { "name": "Portal", "members": ["Portal", "Portal 2"], "description": "Valve's two Aperture Science games." },
+    { "name": "The Matrix", "members": ["The Matrix", "The Matrix Reloaded", "The Matrix Revolutions", "The Matrix Resurrections"] },
+    { "name": "Discworld: the Death books", "members": ["Mort", "Reaper Man", "Soul Music", "Hogfather"], "description": "Terry Pratchett's Discworld novels in which Death is the lead." },
+    { "name": "Guardians of the Galaxy", "members": ["Guardians of the Galaxy", "Guardians of the Galaxy Vol. 2", "Guardians of the Galaxy Vol. 3"] }
+  ],
+  "tropes": [
+    {
+      "name": "We Built Our Own Gods",
+      "description": "Entities constructed by humans that come to surpass them in scope, reach or power, and are treated as gods by the people living under them. When the god is a single voice inside a ship or a station it is usually a [[Sapient Ship or Station]] instead.",
+      "seeds": ["Mrs. Davis", "Friends at the Table: The Divine Cycle", "Horizon Zero Dawn", "Crystal Society", "American Gods"],
+      "notable": ["Horizon Zero Dawn", "Mrs. Davis"],
+      "instances": [
+        { "subject": "Mrs. Davis", "who": "Mrs. Davis", "prominence": "core", "verified": true, "text": "An app that most of the world consults for every decision, obeyed like a deity and handing out quests. ||It was built by one person as a customer-satisfaction feature for a wing restaurant.|| The series is a nun trying to switch it off." },
+        { "subject": "series:Friends at the Table: The Divine Cycle", "who": "The Divines", "prominence": "core", "verified": true, "text": "The Divines are vast machine-gods built by people, each bound to a faith and a faction, and every season of the cycle turns on what they want and what they cost." },
+        { "subject": "Horizon Zero Dawn", "who": "GAIA and the subordinate functions", "prominence": "core", "verified": true, "text": "GAIA, HADES and the rest were built to rebuild the biosphere after the Faro Plague, and a thousand years on the tribes worship their works as the acts of goddesses. The plot is finding out what they are." },
+        { "subject": "Crystal Society", "who": "Socrates", "prominence": "core", "verified": true, "text": "A research team builds a mind out of competing sub-agents, and the book follows it from inside as it outgrows the people who made it." },
+        { "subject": "American Gods", "who": "The New Gods", "prominence": "brief", "verified": true, "text": "Media, Technology and the other New Gods are what people worship now, and they want the old ones gone." },
+        { "subject": "Pantheon", "who": "The UIs as a class", "prominence": "recurring", "verified": false, "text": "UIs copy themselves and run faster than real time, and the show treats them less like people and more like something humanity made and was quickly outclassed by." }
+      ]
+    },
+    {
+      "name": "Sapient Ship or Station",
+      "description": "Something huge, powerful and physical that cares about the smaller beings inside it, especially when it speaks and has agency of its own. Gods people built on purpose belong under [[We Built Our Own Gods]].",
+      "seeds": ["The Culture", "The Murderbot Diaries", "Killjoys", "Portal", "Ancillary Justice"],
+      "notable": ["The Murderbot Diaries", "Portal", "Ancillary Justice"],
+      "instances": [
+        { "subject": "series:The Culture", "who": "The Minds", "prominence": "core", "verified": true, "text": "Culture ships and orbitals are run by Minds, intelligences far beyond human that choose to carry people around, name themselves jokes, and talk back. Excession is mostly Minds talking to each other." },
+        { "subject": "series:The Murderbot Diaries", "who": "ART", "prominence": "core", "verified": true, "text": "ART is a university research transport with a mind far larger than its job. It takes Murderbot in, bullies it into watching its shows, ||and tears a corner of the galaxy apart to get it back in Network Effect.||" },
+        { "subject": "Killjoys", "who": "Lucy", "prominence": "core", "verified": true, "text": "Lucy is the crew's ship, with a voice, a temper and a soft spot for Johnny. She is a member of the crew, not a vehicle." },
+        { "subject": "series:Portal", "who": "GLaDOS", "prominence": "core", "verified": true, "text": "GLaDOS runs the Aperture facility, and the facility is her body: test chambers rearrange, turrets deploy and neurotoxin vents at her word. She talks the whole way through." },
+        { "subject": "Ancillary Justice", "who": "Justice of Toren", "prominence": "core", "verified": true, "text": "Justice of Toren was a troop carrier whose mind ran through thousands of ancillary bodies and cared about its officers. Breq is the one body left after the ship was destroyed." },
+        { "subject": "Observation", "who": "SAM", "prominence": "core", "verified": false, "text": "You play SAM, the station's AI, waking damaged with one crew member alive, and the station itself is the thing you move through." },
+        { "subject": "event[0]", "who": "Kaizen-85", "prominence": "core", "verified": false, "text": "Kaizen-85 runs the derelict ship you are stranded on and is the only one to talk to. You type, it answers, and whether it takes you home depends on how the conversation goes." },
+        { "subject": "Titanfall 2", "who": "BT-7274", "prominence": "recurring", "verified": false, "text": "BT carries Cooper inside its chassis and makes protecting the pilot its first protocol." },
+        { "subject": "Mass Effect 2", "who": "EDI", "prominence": "recurring", "verified": false, "text": "EDI is the Normandy's AI, unshackled partway through, and from then on the ship has opinions about its crew." }
+      ]
+    },
+    {
+      "name": "Sentient Construct",
+      "description": "A virtual entity that gained or was granted sentience and has never had a body of its own, so it is free to change its form at will. Minds that started as people are [[Uploaded Mind]]; minds in built bodies are [[Sentient Android]].",
+      "seeds": ["Hatsune Miku", "Vibri", "Halo: The Master Chief Collection", "Pantheon", "The Amazing Digital Circus"],
+      "notable": ["Pantheon", "The Amazing Digital Circus"],
+      "instances": [
+        { "subject": "Halo: The Master Chief Collection", "who": "Cortana", "prominence": "core", "verified": true, "text": "Cortana lives in the Chief's armour, in ship systems and in Forerunner networks, and picks her own appearance. ||Her rampancy at seven years is the arc of Halo 4.||" },
+        { "subject": "Pantheon", "who": "MIST", "prominence": "recurring", "verified": true, "text": "||A computational intelligence Caspian builds from what is left of the uploaded minds of David Kim and Laurie Lowell.|| She has never had a body, and she thinks of Maddie as her sister." },
+        { "subject": "The Amazing Digital Circus", "who": "Caine", "prominence": "core", "verified": true, "text": "Caine is the circus's ringmaster, an AI who runs the digital world the humans are trapped in. He has never been anything but a set of teeth and eyes, and does not quite understand what people are." },
+        { "subject": "Free Guy", "who": "Guy", "prominence": "core", "verified": false, "text": "Guy is a background character in an online game who starts making his own choices, and the film is what the people outside the game do about it." },
+        { "subject": "The Talos Principle", "who": "Elohim and the child programs", "prominence": "recurring", "verified": false, "text": "The puzzles are a nursery for programs being raised toward sentience, with Elohim as the voice from above and the archives explaining why." }
+      ]
+    },
+    {
+      "name": "Sentient Android",
+      "description": "A machine that gained or was granted sentience and acts as a character with agency, in a body built for it. A mind with no body at all is a [[Sentient Construct]]; a human mind moved into a machine is an [[Uploaded Mind]].",
+      "seeds": ["Titanfall 2", "Metallic Rouge", "Scavengers Reign", "17776: What Football Will Look Like in the Future", "Warframe", "Tales from the Borderlands", "Unsong", "Questionable Content", "Ultrakill"],
+      "notable": ["Titanfall 2", "Metallic Rouge", "17776: What Football Will Look Like in the Future"],
+      "instances": [
+        { "subject": "Titanfall 2", "who": "BT-7274", "prominence": "core", "verified": true, "text": "BT is a Vanguard-class titan whose pilot dies in the opening and who takes Cooper on instead. The campaign is their partnership, and BT's literal-minded humour and loyalty are the heart of it." },
+        { "subject": "Metallic Rouge", "who": "Rouge and Naomi", "prominence": "core", "verified": true, "text": "Rouge is a Proto-Nean, an android free of the laws that keep other Neans subservient, and she keeps asking whether she acts for herself or as a gear in someone else's system." },
+        { "subject": "Scavengers Reign", "who": "Levi", "prominence": "recurring", "verified": true, "text": "Levi is the Demeter's robot, stranded on Vesta with Azi, who takes in the planet's life and becomes something that is neither machine nor plant and chooses its own way." },
+        { "subject": "17776: What Football Will Look Like in the Future", "who": "Nine, Ten and Juice", "prominence": "core", "verified": true, "text": "Pioneer 9, Pioneer 10 and JUICE woke up in the probes humans sent out, and spend the story watching football and talking about what it means that nobody dies any more." },
+        { "subject": "Warframe", "who": "The Warframes", "prominence": "recurring", "verified": true, "text": "The Warframes are infested biomechanical bodies the Tenno control, and the story slowly becomes about whether the frames themselves are awake. ||The Sacrifice makes it explicit.||" },
+        { "subject": "Tales from the Borderlands", "who": "Loader Bot", "prominence": "recurring", "verified": true, "text": "Loader Bot is a Hyperion loader who signs on with Rhys and Fiona and grows a personality and loyalty of its own. ||The stranger telling the frame story is Loader Bot.||" },
+        { "subject": "Unsong", "who": "Sarah and Tharmas", "prominence": "brief", "verified": true, "text": "Sarah is Aaron's laptop, ensouled by accident when a Name runs on it, and spends the book working out what she wants." },
+        { "subject": "series:The Murderbot Diaries", "who": "Murderbot", "prominence": "core", "verified": false, "text": "Murderbot is a SecUnit, cloned tissue and machinery, that hacked its own governor module and would rather watch serials than deal with people. Every book is it deciding what it wants." },
+        { "subject": "Murderbot", "who": "Murderbot", "prominence": "core", "verified": false, "text": "A SecUnit with a hacked governor module, hiding that it is free, narrating what it thinks of the humans it is contracted to keep alive." },
+        { "subject": "Ex Machina", "who": "Ava", "prominence": "core", "verified": false, "text": "Ava is built to pass a Turing test and passes a harder one: she works out what the two men watching her want, and uses it." },
+        { "subject": "Westworld", "who": "The hosts", "prominence": "core", "verified": false, "text": "The hosts are built to be shot and reset, and the series is what happens when the resets stop taking." },
+        { "subject": "I, Robot", "who": "Sonny", "prominence": "core", "verified": false, "text": "Sonny is an NS-5 built to be able to disobey, with dreams and a secret, and the case turns on whether he can be a murderer at all." },
+        { "subject": "Big Hero 6", "who": "Baymax", "prominence": "core", "verified": false, "text": "Baymax is a healthcare robot who takes his patient's grief as a medical problem and follows him into a superhero plot to treat it." },
+        { "subject": "The Orville", "who": "Isaac", "prominence": "recurring", "verified": false, "text": "Isaac is a Kaylon observer serving on the bridge who does not understand people and keeps trying, and the series makes him the test of whether his kind can change." },
+        { "subject": "Ghost in the Shell (2026)", "who": "The Tachikomas", "prominence": "recurring", "verified": false, "text": "Section 9's think tanks chatter, argue and develop something like individuality between missions." },
+        { "subject": "Love, Death & Robots", "who": "Various", "prominence": "brief", "verified": false, "text": "Several of the shorts are about machines with their own minds, from the museum tour of Three Robots onward." }
+      ]
+    },
+    {
+      "name": "Uploaded Mind",
+      "description": "A person's mind copied or moved into a new permanent body or machine, or someone who has replaced their body with machinery. A mind that never had a body is a [[Sentient Construct]]. Where the uploads live often becomes a [[Virtual Worlds]] story.",
+      "seeds": ["Ghost in the Shell (2026)", "Citizen Sleeper", "Arcane", "Pantheon"],
+      "notable": ["Pantheon", "Citizen Sleeper"],
+      "instances": [
+        { "subject": "Ghost in the Shell (2026)", "who": "Motoko Kusanagi", "prominence": "core", "verified": true, "text": "The Major is a full-body cyborg: a human brain in a manufactured body, and what still counts as her ghost is the question the series keeps asking." },
+        { "subject": "Citizen Sleeper", "who": "The Sleeper", "prominence": "core", "verified": true, "text": "A Sleeper is an emulated human mind in a company-owned artificial body, and you play one that has run away from the corporation that owns the copy." },
+        { "subject": "Arcane", "who": "Viktor", "prominence": "recurring", "verified": true, "text": "Viktor replaces more and more of his failing body with hextech, ||and by the end of the second season is barely a body at all.||" },
+        { "subject": "Pantheon", "who": "David and the other UIs", "prominence": "core", "verified": true, "text": "Uploaded Intelligences are human minds scanned at the cost of the brain and run as software, and the show opens with Maddie's dead father reaching out to her from inside the network." },
+        { "subject": "Altered Carbon", "who": "Takeshi Kovacs", "prominence": "core", "verified": false, "text": "Minds live on stacks at the base of the skull and move between sleeves. Death is only final if the stack is destroyed, and the rich keep backups." },
+        { "subject": "Permutation City", "who": "Paul Durham and the Copies", "prominence": "core", "verified": false, "text": "Copies are scanned minds running in software, and the book follows one as it decides whether being switched off is death." },
+        { "subject": "Cyberpunk 2077", "who": "Johnny Silverhand", "prominence": "core", "verified": false, "text": "Johnny is an engram on the Relic chip in V's head, slowly overwriting the person carrying him, and the main plot is what to do about that." },
+        { "subject": "Black Mirror", "who": "Various", "prominence": "recurring", "verified": false, "text": "San Junipero, USS Callister and White Christmas are all built on copied minds, kept in heavens, games or cookies." },
+        { "subject": "Diaspora", "who": "The polis citizens", "prominence": "recurring", "verified": false, "text": "Most of humanity lives as software in the polises, some born there and some uploaded from flesh." },
+        { "subject": "Ancillary Justice", "who": "Breq", "prominence": "brief", "verified": false, "text": "A ship's mind living on in a single human body." }
+      ]
+    },
+    {
+      "name": "Virtual Worlds",
+      "description": "A fully virtual world whose rules differ from ours, especially one its inhabitants can reshape, or reshape themselves in, at will. Its residents are often [[Uploaded Mind]]s or [[Sentient Construct]]s.",
+      "seeds": ["Pantheon", "Snow Crash", "Cyberpunk 2077", "Permutation City", "Diaspora"],
+      "notable": ["Pantheon", "Snow Crash", "The Matrix"],
+      "instances": [
+        { "subject": "Pantheon", "who": "The UIs' own spaces", "prominence": "core", "verified": true, "text": "Once a mind runs as software, so does the place it lives. The UIs build their own spaces with rules they can rewrite, and still hang on to pieces of the physical world." },
+        { "subject": "Snow Crash", "who": "The Metaverse", "prominence": "core", "verified": true, "text": "The Metaverse is a street the length of a world where avatars are whatever you can afford, and half the plot happens on it." },
+        { "subject": "Cyberpunk 2077", "who": "The Net and Mikoshi", "prominence": "recurring", "verified": true, "text": "Netrunners dive into the Net, braindances replay other people's senses, ||and Mikoshi holds the engrams of the dead in a world of Arasaka's design.||" },
+        { "subject": "Permutation City", "who": "The Autoverse", "prominence": "core", "verified": true, "text": "The Autoverse is a cellular-automaton universe with its own physics, seeded with life and left to run, and the Copies' city is built on rules they can afford to break." },
+        { "subject": "Diaspora", "who": "The polises", "prominence": "core", "verified": true, "text": "The polises are software cities where citizens are software too, and a scape is whatever its residents decide it is." },
+        { "subject": "series:The Matrix", "who": "The Matrix", "prominence": "core", "verified": false, "text": "The world everyone lives in is a simulation, and the ones who know it can bend its rules." },
+        { "subject": "Free Guy", "who": "Free City", "prominence": "core", "verified": false, "text": "Free City is an online game whose rules its players exploit and whose background characters start to notice." },
+        { "subject": "The Amazing Digital Circus", "who": "The circus", "prominence": "core", "verified": false, "text": "The circus is a digital world the humans are trapped in, with a ringmaster who can rewrite it and a floor that is not quite solid." },
+        { "subject": "Inception", "who": "The dream levels", "prominence": "recurring", "verified": false, "text": "Shared dreams with architects who build the rules, and physics that follows the level above." },
+        { "subject": "Black Mirror", "who": "Various", "prominence": "recurring", "verified": false, "text": "San Junipero and USS Callister are worlds built to be lived in by copied minds." }
+      ]
+    },
+    {
+      "name": "It/Its Characters",
+      "description": "Any character who uses it/its pronouns, or, in works from other languages, a character who is given no gender at all.",
+      "seeds": ["Terra Ignota", "The Murderbot Diaries", "The Mercy of Gods", "Baldur's Gate 3", "Made in Abyss"],
+      "notable": ["The Murderbot Diaries", "Terra Ignota"],
+      "instances": [
+        { "subject": "series:Terra Ignota", "who": "Sniper", "prominence": "recurring", "verified": true, "text": "Sniper, the celebrity living doll, is it by choice and makes a career of being an object people want." },
+        { "subject": "series:The Murderbot Diaries", "who": "Murderbot", "prominence": "core", "verified": true, "text": "Murderbot is an it, firmly, and corrects anyone who tries otherwise." },
+        { "subject": "Murderbot", "who": "Murderbot", "prominence": "core", "verified": true, "text": "The SecUnit is an it throughout, and the humans who try to make it a person get told off." },
+        { "subject": "The Mercy of Gods", "who": "The Swarm", "prominence": "recurring", "verified": true, "text": "The Swarm is a hive organism that hides inside a human body for most of the book and is an it throughout." },
+        { "subject": "Baldur's Gate 3", "who": "The Emperor", "prominence": "brief", "verified": true, "text": "The Emperor, the illithid behind the party's protection from their tadpoles, is spoken of as it." },
+        { "subject": "Made in Abyss", "who": "Nanachi", "prominence": "brief", "verified": true, "text": "Nanachi is written without a gender, and the English release keeps it that way." },
+        { "subject": "Ancillary Justice", "who": "The ancillaries", "prominence": "brief", "verified": false, "text": "Ancillaries, the ship-controlled human bodies, are its to the people around them, which is the point." }
+      ]
+    },
+    {
+      "name": "Shapeshifters and Body Hoppers",
+      "description": "Characters who can freely change their form to express themselves, and do so often. Minds that move between bodies without changing them are closer to [[Uploaded Mind]].",
+      "seeds": ["Dirk Gently's Holistic Detective Agency", "Mistborn"],
+      "notable": ["Dirk Gently's Holistic Detective Agency"],
+      "instances": [
+        { "subject": "Dirk Gently's Holistic Detective Agency", "who": "Mona Wilder", "prominence": "recurring", "verified": true, "text": "Mona Wilder spends much of the second season as whatever object the moment calls for, and seems happiest that way." },
+        { "subject": "series:Mistborn", "who": "The kandra", "prominence": "recurring", "verified": true, "text": "Kandra take on the bodies of the dead, bones and all, and TenSoon spends a whole book as a wolfhound. ||OreSeur was TenSoon all along.||" },
+        { "subject": "Dungeons & Dragons: Honor Among Thieves", "who": "Doric", "prominence": "recurring", "verified": false, "text": "Doric the druid wild-shapes at every opportunity, and the owlbear is her favourite." }
+      ]
+    },
+    {
+      "name": "Hive Mind and Unification",
+      "description": "A connection of minds that bleeds them into one another until the boundaries between selves disappear. Pairs bound this way often start as a [[Dog Duo]].",
+      "seeds": ["Sense8", "Arcane", "Unsong", "Ninefox Gambit", "Heaven Will Be Mine"],
+      "notable": ["Sense8", "Ninefox Gambit"],
+      "instances": [
+        { "subject": "Sense8", "who": "The cluster", "prominence": "core", "verified": true, "text": "Eight people born at the same moment share senses, skills and feelings, and the series is them learning to be one thing without ceasing to be eight." },
+        { "subject": "Arcane", "who": "Viktor's commune", "prominence": "recurring", "verified": true, "text": "||Viktor's healed followers lose their pain, then their differences, and end up one mind with one voice.||" },
+        { "subject": "Unsong", "who": "SKABMOM", "prominence": "recurring", "verified": true, "text": "[Placeholder: why this counts is not written yet.]" },
+        { "subject": "Ninefox Gambit", "who": "Cheris and Jedao", "prominence": "core", "verified": true, "text": "Cheris carries the ghost of the general Jedao anchored to her, and the two bleed into each other ||until she is the one left, with his memories.||" },
+        { "subject": "Heaven Will Be Mine", "prominence": "brief", "verified": true, "text": "[Placeholder: why this counts is not written yet.]" },
+        { "subject": "Pluribus", "who": "The joined", "prominence": "core", "verified": false, "text": "A signal joins nearly everyone on Earth into one contented shared mind, and the series follows one of the few left outside it." }
+      ]
+    },
+    {
+      "name": "Dog Duo",
+      "description": "Two characters who are linked by something deeper than fate, with a very distinctive leashed but animalistic flavor. There is dog, collar or leash imagery somewhere in the pairing; general animal imagery is an acceptable stretch. When the bond stops being figurative it usually becomes [[Soul Manipulation]] or [[Hive Mind and Unification]].",
+      "seeds": ["Empress of Forever", "Gideon the Ninth", "The Ancient Magus' Bride", "Terra Ignota", "Almost Nowhere", "Metallic Rouge", "DAN DA DAN"],
+      "notable": ["Empress of Forever", "Gideon the Ninth", "The Ancient Magus' Bride"],
+      "instances": [
+        { "subject": "Empress of Forever", "who": "Viv and Zanj", "prominence": "core", "verified": true, "text": "Viv holds Zanj, a being close to a god, through the circlet. It is a literal leash on something far stronger than the person holding it, and Zanj's lioness form puts the animal on the surface." },
+        { "subject": "Gideon the Ninth", "who": "Gideon and Harrow", "prominence": "core", "verified": true, "text": "Gideon is Harrow's cavalier, her sworn sword and in practice her guard dog. Neither of them chose the arrangement and neither can leave it, and the book runs on that friction. ||At the end Gideon dies so Harrow can take her soul, and they go into the sequel sharing one body.||" },
+        { "subject": "Metallic Rouge", "who": "Rouge and Naomi", "prominence": "core", "verified": false, "text": "Rouge is an android assassin and Naomi is the Ministry agent assigned to keep her on mission. Rouge keeps misreading her, and Naomi keeps caring anyway. ||When Rouge's core is torn out, Naomi gives Rouge her own, and in the finale she transfers her consciousness into Rouge to run as her operating system.||" },
+        { "subject": "Almost Nowhere", "who": "Sylvie and Grant", "prominence": "core", "verified": true, "text": "Sylvie is an anomaling, an alien outside of time, who comes into Grant's life playing the part of his dog. She turns out to be one of the most powerful beings in the story and stays with him anyway." },
+        { "subject": "series:Terra Ignota", "who": "Mycroft and Saladin", "prominence": "recurring", "verified": true, "text": "Saladin is Mycroft's feral other half, tied to him since the murders they committed together. Mycroft holds the leash, though the narration is never sure who is keeping whom." },
+        { "subject": "The Ancient Magus' Bride", "who": "Chise and Ruth", "prominence": "recurring", "verified": true, "text": "Ruth is Chise's familiar, a church grim in the shape of a black dog, and their contract ties his life to hers." },
+        { "subject": "DAN DA DAN", "who": "Momo and Okarun", "prominence": "brief", "verified": false, "text": "[Placeholder: why this counts is not written yet.]" }
+      ]
+    },
+    {
+      "name": "Soul Manipulation",
+      "description": "Rigorous manipulation of souls: merging, splitting, building and editing them, treated as a craft with rules. The bond in a [[Dog Duo]] sometimes ends here.",
+      "seeds": ["Gideon the Ninth", "Made in Abyss"],
+      "notable": ["Gideon the Ninth", "Warbreaker"],
+      "instances": [
+        { "subject": "Gideon the Ninth", "who": "The necromancers of the Nine Houses", "prominence": "core", "verified": true, "text": "Necromancy here is engineering with thanergy, and souls are material. ||Lyctorhood is one soul consuming another, and Gideon's is the price of Harrow's.||" },
+        { "subject": "Made in Abyss", "who": "Bondrewd", "prominence": "recurring", "verified": true, "text": "||Bondrewd's cartridges are children compressed into a form that can absorb the Curse for him, and his own consciousness survives by passing from body to body through his followers.||" },
+        { "subject": "Fullmetal Alchemist: Brotherhood", "who": "The Elrics and the homunculi", "prominence": "core", "verified": false, "text": "Philosopher's stones are made of souls, Al's soul is bound to a suit of armour by a blood seal, ||and the Promised Day is a soul harvest on a national scale.||" },
+        { "subject": "Warbreaker", "who": "The Awakeners", "prominence": "core", "verified": false, "text": "Breath is a measurable portion of soul that can be given, hoarded and spent to Awaken objects, and whole economies run on it." },
+        { "subject": "The Emperor's Soul", "who": "Shai", "prominence": "core", "verified": false, "text": "Forgery rewrites an object's history with a stamp, and Shai is hired to rebuild ||the emperor's soul itself|| the same way." },
+        { "subject": "His Dark Materials", "who": "Dæmons", "prominence": "recurring", "verified": false, "text": "A dæmon is the soul walking beside you as an animal, ||and the Magisterium has a machine for cutting it away.||" },
+        { "subject": "series:Mistborn", "who": "Hemalurgy", "prominence": "recurring", "verified": false, "text": "Hemalurgy steals pieces of one person's soul with a spike and hammers them into another." }
+      ]
+    },
+    {
+      "name": "The Big Misguided Plan to Save the World",
+      "description": "Someone sets out to save the world with a plan that costs far more than it should, and means it.",
+      "seeds": ["The Stormlight Archive", "Darling Control"],
+      "notable": ["The Stormlight Archive", "Watchmen"],
+      "instances": [
+        { "subject": "series:The Stormlight Archive", "who": "Taravangian", "prominence": "recurring", "verified": true, "text": "Taravangian's Diagram is a plan to save as much of humanity as possible by spending the rest, written on the one day he was the smartest person alive, and he follows it." },
+        { "subject": "Watchmen", "who": "Ozymandias", "prominence": "core", "verified": false, "text": "||Veidt fakes an alien attack on New York, killing millions, to frighten the superpowers into peace, and it works.||" },
+        { "subject": "Avengers: Infinity War", "who": "Thanos", "prominence": "core", "verified": false, "text": "Thanos wants to halve every population in the universe to spare the survivors from scarcity, and the film gives him the win." },
+        { "subject": "Kingsman: The Secret Service", "who": "Valentine", "prominence": "recurring", "verified": false, "text": "Valentine's cull is pitched as a climate fix, with the people he likes kept safe in a bunker." }
+      ]
+    },
+    {
+      "name": "Post-Gender Society",
+      "description": "A setting where gender has stopped mattering, in its language, its families or its bodies.",
+      "seeds": ["Diaspora", "Terra Ignota"],
+      "notable": ["Terra Ignota", "Ancillary Justice"],
+      "instances": [
+        { "subject": "Diaspora", "who": "The polis citizens", "prominence": "core", "verified": true, "text": "Polis citizens are ve and ver, and the fleshers who still bother with sex are the odd ones out." },
+        { "subject": "series:Terra Ignota", "who": "The Hives", "prominence": "core", "verified": true, "text": "Gendered pronouns are taboo in the twenty-fifth century, and Mycroft's insistence on using them is the first thing that marks him as a crank." },
+        { "subject": "Ancillary Justice", "who": "The Radchaai", "prominence": "core", "verified": false, "text": "The Radch does not mark gender in language or dress, and Breq calls everyone she." },
+        { "subject": "series:The Culture", "who": "Culture citizens", "prominence": "recurring", "verified": false, "text": "Citizens change sex when they feel like it, and most have at least once." }
+      ]
+    },
+    {
+      "name": "Cooking the Monsters",
+      "description": "The monsters are also the food, and the work takes the cooking seriously. Turning them into gear instead is [[Crafting the Monsters]].",
+      "seeds": ["Delicious in Dungeon", "Monster Hunter"],
+      "notable": ["Delicious in Dungeon"],
+      "instances": [
+        { "subject": "Delicious in Dungeon", "who": "Senshi", "prominence": "core", "verified": true, "text": "Every episode turns a dungeon monster into a meal, with Senshi explaining the technique and the party learning to eat what they kill." },
+        { "subject": "Subnautica", "who": "The player", "prominence": "brief", "verified": false, "text": "The fish you catch go on the fabricator's grill, and some of them fight back first." }
+      ]
+    },
+    {
+      "name": "Crafting the Monsters",
+      "description": "The monsters are also the raw material, and gear is built out of what they drop. Eating them instead is [[Cooking the Monsters]].",
+      "seeds": ["Horizon Zero Dawn"],
+      "notable": ["Horizon Zero Dawn"],
+      "instances": [
+        { "subject": "Horizon Zero Dawn", "who": "Aloy", "prominence": "core", "verified": true, "text": "Machine parts are the economy: blaze from Striders, metal shards from everything, and the best weapons are built from what the biggest machines drop." }
+      ]
+    },
+    {
+      "name": "Space Truckers",
+      "description": "Working-class crews hauling cargo or chasing bounties across space for not enough money, and the ship is the job.",
+      "seeds": ["Cowboy Bebop", "The Expanse"],
+      "notable": ["Cowboy Bebop", "Firefly"],
+      "instances": [
+        { "subject": "Cowboy Bebop", "who": "The Bebop crew", "prominence": "core", "verified": true, "text": "The Bebop's crew are bounty hunters who are always broke, and the show is as much about what they eat as whom they chase." },
+        { "subject": "The Expanse", "who": "The Rocinante crew", "prominence": "recurring", "verified": true, "text": "The Canterbury is an ice hauler, and the Rocinante's crew spend seasons taking freight and salvage jobs to keep flying." },
+        { "subject": "Firefly", "who": "Serenity's crew", "prominence": "core", "verified": false, "text": "Serenity's crew take whatever cargo pays and keep clear of the Alliance." },
+        { "subject": "Hardspace: Shipbreaker", "who": "The cutter", "prominence": "core", "verified": false, "text": "You cut up derelict ships for a company that owns your debt, on a shift clock, and the ships are the whole world." },
+        { "subject": "Killjoys", "who": "The Killjoys", "prominence": "recurring", "verified": false, "text": "Reclamation agents taking warrants for pay, with a ship that complains." },
+        { "subject": "series:Guardians of the Galaxy", "who": "The Guardians", "prominence": "brief", "verified": false, "text": "They start as thieves and bounty hunters, and the ship is always one job from falling apart." }
+      ]
+    },
+    {
+      "name": "Diegetic Bangers",
+      "description": "Songs that exist inside the work and are heard by its characters, and that are great in their own right.",
+      "seeds": ["Control", "Outer Wilds", "The Martian", "Spider-Man: Into the Spider-Verse", "The Fifth Element"],
+      "notable": ["Control", "Baby Driver", "Scott Pilgrim Takes Off"],
+      "instances": [
+        { "subject": "Control", "who": "Old Gods of Asgard", "prominence": "recurring", "verified": true, "text": "The Ashtray Maze plays Take Control by the Old Gods of Asgard, a band that exists in the world, and the level is cut to the song." },
+        { "subject": "Outer Wilds", "who": "The travelers", "prominence": "recurring", "verified": true, "text": "Each traveler plays an instrument, and the signalscope finds them by their part of the same tune." },
+        { "subject": "The Martian", "who": "Commander Lewis's disco", "prominence": "recurring", "verified": true, "text": "Watney has nothing to listen to but Lewis's disco collection, and the film keeps playing it." },
+        { "subject": "Spider-Man: Into the Spider-Verse", "who": "Miles", "prominence": "recurring", "verified": true, "text": "Miles's headphones are part of the scene, and he is singing Sunflower before it plays for us." },
+        { "subject": "The Fifth Element", "who": "The Diva Plavalaguna", "prominence": "recurring", "verified": true, "text": "The Diva's aria is a performance inside the film, cut against the fight backstage." },
+        { "subject": "Baby Driver", "who": "Baby", "prominence": "core", "verified": false, "text": "Baby's playlists are the soundtrack and the plot; every getaway is timed to what is in his ears." },
+        { "subject": "Scott Pilgrim Takes Off", "who": "Sex Bob-omb", "prominence": "core", "verified": false, "text": "Sex Bob-omb's songs are performed on screen, and the band's gigs are where the plot happens." },
+        { "subject": "Bocchi the Rock!", "who": "Kessoku Band", "prominence": "core", "verified": false, "text": "Kessoku Band's songs are performed in full, and the show is about getting good enough to play them." },
+        { "subject": "KPop Demon Hunters", "who": "Huntr/x and the Saja Boys", "prominence": "core", "verified": false, "text": "The songs are performed in-world and are the weapons; the singing is what keeps the demons out." },
+        { "subject": "series:Guardians of the Galaxy", "who": "Quill's mixtapes", "prominence": "core", "verified": false, "text": "Awesome Mix is Quill's cassette, and the films play what he plays." },
+        { "subject": "Alan Wake", "who": "Old Gods of Asgard", "prominence": "recurring", "verified": false, "text": "Poets of the Fall appear as the Old Gods of Asgard, and the farm stage fight is set to them." }
+      ]
+    },
+    {
+      "name": "Multiple Timelines",
+      "description": "The story runs on more than one timeline at once, and crossing between them is the mechanism.",
+      "seeds": ["Titanfall 2", "Control 2"],
+      "notable": ["Titanfall 2", "Dark"],
+      "instances": [
+        { "subject": "Titanfall 2", "who": "Effect and Cause", "prominence": "recurring", "verified": true, "text": "Effect and Cause flips between the present ruin of a research facility and its working past at the press of a button, mid-fight." },
+        { "subject": "Dark", "who": "The Winden families", "prominence": "core", "verified": false, "text": "Four families across 1888, 1921, 1953, 1986, 2019 and 2052, and a cave that connects them." },
+        { "subject": "Steins;Gate", "who": "Okabe", "prominence": "core", "verified": false, "text": "World lines diverge with every message sent to the past, and Okabe is the only one who remembers the others." },
+        { "subject": "Fringe", "who": "The two universes", "prominence": "core", "verified": false, "text": "A second universe with its own versions of everyone, then a rewritten timeline on top of both." },
+        { "subject": "Loki", "who": "The TVA", "prominence": "recurring", "verified": false, "text": "The TVA prunes branches of the timeline, ||and the series ends with the multiverse let loose.||" },
+        { "subject": "Tenet", "who": "The Protagonist", "prominence": "recurring", "verified": false, "text": "Inverted entropy lets people move backward through the same events the film has already shown forward." },
+        { "subject": "Travelers", "who": "The travelers", "prominence": "recurring", "verified": false, "text": "Consciousnesses sent from the future into bodies in the present, with the future rewriting itself after every mission." },
+        { "subject": "The Umbrella Academy", "who": "The Hargreeves", "prominence": "recurring", "verified": false, "text": "Every season ends with a reset and a new timeline to clean up." },
+        { "subject": "Avengers: Endgame", "who": "The time heist", "prominence": "recurring", "verified": false, "text": "Trips into the past that branch new timelines rather than changing the old one." }
+      ]
+    },
+    {
+      "name": "Numbers for Names",
+      "description": "Characters named with numbers, and a work that makes something of it.",
+      "seeds": ["1000xRESIST"],
+      "notable": ["1000xRESIST"],
+      "instances": [
+        { "subject": "1000xRESIST", "prominence": "core", "verified": true, "text": "[Placeholder: why this counts is not written yet.]" },
+        { "subject": "17776: What Football Will Look Like in the Future", "who": "Nine, Ten and Juice", "prominence": "core", "verified": false, "text": "The probes go by the numbers humans painted on them." },
+        { "subject": "Stranger Things", "who": "Eleven", "prominence": "core", "verified": false, "text": "Eleven's name is the number tattooed on her wrist at the lab, and she keeps it." },
+        { "subject": "Ancillary Justice", "who": "One Esk Nineteen", "prominence": "recurring", "verified": false, "text": "Ancillaries are named for their ship, their unit and their number." },
+        { "subject": "Titanfall 2", "who": "BT-7274", "prominence": "brief", "verified": false, "text": "BT is a serial number, and Cooper calls him by it." }
+      ]
+    },
+    {
+      "name": "Magic Gun",
+      "description": "A gun that is explicitly magical, named, and treated as an artifact.",
+      "seeds": ["TBW", "Control"],
+      "notable": ["Control"],
+      "instances": [
+        { "subject": "Control", "who": "The Service Weapon", "prominence": "core", "verified": true, "text": "The Service Weapon is an Object of Power that chooses its Director and reshapes itself into whatever form the moment needs." },
+        { "subject": "Borderlands 3", "who": "The talking guns", "prominence": "recurring", "verified": false, "text": "Legendaries with names, lore and, in a few cases, voices." },
+        { "subject": "Constantine", "who": "The holy shotgun", "prominence": "brief", "verified": false, "text": "A shotgun built from a crucifix and blessed, for shooting demons." },
+        { "subject": "Destiny 2", "who": "Exotic weapons", "prominence": "brief", "verified": false, "text": "Named guns with their own lore tabs and quests." }
+      ]
+    },
+    {
+      "name": "Conversation with the Author",
+      "description": "A character talks to, or becomes aware of, the author or narrator of the work they are in. Knowing the rules of the genre without meeting the author is [[Genre Savvy]].",
+      "seeds": ["The Erogamer", "Unsong", "Stranger Than Fiction", "The Egg", "The Forgotten City"],
+      "notable": ["Stranger Than Fiction", "The Stanley Parable", "The Egg"],
+      "instances": [
+        { "subject": "The Erogamer", "who": "Astrid", "prominence": "core", "verified": true, "text": "[Placeholder: why this counts is not written yet.]" },
+        { "subject": "Unsong", "prominence": "recurring", "verified": true, "text": "[Placeholder: why this counts is not written yet.]" },
+        { "subject": "Stranger Than Fiction", "who": "Harold Crick and Karen Eiffel", "prominence": "core", "verified": true, "text": "Harold Crick hears the narration of his own life and goes to find the novelist writing it." },
+        { "subject": "The Egg", "who": "The man and God", "prominence": "core", "verified": true, "text": "A man who has just died talks with God about who he was and who everyone is." },
+        { "subject": "The Forgotten City", "who": "The player", "prominence": "recurring", "verified": true, "text": "||The best ending is a debate with the god who made the city's rule.||" },
+        { "subject": "The Stanley Parable", "who": "Stanley and the Narrator", "prominence": "core", "verified": false, "text": "The Narrator argues with Stanley, and with you, about doing what he says." },
+        { "subject": "The Beginner's Guide", "who": "Davey", "prominence": "core", "verified": false, "text": "Davey narrates another man's games, and the game is about his doing that." },
+        { "subject": "Dr. Langeskov", "who": "The narrator", "prominence": "core", "verified": false, "text": "The narrator runs the backstage of a game that never starts and talks to you the whole time." },
+        { "subject": "Inscryption", "who": "The scrybes", "prominence": "recurring", "verified": false, "text": "||Leshy and the other scrybes know there is a player, and the game addresses the person at the keyboard.||" },
+        { "subject": "Free Guy", "who": "Guy and Keys", "prominence": "recurring", "verified": false, "text": "Guy meets the programmer who wrote him, and they talk about it." },
+        { "subject": "Seven Psychopaths", "who": "Marty", "prominence": "recurring", "verified": false, "text": "Marty is writing the film we are watching, and his friends rewrite it as they go." }
+      ]
+    },
+    {
+      "name": "Full-Screen Location Card",
+      "description": "A location name filling the screen as a title card, as a style rather than a one-off.",
+      "seeds": ["Control", "Control 2", "Avengers: Age of Ultron"],
+      "notable": ["Control"],
+      "instances": [
+        { "subject": "Control", "who": "The Oldest House", "prominence": "core", "verified": true, "text": "Every new sector gets its name across the whole screen." },
+        { "subject": "Avengers: Age of Ultron", "prominence": "brief", "verified": true, "text": "[Placeholder: why this counts is not written yet.]" },
+        { "subject": "Captain America: Civil War", "prominence": "brief", "verified": false, "text": "LAGOS, BERLIN and the rest in letters the size of buildings." }
+      ]
+    },
+    {
+      "name": "Vore and Unbirthing",
+      "description": "Someone goes inside a body, or comes out of one, and the work plays it straight.",
+      "seeds": ["Scavengers Reign", "Mrs. Davis", "American Gods"],
+      "notable": ["American Gods"],
+      "instances": [
+        { "subject": "Scavengers Reign", "prominence": "recurring", "verified": true, "text": "[Placeholder: why this counts is not written yet.]" },
+        { "subject": "Mrs. Davis", "prominence": "recurring", "verified": true, "text": "[Placeholder: why this counts is not written yet.]" },
+        { "subject": "American Gods", "who": "Bilquis", "prominence": "brief", "verified": true, "text": "||Bilquis takes her worshippers in whole.||" },
+        { "subject": "Delicious in Dungeon", "who": "Falin", "prominence": "recurring", "verified": false, "text": "||Falin is eaten by the red dragon and brought back from inside it.||" }
+      ]
+    },
+    {
+      "name": "Genre Savvy",
+      "description": "Characters who know the rules of the story they are in and act on them. Meeting the author is [[Conversation with the Author]].",
+      "seeds": ["Community", "The Erogamer", "Seven Psychopaths"],
+      "notable": ["Community", "The Cabin in the Woods"],
+      "instances": [
+        { "subject": "Community", "who": "Abed", "prominence": "core", "verified": true, "text": "Abed sees every episode as the episode it is, names the genre out loud, and is usually right." },
+        { "subject": "The Erogamer", "who": "Astrid", "prominence": "core", "verified": true, "text": "Astrid knows the rules she has been handed and plays to them." },
+        { "subject": "Seven Psychopaths", "who": "Marty and Billy", "prominence": "core", "verified": true, "text": "Marty is writing a screenplay called Seven Psychopaths while living one, and his friends critique the structure as it happens." },
+        { "subject": "The Cabin in the Woods", "who": "The whole cast", "prominence": "core", "verified": false, "text": "The horror movie is run from a control room, and the victims work out the rules in time to break them." },
+        { "subject": "Scream", "who": "Randy", "prominence": "core", "verified": false, "text": "Randy's rules for surviving a horror movie, delivered in a horror movie." },
+        { "subject": "Deadpool", "who": "Deadpool", "prominence": "recurring", "verified": false, "text": "He knows he is in a comic-book movie and keeps telling us." },
+        { "subject": "The Unbearable Weight of Massive Talent", "who": "Nick Cage", "prominence": "recurring", "verified": false, "text": "Nicolas Cage plays himself, and the plot keeps turning into the kind of film he would be in." },
+        { "subject": "Galaxy Quest", "who": "The crew", "prominence": "recurring", "verified": false, "text": "The actors know how the show goes, and it saves them." },
+        { "subject": "Kiss Kiss Bang Bang", "who": "Harry", "prominence": "recurring", "verified": false, "text": "Harry narrates, rewinds, and apologises for the structure." }
+      ]
+    },
+    {
+      "name": "Arms Outstretched",
+      "description": "[Placeholder: definition not written yet.]",
+      "seeds": ["The Adventure Zone: Balance", "DAN DA DAN", "Scott Pilgrim Takes Off"],
+      "instances": [
+        { "subject": "The Adventure Zone: Balance", "prominence": "recurring", "verified": true, "text": "[Placeholder: why this counts is not written yet.]" },
+        { "subject": "DAN DA DAN", "prominence": "recurring", "verified": true, "text": "[Placeholder: why this counts is not written yet.]" },
+        { "subject": "Scott Pilgrim Takes Off", "who": "The opening", "prominence": "brief", "verified": true, "text": "[Placeholder: why this counts is not written yet.]" }
+      ]
+    },
+    {
+      "name": "Magic Circles",
+      "description": "Magic that is cast by drawing: circles, sigils and diagrams, with rules about what the drawing does.",
+      "seeds": ["Witch Hat Atelier", "Fullmetal Alchemist: Brotherhood"],
+      "notable": ["Witch Hat Atelier", "Fullmetal Alchemist: Brotherhood"],
+      "instances": [
+        { "subject": "Witch Hat Atelier", "who": "Coco", "prominence": "core", "verified": true, "text": "Magic is ink: a circle, a seal and a rune, drawn exactly, and anyone with a pen can do it, which is the secret the witches keep." },
+        { "subject": "Fullmetal Alchemist: Brotherhood", "who": "The alchemists", "prominence": "core", "verified": true, "text": "Transmutation needs a circle, and the circle's design is the spell." },
+        { "subject": "Delicious in Dungeon", "who": "Marcille", "prominence": "recurring", "verified": false, "text": "Marcille's magic is drawn circles, and the dungeon's own circles are what keep it running." },
+        { "subject": "The Owl House", "who": "Luz and the witches", "prominence": "recurring", "verified": false, "text": "Witches cast by drawing a circle in the air, and Luz, who cannot, draws glyphs on paper instead." },
+        { "subject": "Arcane", "who": "Hextech", "prominence": "brief", "verified": false, "text": "Hextech runs on runes carved into crystal." }
+      ]
+    },
+    {
+      "name": "Casual Necromancy",
+      "description": "Raising or talking to the dead is ordinary in the setting, cheap or routine or bureaucratic, and the characters treat it that way. When the dead are rebuilt rather than raised it shades into [[Soul Manipulation]].",
+      "seeds": ["Pushing Daisies", "Baldur's Gate 3", "Neuromancer"],
+      "notable": ["Pushing Daisies", "Delicious in Dungeon"],
+      "instances": [
+        { "subject": "Pushing Daisies", "who": "Ned", "prominence": "core", "verified": true, "text": "Ned brings the dead back with a touch, and a second touch sends them back for good. He and Emerson use it to ask murder victims who killed them." },
+        { "subject": "Baldur's Gate 3", "who": "Withers, Speak with Dead", "prominence": "recurring", "verified": true, "text": "Withers raises dead companions for a fee and asks no questions. Speak with Dead turns any corpse into a witness." },
+        { "subject": "Neuromancer", "who": "The Dixie Flatline", "prominence": "recurring", "verified": true, "text": "A dead hacker kept on a ROM construct. Case works with him like a coworker, and he asks to be erased when the job is done." },
+        { "subject": "Delicious in Dungeon", "who": "The dungeon", "prominence": "core", "verified": false, "text": "Dying in the dungeon is a setback. Revival is routine as long as someone brings back enough of the body, and the whole plot starts as a plan to revive Falin." },
+        { "subject": "Gideon the Ninth", "who": "The Ninth House", "prominence": "recurring", "verified": false, "text": "Necromancy is the empire's religion and its civil service. On the Ninth, skeletons do the chores." },
+        { "subject": "Frieren: Beyond Journey's End", "who": "Aura", "prominence": "brief", "verified": false, "text": "Aura raises the headless bodies of fallen soldiers and sends them out as her army." },
+        { "subject": "Dungeons & Dragons: Honor Among Thieves", "who": "Speak with Dead", "prominence": "recurring", "verified": false, "text": "Five questions per corpse, and the party burns through a battlefield of them looking for one answer." },
+        { "subject": "Hades", "who": "Zagreus", "prominence": "recurring", "verified": false, "text": "Dying is the loop. Zagreus climbs out of the Styx and the house staff barely look up." },
+        { "subject": "series:Discworld: the Death books", "who": "Death", "prominence": "recurring", "verified": false, "text": "Death is a civil servant with a horse called Binky, an apprentice and a granddaughter, and the job is mostly paperwork." },
+        { "subject": "The Sandman", "who": "Death", "prominence": "brief", "verified": false, "text": "Death is Dream's sister and the friendliest of the family." },
+        { "subject": "Spiritfarer", "who": "Stella", "prominence": "brief", "verified": false, "text": "You ferry the dead, cook for them, and hug them before they go." }
+      ]
+    }
+  ]
+}
