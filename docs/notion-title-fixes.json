@@ -1,0 +1,240 @@
+{
+ "titles": [
+  {
+   "old": "Warfarme",
+   "new": "Warframe",
+   "reason": "typo",
+   "tier": "A"
+  },
+  {
+   "old": "Kerbal Space Prgram",
+   "new": "Kerbal Space Program",
+   "reason": "typo",
+   "tier": "A"
+  },
+  {
+   "old": "Thor: Ragnorak",
+   "new": "Thor: Ragnarok",
+   "reason": "typo",
+   "tier": "A"
+  },
+  {
+   "old": "Beseige",
+   "new": "Besiege",
+   "reason": "typo",
+   "tier": "A"
+  },
+  {
+   "old": "Borderlands: The Pre-Sequal",
+   "new": "Borderlands: The Pre-Sequel",
+   "reason": "typo",
+   "tier": "A"
+  },
+  {
+   "old": "Middle Earth: SOM",
+   "new": "Middle-earth: Shadow of Mordor",
+   "reason": "abbreviation and hyphen",
+   "tier": "A"
+  },
+  {
+   "old": "Horizon: Zero Dawn",
+   "new": "Horizon Zero Dawn",
+   "reason": "official title has no colon",
+   "tier": "C"
+  },
+  {
+   "old": "Too Like The Lightning",
+   "new": "Too Like the Lightning",
+   "reason": "capitalisation",
+   "tier": "C"
+  },
+  {
+   "old": "Valerian and The City of a Thousand Planets",
+   "new": "Valerian and the City of a Thousand Planets",
+   "reason": "capitalisation",
+   "tier": "C"
+  },
+  {
+   "old": "Everything Everywhere All At Once",
+   "new": "Everything Everywhere All at Once",
+   "reason": "capitalisation",
+   "tier": "C"
+  },
+  {
+   "old": "There is No Antimemetics Division",
+   "new": "There Is No Antimemetics Division",
+   "reason": "capitalisation",
+   "tier": "C"
+  },
+  {
+   "old": "Bojack Horseman",
+   "new": "BoJack Horseman",
+   "reason": "official spelling",
+   "tier": "C"
+  },
+  {
+   "old": "Bioshock",
+   "new": "BioShock",
+   "reason": "official spelling; the log already has BioShock Infinite",
+   "tier": "C"
+  },
+  {
+   "old": "K-Pop Demon Hunters",
+   "new": "KPop Demon Hunters",
+   "reason": "official spelling",
+   "tier": "C"
+  },
+  {
+   "old": "Bocchi the Rock",
+   "new": "Bocchi the Rock!",
+   "reason": "official title",
+   "tier": "C"
+  },
+  {
+   "old": "What If?",
+   "new": "What If...?",
+   "reason": "official title",
+   "tier": "C"
+  },
+  {
+   "old": "Red White and Royal Blue",
+   "new": "Red, White & Royal Blue",
+   "reason": "official title",
+   "tier": "C"
+  },
+  {
+   "old": "Dungeons and Dragons: Honor Among Thieves",
+   "new": "Dungeons & Dragons: Honor Among Thieves",
+   "reason": "official title",
+   "tier": "C"
+  },
+  {
+   "old": "Mr. and Mrs. Smith",
+   "new": "Mr. & Mrs. Smith",
+   "reason": "official title",
+   "tier": "C"
+  },
+  {
+   "old": "Knives Out: Glass Onion",
+   "new": "Glass Onion: A Knives Out Mystery",
+   "reason": "official title",
+   "tier": "C"
+  },
+  {
+   "old": "The Matrix: Reloaded",
+   "new": "The Matrix Reloaded",
+   "reason": "official title has no colon",
+   "tier": "C"
+  },
+  {
+   "old": "The Matrix: Revolutions",
+   "new": "The Matrix Revolutions",
+   "reason": "official title has no colon",
+   "tier": "C"
+  },
+  {
+   "old": "The Matrix: Resurrections",
+   "new": "The Matrix Resurrections",
+   "reason": "official title has no colon",
+   "tier": "C"
+  },
+  {
+   "old": "Rogue One",
+   "new": "Rogue One: A Star Wars Story",
+   "reason": "official title; matches Solo: A Star Wars Story",
+   "tier": "C"
+  },
+  {
+   "old": "Star Wars",
+   "new": "Star Wars: A New Hope",
+   "reason": "consistency with the other Star Wars entries",
+   "tier": "C"
+  },
+  {
+   "old": "The Elder Scrolls: Skyrim",
+   "new": "The Elder Scrolls V: Skyrim",
+   "reason": "official title",
+   "tier": "C"
+  },
+  {
+   "old": "XCOM",
+   "new": "XCOM: Enemy Unknown",
+   "reason": "official title; XCOM 2 is already specific",
+   "tier": "C"
+  },
+  {
+   "old": "Hades 2",
+   "new": "Hades II",
+   "reason": "official title",
+   "tier": "C"
+  },
+  {
+   "old": "Saints Row 3",
+   "new": "Saints Row: The Third",
+   "reason": "official title",
+   "tier": "C"
+  },
+  {
+   "old": "Saints Row 4",
+   "new": "Saints Row IV",
+   "reason": "official title",
+   "tier": "C"
+  },
+  {
+   "old": "Player of Games",
+   "new": "The Player of Games",
+   "reason": "official title",
+   "tier": "C"
+  },
+  {
+   "old": "Counterweight",
+   "new": "Friends at the Table: Counterweight",
+   "reason": "prefix consistency with Twilight Mirage and Partizan",
+   "tier": "C"
+  },
+  {
+   "old": "Marielda",
+   "new": "Friends at the Table: Marielda",
+   "reason": "prefix consistency with Twilight Mirage and Partizan",
+   "tier": "C"
+  }
+ ],
+ "creators": [
+  {
+   "title": "Jackrabbit",
+   "old": "Sam Fermin",
+   "new": "San Fermin",
+   "reason": "artist name is San Fermin"
+  },
+  {
+   "title": "Dungeons and Dragons: Honor Among Thieves",
+   "old": "Jonathan Goldstein and John Francis",
+   "new": "Jonathan Goldstein and John Francis Daley",
+   "reason": "surname cut off"
+  },
+  {
+   "title": "The Gay and Wondrous Life of Caleb Gallo",
+   "old": "Youtube",
+   "new": "YouTube",
+   "reason": "spelling"
+  },
+  {
+   "title": "The Earth Is Not a Cold Dead Place",
+   "old": "Explosions in The Sky",
+   "new": "Explosions in the Sky",
+   "reason": "capitalisation"
+  },
+  {
+   "title": "Vices and Virtues",
+   "old": "Panic! At the Disco",
+   "new": "Panic! at the Disco",
+   "reason": "capitalisation"
+  },
+  {
+   "title": "Death of a Bachelor",
+   "old": "Panic! At the Disco",
+   "new": "Panic! at the Disco",
+   "reason": "capitalisation"
+  }
+ ]
+}

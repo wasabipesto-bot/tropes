@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Add a media item</title>
+<script src="8d8448b5-7587-452c-a914-d05b4b04de9c"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&amp;display=swap">
+<style>
+body{margin:0;background:#FCFCFA;color:#1B1B1B;font-family:"Source Serif 4",Georgia,serif}
+a{color:#1F4FA3;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0E2F6B}
+.t{background:none;border:0;padding:0;margin:0;font:inherit;color:#1F4FA3;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.t:hover{color:#0E2F6B}
+.go{background:#1B1B1B;color:#FCFCFA;border:0;border-radius:3px;padding:0 18px;min-height:44px;font:inherit;font-size:16px;font-weight:600;cursor:pointer}
+.go:hover{background:#3A3A3A}
+.quiet{color:#66645E}
+.fld{box-sizing:border-box;border:1px solid #C9C7C0;border-radius:3px;background:#FFFFFF;color:#1B1B1B;font-size:17px;line-height:1.5;padding:10px 12px}
+.ck{display:flex;gap:10px;align-items:baseline;cursor:pointer;padding:4px 0}
+.ck input{width:17px;height:17px;accent-color:#1B1B1B;margin:0;transform:translateY(2px)}
+dt{color:#66645E}
+dd{margin:0}
+input{font:inherit}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #FCFCFA; font-size: 18px; line-height: 1.6">
+<header style="border-bottom: 1px solid #E4E3DF">
+<div style="max-width: 980px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: center">
+<a href="Tropes.dc.html" style="font-weight: 700; color: #1B1B1B; text-decoration: none; padding: 10px 0">Trope Log</a>
+<nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 0 20px; font-size: 16px">
+<a href="Tropes.dc.html" style="padding: 10px 0">Tropes</a>
+<a href="Library.dc.html" style="padding: 10px 0">Library</a>
+<a href="AddTrope.dc.html" style="padding: 10px 0">Add trope</a>
+<a href="AddMedia.dc.html" style="padding: 10px 0; color: #1B1B1B; font-weight: 600; text-decoration: none">Add media</a>
+</nav>
+<label for="q" style="position: absolute; left: -9999px">Search</label>
+<input id="q" type="search" placeholder="Search" style="margin-left: auto; width: 200px; min-height: 40px; border: 0; border-bottom: 1px solid #C9C7C0; background: transparent; color: #1B1B1B; font-size: 16px; padding: 0 2px">
+</div>
+</header>
+
+<main style="max-width: 980px; margin: 0 auto; padding: 48px 32px 120px; box-sizing: border-box">
+<h1 style="margin: 0; font-size: 44px; line-height: 1.15; font-weight: 700">Add a media item</h1>
+
+<sc-if value="{{isFind}}" hint-placeholder-val="{{false}}">
+<div style="margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; max-width: 680px">
+<label for="m" style="position: absolute; left: -9999px">Title</label>
+<input id="m" class="fld" type="text" value="Metallic Rouge" style="flex: 1 1 320px">
+<button type="button" class="go" sc-camel-on-click="{{find}}">Look it up</button>
+</div>
+<p class="quiet" style="margin: 10px 0 0; font-size: 15px">Title is enough. Add a year or a type if there’s more than one.</p>
+</sc-if>
+
+<sc-if value="{{isConfirm}}" hint-placeholder-val="{{true}}">
+<p class="quiet" style="margin: 4px 0 0; font-size: 15px">Here’s what turned up for “Metallic Rouge.” Nothing is saved until you add it. <button type="button" class="t" sc-camel-on-click="{{back}}">Wrong match</button></p>
+
+<div style="max-width: 720px">
+<h2 style="margin: 36px 0 0; font-size: 28px; font-weight: 700">Metallic Rouge</h2>
+<dl style="margin: 12px 0 0; display: grid; grid-template-columns: 120px 1fr; gap: 4px 16px; font-size: 17px">
+<dt>Type</dt><dd>TV, anime, original</dd>
+<dt>Studio</dt><dd>Bones</dd>
+<dt>Aired</dt><dd>January to April 2024, 13 episodes</dd>
+<dt>Genres</dt><dd>Action, sci-fi</dd>
+<dt>Your log</dt><dd>Logged in Notion on 8 October 2026, not rated yet</dd>
+<dt>Local copy</dt><dd>[library path]/Metallic Rouge, [n] episodes</dd>
+</dl>
+
+<h3 style="margin: 36px 0 6px; font-size: 20px; font-weight: 700">Links</h3>
+<label class="ck"><input type="checkbox" checked=""><span><a href="https://en.wikipedia.org/wiki/Metallic_Rouge">Wikipedia</a></span></label>
+<label class="ck"><input type="checkbox" checked=""><span><a href="https://myanimelist.net/anime/54794">MyAnimeList</a> <span class="quiet">6.21</span></span></label>
+<label class="ck"><input type="checkbox" checked=""><span><a href="https://anidb.net/perl-bin/animedb.pl?show=anime&amp;aid=17926">AniDB</a></span></label>
+<label class="ck"><input type="checkbox" checked=""><span><a href="https://www.animenewsnetwork.com/encyclopedia/anime.php?id=27568">Anime News Network</a></span></label>
+<label class="ck"><input type="checkbox" checked=""><span><a href="https://metallicrouge.jp/">Official site</a></span></label>
+<p style="margin: 4px 0 0; font-size: 16px"><button type="button" class="t">Add a link</button></p>
+
+<h3 style="margin: 36px 0 2px; font-size: 20px; font-weight: 700">Tropes</h3>
+<p class="quiet" style="margin: 0 0 8px; font-size: 15px">Checked against all 27. Two matched; nothing else scored above 0.3.</p>
+<sc-for list="{{tropes}}" as="t" hint-placeholder-count="2">
+<div style="display: grid; grid-template-columns: 52px 1fr; gap: 0 16px; padding: 14px 0; border-top: 1px solid #ECEBE7; opacity: {{t.opacity}}">
+<div style="font-variant-numeric: tabular-nums; font-weight: 600">{{t.score}}</div>
+<div>
+<div style="display: flex; flex-wrap: wrap; gap: 0 12px; align-items: baseline">
+<label class="ck" style="font-weight: 700"><input type="checkbox" checked="{{t.keep}}" sc-camel-on-change="{{t.toggle}}">{{t.name}}</label>
+<span style="margin-left: auto; display: inline-flex; gap: 0 12px; font-size: 15px; flex-wrap: wrap">
+<sc-for list="{{t.proms}}" as="p" hint-placeholder-count="3">
+<sc-if value="{{p.on}}" hint-placeholder-val="{{false}}"><span style="font-weight: 700; padding: 8px 0">{{p.label}}</span></sc-if>
+<sc-if value="{{p.off}}" hint-placeholder-val="{{true}}"><button type="button" class="t" style="padding: 8px 0; color: #66645E" sc-camel-on-click="{{p.pick}}">{{p.label}}</button></sc-if>
+</sc-for>
+</span>
+</div>
+<p style="margin: 2px 0 0"><span style="font-style: italic">{{t.who}}.</span> {{t.reasoning}}</p>
+</div>
+</div>
+</sc-for>
+
+<div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid #1B1B1B; display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+<button type="button" class="go" sc-camel-on-click="{{add}}">Add to library</button>
+<button type="button" class="t" style="font-size: 16px" sc-camel-on-click="{{back}}">Start over</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isDone}}" hint-placeholder-val="{{false}}">
+<p style="margin: 28px 0 0">Metallic Rouge is in the library with {{kept}} tropes. <a href="Media.dc.html">Open its page</a> <span class="quiet">·</span> <button type="button" class="t" sc-camel-on-click="{{back}}">Add another</button></p>
+</sc-if>
+</main>
+<footer style="border-top: 1px solid #E4E3DF">
+<div style="max-width: 980px; margin: 0 auto; padding: 20px 32px 40px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 15px; color: #66645E">
+<span>Trope Log</span>
+<a href="Tropes.dc.html" style="color: #66645E">Tropes</a>
+<a href="Library.dc.html" style="color: #66645E">Library</a>
+<a href="https://wasabipesto.com" style="color: #66645E; margin-left: auto">wasabipesto.com</a>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1700}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      step: "confirm",
+      off: {},
+      tropes: [
+        { id: "sa", name: "Sentient Android", score: 0.9, prom: "Core theme", who: "Rouge", reasoning: "Rouge is a Proto-Nean, an android free of the laws that keep other Neans subservient, and she keeps asking whether she acts for herself or as a gear in someone else’s system." },
+        { id: "dd", name: "Dog Duo", score: 0.71, prom: "Core theme", who: "Rouge and Naomi", reasoning: "Rouge is an android assassin and Naomi is the Ministry agent assigned to keep her on mission. Rouge keeps misreading her, and Naomi keeps caring anyway." }
+      ]
+    };
+  }
+  renderVals() {
+    const s = this.state;
+    const proms = ["Core theme", "Recurring", "Brief"];
+    const tropes = s.tropes.map((x) => ({
+      ...x,
+      score: x.score.toFixed(2),
+      keep: !s.off[x.id],
+      opacity: s.off[x.id] ? "0.55" : "1",
+      toggle: () => this.setState({ off: { ...s.off, [x.id]: !s.off[x.id] } }),
+      proms: proms.map((p) => ({ label: p, on: x.prom === p, off: x.prom !== p, pick: () => this.setState({ tropes: s.tropes.map((y) => (y.id === x.id ? { ...y, prom: p } : y)) }) }))
+    }));
+    return {
+      tropes,
+      kept: tropes.filter((t) => t.keep).length,
+      isFind: s.step === "find",
+      isConfirm: s.step === "confirm",
+      isDone: s.step === "done",
+      find: () => this.setState({ step: "confirm" }),
+      back: () => this.setState({ step: "find" }),
+      add: () => this.setState({ step: "done" })
+    };
+  }
+}
+</script>
+
+
+</body></html>

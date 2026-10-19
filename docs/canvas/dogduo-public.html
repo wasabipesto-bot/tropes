@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Dog Duo, public</title>
+<script src="e57ae14c-57a6-41e3-927d-7168c3df5d83"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&amp;display=swap">
+<style>
+body{margin:0;background:#FCFCFA;color:#1B1B1B;font-family:"Source Serif 4",Georgia,serif}
+a{color:#1F4FA3;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0E2F6B}
+.quiet{color:#66645E}
+.sc{font-variant-caps:all-small-caps;letter-spacing:.06em}
+a.sp{color:transparent;background:#ECEBE7;text-decoration:none;border-radius:2px;cursor:pointer;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+a.sp:hover{color:transparent;background:#E2E1DB}
+a.sp.open{color:inherit;background:transparent;text-decoration:underline dotted #B5B3AB;text-underline-offset:4px;cursor:text}
+a.sp.open:hover{color:inherit;background:transparent}
+.row{display:grid;grid-template-columns:150px minmax(0,660px) minmax(0,1fr);column-gap:48px}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;max-width:640px}
+.fr{aspect-ratio:16/9;background:#E7E6E1;display:flex;align-items:center;justify-content:center;color:#8A887F}
+@media (max-width:1100px){.row{grid-template-columns:minmax(0,1fr)}.mar{border-top:0 !important;padding-top:4px !important}.lab{margin-bottom:4px}}
+input{font:inherit}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #FCFCFA; font-size: 18px; line-height: 1.6">
+<header style="border-bottom: 1px solid #E4E3DF">
+<div style="max-width: 1440px; margin: 0 auto; padding: 14px 40px; display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: center; box-sizing: border-box">
+<a href="PublicTropeMargin.dc.html" style="font-weight: 700; color: #1B1B1B; text-decoration: none; padding: 10px 0">Trope Log</a>
+<nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 0 20px; font-size: 16px">
+<a href="PublicTropeMargin.dc.html" style="padding: 10px 0">Tropes</a>
+<a href="PublicTropeMargin.dc.html" style="padding: 10px 0">Library</a>
+</nav>
+<label for="q" style="position: absolute; left: -9999px">Search</label>
+<input id="q" type="search" placeholder="Search" style="margin-left: auto; width: 200px; min-height: 40px; border: 0; border-bottom: 1px solid #C9C7C0; background: transparent; color: #1B1B1B; font-size: 16px; padding: 0 2px">
+</div>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 56px 40px 120px; box-sizing: border-box">
+<div class="row">
+<div class="lab"></div>
+<div>
+<h1 style="margin: 0; font-size: 48px; line-height: 1.1; font-weight: 700">Dog Duo</h1>
+<p style="margin: 20px 0 0">Two characters who are linked by something deeper than fate, with a very distinctive leashed but animalistic flavor. There is dog, collar or leash imagery somewhere in the pairing; general animal imagery is an acceptable stretch. When the bond stops being figurative it usually becomes <a href="PublicTropeMargin.dc.html">Soul Manipulation</a> or <a href="PublicTropeMargin.dc.html">Hive Mind and Unification</a>.</p>
+<p style="margin: 16px 0 0">Notable: <a href="PublicTropeMargin.dc.html">Empress of Forever</a>, <a href="PublicTropeMargin.dc.html">Gideon the Ninth</a>, <a href="PublicTropeMargin.dc.html">The Ancient Magus’ Bride</a>.</p>
+</div>
+<div></div>
+</div>
+
+<sc-for list="{{rows}}" as="it" hint-placeholder-count="7">
+<article class="row" style="padding-top: {{it.gap}}px">
+<div class="lab" style="padding-top: 3px">
+<sc-if value="{{it.first}}" hint-placeholder-val="{{false}}">
+<div class="sc" style="font-weight: 700; font-size: 19px; border-top: 2px solid #1B1B1B; padding-top: 6px; display: flex; justify-content: space-between; gap: 8px">{{it.prom}}<span class="quiet" style="font-weight: 400">{{it.groupCount}}</span></div>
+</sc-if>
+</div>
+<div style="border-top: 1px solid #E4E3DF; padding-top: 10px; min-width: 0">
+<div style="display: flex; flex-wrap: wrap; gap: 0 10px; align-items: baseline">
+<a href="PublicTropeMargin.dc.html" style="font-weight: 700; color: #1B1B1B">{{it.media}}</a>
+<span class="quiet" style="font-size: 15px">{{it.kindLabel}}</span>
+</div>
+<p style="margin: 2px 0 0"><span style="font-style: italic">{{it.pair}}.</span> <sc-for list="{{it.segs}}" as="sg" hint-placeholder-count="1"><sc-if value="{{sg.plain}}" hint-placeholder-val="{{true}}"><span>{{sg.text}}</span></sc-if><sc-if value="{{sg.spoiler}}" hint-placeholder-val="{{false}}"><a href="#spoiler" class="{{sg.cls}}" sc-camel-on-click="{{sg.toggle}}" title="{{sg.title}}">{{sg.text}}</a></sc-if></sc-for></p>
+</div>
+<aside class="mar" style="border-top: 1px solid #E4E3DF; padding-top: 12px; font-size: 15px; line-height: 1.5; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<sc-for list="{{it.quotes}}" as="qt" hint-placeholder-count="1">
+<p style="margin: 0; font-style: italic; color: #3A3A36; max-width: 640px">{{qt.text}} <span class="quiet" style="font-style: normal">{{qt.cite}}</span></p>
+</sc-for>
+<sc-if value="{{it.hasFrames}}" hint-placeholder-val="{{false}}">
+<div class="gal">
+<sc-for list="{{it.frames}}" as="fr" hint-placeholder-count="2">
+<figure style="margin: 0">
+<div class="fr"><sc-if value="{{fr.clip}}" hint-placeholder-val="{{false}}"><svg width="22" height="22" sc-camel-view-box="0 0 22 22" aria-label="Play clip" role="img"><path d="M7 4l11 7-11 7z" fill="currentColor"></path></svg></sc-if></div>
+<figcaption class="quiet" style="font-size: 14px; margin-top: 2px">{{fr.cap}}</figcaption>
+</figure>
+</sc-for>
+</div>
+</sc-if>
+</aside>
+</article>
+</sc-for>
+</main>
+<footer style="border-top: 1px solid #E4E3DF">
+<div style="max-width: 1440px; margin: 0 auto; padding: 20px 40px 40px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 15px; color: #66645E">
+<span>Trope Log</span>
+<a href="PublicTropeMargin.dc.html" style="color: #66645E">Tropes</a>
+<a href="PublicTropeMargin.dc.html" style="color: #66645E">Library</a>
+<a href="https://wasabipesto.com" style="color: #66645E; margin-left: auto">wasabipesto.com</a>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:2300}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { revealed: {} };
+  }
+  renderVals() {
+    const s = this.state;
+    const items = [
+      { id: "eof", media: "Empress of Forever", kindLabel: "book", pair: "Viv and Zanj", prom: "Core theme", text: "Viv holds Zanj, a being close to a god, through the circlet. It’s a literal leash on something far stronger than the person holding it, and Zanj’s lioness form puts the animal on the surface.", quotes: [{ text: "[passage where Viv first uses the circlet]", cite: "ch. [n]" }, { text: "[passage describing Zanj’s lioness form, which may run to a full paragraph of text and wraps freely in the margin column without crowding the main text]", cite: "ch. [n]" }], frames: [] },
+      { id: "gtn", media: "Gideon the Ninth", kindLabel: "book", pair: "Gideon and Harrow", prom: "Core theme", text: "Gideon is Harrow’s cavalier, her sworn sword and in practice her guard dog. Neither of them chose the arrangement and neither can leave it, and the book runs on that friction. ||At the end Gideon dies so Harrow can take her soul, and they go into the sequel sharing one body.||", quotes: [{ text: "[passage from the EPUB]", cite: "ch. [n]" }], frames: [] },
+      { id: "mr", media: "Metallic Rouge", kindLabel: "TV", pair: "Rouge and Naomi", prom: "Core theme", text: "Rouge is an android assassin and Naomi is the Ministry agent assigned to keep her on mission. Rouge keeps misreading her, and Naomi keeps caring anyway. ||When Rouge’s core is torn out, Naomi gives Rouge her own, and in the finale she transfers her consciousness into Rouge to run as her operating system.||", quotes: [], frames: [{ cap: "S01E01 [timestamp]" }, { cap: "S01E13 [timestamp]" }] },
+      { id: "an", media: "Almost Nowhere", kindLabel: "web serial", pair: "Sylvie and Grant", prom: "Core theme", text: "Sylvie is an anomaling, an alien outside of time, who comes into Grant’s life playing the part of his dog. She turns out to be one of the most powerful beings in the story and stays with him anyway.", quotes: [{ text: "[passage from the chapter where Sylvie arrives]", cite: "ch. [n]" }], frames: [] },
+      { id: "ti", media: "Terra Ignota", kindLabel: "book series", pair: "Mycroft and Saladin", prom: "Recurring", text: "Saladin is Mycroft’s feral other half, tied to him since the murders they committed together. Mycroft holds the leash, though the narration is never sure who is keeping whom.", quotes: [{ text: "[passage from Too Like the Lightning]", cite: "ch. [n]" }], frames: [] },
+      { id: "amb", media: "The Ancient Magus’ Bride", kindLabel: "TV", pair: "Chise and Ruth", prom: "Recurring", text: "Ruth is Chise’s familiar, a church grim in the shape of a black dog, and their contract ties his life to hers.", quotes: [], frames: [{ cap: "S01E[n] [timestamp]" }, { cap: "S01E[n] [timestamp]" }, { cap: "S01E[n] [0:00–0:00]", clip: true }, { cap: "S02E[n] [timestamp]" }, { cap: "S02E[n] [timestamp]" }] },
+      { id: "ddd", media: "DAN DA DAN", kindLabel: "TV", pair: "Momo and Okarun", prom: "Brief", text: "Each sets out to disprove the other’s belief in the first episode, and both get dragged into the supernatural together.", quotes: [], frames: [] }
+    ];
+    const counts = {};
+    items.forEach((x) => { counts[x.prom] = (counts[x.prom] || 0) + 1; });
+    let last = null;
+    const rows = items.map((x) => {
+      const first = x.prom !== last;
+      last = x.prom;
+      const segs = x.text.split("||").map((t, i) => {
+        const key = x.id + ":" + i;
+        const spoiler = i % 2 === 1;
+        const open = !!s.revealed[key];
+        return { text: t, plain: !spoiler, spoiler, cls: open ? "sp open" : "sp", title: open ? "Spoiler" : "Spoiler. Click to reveal.", toggle: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ revealed: { ...s.revealed, [key]: !open } }); } };
+      }).filter((g) => g.text);
+      return {
+        ...x,
+        first,
+        gap: first ? 48 : 20,
+        groupCount: String(counts[x.prom]),
+        segs,
+        hasFrames: x.frames.length > 0,
+        frames: x.frames.map((f) => ({ cap: f.cap, clip: !!f.clip }))
+      };
+    });
+    return { rows };
+  }
+}
+</script>
+
+
+</body></html>

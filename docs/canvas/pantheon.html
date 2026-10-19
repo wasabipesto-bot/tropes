@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Pantheon</title>
+<script src="d27b132a-e501-4483-a48c-91beb4c135a9"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&amp;display=swap">
+<style>
+body{margin:0;background:#FCFCFA;color:#1B1B1B;font-family:"Source Serif 4",Georgia,serif}
+a{color:#1F4FA3;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0E2F6B}
+.t{background:none;border:0;padding:0;margin:0;font:inherit;color:#1F4FA3;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.t:hover{color:#0E2F6B}
+.quiet{color:#66645E}
+.sc{font-variant-caps:all-small-caps;letter-spacing:.06em}
+.ico{background:none;border:0;padding:12px;margin:-12px -6px -12px -12px;cursor:pointer;color:#8A887F;display:inline-flex;vertical-align:middle}
+.ico:hover{color:#1B1B1B}
+a.sp{color:transparent;background:#ECEBE7;text-decoration:none;border-radius:2px;cursor:pointer;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+a.sp:hover{color:transparent;background:#E2E1DB}
+a.sp.open{color:inherit;background:transparent;text-decoration:underline dotted #B5B3AB;text-underline-offset:4px;cursor:text}
+a.sp.open:hover{color:inherit;background:transparent}
+.fld{box-sizing:border-box;border:1px solid #C9C7C0;border-radius:3px;background:#FFFFFF;color:#1B1B1B;font-size:17px;line-height:1.5;padding:10px 12px}
+.row{display:grid;grid-template-columns:150px minmax(0,660px) minmax(0,1fr);column-gap:48px}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;max-width:640px}
+.fr{aspect-ratio:16/9;background:#E7E6E1;display:flex;align-items:center;justify-content:center;color:#8A887F}
+@media (max-width:1100px){.row{grid-template-columns:minmax(0,1fr)}.mar{border-top:0 !important;padding-top:4px !important}.lab{margin-bottom:4px}}
+input{font:inherit}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #FCFCFA; font-size: 18px; line-height: 1.6">
+<header style="border-bottom: 1px solid #E4E3DF">
+<div style="max-width: 1440px; margin: 0 auto; padding: 14px 40px; display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: center; box-sizing: border-box">
+<a href="Tropes.dc.html" style="font-weight: 700; color: #1B1B1B; text-decoration: none; padding: 10px 0">Trope Log</a>
+<nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 0 20px; font-size: 16px">
+<a href="Tropes.dc.html" style="padding: 10px 0">Tropes</a>
+<a href="Library.dc.html" style="padding: 10px 0">Library</a>
+<a href="AddTrope.dc.html" style="padding: 10px 0">Add trope</a>
+<a href="AddMedia.dc.html" style="padding: 10px 0">Add media</a>
+</nav>
+<label for="q" style="position: absolute; left: -9999px">Search</label>
+<input id="q" type="search" placeholder="Search" style="margin-left: auto; width: 200px; min-height: 40px; border: 0; border-bottom: 1px solid #C9C7C0; background: transparent; color: #1B1B1B; font-size: 16px; padding: 0 2px">
+</div>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 56px 40px 120px; box-sizing: border-box">
+<div class="row">
+<div class="lab"><img src="[poster omitted]" alt="Pantheon poster" style="display: block; width: 150px; max-width: 100%; height: auto"></div>
+<div>
+<h1 style="margin: 0; font-size: 48px; line-height: 1.1; font-weight: 700">Pantheon</h1>
+<p class="quiet" style="margin: 4px 0 0; font-size: 15px">TV series, 2022 to 2023, 2 seasons, 16 episodes. Cyberpunk, conspiracy thriller. Watched November 2022.</p>
+<sc-if value="{{viewDesc}}" hint-placeholder-val="{{true}}">
+<p style="margin: 20px 0 0">An animated drama about Uploaded Intelligences, human minds scanned and run as software, and the companies racing to build them. Created by Craig Silverstein from short stories by Ken Liu.</p>
+<p style="margin: 8px 0 0; font-size: 15px; display: flex; gap: 16px; flex-wrap: wrap"><button type="button" class="t" style="padding: 6px 0" sc-camel-on-click="{{editDesc}}">Edit description</button><a href="RecheckMedia.dc.html" style="padding: 6px 0">Recheck tropes</a></p>
+</sc-if>
+<sc-if value="{{editingDesc}}" hint-placeholder-val="{{false}}">
+<div style="margin-top: 20px">
+<label for="desc" style="position: absolute; left: -9999px">Description</label>
+<textarea id="desc" class="fld" rows="4" style="width: 100%">An animated drama about Uploaded Intelligences, human minds scanned and run as software, and the companies racing to build them. Created by Craig Silverstein from short stories by Ken Liu.</textarea>
+<p class="quiet" style="margin: 4px 0 0; font-size: 15px">[[Trope name]] links to a trope.</p>
+<p style="margin: 8px 0 0; font-size: 16px; display: flex; gap: 16px"><button type="button" class="t" style="padding: 8px 0" sc-camel-on-click="{{saveDesc}}">Save</button><button type="button" class="t" style="padding: 8px 0; color: #66645E" sc-camel-on-click="{{saveDesc}}">Cancel</button></p>
+</div>
+</sc-if>
+</div>
+<aside class="mar" style="font-size: 16px; line-height: 1.6; padding-top: 6px">
+<div style="display: flex; gap: 12px; align-items: center" title="Medium 5, Story 4, Tone 4, Enjoyability 4.5, Effect 5">
+<span style="font-size: 32px; font-weight: 700; font-variant-numeric: tabular-nums" aria-label="Rated 4.5: Medium 5, Story 4, Tone 4, Enjoyability 4.5, Effect 5">4.5</span>
+<span aria-hidden="true" style="display: inline-flex; align-items: flex-end; gap: 3px; height: 26px">
+<sc-for list="{{bars}}" as="b" hint-placeholder-count="5"><span style="display: block; width: 6px; height: {{b.h}}px; background: {{b.c}}"></span></sc-for>
+</span>
+</div>
+<p style="margin: 10px 0 0"><a href="https://en.wikipedia.org/wiki/Pantheon_(TV_series)">Wikipedia</a> <span class="quiet">·</span> <a href="https://www.imdb.com/title/tt11680642/">IMDb</a> <span class="quiet">·</span> <a href="https://thetvdb.com/series/pantheon">TVDB</a> <span class="quiet">·</span> <a href="https://www.themoviedb.org/tv/195339">TMDB</a> <span class="quiet">·</span> <a href="https://www.metacritic.com/tv/pantheon/">Metacritic</a> <span class="quiet">77</span> <span class="quiet">·</span> <a href="https://www.rottentomatoes.com/tv/pantheon">Rotten Tomatoes</a> <span class="quiet">100%</span></p>
+<p class="quiet" style="margin: 4px 0 0; font-size: 15px">Local copy: [library path]/Pantheon</p>
+<p style="margin: 4px 0 0; font-size: 15px"><a href="https://wasabipesto.tumblr.com/search/pantheon">6 of your posts</a> mention “Pantheon”</p>
+</aside>
+</div>
+
+<sc-for list="{{rows}}" as="it" hint-placeholder-count="4">
+<article class="row" style="padding-top: {{it.gap}}px">
+<div class="lab" style="padding-top: 3px">
+<sc-if value="{{it.first}}" hint-placeholder-val="{{false}}">
+<div class="sc" style="font-weight: 700; font-size: 19px; border-top: 2px solid #1B1B1B; padding-top: 6px; display: flex; justify-content: space-between; gap: 8px">{{it.prom}}<span class="quiet" style="font-weight: 400">{{it.groupCount}}</span></div>
+</sc-if>
+</div>
+<div style="border-top: 1px solid #E4E3DF; padding-top: 10px; min-width: 0">
+<div style="display: flex; flex-wrap: wrap; gap: 0 10px; align-items: baseline">
+<sc-if value="{{it.verified}}" hint-placeholder-val="{{true}}">
+<button type="button" class="ico" sc-camel-on-click="{{it.toggleVerify}}" aria-label="Verified. Click to unverify." title="Verified">
+<svg width="16" height="16" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"></path></svg>
+</button>
+</sc-if>
+<sc-if value="{{it.unverified}}" hint-placeholder-val="{{false}}">
+<button type="button" class="ico" sc-camel-on-click="{{it.toggleVerify}}" aria-label="Unverified. Click to verify." title="Not verified yet. Click to verify.">
+<svg width="16" height="16" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="5" stroke-dasharray="2 2"></circle></svg>
+</button>
+</sc-if>
+<a href="Main.dc.html" style="font-weight: 700; color: #1B1B1B">{{it.name}}</a>
+<span style="margin-left: auto; font-size: 15px"><button type="button" class="t" style="padding: 8px 0" sc-camel-on-click="{{it.toggleEdit}}">{{it.editLabel}}</button></span>
+</div>
+<p style="margin: 2px 0 0"><span style="font-style: italic">{{it.who}}.</span> <sc-for list="{{it.segs}}" as="sg" hint-placeholder-count="1"><sc-if value="{{sg.plain}}" hint-placeholder-val="{{true}}"><span>{{sg.text}}</span></sc-if><sc-if value="{{sg.spoiler}}" hint-placeholder-val="{{false}}"><a href="#spoiler" class="{{sg.cls}}" sc-camel-on-click="{{sg.toggle}}" title="{{sg.title}}">{{sg.text}}</a></sc-if></sc-for></p>
+<sc-if value="{{it.editing}}" hint-placeholder-val="{{false}}">
+<div style="margin: 12px 0 8px; padding: 10px 0 10px 16px; border-left: 1px solid #C9C7C0; font-size: 16px">
+<div style="display: flex; flex-wrap: wrap; gap: 0 16px; align-items: baseline">
+<span class="quiet">Prominence</span>
+<sc-for list="{{it.proms}}" as="p" hint-placeholder-count="3">
+<sc-if value="{{p.on}}" hint-placeholder-val="{{false}}"><span style="font-weight: 700; padding: 10px 0">{{p.label}}</span></sc-if>
+<sc-if value="{{p.off}}" hint-placeholder-val="{{true}}"><button type="button" class="t" style="padding: 10px 0" sc-camel-on-click="{{p.pick}}">{{p.label}}</button></sc-if>
+</sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 0 16px">
+<button type="button" class="t" style="padding: 10px 0">Edit text</button>
+<button type="button" class="t" style="padding: 10px 0">Add evidence</button>
+<button type="button" class="t" style="padding: 10px 0; color: #9A2B1E" sc-camel-on-click="{{it.remove}}">Remove</button>
+</div>
+</div>
+</sc-if>
+</div>
+<aside class="mar" style="border-top: 1px solid #E4E3DF; padding-top: 12px; min-width: 0">
+<sc-if value="{{it.hasFrames}}" hint-placeholder-val="{{false}}">
+<div class="gal">
+<sc-for list="{{it.frames}}" as="fr" hint-placeholder-count="2">
+<figure style="margin: 0">
+<div class="fr"><sc-if value="{{fr.clip}}" hint-placeholder-val="{{false}}"><svg width="22" height="22" sc-camel-view-box="0 0 22 22" aria-label="Play clip" role="img"><path d="M7 4l11 7-11 7z" fill="currentColor"></path></svg></sc-if></div>
+<figcaption class="quiet" style="font-size: 14px; margin-top: 2px">{{fr.cap}}</figcaption>
+</figure>
+</sc-for>
+</div>
+</sc-if>
+</aside>
+</article>
+</sc-for>
+
+<div class="row" style="margin-top: 56px">
+<div class="lab"></div>
+<form style="border-top: 1px solid #1B1B1B; padding-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; font-size: 16px">
+<label for="addt" class="quiet">Add a trope</label>
+<input id="addt" list="tropelist" placeholder="Trope name" style="width: 260px; min-height: 40px; border: 0; border-bottom: 1px solid #C9C7C0; background: transparent; color: #1B1B1B; font-size: 16px; padding: 0 2px">
+<datalist id="tropelist"><option value="Hive Mind and Unification"></option><option value="Soul Manipulation"></option><option value="Casual Necromancy"></option></datalist>
+<button type="button" class="t" style="padding: 8px 0">Add</button>
+</form>
+<div></div>
+</div>
+</main>
+<footer style="border-top: 1px solid #E4E3DF">
+<div style="max-width: 1440px; margin: 0 auto; padding: 20px 40px 40px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 15px; color: #66645E">
+<span>Trope Log</span>
+<a href="Tropes.dc.html" style="color: #66645E">Tropes</a>
+<a href="Library.dc.html" style="color: #66645E">Library</a>
+<a href="https://wasabipesto.com" style="color: #66645E; margin-left: auto">wasabipesto.com</a>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:2000}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      revealed: {},
+      editing: null,
+      editDesc: false,
+      items: [
+        { id: "um", name: "Uploaded Mind", who: "David and the other UIs", prom: "Core theme", verified: true, text: "It’s the premise. Uploaded Intelligences are human minds scanned at the cost of the brain and run as software, and the show opens with Maddie’s dead father reaching out to her from inside the network.", frames: [{ cap: "S01E01 [timestamp]" }, { cap: "S01E01 [0:00–0:00]", clip: true }, { cap: "S01E02 [timestamp]" }] },
+        { id: "vw", name: "Virtual Worlds", who: "The UIs’ own spaces", prom: "Core theme", verified: true, text: "Once a mind runs as software, so does the place it lives. The UIs build their own spaces with rules they can rewrite, and still hang on to pieces of the physical world.", frames: [{ cap: "S0[n]E[n] [timestamp]" }] },
+        { id: "sc", name: "Sentient Construct", who: "MIST", prom: "Recurring", verified: true, text: "||A computational intelligence Caspian builds from what is left of the uploaded minds of David Kim and Laurie Lowell.|| She has never had a body, and she thinks of Maddie as her sister.", frames: [{ cap: "S02E02 [timestamp]" }] },
+        { id: "gods", name: "We Built Our Own Gods", who: "The UIs as a class", prom: "Recurring", verified: false, text: "UIs copy themselves and run faster than real time, and the show treats them less like people and more like something humanity made and was quickly outclassed by.", frames: [] }
+      ]
+    };
+  }
+  update(id, patch) {
+    this.setState({ items: this.state.items.map((x) => (x.id === id ? { ...x, ...patch } : x)) });
+  }
+  renderVals() {
+    const s = this.state;
+    const bars = [5, 4, 4, 4.5, 5].map((v) => ({ h: Math.round((v / 5) * 26), c: v >= 4.5 ? "#1B1B1B" : v >= 3 ? "#7A786F" : "#BDBAB1" }));
+    const order = ["Core theme", "Recurring", "Brief"];
+    const sorted = order.flatMap((p) => s.items.filter((x) => x.prom === p));
+    const counts = {};
+    sorted.forEach((x) => { counts[x.prom] = (counts[x.prom] || 0) + 1; });
+    let last = null;
+    const rows = sorted.map((x) => {
+      const first = x.prom !== last;
+      last = x.prom;
+      const segs = x.text.split("||").map((t, i) => {
+        const key = x.id + ":" + i;
+        const spoiler = i % 2 === 1;
+        const open = !!s.revealed[key];
+        return { text: t, plain: !spoiler, spoiler, cls: open ? "sp open" : "sp", title: open ? "Spoiler" : "Spoiler. Click to reveal.", toggle: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ revealed: { ...s.revealed, [key]: !open } }); } };
+      }).filter((g) => g.text);
+      return {
+        ...x,
+        first,
+        gap: first ? 48 : 20,
+        groupCount: String(counts[x.prom]),
+        segs,
+        unverified: !x.verified,
+        hasFrames: x.frames.length > 0,
+        frames: x.frames.map((f) => ({ cap: f.cap, clip: !!f.clip })),
+        toggleVerify: () => this.update(x.id, { verified: !x.verified }),
+        editing: s.editing === x.id,
+        editLabel: s.editing === x.id ? "Done" : "Edit",
+        toggleEdit: () => this.setState({ editing: s.editing === x.id ? null : x.id }),
+        remove: () => this.setState({ items: s.items.filter((y) => y.id !== x.id), editing: null }),
+        proms: order.map((pk) => ({ label: pk, on: x.prom === pk, off: x.prom !== pk, pick: () => this.update(x.id, { prom: pk }) }))
+      };
+    });
+    return {
+      bars, rows,
+      viewDesc: !s.editDesc,
+      editingDesc: s.editDesc,
+      editDesc: () => this.setState({ editDesc: true }),
+      saveDesc: () => this.setState({ editDesc: false })
+    };
+  }
+}
+</script>
+
+
+</body></html>

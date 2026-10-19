@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Tropes</title>
+<script src="de168e2d-a1be-4164-8ce5-acb376e995bc"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&amp;display=swap">
+<style>
+body{margin:0;background:#FCFCFA;color:#1B1B1B;font-family:"Source Serif 4",Georgia,serif}
+a{color:#1F4FA3;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0E2F6B}
+.t{background:none;border:0;padding:0;margin:0;font:inherit;color:#1F4FA3;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.quiet{color:#66645E}
+.th{background:none;border:0;padding:0 0 6px;margin:0;font:inherit;font-size:15px;color:#66645E;cursor:pointer;white-space:nowrap;min-height:36px}
+.th:hover{color:#1B1B1B}
+td{padding:9px 18px 9px 0;border-bottom:1px solid #ECEBE7;vertical-align:baseline}
+th{padding:0 18px 0 0;text-align:left;font-weight:400;border-bottom:1px solid #1B1B1B;vertical-align:bottom}
+input{font:inherit}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #FCFCFA; font-size: 18px; line-height: 1.6">
+<header style="border-bottom: 1px solid #E4E3DF">
+<div style="max-width: 980px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: center">
+<a href="Tropes.dc.html" style="font-weight: 700; color: #1B1B1B; text-decoration: none; padding: 10px 0">Trope Log</a>
+<nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 0 20px; font-size: 16px">
+<a href="Tropes.dc.html" style="padding: 10px 0; color: #1B1B1B; font-weight: 600; text-decoration: none">Tropes</a>
+<a href="Library.dc.html" style="padding: 10px 0">Library</a>
+<a href="AddTrope.dc.html" style="padding: 10px 0">Add trope</a>
+<a href="AddMedia.dc.html" style="padding: 10px 0">Add media</a>
+</nav>
+<label for="q" style="position: absolute; left: -9999px">Search</label>
+<input id="q" type="search" placeholder="Search" style="margin-left: auto; width: 200px; min-height: 40px; border: 0; border-bottom: 1px solid #C9C7C0; background: transparent; color: #1B1B1B; font-size: 16px; padding: 0 2px">
+</div>
+</header>
+
+<main style="max-width: 980px; margin: 0 auto; padding: 48px 32px 120px; box-sizing: border-box">
+<div style="display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline">
+<h1 style="margin: 0; font-size: 44px; line-height: 1.15; font-weight: 700">Tropes</h1>
+<span class="quiet" style="font-size: 15px">{{count}} of 27</span>
+<span style="margin-left: auto; display: inline-flex; gap: 10px; align-items: baseline; font-size: 16px">
+<label for="f" class="quiet">Filter</label>
+<input id="f" type="text" value="{{query}}" sc-camel-on-input="{{onQuery}}" placeholder="trope or title" style="width: 200px; min-height: 40px; border: 0; border-bottom: 1px solid #C9C7C0; background: transparent; color: #1B1B1B; font-size: 16px; padding: 0 2px">
+</span>
+</div>
+
+<div style="overflow-x: auto; overflow-y: hidden; margin-top: 28px">
+<sc-raw-table style="border-collapse: collapse; width: 100%; min-width: 560px">
+<sc-raw-thead><sc-raw-tr>
+<sc-for list="{{cols}}" as="c" hint-placeholder-count="3">
+<sc-raw-th scope="col" style="text-align: {{c.align}}; width: {{c.w}}"><button type="button" class="th" sc-camel-on-click="{{c.sort}}" style="color: {{c.color}}">{{c.label}}{{c.arrow}}</button></sc-raw-th>
+</sc-for>
+</sc-raw-tr></sc-raw-thead>
+<sc-raw-tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="27">
+<sc-raw-tr>
+<sc-raw-td><a href="Main.dc.html" style="font-weight: 600">{{r.name}}</a></sc-raw-td>
+<sc-raw-td style="text-align: right; font-variant-numeric: tabular-nums">{{r.count}}</sc-raw-td>
+<sc-raw-td style="font-size: 16px">{{r.examples}}<span class="quiet">{{r.more}}</span></sc-raw-td>
+</sc-raw-tr>
+</sc-for>
+</sc-raw-tbody>
+</sc-raw-table>
+</div>
+</main>
+<footer style="border-top: 1px solid #E4E3DF">
+<div style="max-width: 980px; margin: 0 auto; padding: 20px 32px 40px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 15px; color: #66645E">
+<span>Trope Log</span>
+<a href="Tropes.dc.html" style="color: #66645E">Tropes</a>
+<a href="Library.dc.html" style="color: #66645E">Library</a>
+<a href="https://wasabipesto.com" style="color: #66645E; margin-left: auto">wasabipesto.com</a>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:2100}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { query: "", sortKey: "name", dir: 1 };
+  }
+  renderVals() {
+    const s = this.state;
+    const all = [
+      ["We Built Our Own Gods", 5, ["Mrs. Davis", "Friends at the Table", "Horizon Zero Dawn", "Crystal Society", "American Gods"]],
+      ["Sapient Ship or Station", 5, ["Murderbot", "Portal", "Ancillary Justice", "Killjoys", "the Culture"]],
+      ["Sentient Construct", 5, ["Pantheon", "The Amazing Digital Circus", "Halo", "Hatsune Miku", "Vibri"]],
+      ["Sentient Android", 9, ["Titanfall 2", "Metallic Rouge", "Scavengers Reign", "17776", "Ultrakill", "Unsong", "Warframe", "Questionable Content", "TFTBL"]],
+      ["Uploaded Mind", 4, ["Pantheon", "Ghost in the Shell", "Citizen Sleeper", "Arcane"]],
+      ["Virtual Worlds", 5, ["Pantheon", "Diaspora", "Permutation City", "Snow Crash", "Cyberpunk"]],
+      ["It/Its Characters", 5, ["Murderbot", "Terra Ignota", "The Mercy of Gods", "Baldur’s Gate 3", "Made in Abyss"]],
+      ["Shapeshifters and Body Hoppers", 2, ["Dirk Gently’s Holistic Detective Agency", "Mistborn"]],
+      ["Hive Mind and Unification", 5, ["Sense8", "Arcane", "Unsong", "Ninefox Gambit", "Heaven Will Be Mine"]],
+      ["Dog Duo", 7, ["Empress of Forever", "Gideon the Ninth", "The Ancient Magus’ Bride", "Terra Ignota", "Metallic Rouge", "Almost Nowhere", "DAN DA DAN"]],
+      ["Soul Manipulation", 2, ["Gideon the Ninth", "Made in Abyss"]],
+      ["Casual Necromancy", 6, ["Pushing Daisies", "Delicious in Dungeon", "Baldur’s Gate 3", "Neuromancer", "Gideon the Ninth", "Frieren"]],
+      ["The Big Misguided Plan to Save the World", 2, ["The Stormlight Archive", "Darling Control"]],
+      ["Post-Gender Society", 2, ["Diaspora", "Terra Ignota"]],
+      ["Cooking the Monsters", 2, ["Delicious in Dungeon", "Monster Hunter"]],
+      ["Crafting the Monsters", 1, ["Horizon Zero Dawn"]],
+      ["Space Truckers", 2, ["Cowboy Bebop", "The Expanse"]],
+      ["Diegetic Bangers", 5, ["Control", "Outer Wilds", "The Martian", "Into the Spider-Verse", "The Fifth Element"]],
+      ["Multiple Timelines", 2, ["Titanfall 2", "Control 2"]],
+      ["Numbers for Names", 1, ["1000xRESIST"]],
+      ["Magic Gun", 2, ["TBW", "Control"]],
+      ["Conversation with the Author", 5, ["The Erogamer", "Unsong", "Stranger than Fiction", "The Egg", "The Forgotten City"]],
+      ["Full-Screen Location Card", 3, ["Control", "Control 2", "Avengers: Age of Ultron"]],
+      ["Vore and Unbirthing", 3, ["Scavengers Reign", "Mrs. Davis", "American Gods"]],
+      ["Genre Savvy", 3, ["Community", "The Erogamer", "Seven Psychopaths"]],
+      ["Arms Outstretched", 3, ["Balance", "DAN DA DAN", "Scott Pilgrim Takes Off"]],
+      ["Magic Circles", 2, ["Witch Hat Atelier", "Fullmetal Alchemist: Brotherhood"]]
+    ];
+    const q = s.query.trim().toLowerCase();
+    let rows = all.filter(([n, c, ex]) => !q || n.toLowerCase().includes(q) || ex.some((e) => e.toLowerCase().includes(q)));
+    rows = rows.slice().sort((a, b) => (s.sortKey === "name" ? a[0].localeCompare(b[0]) * s.dir : (a[1] - b[1]) * s.dir));
+    rows = rows.map(([name, count, ex]) => ({ name, count: String(count), examples: ex.slice(0, 3).join(", "), more: ex.length > 3 ? ", +" + (ex.length - 3) : "" }));
+    const mk = (key, label, align, w) => ({
+      label, align, w,
+      color: key === s.sortKey ? "#1B1B1B" : "#66645E",
+      arrow: key === s.sortKey ? (s.dir === 1 ? " ↑" : " ↓") : "",
+      sort: () => key && this.setState({ sortKey: key, dir: key === s.sortKey ? -s.dir : (key === "name" ? 1 : -1) })
+    });
+    return {
+      rows,
+      count: rows.length,
+      cols: [mk("name", "Trope", "left", "36%"), mk("count", "Instances", "right", "12%"), mk(null, "Examples", "left", "auto")],
+      query: s.query,
+      onQuery: (e) => this.setState({ query: e.target.value })
+    };
+  }
+}
+</script>
+
+
+</body></html>

@@ -287,6 +287,10 @@ left them open.
   `instance`. Decide when Phase 3 shows whether sibling confusion is real.
 - **Notion id** on media items, for idempotent re-import. Site-only items have
   it null.
+- **Display label** on media items (`label`, nullable): the canvas shows
+  "web serial" and "book series" as the quiet type label next to a title,
+  which the seven Notion types cannot express. Defaults to the type ("TV" for
+  TV Series); set by hand or by the metadata lookup.
 - **Proposals** table (above) so scans are reviewable and rejections are
   remembered.
 - **Jobs**, **sessions**, **api_keys** for the plumbing.
@@ -578,7 +582,44 @@ Open:
 
 ---
 
-## 10. Risks
+## 10. Canvas findings (2026-10-19)
+
+The Claude Design export was unpacked (nine artboards, templates in
+`docs/canvas/`). It agrees with the spec everywhere it overlaps. What it adds:
+
+- Exact shared CSS for the page frame and components: `.t` text buttons,
+  `.go` primary button (44px, 3px radius, ink on ground), `.fld` inputs (17px,
+  10px 12px padding), `.ck` checkbox rows, `.row` margin grid, `.gal` evidence
+  grid, `.fr` frame placeholder, `.ico` verification mark with the 44px hit
+  area via negative margins, `.sp`/`.sp.open` spoiler states, `.th` sortable
+  headers, table cell rules. Lifted verbatim into the stylesheet in Phase 0.
+- Page paddings: wide pages `56px 40px 120px` (library `48px`), narrow pages
+  `48px 32px 120px`; header `14px` vertical; footer `20px 40px 40px`.
+- The current nav item is ink, weight 600, no underline. Public nav is
+  Tropes and Library only.
+- Spoilers are inline anchors (`href="#spoiler"`) toggled in place; the open
+  state is a dotted underline in `#B5B3AB` with text cursor.
+- Library: average shown to one decimal, "–" when unrated; default sort is
+  logged date descending with undated last; title and type sort ascending by
+  default, everything else descending; count line reads "778 entries, showing
+  the first 100" or "n of 778 match"; trope filter is a substring match and
+  "Core theme only" narrows it to core instances of that trope (or to any core
+  instance when the field is empty).
+- Tropes index: columns 36% / 12% / auto; default sort by name, count sorts
+  descending first.
+- Add-trope done text: "X is live with n instances. They stay unverified
+  until you check them off on the trope page."
+- Media page: the Tumblr mention line links to
+  `wasabipesto.tumblr.com/search/<title>`; the description help text reads
+  "[[Trope name]] links to a trope."
+- Trope page kind labels include "web serial" and "book series" (schema note
+  in 5.1). The type filter exists in the mock's state but is not rendered,
+  matching the spec's removal.
+
+No roadmap phase changes. Pixel-level details that are not in the spec are
+taken from the canvas; where the two differ the spec wins (spec section 0).
+
+## 11. Risks
 
 - **Astro 7 drift.** My knowledge of Astro is older than 7.x. Budget time in
   Phase 0 to read the current docs rather than guess APIs.

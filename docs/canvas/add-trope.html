@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Add a trope</title>
+<script src="066ae5a4-8c33-405b-934f-cd791b9d7a6d"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&amp;display=swap">
+<style>
+body{margin:0;background:#FCFCFA;color:#1B1B1B;font-family:"Source Serif 4",Georgia,serif}
+a{color:#1F4FA3;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0E2F6B}
+.t{background:none;border:0;padding:0;margin:0;font:inherit;color:#1F4FA3;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.t:hover{color:#0E2F6B}
+.go{background:#1B1B1B;color:#FCFCFA;border:0;border-radius:3px;padding:0 18px;min-height:44px;font:inherit;font-size:16px;font-weight:600;cursor:pointer}
+.go:hover{background:#3A3A3A}
+.quiet{color:#66645E}
+.fld{width:100%;box-sizing:border-box;border:1px solid #C9C7C0;border-radius:3px;background:#FFFFFF;color:#1B1B1B;font-size:17px;line-height:1.5;padding:10px 12px}
+input,textarea{font:inherit}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #FCFCFA; font-size: 18px; line-height: 1.6">
+<header style="border-bottom: 1px solid #E4E3DF">
+<div style="max-width: 980px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: center">
+<a href="Tropes.dc.html" style="font-weight: 700; color: #1B1B1B; text-decoration: none; padding: 10px 0">Trope Log</a>
+<nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 0 20px; font-size: 16px">
+<a href="Tropes.dc.html" style="padding: 10px 0">Tropes</a>
+<a href="Library.dc.html" style="padding: 10px 0">Library</a>
+<a href="AddTrope.dc.html" style="padding: 10px 0; color: #1B1B1B; font-weight: 600; text-decoration: none">Add trope</a>
+<a href="AddMedia.dc.html" style="padding: 10px 0">Add media</a>
+</nav>
+<label for="q" style="position: absolute; left: -9999px">Search</label>
+<input id="q" type="search" placeholder="Search" style="margin-left: auto; width: 200px; min-height: 40px; border: 0; border-bottom: 1px solid #C9C7C0; background: transparent; color: #1B1B1B; font-size: 16px; padding: 0 2px">
+</div>
+</header>
+
+<main style="max-width: 980px; margin: 0 auto; padding: 48px 32px 120px; box-sizing: border-box">
+<h1 style="margin: 0; font-size: 44px; line-height: 1.15; font-weight: 700">Add a trope</h1>
+<p class="quiet" style="margin: 4px 0 0; font-size: 15px">{{stepLine}}</p>
+
+<sc-if value="{{isDescribe}}" hint-placeholder-val="{{false}}">
+<div style="max-width: 680px; margin-top: 32px; display: flex; flex-direction: column; gap: 22px">
+<div>
+<label for="n" style="display: block; font-weight: 600; margin-bottom: 4px">Name</label>
+<input id="n" class="fld" type="text" value="Casual Necromancy">
+</div>
+<div>
+<label for="d" style="display: block; font-weight: 600">Description</label>
+<p class="quiet" style="margin: 0 0 6px; font-size: 15px">A sentence or two. Write [[Trope name]] to link another trope.</p>
+<textarea id="d" class="fld" rows="3">Raising or talking to the dead is ordinary in the setting, cheap or routine or bureaucratic, and the characters treat it that way.</textarea>
+</div>
+<div>
+<label for="e" style="display: block; font-weight: 600">Examples</label>
+<p class="quiet" style="margin: 0 0 6px; font-size: 15px">One per line. Used to check the scan, so pick clear ones.</p>
+<textarea id="e" class="fld" rows="3">Pushing Daisies
+Baldur’s Gate 3
+Neuromancer</textarea>
+</div>
+<div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+<button type="button" class="go" sc-camel-on-click="{{scan}}">Scan 778 entries</button>
+<a href="Tropes.dc.html" style="font-size: 16px">Cancel</a>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isReview}}" hint-placeholder-val="{{true}}">
+<div style="max-width: 760px; margin-top: 28px">
+<p style="margin: 0"><span style="font-weight: 700">Casual Necromancy.</span> Raising or talking to the dead is ordinary in the setting, cheap or routine or bureaucratic, and the characters treat it that way. <button type="button" class="t" sc-camel-on-click="{{back}}">Edit</button></p>
+<p style="margin: 16px 0 0">Found all three of your examples, scoring 0.97, 0.90 and 0.81, plus four others. Anything under 0.5 starts unchecked.</p>
+</div>
+
+<div style="margin-top: 32px; max-width: 820px">
+<sc-for list="{{items}}" as="it" hint-placeholder-count="7">
+<article style="display: grid; grid-template-columns: 52px 1fr; gap: 0 16px; padding: 16px 0; border-top: 1px solid #ECEBE7; opacity: {{it.opacity}}">
+<div style="font-variant-numeric: tabular-nums; font-size: 17px; font-weight: 600; padding-top: 1px">{{it.score}}</div>
+<div>
+<div style="display: flex; flex-wrap: wrap; gap: 0 12px; align-items: baseline">
+<label style="display: inline-flex; gap: 10px; align-items: baseline; cursor: pointer; font-weight: 700"><input type="checkbox" checked="{{it.keep}}" sc-camel-on-change="{{it.toggle}}" style="width: 17px; height: 17px; accent-color: #1B1B1B; margin: 0; transform: translateY(2px)">{{it.media}}</label>
+<span class="quiet" style="font-size: 15px">{{it.kind}}</span>
+<sc-if value="{{it.seed}}" hint-placeholder-val="{{false}}"><span class="quiet" style="font-size: 15px; font-style: italic">your example</span></sc-if>
+<span style="margin-left: auto; display: inline-flex; gap: 0 12px; font-size: 15px; flex-wrap: wrap">
+<sc-for list="{{it.proms}}" as="p" hint-placeholder-count="3">
+<sc-if value="{{p.on}}" hint-placeholder-val="{{false}}"><span style="font-weight: 700; padding: 8px 0">{{p.label}}</span></sc-if>
+<sc-if value="{{p.off}}" hint-placeholder-val="{{true}}"><button type="button" class="t" style="padding: 8px 0; color: #66645E" sc-camel-on-click="{{p.pick}}">{{p.label}}</button></sc-if>
+</sc-for>
+</span>
+</div>
+<p style="margin: 2px 0 0"><span style="font-style: italic">{{it.who}}.</span> {{it.reasoning}} <button type="button" class="t" style="font-size: 15px">Edit</button></p>
+</div>
+</article>
+</sc-for>
+</div>
+
+<div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #1B1B1B; max-width: 820px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+<button type="button" class="go" sc-camel-on-click="{{commit}}">Commit {{kept}} instances</button>
+<button type="button" class="t" style="font-size: 16px" sc-camel-on-click="{{back}}">Change description and rescan</button>
+<a href="Tropes.dc.html" style="font-size: 16px; color: #9A2B1E">Discard</a>
+</div>
+</sc-if>
+
+<sc-if value="{{isDone}}" hint-placeholder-val="{{false}}">
+<p style="margin: 32px 0 0; max-width: 680px">Casual Necromancy is live with {{kept}} instances. They stay unverified until you check them off on the trope page.</p>
+<p style="margin: 12px 0 0"><a href="Main.dc.html">Go to the trope page</a> <span class="quiet">·</span> <button type="button" class="t" sc-camel-on-click="{{restart}}">Add another</button></p>
+</sc-if>
+</main>
+<footer style="border-top: 1px solid #E4E3DF">
+<div style="max-width: 980px; margin: 0 auto; padding: 20px 32px 40px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 15px; color: #66645E">
+<span>Trope Log</span>
+<a href="Tropes.dc.html" style="color: #66645E">Tropes</a>
+<a href="Library.dc.html" style="color: #66645E">Library</a>
+<a href="https://wasabipesto.com" style="color: #66645E; margin-left: auto">wasabipesto.com</a>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:2300}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      step: "review",
+      items: [
+        { id: "pd", media: "Pushing Daisies", kind: "TV", seed: true, score: 0.97, prom: "Core theme", who: "Ned", reasoning: "Ned brings the dead back with a touch, and a second touch sends them back for good. He and Emerson use it to ask murder victims who killed them." },
+        { id: "bg3", media: "Baldur’s Gate 3", kind: "game", seed: true, score: 0.9, prom: "Recurring", who: "Withers, Speak with Dead", reasoning: "Withers raises dead companions for a fee and asks no questions. Speak with Dead turns any corpse into a witness." },
+        { id: "did", media: "Delicious in Dungeon", kind: "TV", seed: false, score: 0.88, prom: "Core theme", who: "The dungeon itself", reasoning: "Dying in the dungeon is a setback. Revival is routine as long as someone brings back enough of the body, and the whole plot starts as a plan to revive Falin." },
+        { id: "neu", media: "Neuromancer", kind: "book", seed: true, score: 0.81, prom: "Recurring", who: "The Dixie Flatline", reasoning: "A dead hacker kept on a ROM construct. Case works with him like a coworker, and he asks to be erased when the job is done." },
+        { id: "gtn", media: "Gideon the Ninth", kind: "book", seed: false, score: 0.74, prom: "Recurring", who: "The Ninth House", reasoning: "Necromancy is the empire’s religion and its civil service. On the Ninth, skeletons do the chores." },
+        { id: "fr", media: "Frieren: Beyond Journey’s End", kind: "TV", seed: false, score: 0.52, prom: "Brief", who: "Aura", reasoning: "Aura raises the headless bodies of fallen soldiers and sends them out as her army." },
+        { id: "pan", media: "Pantheon", kind: "TV", seed: false, score: 0.38, prom: "Brief", who: "The UIs", reasoning: "Uploading brings dead minds back as software, at the cost of the brain they came from." }
+      ],
+      off: { pan: true }
+    };
+  }
+  renderVals() {
+    const s = this.state;
+    const proms = ["Core theme", "Recurring", "Brief"];
+    const items = s.items.map((x) => ({
+      ...x,
+      score: x.score.toFixed(2),
+      keep: !s.off[x.id],
+      opacity: s.off[x.id] ? "0.55" : "1",
+      toggle: () => this.setState({ off: { ...s.off, [x.id]: !s.off[x.id] } }),
+      proms: proms.map((p) => ({ label: p, on: x.prom === p, off: x.prom !== p, pick: () => this.setState({ items: s.items.map((y) => (y.id === x.id ? { ...y, prom: p } : y)) }) }))
+    }));
+    const kept = items.filter((x) => x.keep).length;
+    const lines = { describe: "Step 1 of 2: describe it", review: "Step 2 of 2: check the scan. Nothing is saved until you commit.", done: "Done" };
+    return {
+      items, kept,
+      stepLine: lines[s.step],
+      isDescribe: s.step === "describe",
+      isReview: s.step === "review",
+      isDone: s.step === "done",
+      scan: () => this.setState({ step: "review" }),
+      back: () => this.setState({ step: "describe" }),
+      commit: () => this.setState({ step: "done" }),
+      restart: () => this.setState({ step: "describe" })
+    };
+  }
+}
+</script>
+
+
+</body></html>
