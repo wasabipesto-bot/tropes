@@ -1,12 +1,35 @@
 ---
 import Base from '../layouts/Base.astro';
+import { db } from '../db';
+import { typeLabel } from '../lib/media';
+import { searchMedia } from '../lib/search';
 
 const q = (Astro.url.searchParams.get('q') ?? '').trim();
+const hits = q ? searchMedia(db, q) : [];
 ---
 
 <Base title={q ? `Search: ${q}` : 'Search'}>
-  <h1>Search</h1>
-  {q
-    ? <p class="quiet" style="margin: 28px 0 0">Nothing matches “{q}” yet. Search arrives with the library in Phase 1.</p>
-    : <p class="quiet" style="margin: 28px 0 0">Type a title or a trope name in the field above.</p>}
+  <div style="display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline">
+    <h1>Search</h1>
+    {q && <span class="quiet" style="font-size: 15px">{hits.length === 1 ? '1 result' : `${hits.length} results`} for “{q}”</span>}
+  </div>
+  {!q && <p class="quiet" style="margin: 28px 0 0">Type a title or a trope name in the field above.</p>}
+  {q && hits.length === 0 && <p class="quiet" style="margin: 28px 0 0">Nothing in the library matches “{q}”.</p>}
+  {hits.length > 0 && (
+    <ul class="hits">
+      {hits.map((h) => (
+        <li>
+          <a href={`/media/${h.id}`}>{h.title}</a>
+          {h.creator && <span class="quiet" style="font-size: 15px">{h.creator}</span>}
+          <span class="quiet" style="font-size: 15px">{typeLabel({ type: h.type as any, label: null })}</span>
+        </li>
+      ))}
+    </ul>
+  )}
 </Base>
+
+<style>
+  .hits { list-style: none; margin: 28px 0 0; padding: 0; }
+  .hits li { display: flex; flex-wrap: wrap; gap: 0 10px; align-items: baseline; padding: 8px 0; border-bottom: 1px solid #ECEBE7; }
+  .hits a { color: #1B1B1B; font-weight: 600; }
+</style>

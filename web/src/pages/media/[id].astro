@@ -1,0 +1,39 @@
+---
+import { eq } from 'drizzle-orm';
+import Base from '../../layouts/Base.astro';
+import RatingMark from '../../components/RatingMark.astro';
+import { db } from '../../db';
+import { media } from '../../db/schema';
+import { linkLabel, metadataLine } from '../../lib/media';
+import { ratingsOf } from '../../lib/rating';
+
+const id = Number(Astro.params.id);
+const m = Number.isInteger(id) ? db.select().from(media).where(eq(media.id, id)).get() : undefined;
+if (!m) return new Response(null, { status: 404 });
+const tumblr = `https://wasabipesto.tumblr.com/search/${encodeURIComponent(m.title)}`;
+---
+
+<Base title={m.title} wide>
+  <div class="row">
+    <div class="lab">
+      {m.notionImageUrl && <img src={m.notionImageUrl} alt={`${m.title} poster`} style="display: block; width: 150px; max-width: 100%; height: auto" loading="lazy" />}
+    </div>
+    <div>
+      <h1>{m.title}</h1>
+      <p class="quiet" style="margin: 4px 0 0; font-size: 15px">{metadataLine(m)}</p>
+      {m.description && <p style="margin: 20px 0 0">{m.description}</p>}
+    </div>
+    <aside class="mar" style="font-size: 16px; line-height: 1.6; padding-top: 6px">
+      <RatingMark ratings={ratingsOf(m)} size="page" />
+      {m.notionMediaUrl && <p style="margin: 10px 0 0"><a href={m.notionMediaUrl}>{linkLabel(m.notionMediaUrl)}</a></p>}
+      {m.localRoot && <p class="quiet" style="margin: 4px 0 0; font-size: 15px">Local copy: {m.localRoot}</p>}
+      <p style="margin: 4px 0 0; font-size: 15px"><a href={tumblr}>Your posts mentioning “{m.title}”</a></p>
+    </aside>
+  </div>
+
+  <div class="row" style="margin-top: 48px">
+    <div class="lab"></div>
+    <p class="quiet" style="margin: 0">No tropes yet.</p>
+    <div></div>
+  </div>
+</Base>

@@ -24,6 +24,9 @@ export const media = sqliteTable(
     loggedDate: text('logged_date'),
     description: text('description'),
     posterPath: text('poster_path'),
+    /** Notion's Image Link and Media Link, kept verbatim; posters are fetched from the former in Phase 4. */
+    notionImageUrl: text('notion_image_url'),
+    notionMediaUrl: text('notion_media_url'),
     localRoot: text('local_root'),
     ratingMedium: real('rating_medium'),
     ratingStory: real('rating_story'),

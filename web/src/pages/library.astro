@@ -1,20 +1,154 @@
 ---
-import { count } from 'drizzle-orm';
 import Base from '../layouts/Base.astro';
+import RatingMark from '../components/RatingMark.astro';
 import { db } from '../db';
-import { media } from '../db/schema';
+import { media, type Media } from '../db/schema';
+import { typeLabel } from '../lib/media';
+import { AXES, average, ratingsOf, type Ratings } from '../lib/rating';
 
-const [{ n }] = db.select({ n: count() }).from(media).all();
-const countLine = n === 1 ? '1 entry' : `${n} entries`;
+const p = Astro.url.searchParams;
+const TYPES = ['All', 'Book', 'TV', 'Movie', 'Game', 'Podcast', 'Album', 'Other'] as const;
+const MINS = { Any: -1, '3+': 3, '4+': 4, '4.5+': 4.5 } as const;
+const pick = <T extends string>(options: readonly T[], v: string | null, fallback: T): T => (options as readonly string[]).includes(v ?? '') ? (v as T) : fallback;
+
+const type = pick(TYPES, p.get('type'), 'All');
+const min = pick(Object.keys(MINS) as (keyof typeof MINS)[], p.get('min'), 'Any');
+const tropeQ = (p.get('trope') ?? '').trim();
+const coreOnly = p.get('core') === '1';
+const detail = p.get('detail') === '1';
+const all = p.get('all') === '1';
+const SORT_KEYS = ['title', 'type', 'date', 'avg', 'ax0', 'ax1', 'ax2', 'ax3', 'ax4'] as const;
+type SortKey = (typeof SORT_KEYS)[number];
+const sortKey = pick(SORT_KEYS, p.get('sort'), 'date');
+const ascByDefault = (k: SortKey) => k === 'title' || k === 'type';
+const dir: 'asc' | 'desc' = pick(['asc', 'desc'] as const, p.get('dir'), ascByDefault(sortKey) ? 'asc' : 'desc');
+
+interface Row { m: Media; r: Ratings; avg: number | null; label: string }
+const everything: Row[] = db.select().from(media).all().map((m) => {
+  const r = ratingsOf(m);
+  return { m, r, avg: average(r), label: typeLabel(m) };
+});
+const total = everything.length;
+
+let list = everything
+  .filter((x) => type === 'All' || (type === 'TV' ? x.m.type === 'TV Series' : x.m.type === type))
+  .filter((x) => MINS[min] < 0 || (x.avg !== null && x.avg >= MINS[min]))
+  // Tropes arrive in Phase 2; until then a trope filter matches nothing.
+  .filter(() => !tropeQ && !coreOnly);
+
+const value = (x: Row): string | number | null => {
+  switch (sortKey) {
+    case 'title': return x.m.title.toLowerCase();
+    case 'type': return x.label.toLowerCase();
+    case 'date': return x.m.loggedDate;
+    case 'avg': return x.avg;
+    default: return x.r[AXES[Number(sortKey.slice(2))]];
+  }
+};
+const sign = dir === 'asc' ? 1 : -1;
+list = list.slice().sort((a, b) => {
+  const va = value(a), vb = value(b);
+  if (va === null && vb === null) return a.m.id - b.m.id;
+  if (va === null) return 1; // missing values always last
+  if (vb === null) return -1;
+  if (va < vb) return -sign;
+  if (va > vb) return sign;
+  return a.m.id - b.m.id;
+});
+
+const filtered = type !== 'All' || tropeQ !== '' || coreOnly || MINS[min] >= 0;
+const matching = list.length;
+const truncated = !all && matching > 100;
+const shown = truncated ? list.slice(0, 100) : list;
+const countLine = filtered
+  ? `${matching} of ${total} match${truncated ? ', showing the first 100' : ''}`
+  : `${total} entries${truncated ? ', showing the first 100' : ''}`;
+
+/** Same page with some query parameters changed; null removes one. */
+const link = (patch: Record<string, string | null>) => {
+  const u = new URL(Astro.url);
+  for (const [k, v] of Object.entries(patch)) v === null ? u.searchParams.delete(k) : u.searchParams.set(k, v);
+  return u.pathname + (u.search ? u.search : '');
+};
+const sortLink = (k: SortKey) => link({ sort: k, dir: k === sortKey ? (dir === 'asc' ? 'desc' : 'asc') : (ascByDefault(k) ? 'asc' : 'desc') });
+const arrow = (k: SortKey) => (k === sortKey ? (dir === 'asc' ? ' ↑' : ' ↓') : '');
+
+const columns: { key: SortKey | null; label: string; align: 'left' | 'right' }[] = [
+  { key: 'title', label: 'Title', align: 'left' },
+  { key: 'type', label: 'Type', align: 'left' },
+  { key: 'date', label: 'Logged', align: 'left' },
+  ...(detail ? (['Medium', 'Story', 'Tone', 'Enjoy', 'Effect'] as const).map((l, j) => ({ key: `ax${j}` as SortKey, label: l, align: 'right' as const })) : []),
+  { key: 'avg', label: 'Rating', align: 'left' },
+  { key: null, label: 'Tropes', align: 'left' },
+];
+const fmt = (v: number | null) => (v === null ? '–' : String(v));
 ---
 
 <Base title="Library" wide current="library">
   <h1>Library</h1>
   <p class="quiet" style="margin: 4px 0 0; font-size: 15px">{countLine}</p>
-  {n === 0 && <p class="quiet" style="margin: 28px 0 0">Nothing imported yet.</p>}
+
+  <div class="filters">
+    <div class="filter">
+      <span class="quiet">Type</span>
+      {TYPES.map((t) => t === type ? <span class="on">{t}</span> : <a href={link({ type: t === 'All' ? null : t, all: null })}>{t}</a>)}
+    </div>
+    <form class="filter" method="get" action="/library">
+      {type !== 'All' && <input type="hidden" name="type" value={type} />}
+      {min !== 'Any' && <input type="hidden" name="min" value={min} />}
+      {detail && <input type="hidden" name="detail" value="1" />}
+      <label for="tf" class="quiet">Trope</label>
+      <input id="tf" name="trope" value={tropeQ} placeholder="any" class="line" style="width: 260px" />
+      {coreOnly
+        ? <button type="submit" class="t on" name="core" value="">Core theme only</button>
+        : <button type="submit" class="t" name="core" value="1">Core theme only</button>}
+    </form>
+    <div class="filter">
+      <span class="quiet">Rating</span>
+      {(Object.keys(MINS) as (keyof typeof MINS)[]).map((o) => o === min ? <span class="on">{o}</span> : <a href={link({ min: o === 'Any' ? null : o, all: null })}>{o}</a>)}
+      <a class="right" href={link({ detail: detail ? null : '1' })}>{detail ? 'Hide rating breakdown' : 'Show rating breakdown'}</a>
+    </div>
+  </div>
+
+  <div style="overflow-x: auto; overflow-y: hidden; margin-top: 24px">
+    <table style="min-width: 760px">
+      <thead>
+        <tr>
+          {columns.map((c) => (
+            <th scope="col" style={`text-align: ${c.align}`}>
+              {c.key
+                ? <a class="th" href={sortLink(c.key)} aria-sort={c.key === sortKey ? (dir === 'asc' ? 'ascending' : 'descending') : undefined}>{c.label}{arrow(c.key)}</a>
+                : <span class="th">{c.label}</span>}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {shown.map(({ m, r, label }) => (
+          <tr>
+            <td style="min-width: 240px"><a href={`/media/${m.id}`} class="title">{m.title}</a> {m.creator && <span class="quiet" style="font-size: 15px">{m.creator}</span>}</td>
+            <td class="quiet" style="font-size: 15px">{label}</td>
+            <td class="quiet num" style="font-size: 15px">{m.loggedDate ? m.loggedDate.slice(0, 4) : ''}</td>
+            {detail && AXES.map((a) => <td class="num" style="text-align: right; font-size: 15px">{fmt(r[a])}</td>)}
+            <td style="white-space: nowrap"><RatingMark ratings={r} /></td>
+            <td style="font-size: 16px; min-width: 240px"></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  {truncated && <p style="margin: 20px 0 0; font-size: 16px"><a href={link({ all: '1' })}>Show all {matching}</a></p>}
+  <p class="quiet" style="margin: 16px 0 0; font-size: 15px">The bars after each average are Medium, Story, Tone, Enjoyability and Effect, in that order. In the trope column, core themes are bold.</p>
 </Base>
 
 <style>
-  /* The library sits 8px higher than the other wide pages. */
   :global(main.frame) { padding-top: 48px; }
+  .filters { margin-top: 24px; display: flex; flex-direction: column; gap: 2px; font-size: 16px; }
+  .filter { display: flex; flex-wrap: wrap; gap: 0 16px; align-items: baseline; }
+  .filter > .quiet:first-child, .filter > label:first-child { width: 64px; }
+  .filter a, .filter .on, .filter button { padding: 8px 0; }
+  .on { font-weight: 600; color: #1B1B1B; text-decoration: none; }
+  .right { margin-left: auto; }
+  td a.title { color: #1B1B1B; font-weight: 600; }
+  a.th { text-decoration: none; display: inline-block; }
 </style>

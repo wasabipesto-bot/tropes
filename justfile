@@ -46,6 +46,10 @@ db-generate name:
 db-migrate:
     cd web && npm run db:migrate
 
+# Import a Notion CSV export into the database: just import path/to/export.csv [--dry-run]
+import file *flags:
+    cd web && npx tsx scripts/import.ts {{file}} {{flags}}
+
 # Build and start the containers.
 up:
     docker compose up --build -d

@@ -441,6 +441,13 @@ the empty site is reachable on ivory.
 
 ### Phase 1: library (M)
 
+Status: built 2026-10-19 except the title clean-up remainder (one apostrophe
+fix and two deletions were blocked by the session's permission classifier;
+see the hand-off notes). Posters hotlink Notion's Image Link until Phase 4
+downloads them. The dev database is seeded from the canvas export with the
+approved fixes applied; the first real Notion CSV export replaces it through
+`just import`.
+
 - Notion importer: CSV export in, idempotent by Notion id, re-runnable.
   Notion owns title, type, creator, ratings, date, Image Link and Media Link;
   a re-import overwrites those on the site and leaves site-only fields alone.

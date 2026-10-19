@@ -1,0 +1,30 @@
+---
+import { AXES, average, barHeight, barShade, breakdown, formatAverage, type Ratings } from '../lib/rating';
+
+interface Props {
+  ratings: Ratings;
+  /** 'table' is the library row size; 'page' is the media page header size. */
+  size?: 'table' | 'page';
+}
+
+const { ratings, size = 'table' } = Astro.props;
+const d = size === 'page' ? { max: 26, w: 6, gap: 3, font: 32, weight: 700, pad: 12 } : { max: 18, w: 4, gap: 2, font: 17, weight: 600, pad: 10 };
+const avg = average(ratings);
+const label = formatAverage(avg);
+const title = breakdown(ratings);
+---
+
+<span class="rating" style={`gap: ${d.pad}px`} title={title}>
+  <span class:list={['num', { table: size === 'table' }]} style={`font-size: ${d.font}px; font-weight: ${d.weight}`} aria-label={avg === null ? 'Not rated' : `Rated ${label}: ${title}`}>{label}</span>
+  <span class="bars" aria-hidden="true" style={`gap: ${d.gap}px; height: ${d.max}px`}>
+    {AXES.map((a) => <span style={`width: ${d.w}px; height: ${barHeight(ratings[a], d.max)}px; background: ${barShade(ratings[a])}`}></span>)}
+  </span>
+</span>
+
+<style>
+  .rating { display: inline-flex; align-items: center; }
+  .num { font-variant-numeric: tabular-nums; line-height: 1; }
+  .num.table { min-width: 2.2em; text-align: right; }
+  .bars { display: inline-flex; align-items: flex-end; }
+  .bars span { display: block; }
+</style>

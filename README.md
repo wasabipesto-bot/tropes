@@ -32,3 +32,10 @@ migrations in `web/drizzle/` apply at startup.
 
 License: MIT. Source Serif 4 is bundled under the SIL Open Font License, see
 `web/public/fonts/LICENSE.md`.
+
+## Importing the log
+
+Export the Notion "Media Log" as CSV and run `just import path/to/export.csv`.
+Re-running is safe: rows match by Notion id when the file has one, otherwise by
+title and type, and only Notion-owned fields (title, type, creator, ratings,
+date, links) are overwritten. Add `--dry-run` to see what would change.
