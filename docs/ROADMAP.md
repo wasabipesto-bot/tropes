@@ -497,6 +497,8 @@ every Action return 403 (tested).
 
 ### Phase 3: matching on cheap inputs (L)
 
+Detailed plan for approval: `docs/plans/phase-3.md` (2026-10-19).
+
 - Job API and worker loop (3.2).
 - Your writing as a source: midden search with quoted titles and the API key,
   and the annual review posts. Stored per work as input to dossiers.
