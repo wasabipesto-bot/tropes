@@ -1,0 +1,20 @@
+---
+import { count } from 'drizzle-orm';
+import Base from '../layouts/Base.astro';
+import { db } from '../db';
+import { media } from '../db/schema';
+
+const [{ n }] = db.select({ n: count() }).from(media).all();
+const countLine = n === 1 ? '1 entry' : `${n} entries`;
+---
+
+<Base title="Library" wide current="library">
+  <h1>Library</h1>
+  <p class="quiet" style="margin: 4px 0 0; font-size: 15px">{countLine}</p>
+  {n === 0 && <p class="quiet" style="margin: 28px 0 0">Nothing imported yet.</p>}
+</Base>
+
+<style>
+  /* The library sits 8px higher than the other wide pages. */
+  :global(main.frame) { padding-top: 48px; }
+</style>

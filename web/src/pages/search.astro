@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+
+const q = (Astro.url.searchParams.get('q') ?? '').trim();
+---
+
+<Base title={q ? `Search: ${q}` : 'Search'}>
+  <h1>Search</h1>
+  {q
+    ? <p class="quiet" style="margin: 28px 0 0">Nothing matches “{q}” yet. Search arrives with the library in Phase 1.</p>
+    : <p class="quiet" style="margin: 28px 0 0">Type a title or a trope name in the field above.</p>}
+</Base>

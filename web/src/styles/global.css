@@ -1,0 +1,126 @@
+/* Source Serif 4 (SIL OFL 1.1, see /fonts/LICENSE.md). Variable, latin + latin-ext. */
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: italic;
+  font-weight: 200 900;
+  font-stretch: normal;
+  font-display: swap;
+  src: url(/fonts/source-serif-4-italic-latin-ext.woff2) format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: italic;
+  font-weight: 200 900;
+  font-stretch: normal;
+  font-display: swap;
+  src: url(/fonts/source-serif-4-italic-latin.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: normal;
+  font-weight: 200 900;
+  font-stretch: normal;
+  font-display: swap;
+  src: url(/fonts/source-serif-4-roman-latin-ext.woff2) format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: normal;
+  font-weight: 200 900;
+  font-stretch: normal;
+  font-display: swap;
+  src: url(/fonts/source-serif-4-roman-latin.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Tokens from SPEC.md section 3. */
+:root {
+  --ground: #FCFCFA;
+  --ink: #1B1B1B;
+  --quiet: #66645E;
+  --link: #1F4FA3;
+  --link-hover: #0E2F6B;
+  --rule: #E4E3DF;
+  --rule-faint: #ECEBE7;
+  --field: #C9C7C0;
+  --danger: #9A2B1E;
+  --placeholder: #E7E6E1;
+  --mark: #8A887F;
+}
+
+/* Base, lifted from the canvas artboards. */
+body { margin: 0; background: var(--ground); color: var(--ink); font-family: "Source Serif 4", Georgia, serif; font-size: 18px; line-height: 1.6; }
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--link-hover); }
+input, textarea, button { font: inherit; }
+h1 { margin: 0; font-size: 44px; line-height: 1.15; font-weight: 700; }
+.wide h1 { font-size: 48px; line-height: 1.1; }
+.quiet { color: var(--quiet); }
+.sc { font-variant-caps: all-small-caps; letter-spacing: .06em; }
+.num { font-variant-numeric: tabular-nums; }
+.visually-hidden { position: absolute; left: -9999px; }
+
+/* Text button: looks like a link. Used for nearly every action. */
+.t { background: none; border: 0; padding: 0; margin: 0; font: inherit; color: var(--link); cursor: pointer; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.t:hover { color: var(--link-hover); }
+.t.danger { color: var(--danger); }
+/* Primary button: one per flow, for the committing action only. */
+.go { background: var(--ink); color: var(--ground); border: 0; border-radius: 3px; padding: 0 18px; min-height: 44px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
+.go:hover { background: #3A3A3A; }
+/* Bordered field for multi-line form inputs. */
+.fld { width: 100%; box-sizing: border-box; border: 1px solid var(--field); border-radius: 3px; background: #FFFFFF; color: var(--ink); font-size: 17px; line-height: 1.5; padding: 10px 12px; }
+/* Underline-only field for search, filters and quick-add. */
+.line { min-height: 40px; border: 0; border-bottom: 1px solid var(--field); background: transparent; color: var(--ink); font-size: 16px; padding: 0 2px; }
+/* Checkbox row. */
+.ck { display: inline-flex; gap: 10px; align-items: baseline; cursor: pointer; padding: 4px 0; }
+.ck input { width: 17px; height: 17px; accent-color: var(--ink); margin: 0; transform: translateY(2px); }
+/* Sortable table header button. */
+.th { background: none; border: 0; padding: 0 0 6px; margin: 0; font: inherit; font-size: 15px; color: var(--quiet); cursor: pointer; white-space: nowrap; min-height: 36px; }
+.th:hover, .th[aria-sort] { color: var(--ink); }
+table { border-collapse: collapse; width: 100%; }
+th { padding: 0 18px 0 0; text-align: left; font-weight: 400; border-bottom: 1px solid var(--ink); vertical-align: bottom; }
+td { padding: 9px 18px 9px 0; border-bottom: 1px solid var(--rule-faint); vertical-align: baseline; font-size: 17px; }
+dt { color: var(--quiet); }
+dd { margin: 0; }
+
+/* Margin layout: label | text | evidence. */
+.row { display: grid; grid-template-columns: 150px minmax(0, 660px) minmax(0, 1fr); column-gap: 48px; }
+.gal { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; max-width: 640px; }
+.fr { aspect-ratio: 16 / 9; background: var(--placeholder); display: flex; align-items: center; justify-content: center; color: var(--mark); }
+@media (max-width: 1100px) {
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .mar { border-top: 0 !important; padding-top: 4px !important; }
+  .lab { margin-bottom: 4px; }
+}
+
+/* Verification mark: 16px icon, 44px hit area that does not push the layout. */
+.ico { background: none; border: 0; padding: 12px; margin: -12px -6px -12px -12px; cursor: pointer; color: var(--mark); display: inline-flex; vertical-align: middle; }
+.ico:hover { color: var(--ink); }
+
+/* Spoilers: same inline element in both states, only colour changes. */
+a.sp { color: transparent; background: var(--rule-faint); text-decoration: none; border-radius: 2px; cursor: pointer; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+a.sp:hover { color: transparent; background: #E2E1DB; }
+a.sp.open { color: inherit; background: transparent; text-decoration: underline dotted #B5B3AB; text-underline-offset: 4px; cursor: text; }
+a.sp.open:hover { color: inherit; background: transparent; }
+
+/* Page frame. */
+.page { min-height: 100vh; display: flex; flex-direction: column; }
+.frame { max-width: 980px; margin: 0 auto; padding-inline: 32px; box-sizing: border-box; width: 100%; }
+.wide .frame { max-width: 1440px; padding-inline: 40px; }
+.site-header { border-bottom: 1px solid var(--rule); }
+.site-header .frame { padding-block: 14px; display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: center; }
+.site-header .brand { font-weight: 700; color: var(--ink); text-decoration: none; padding: 10px 0; }
+.site-header nav { display: flex; flex-wrap: wrap; gap: 0 20px; font-size: 16px; }
+.site-header nav a { padding: 10px 0; }
+.site-header nav a[aria-current="page"] { color: var(--ink); font-weight: 600; text-decoration: none; }
+.site-header .search { margin-left: auto; }
+.site-header .search input { width: 200px; }
+main.frame { flex: 1; padding-block: 48px 120px; }
+.wide main.frame { padding-top: 56px; }
+.site-footer { border-top: 1px solid var(--rule); }
+.site-footer .frame { padding-block: 20px 40px; display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 15px; color: var(--quiet); }
+.site-footer a { color: var(--quiet); }
+.site-footer .home { margin-left: auto; }

@@ -425,6 +425,9 @@ be true before the next phase starts.
 
 ### Phase 0: decisions and scaffold (S)
 
+Status: built 2026-10-19 (`web/`, `worker/`, `justfile`, `compose.yml`, CI).
+The deploy recipe exists but has not been run on ivory yet.
+
 - This document, the decisions in section 9, repo on GitHub.
 - `web/` Astro project with the Node adapter, Drizzle, SQLite, one migration,
   the page frame (header, nav, search field, footer), fonts, colour tokens.

@@ -1,0 +1,53 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  /** Trope, media and library pages use the 1440px frame; index and form pages use 980px. */
+  wide?: boolean;
+  current?: 'tropes' | 'library' | 'add-trope' | 'add-media';
+}
+
+const { title, wide = false, current } = Astro.props;
+const owner = Astro.locals.owner;
+const at = (page: Props['current']) => (current === page ? 'page' : undefined);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title === 'Trope Log' ? title : `${title} · Trope Log`}</title>
+  </head>
+  <body>
+    <div class:list={['page', { wide }]}>
+      <header class="site-header">
+        <div class="frame">
+          <a href="/tropes" class="brand">Trope Log</a>
+          <nav aria-label="Main">
+            <a href="/tropes" aria-current={at('tropes')}>Tropes</a>
+            <a href="/library" aria-current={at('library')}>Library</a>
+            {owner && <a href="/add/trope" aria-current={at('add-trope')}>Add trope</a>}
+            {owner && <a href="/add/media" aria-current={at('add-media')}>Add media</a>}
+          </nav>
+          <form class="search" action="/search" method="get" role="search">
+            <label for="q" class="visually-hidden">Search</label>
+            <input id="q" name="q" type="search" placeholder="Search" class="line" />
+          </form>
+        </div>
+      </header>
+      <main class="frame">
+        <slot />
+      </main>
+      <footer class="site-footer">
+        <div class="frame">
+          <span>Trope Log</span>
+          <a href="/tropes">Tropes</a>
+          <a href="/library">Library</a>
+          <a href="https://wasabipesto.com" class="home">wasabipesto.com</a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

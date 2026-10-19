@@ -1,0 +1,11 @@
+services:
+  web:
+    build: ./web
+    image: tropes-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4321:4321"
+    volumes:
+      - ./data:/app/data
+    environment:
+      DATABASE_PATH: /app/data/tropes.db
