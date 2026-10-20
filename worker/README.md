@@ -36,7 +36,8 @@ repo root. Values in parentheses are defaults.
 | `TROPES_PASS2_MIN_SCORE` (0.3) | pass-1 score needed to reach pass 2 |
 | `TROPES_PASS2_CAP` (60) | most candidates read in pass 2, seeds excepted |
 | `TROPES_UNCHECKED_BELOW` (0.5) | review-page checkbox starts unchecked under this |
-| `TROPES_RESPONSE_HEALING` (1) | ask OpenRouter to repair malformed JSON |
+| `TROPES_JSON_SCHEMA` (0) | send `response_format: json_schema`. Off: with DeepSeek the constrained decoding degenerated into 100k-token truncated replies; prompt-only JSON validated locally is fast and complete |
+| `TROPES_RESPONSE_HEALING` (1) | with the schema path, also ask OpenRouter to repair malformed JSON |
 | `TROPES_SOURCES_DIR` (`<repo>/data/sources`) | where relative text-source paths resolve |
 | `TROPES_TEXT_CACHE_DIR` (`<repo>/data/text`) | extracted text, keyed by file hash |
 | `TROPES_MIDDEN_KEY` | key for the Tumblr archive search; without it dossiers skip the owner's posts |
@@ -71,9 +72,11 @@ to the model.
 
 ## OpenRouter notes
 
-- Structured output: requests send `response_format: json_schema` plus the
-  Response Healing plugin; if a model rejects that, the worker falls back to
-  prompt-only JSON for the rest of the run.
+- Structured output: prompt-only JSON, validated with pydantic, one retry
+  with the complaint. `TROPES_JSON_SCHEMA=1` switches to `response_format:
+  json_schema` plus the Response Healing plugin; measured on DeepSeek V4.1
+  Flash that path took 20 to 500 seconds per dossier and produced truncated
+  lists, against 9 seconds and full lists without it.
 - Batch API: OpenRouter has one (`POST /api/v1/batches`, 24-hour window,
   about half price, only models with a `:batch` endpoint). The worker does not
   use it yet; `TROPES_MODEL_DOSSIER` can point at a `:batch` variant for the

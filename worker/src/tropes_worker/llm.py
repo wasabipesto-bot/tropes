@@ -145,7 +145,7 @@ class LLM:
         raise ValueError(f"prompt {prompt}: model output failed validation twice: {last_error}")
 
     async def _call(self, messages: list[dict[str, str]], schema: type[BaseModel], model: str) -> str:
-        use_schema = self._schema_ok.get(model, True)
+        use_schema = self.settings.json_schema and self._schema_ok.get(model, True)
         kwargs: dict[str, Any] = {"model": model, "messages": messages, "temperature": self.settings.temperature}
         extra: dict[str, Any] = {"usage": {"include": True}}
         if self.settings.reasoning in ("off", "none", "0", "false"):

@@ -35,6 +35,9 @@ class Settings:
     pass2_min_score: float
     pass2_cap: int
     unchecked_below: float
+    # Send response_format json_schema (plus the healing plugin). Off by default: with DeepSeek it degenerates into
+    # enormous, truncated outputs; prompt-only JSON validated client-side is fast and complete.
+    json_schema: bool
     response_healing: bool
     # OpenRouter reasoning control: off, low, medium, high, or default (send nothing).
     reasoning: str
@@ -64,6 +67,7 @@ class Settings:
             pass2_min_score=float(env("TROPES_PASS2_MIN_SCORE", "0.3")),
             pass2_cap=int(env("TROPES_PASS2_CAP", "60")),
             unchecked_below=float(env("TROPES_UNCHECKED_BELOW", "0.5")),
+            json_schema=env("TROPES_JSON_SCHEMA", "0") in ("1", "true", "yes"),
             response_healing=env("TROPES_RESPONSE_HEALING", "1") not in ("0", "false", "no"),
             reasoning=env("TROPES_REASONING", "off").lower(),
             poll_seconds=float(env("TROPES_POLL_SECONDS", "2")),
