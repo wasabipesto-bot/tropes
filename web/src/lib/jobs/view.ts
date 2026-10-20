@@ -29,7 +29,9 @@ export function proposalsFor(db: Db, j: Job, uncheckedBelow: number): ProposalVi
 
 /** "Found all three of your examples, scoring 0.97, 0.90 and 0.81, plus four others. Anything under 0.5 starts unchecked." */
 export function calibrationLine(summary: any, uncheckedBelow: number): string {
-  const seeds: { title: string; found: boolean; score: number | null; resolved: boolean }[] = summary?.seeds ?? [];
+  const allSeeds: { title: string; found: boolean; score: number | null; resolved: boolean; attached?: boolean }[] = summary?.seeds ?? [];
+  const attached = allSeeds.filter((s) => s.attached);
+  const seeds = allSeeds.filter((s) => !s.attached);
   const others = Math.max(0, (summary?.proposals ?? 0) - seeds.filter((s) => s.found).length);
   const words = ['none', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
   const n = (k: number) => words[k] ?? String(k);
@@ -44,6 +46,8 @@ export function calibrationLine(summary: any, uncheckedBelow: number): string {
     const missing = seeds.filter((s) => !s.resolved).map((s) => s.title);
     parts.push(others > 0 ? `, plus ${n(others)} other${others === 1 ? '' : 's'}.` : '.');
     if (missing.length) parts.push(` Not in the library: ${missing.join(', ')}.`);
+  } else if (attached.length > 0) {
+    parts.push(`${attached.length === 1 ? 'Your example is' : `All ${n(attached.length)} of your examples are`} already attached${others > 0 ? `, plus ${n(others)} other${others === 1 ? '' : 's'} proposed` : ''}.`);
   } else {
     parts.push(`${summary?.proposals ?? 0} proposals.`);
   }

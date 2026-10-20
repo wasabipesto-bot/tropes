@@ -42,6 +42,11 @@ def trope_spec_from(
         t = next(x for x in tropes if x["id"] == payload["tropeId"])
         spec = TropeSpec(id=t["id"], name=t["name"], description=t["description"], seeds=[s["title"] for s in t.get("seeds", [])])
         spec.existing = {subject_key(i["kind"], i["subjectId"]): i for i in t.get("instances", [])}
+        # A series instance covers its members, so members are not re-proposed on their own.
+        for s in series:
+            if subject_key("series", s["id"]) in spec.existing:
+                for m in s.get("members", []):
+                    spec.existing.setdefault(subject_key("media", m), {"inherited": True})
         spec.rejected = {subject_key(r["kind"], r["id"]) for r in t.get("rejected", [])}
     else:
         d = payload["draft"]
@@ -150,11 +155,21 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
         proposals += extra
 
     ctx.progress(total_steps, total_steps, "done")
+    # When a series is proposed, its members' own proposals are redundant.
+    proposed_series = {p["subject"]["id"] for p in proposals if p["kind"] == "instance" and p["subject"]["kind"] == "series"}
+    covered = {m for s in series if s["id"] in proposed_series for m in s.get("members", [])}
+    proposals = [
+        p
+        for p in proposals
+        if not (p["kind"] == "instance" and p["subject"]["kind"] == "media" and p["subject"]["id"] in covered)
+    ]
+
     seed_report = []
     for title in spec.seeds:
-        key = next((k for k in spec.seed_subjects if resolve_title(title, media, series) == k), None)
-        found = (
-            next(
+        key = resolve_title(title, media, series)
+        found = None
+        if key:
+            found = next(
                 (
                     p
                     for p in proposals
@@ -162,13 +177,11 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
                 ),
                 None,
             )
-            if key
-            else None
-        )
         seed_report.append(
             {
                 "title": title,
                 "resolved": key is not None,
+                "attached": bool(key and key in spec.existing),
                 "found": found is not None,
                 "score": found["score"] if found else None,
                 "pass1": scores.get(key, (None, ""))[0] if key else None,
