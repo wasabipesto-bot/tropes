@@ -498,7 +498,7 @@ every Action return 403 (tested).
 ### Phase 3: matching on cheap inputs (L)
 
 Detailed plan: `docs/plans/phase-3.md` (approved 2026-10-20). Status: built
-2026-10-20. Notes recorded for later: check whether a second worker helps
+2026-10-20; measurements in `docs/evals/2026-10-20-phase-3.md`. Notes recorded for later: check whether a second worker helps
 (claim is already atomic); a manual year-end flow to inject the annual
 review notes; OpenRouter's Batch API is available for dossier rebuilds if
 cost ever matters; `TROPES_REASONING` trades speed for score quality.
