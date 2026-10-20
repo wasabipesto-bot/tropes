@@ -55,6 +55,9 @@ def trope_spec_from(
         key = resolve_title(title, media, series)
         if key:
             spec.seed_subjects.add(key)
+            inst = spec.existing.get(key)
+            if inst and inst.get("text"):
+                spec.seed_entries[title] = (inst.get("who") or "", inst["text"])
         else:
             unresolved.append(title)
     return spec, unresolved

@@ -126,9 +126,17 @@ class TropeSpec:
     seed_subjects: set[str] = field(default_factory=set)
     existing: dict[str, dict[str, Any]] = field(default_factory=dict)  # subject key -> instance
     rejected: set[str] = field(default_factory=set)
+    # title -> (who, text) for seeds that already have an entry, so pass 2 sees the bar concretely.
+    seed_entries: dict[str, tuple[str, str]] = field(default_factory=dict)
 
     def seeds_block(self) -> str:
-        return "\n".join(f"- {s}" for s in self.seeds) or "(none given)"
+        if not self.seeds:
+            return "(none given)"
+        lines = []
+        for title in self.seeds:
+            who, text = self.seed_entries.get(title, ("", ""))
+            lines.append(f"- {title}: {who}. {text}".rstrip(". ") + "." if text else f"- {title}")
+        return "\n".join(lines)
 
 
 @dataclass

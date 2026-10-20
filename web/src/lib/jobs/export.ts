@@ -6,7 +6,7 @@ import { typeLabel } from '../media';
 /** Everything the worker needs to scan: tropes, their seeds, and what is already attached or was rejected. */
 export function exportTropes(db: Db) {
   const seeds = db.select().from(tropeSeed).all();
-  const insts = db.select({ id: instance.id, tropeId: instance.tropeId, kind: instance.subjectKind, subjectId: instance.subjectId, who: instance.who, prominence: instance.prominence, verified: instance.verified }).from(instance).all();
+  const insts = db.select({ id: instance.id, tropeId: instance.tropeId, kind: instance.subjectKind, subjectId: instance.subjectId, who: instance.who, text: instance.text, prominence: instance.prominence, verified: instance.verified }).from(instance).all();
   const rejected = db.select({ tropeId: proposal.tropeId, kind: proposal.subjectKind, subjectId: proposal.subjectId }).from(proposal).where(eq(proposal.decision, 'rejected')).all();
   return db.select().from(trope).all().map((t) => ({
     id: t.id,
