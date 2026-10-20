@@ -117,7 +117,8 @@ class LLM:
             max_retries=3,
             default_headers={"HTTP-Referer": "https://github.com/wasabipesto-bot/tropes", "X-Title": "Trope Log"},
         )
-        self._sem = asyncio.Semaphore(self.settings.concurrency)
+        self._sem: asyncio.Semaphore | None = None
+        self._sem_loop: asyncio.AbstractEventLoop | None = None
         self.usage.model = self.settings.model
         self._schema_ok: dict[str, bool] = {}
 
@@ -159,7 +160,7 @@ class LLM:
             }
             if self.settings.response_healing:
                 extra["plugins"] = [{"id": "response-healing"}]
-        async with self._sem:
+        async with self._semaphore():
             try:
                 resp = await self._client.chat.completions.create(extra_body=extra, **kwargs)
             except BadRequestError as e:
@@ -177,6 +178,14 @@ class LLM:
         if not content.strip():
             raise ValueError(f"empty reply (finish_reason={choice.finish_reason})")
         return content
+
+    def _semaphore(self) -> asyncio.Semaphore:
+        # A semaphore is bound to the loop that created it; jobs run in one loop, but be safe anyway.
+        loop = asyncio.get_running_loop()
+        if self._sem is None or self._sem_loop is not loop:
+            self._sem = asyncio.Semaphore(self.settings.concurrency)
+            self._sem_loop = loop
+        return self._sem
 
     async def gather(self, coros: list[Any]) -> list[Any]:
         return await asyncio.gather(*coros)

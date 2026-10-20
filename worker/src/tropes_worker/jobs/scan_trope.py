@@ -55,7 +55,7 @@ def trope_spec_from(
     return spec, unresolved
 
 
-def scan(
+async def scan(
     ctx_like: Any,
     settings: Any,
     llm: LLM,
@@ -65,7 +65,7 @@ def scan(
     texts_by_media: dict[int, Any],
     progress,
 ) -> tuple[list[dict[str, Any]], dict[str, tuple[float, str]], list[Candidate]]:  # noqa: ANN001
-    scores = run_async(pass1(llm, settings, spec, subjects, dossiers, progress))
+    scores = await pass1(llm, settings, spec, subjects, dossiers, progress)
     cands = choose_candidates(settings, spec, subjects, scores)
 
     async def all_pass2() -> list[dict[str, Any] | None]:
@@ -75,12 +75,16 @@ def scan(
 
         return await llm.gather([one(c) for c in cands])
 
-    results = run_async(all_pass2())
+    results = await all_pass2()
     proposals = [p for p in results if p]
     return proposals, scores, cands
 
 
 def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
+    return run_async(_run(ctx, payload))
+
+
+async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     settings = ctx.settings
     tropes = ctx.client.tropes()
     exported = ctx.client.subjects()
@@ -141,7 +145,7 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
             await llm.gather([one(k, i) for k, i in spec.existing.items()])
             return out
 
-        extra = run_async(more_evidence())
+        extra = await more_evidence()
         evidence_added = len(extra)
         proposals += extra
 

@@ -14,6 +14,10 @@ log = logging.getLogger("tropes_worker.jobs.build_dossiers")
 
 
 def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
+    return run_async(_run(ctx, payload))
+
+
+async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     settings = ctx.settings
     only_missing = payload.get("onlyMissing", True)
     wanted = {(s["kind"], s["id"]) for s in payload.get("subjects") or []}
@@ -55,7 +59,7 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
         ctx.progress(done, total, "dossiers")
 
     for i in range(0, len(todo), 20):
-        run_async(batch(todo[i : i + 20]))
+        await batch(todo[i : i + 20])
 
     # Series after members, from fresh member dossiers.
     if series:
@@ -83,7 +87,7 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
             ctx.progress(done, total, "series dossiers")
 
         for i in range(0, len(series_todo), 10):
-            run_async(series_batch(series_todo[i : i + 10]))
+            await series_batch(series_todo[i : i + 10])
         done = total
         ctx.progress(done, total, "done")
 

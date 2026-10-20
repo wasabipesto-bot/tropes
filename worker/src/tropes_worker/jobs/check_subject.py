@@ -10,6 +10,10 @@ from ..runner import Context
 
 
 def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
+    return run_async(_run(ctx, payload))
+
+
+async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     settings = ctx.settings
     ref = payload["subject"]
     tropes = ctx.client.tropes()
@@ -37,7 +41,7 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     if existing:
         dossiers[key] = existing
     elif subject["kind"] == "media":
-        d = run_async(build_dossier(llm, settings, subject, text, subject.get("notes") or []))
+        d = await build_dossier(llm, settings, subject, text, subject.get("notes") or [])
         dossiers[key] = {"body": d["body"]}
         new_dossiers.append(d)
     else:
@@ -53,7 +57,7 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
                 existing_insts.append((t, i))
 
     ctx.progress(1, 3, "checking tropes")
-    proposals = run_async(check_subject(llm, settings, subject, dossiers, tropes, text, existing_ids))
+    proposals = await check_subject(llm, settings, subject, dossiers, tropes, text, existing_ids)
 
     evidence_added = 0
     if payload.get("mode") == "recheck" and text is not None and existing_insts:
@@ -80,7 +84,7 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
                     )
             return out
 
-        extra = run_async(more())
+        extra = await more()
         evidence_added = len(extra)
         proposals += extra
 

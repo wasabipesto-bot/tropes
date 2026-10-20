@@ -10,7 +10,7 @@ from typing import Any
 from .client import SiteClient
 from .jobs.scan_trope import scan, trope_spec_from
 from .llm import LLM
-from .pipeline import load_subject_text, subject_key
+from .pipeline import load_subject_text, run_async, subject_key
 from .settings import Settings
 
 
@@ -40,7 +40,7 @@ def evaluate(settings: Settings, client: SiteClient, slugs: list[str] | None, ou
         spec.existing = {}  # pretend nothing is attached yet so the scan has to find the truth
         llm = LLM(settings)
         started = time.monotonic()
-        proposals, scores, cands = scan(None, settings, llm, spec, subjects, dossiers, texts_by_media, lambda *a: None)
+        proposals, scores, cands = run_async(scan(None, settings, llm, spec, subjects, dossiers, texts_by_media, lambda *a: None))
         found = {subject_key(p["subject"]["kind"], p["subject"]["id"]): p["score"] for p in proposals if p["kind"] == "instance"}
         at_cut = {k for k, s in found.items() if s >= settings.unchecked_below}
         recall_any = len(truth & set(found)) / len(truth)
