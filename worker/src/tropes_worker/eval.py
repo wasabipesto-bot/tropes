@@ -37,6 +37,7 @@ def evaluate(settings: Settings, client: SiteClient, slugs: list[str] | None, ou
             print(f"{t['name']}: no verified instances, skipped")
             continue
         spec, _ = trope_spec_from({"tropeId": t["id"]}, tropes, media, series)
+        seeds = set(spec.seed_subjects)
         spec.existing = {}  # pretend nothing is attached yet so the scan has to find the truth
         llm = LLM(settings)
         started = time.monotonic()
@@ -48,9 +49,15 @@ def evaluate(settings: Settings, client: SiteClient, slugs: list[str] | None, ou
         precision_cut = (len(truth & at_cut) / len(at_cut)) if at_cut else 0.0
         mean_true = sum(found[k] for k in truth if k in found) / max(1, len(truth & set(found)))
         missed = sorted(truth - set(found))
+        non_seed = truth - seeds
+        noise = len(at_cut - truth)
         row = {
             "trope": t["name"],
             "truth": len(truth),
+            "seed_agreement": round(len(truth & seeds & at_cut) / len(truth & seeds), 2) if truth & seeds else None,
+            "non_seed_truth": len(non_seed),
+            "non_seed_recall_at_cutoff": round(len(non_seed & at_cut) / len(non_seed), 2) if non_seed else None,
+            "noise_at_cutoff": noise,
             "candidates": len(cands),
             "proposed": len(found),
             "recall_proposed": round(recall_any, 2),
@@ -64,7 +71,10 @@ def evaluate(settings: Settings, client: SiteClient, slugs: list[str] | None, ou
         }
         report.append(row)
         print(
-            f"{t['name']}: truth {row['truth']}, proposed {row['proposed']} (cands {row['candidates']}), recall {row['recall_proposed']} / at cutoff {row['recall_at_cutoff']}, precision at cutoff {row['precision_at_cutoff']}, mean true score {row['mean_score_of_true']}, {row['seconds']}s, ${row['usage']['costUsd']:.4f}"  # noqa: E501
+            f"{t['name']}: truth {row['truth']} (seeds {len(truth & seeds)}), proposed {row['proposed']} of {row['candidates']} cands; "
+            f"seed agreement {row['seed_agreement']}, non-seed recall {row['non_seed_recall_at_cutoff']} of {row['non_seed_truth']}, "
+            f"noise at cutoff {noise}, precision {row['precision_at_cutoff']}, mean true score {row['mean_score_of_true']}, "
+            f"{row['seconds']}s, ${row['usage']['costUsd']:.4f}"
         )
         if missed:
             print(f"  missed: {', '.join(missed)} (pass 1: {row['pass1_of_missed']})")
