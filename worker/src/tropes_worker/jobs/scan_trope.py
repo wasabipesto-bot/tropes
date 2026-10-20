@@ -105,7 +105,7 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
 
     total_steps = len(subjects) + 1
     ctx.progress(0, total_steps, "pass 1")
-    proposals, scores, cands = scan(
+    proposals, scores, cands = await scan(
         ctx, settings, llm, spec, subjects, dossiers, texts_by_media, lambda d, t, n: ctx.progress(d, total_steps, n)
     )
 
