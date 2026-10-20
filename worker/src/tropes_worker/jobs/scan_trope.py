@@ -147,7 +147,7 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
                         }
                     )
 
-            await llm.gather([one(k, i) for k, i in spec.existing.items()])
+            await llm.gather([one(k, i) for k, i in spec.existing.items() if "id" in i])
             return out
 
         extra = await more_evidence()
