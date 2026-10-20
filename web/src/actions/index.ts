@@ -4,7 +4,9 @@ import { z } from 'astro/zod';
 import { and, eq, sql } from 'drizzle-orm';
 import type { ActionAPIContext } from 'astro:actions';
 import { db } from '../db';
-import { MEDIA_TYPES, PROMINENCES, evidence, instance, media, notable, series, trope, tropeSeed } from '../db/schema';
+import { MEDIA_TYPES, PROMINENCES, evidence, instance, media, notable, proposal, series, trope, tropeSeed } from '../db/schema';
+import { cancelJob, createJob, jobById } from '../lib/jobs/queue';
+import { commitProposals } from '../lib/jobs/commit';
 import { RateLimiter, SESSION_COOKIE, SESSION_DAYS, createSession, deleteSession } from '../lib/auth';
 import { verifyPassword } from '../lib/password';
 import { resolveSubject, resolveTrope } from '../lib/queries';
@@ -209,4 +211,94 @@ export const server = {
       return { returnTo: input.returnTo ?? '/tropes' };
     },
   }),
+
+  /** Add-trope step 1: nothing is saved; the draft travels in the job. */
+  startTropeScan: defineAction({
+    accept: 'form',
+    input: z.object({ name: z.string().trim().min(1), description: z.string(), examples: z.string().optional() }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      if (!slugify(input.name)) throw new ActionError({ code: 'BAD_REQUEST', message: 'The name needs at least one letter or digit.' });
+      if (db.select().from(trope).where(eq(trope.slug, slugify(input.name))).get()) throw new ActionError({ code: 'CONFLICT', message: 'A trope with that name already exists. Recheck it from its page instead.' });
+      const seeds = (input.examples ?? '').split('\n').map((l) => l.trim()).filter(Boolean);
+      const j = createJob(db, 'scan_trope', { mode: 'add', draft: { name: input.name, description: input.description.trim(), seeds } });
+      return { returnTo: `/add/trope?job=${j.id}` };
+    },
+  }),
+
+  /** Recheck an existing trope: additions only. */
+  startTropeRecheck: defineAction({
+    accept: 'form',
+    input: z.object({ tropeId: id }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const t = db.select().from(trope).where(eq(trope.id, input.tropeId)).get();
+      if (!t) throw new ActionError({ code: 'NOT_FOUND', message: 'No such trope.' });
+      const j = createJob(db, 'scan_trope', { mode: 'recheck', tropeId: t.id });
+      return { returnTo: `/recheck/trope/${t.slug}?job=${j.id}` };
+    },
+  }),
+
+  /** Add-media (Phase 3 form): the title must already be in the library; then check it against every trope. */
+  startSubjectCheck: defineAction({
+    accept: 'form',
+    input: z.object({ title: z.string().trim().optional(), subjectKind: z.enum(['media', 'series']).optional(), subjectId: id.optional(), mode: z.enum(['add', 'recheck']).default('add') }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const subject = input.subjectKind && input.subjectId ? { kind: input.subjectKind, id: input.subjectId } : resolveSubject(db, input.title ?? '');
+      if (!subject) throw new ActionError({ code: 'NOT_FOUND', message: `Nothing in the library is called “${input.title ?? ''}”. Import it from Notion or create it below first.` });
+      const j = createJob(db, 'check_subject', { mode: input.mode, subject });
+      const back = subject.kind === 'media' ? `/recheck/media/${subject.id}` : `/recheck/series/${subject.id}`;
+      return { returnTo: input.mode === 'add' ? `/add/media?job=${j.id}` : `${back}?job=${j.id}` };
+    },
+  }),
+
+  startDossierBuild: defineAction({
+    accept: 'form',
+    input: z.object({ onlyMissing: z.coerce.boolean().default(true) }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const j = createJob(db, 'build_dossiers', { onlyMissing: input.onlyMissing });
+      return { returnTo: `/jobs?job=${j.id}` };
+    },
+  }),
+
+  discardJob: defineAction({
+    accept: 'form',
+    input: z.object({ jobId: id, returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      if (jobById(db, input.jobId)) cancelJob(db, input.jobId);
+      return { returnTo: input.returnTo ?? '/tropes' };
+    },
+  }),
+
+  /** Edit one proposal's who/text before committing. */
+  updateProposal: defineAction({
+    accept: 'form',
+    input: z.object({ proposalId: id, who: z.string(), text: z.string(), returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      db.update(proposal).set({ who: input.who.trim(), text: input.text.trim() }).where(eq(proposal.id, input.proposalId)).run();
+      return { returnTo: input.returnTo ?? '/tropes' };
+    },
+  }),
+
+  /** Commit the checked proposals of a job; the rest are remembered as rejected. */
+  commitProposals: defineAction({
+    accept: 'form',
+    input: z.object({
+      jobId: id,
+      accept: z.union([z.array(z.coerce.number().int()), z.coerce.number().int()]).optional(),
+      prominence: z.record(z.string(), z.enum(PROMINENCES)).optional(),
+    }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const accepted = new Set(input.accept === undefined ? [] : Array.isArray(input.accept) ? input.accept : [input.accept]);
+      const out = commitProposals(db, input.jobId, accepted, input.prominence ?? {});
+      return { returnTo: out.returnTo };
+    },
+  }),
 };
+
+// Jobs and proposals ------------------------------------------------------------

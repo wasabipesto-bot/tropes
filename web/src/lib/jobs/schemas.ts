@@ -1,0 +1,76 @@
+/** Wire shapes shared by the site and the worker. The worker mirrors these in pydantic. */
+import { z } from 'astro/zod';
+import { DOSSIER_DEPTHS, JOB_KINDS, PROMINENCES, PROPOSAL_KINDS, SUBJECT_KINDS } from '../../db/schema';
+
+export const subjectRef = z.object({ kind: z.enum(SUBJECT_KINDS), id: z.number().int().positive() });
+
+/** scan_trope: an existing trope (tropeId) or a draft one carried in the payload. */
+export const scanTropePayload = z.object({
+  mode: z.enum(['add', 'recheck']),
+  tropeId: z.number().int().positive().optional(),
+  draft: z.object({ name: z.string().min(1), description: z.string(), seeds: z.array(z.string()) }).optional(),
+});
+export const checkSubjectPayload = z.object({ mode: z.enum(['add', 'recheck']), subject: subjectRef });
+export const buildDossiersPayload = z.object({ onlyMissing: z.boolean().default(true), subjects: z.array(subjectRef).optional() });
+export const pingPayload = z.object({});
+
+export const payloadByKind = {
+  ping: pingPayload,
+  build_dossiers: buildDossiersPayload,
+  scan_trope: scanTropePayload,
+  check_subject: checkSubjectPayload,
+} as const;
+export type JobKind = (typeof JOB_KINDS)[number];
+
+export const progressBody = z.object({ done: z.number().int().min(0), total: z.number().int().min(0), note: z.string().optional() });
+
+export const evidenceItem = z.object({ kind: z.literal('quote'), content: z.string().min(1), locator: z.string().default('') });
+
+export const proposalIn = z.object({
+  tropeId: z.number().int().positive().nullable().optional(),
+  subject: subjectRef,
+  kind: z.enum(PROPOSAL_KINDS).default('instance'),
+  targetInstanceId: z.number().int().positive().nullable().optional(),
+  score: z.number().min(0).max(1),
+  prominence: z.enum(PROMINENCES).default('brief'),
+  who: z.string().default(''),
+  text: z.string().default(''),
+  evidence: z.array(evidenceItem).default([]),
+  seed: z.boolean().default(false),
+  rejectedBefore: z.boolean().default(false),
+  flags: z.array(z.string()).default([]),
+});
+
+export const dossierIn = z.object({
+  subject: subjectRef,
+  depth: z.enum(DOSSIER_DEPTHS),
+  body: z.record(z.string(), z.unknown()),
+  model: z.string(),
+  promptVersion: z.number().int(),
+  sourceHash: z.string().nullable().optional(),
+});
+
+export const noteIn = z.object({ mediaId: z.number().int().positive(), source: z.enum(['tumblr', 'review', 'manual']), url: z.string().nullable().optional(), text: z.string().min(1) });
+
+export const usageIn = z.object({
+  model: z.string().optional(),
+  calls: z.number().int().min(0).default(0),
+  promptTokens: z.number().int().min(0).default(0),
+  completionTokens: z.number().int().min(0).default(0),
+  cachedTokens: z.number().int().min(0).default(0),
+  costUsd: z.number().min(0).optional(),
+});
+
+export const resultBody = z.object({
+  summary: z.record(z.string(), z.unknown()).default({}),
+  proposals: z.array(proposalIn).default([]),
+  dossiers: z.array(dossierIn).default([]),
+  notes: z.array(noteIn).default([]),
+  usage: usageIn.optional(),
+  warnings: z.array(z.string()).default([]),
+});
+
+export type ResultBody = z.infer<typeof resultBody>;
+export type ProposalIn = z.infer<typeof proposalIn>;
+
+export const dossiersBody = z.object({ dossiers: z.array(dossierIn).default([]), notes: z.array(noteIn).default([]) });

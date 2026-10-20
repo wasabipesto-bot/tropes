@@ -1,0 +1,50 @@
+---
+import { actions } from 'astro:actions';
+import Base from '../../../layouts/Base.astro';
+import JobStatus from '../../../components/JobStatus.astro';
+import ProposalList from '../../../components/ProposalList.astro';
+import { db } from '../../../db';
+import { afterAction } from '../../../lib/after-action';
+import { reviewState } from '../../../lib/jobs/page';
+import { UNCHECKED_BELOW, proposalsFor } from '../../../lib/jobs/view';
+import { allTropes, subjectRef, tropeHrefResolver } from '../../../lib/queries';
+
+if (!Astro.locals.owner) return Astro.redirect('/login');
+const subject = subjectRef(db, 'series', Number(Astro.params.id));
+if (!subject) return new Response(null, { status: 404 });
+const { redirect, error } = afterAction(Astro);
+if (redirect) return redirect;
+const { job, editing, summary, warnings, returnTo } = reviewState(Astro, db);
+const tropeCount = allTropes(db).length;
+const items = job?.status === 'done' ? proposalsFor(db, job, summary.uncheckedBelow ?? UNCHECKED_BELOW) : [];
+const render = { tropeHref: tropeHrefResolver(db) };
+---
+
+<Base title={`Recheck ${subject.title}`}>
+  <h1>Recheck <a href={subject.href} style="color: #1B1B1B">{subject.title}</a></h1>
+  {!job && (
+    <form method="POST" action={actions.startSubjectCheck} style="margin-top: 28px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+      <input type="hidden" name="mode" value="recheck" />
+      <input type="hidden" name="subjectKind" value="series" />
+      <input type="hidden" name="subjectId" value={subject.id} />
+      <button type="submit" class="go">Check against {tropeCount} tropes</button>
+      <a href={subject.href} style="font-size: 16px">Cancel</a>
+      {error && <span class="quiet" style="font-size: 15px">{error}</span>}
+    </form>
+  )}
+  {job && job.status !== 'done' && <JobStatus job={job} total={tropeCount} returnTo={subject.href} what={`Checking against ${tropeCount} tropes.`} />}
+  {job && job.status === 'done' && (
+    <>
+      <p class="quiet" style="margin: 4px 0 0; font-size: 15px">Checked against {summary.checked ?? tropeCount} tropes. Nothing is saved until you add it.</p>
+      {warnings.map((w) => <p class="quiet" style="margin: 6px 0 0; font-size: 15px">{w}</p>)}
+      {error && <p class="quiet" style="margin: 6px 0 0; font-size: 15px">{error}</p>}
+      {items.length === 0 && <p style="margin: 28px 0 0">Nothing new to add.</p>}
+      <div style="margin-top: 36px; max-width: 820px">
+        <ProposalList jobId={job.id} items={items} mode="subject" render={render} returnTo={returnTo} editing={editing} verb="Add" cancelHref={subject.href}>
+          <h2 slot="instances-heading" style="margin: 0 0 4px; font-size: 22px; font-weight: 700">New tropes</h2>
+          <h2 slot="evidence-heading" style="margin: 0 0 4px; font-size: 22px; font-weight: 700">New evidence for existing tropes</h2>
+        </ProposalList>
+      </div>
+    </>
+  )}
+</Base>

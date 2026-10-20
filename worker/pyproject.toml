@@ -6,6 +6,11 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "httpx>=0.28",
+    "openai>=1.60",
+    "pydantic>=2.9",
+    "python-dotenv>=1.0",
+    "ebooklib>=0.18",
+    "beautifulsoup4>=4.12",
 ]
 
 [project.scripts]
@@ -25,7 +30,7 @@ build-backend = "hatchling.build"
 packages = ["src/tropes_worker"]
 
 [tool.ruff]
-line-length = 100
+line-length = 130
 target-version = "py312"
 
 [tool.ruff.lint]

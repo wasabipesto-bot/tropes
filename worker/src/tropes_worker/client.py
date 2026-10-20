@@ -2,7 +2,7 @@
 
 The worker is a client of the site and nothing else: it never touches the
 SQLite file. Every call goes through this class so the contract stays in one
-place.
+place. Shapes mirror web/src/lib/jobs/schemas.ts.
 """
 
 from __future__ import annotations
@@ -20,6 +20,18 @@ class Health:
     version: str
 
 
+@dataclass(frozen=True)
+class Job:
+    id: int
+    kind: str
+    payload: dict[str, Any]
+    attempts: int
+
+
+class JobCancelled(Exception):
+    """The owner discarded the job while it was running."""
+
+
 class SiteClient:
     def __init__(
         self,
@@ -27,7 +39,7 @@ class SiteClient:
         token: str | None = None,
         *,
         transport: httpx.BaseTransport | None = None,
-        timeout: float = 30.0,
+        timeout: float = 60.0,
     ) -> None:
         headers = {"User-Agent": "tropes-worker"}
         if token:
@@ -53,10 +65,52 @@ class SiteClient:
         r.raise_for_status()
         return r.json()
 
+    def _post(self, path: str, body: Any = None) -> httpx.Response:
+        r = self._http.post(path, json=body if body is not None else {})
+        r.raise_for_status()
+        return r
+
     def health(self) -> Health:
         data = self._get("/api/health")
-        return Health(
-            ok=bool(data.get("ok")),
-            media=int(data.get("media", 0)),
-            version=str(data.get("version", "")),
-        )
+        return Health(ok=bool(data.get("ok")), media=int(data.get("media", 0)), version=str(data.get("version", "")))
+
+    # Jobs ---------------------------------------------------------------
+
+    def claim(self, kinds: list[str]) -> Job | None:
+        r = self._post("/api/jobs/claim", {"kinds": kinds})
+        if r.status_code == 204:
+            return None
+        d = r.json()
+        return Job(id=int(d["id"]), kind=str(d["kind"]), payload=dict(d.get("payload") or {}), attempts=int(d.get("attempts", 1)))
+
+    def progress(self, job_id: int, done: int, total: int, note: str | None = None) -> None:
+        body: dict[str, Any] = {"done": done, "total": total}
+        if note:
+            body["note"] = note
+        status = self._post(f"/api/jobs/{job_id}/progress", body).json().get("status")
+        if status == "cancelled":
+            raise JobCancelled(job_id)
+
+    def result(self, job_id: int, body: dict[str, Any]) -> dict[str, Any]:
+        return self._post(f"/api/jobs/{job_id}/result", body).json()
+
+    def fail(self, job_id: int, error: str) -> None:
+        self._post(f"/api/jobs/{job_id}/fail", {"error": error[:4000]})
+
+    def job(self, job_id: int) -> dict[str, Any]:
+        return self._get(f"/api/jobs/{job_id}")
+
+    # Exports ------------------------------------------------------------
+
+    def tropes(self) -> list[dict[str, Any]]:
+        return list(self._get("/api/export/tropes")["tropes"])
+
+    def subjects(self) -> dict[str, list[dict[str, Any]]]:
+        return self._get("/api/export/subjects")
+
+    def dossier(self, kind: str, subject_id: int) -> dict[str, Any] | None:
+        r = self._http.get(f"/api/dossiers/{kind}/{subject_id}")
+        if r.status_code == 404:
+            return None
+        r.raise_for_status()
+        return r.json()

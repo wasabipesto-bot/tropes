@@ -1,0 +1,52 @@
+---
+import { actions } from 'astro:actions';
+import type { Job } from '../db/schema';
+import { parseJson } from '../lib/jobs/queue';
+
+interface Props { job: Job; total?: number; returnTo: string; what: string }
+const { job, total, returnTo, what } = Astro.props;
+const progress = parseJson<{ done: number; total: number; note?: string } | null>(job.progress, null);
+const n = progress?.total || total || 0;
+---
+
+{job.status === 'queued' || job.status === 'running' ? (
+  <div class="status" data-job={job.id}>
+    <p style="margin: 28px 0 0"><span class="quiet">{what}</span> <span class="num" id="job-progress">{progress ? `${progress.done} of ${progress.total}` : job.status === 'queued' ? 'waiting for the worker' : 'starting'}</span>{progress?.note && <span class="quiet" id="job-note"> · {progress.note}</span>}</p>
+    {job.status === 'queued' && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">No worker has picked this up yet. Is `just worker` running?</p>}
+    <form method="POST" action={actions.discardJob} style="margin-top: 16px">
+      <input type="hidden" name="jobId" value={job.id} />
+      <input type="hidden" name="returnTo" value={returnTo} />
+      <button type="submit" class="t">Cancel</button>
+    </form>
+    <script>
+      // Poll the job every two seconds; reload once it stops running so the page renders the result.
+      const el = document.querySelector<HTMLElement>('.status[data-job]');
+      if (el) {
+        const id = el.dataset.job;
+        const tick = async () => {
+          try {
+            const r = await fetch(`/api/jobs/${id}`, { headers: { accept: 'application/json' } });
+            if (!r.ok) return;
+            const j = await r.json();
+            if (j.status !== 'running' && j.status !== 'queued') { location.reload(); return; }
+            const p = j.progress;
+            const out = document.getElementById('job-progress');
+            if (p && out) out.textContent = `${p.done} of ${p.total}`;
+            const note = document.getElementById('job-note');
+            if (p?.note && note) note.textContent = ` · ${p.note}`;
+          } finally {
+            setTimeout(tick, 2000);
+          }
+        };
+        setTimeout(tick, 2000);
+      }
+    </script>
+  </div>
+) : job.status === 'failed' ? (
+  <div style="margin-top: 28px">
+    <p style="margin: 0">The scan failed.</p>
+    <pre class="quiet" style="margin: 8px 0 0; font-size: 14px; white-space: pre-wrap">{job.error}</pre>
+  </div>
+) : job.status === 'cancelled' ? (
+  <p class="quiet" style="margin: 28px 0 0">Discarded.</p>
+) : null}

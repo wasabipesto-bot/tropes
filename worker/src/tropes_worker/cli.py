@@ -3,31 +3,28 @@
 from __future__ import annotations
 
 import argparse
-import os
-import sys
+import logging
 
 from .client import SiteClient
+from .settings import Settings
 
 
 def build_parser() -> argparse.ArgumentParser:
     # Shared options are attached to both levels so they work before or
     # after the subcommand: `tropes-worker ping --site X` and `--site X ping`.
     common = argparse.ArgumentParser(add_help=False)
-    common.add_argument(
-        "--site",
-        default=os.environ.get("TROPES_SITE_URL", "http://127.0.0.1:4321"),
-        help="site base URL (env TROPES_SITE_URL)",
-    )
-    common.add_argument(
-        "--token",
-        default=os.environ.get("TROPES_API_TOKEN"),
-        help="worker bearer token (env TROPES_API_TOKEN)",
-    )
+    common.add_argument("--site", default=None, help="site base URL (env TROPES_SITE_URL)")
+    common.add_argument("--token", default=None, help="worker bearer token (env TROPES_API_TOKEN)")
+    common.add_argument("-v", "--verbose", action="store_true")
     p = argparse.ArgumentParser(prog="tropes-worker", parents=[common])
     sub = p.add_subparsers(dest="command", required=True)
-    sub.add_parser(
-        "ping", parents=[common], help="check that the site is up and the database answers"
-    )
+    sub.add_parser("ping", parents=[common], help="check that the site is up and the database answers")
+    run = sub.add_parser("run", parents=[common], help="claim and run jobs")
+    run.add_argument("--once", action="store_true", help="run at most one job, then exit")
+    run.add_argument("--kinds", default=None, help="comma-separated job kinds to handle (default: all)")
+    ev = sub.add_parser("eval", parents=[common], help="score the scan against verified instances; writes nothing")
+    ev.add_argument("--trope", action="append", default=[], help="trope slug (repeatable); default: all with verified instances")
+    ev.add_argument("--out", default=None, help="write the report as JSON here")
     return p
 
 
@@ -40,11 +37,26 @@ def cmd_ping(client: SiteClient) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    with SiteClient(args.site, args.token) as client:
+    logging.basicConfig(
+        level=logging.DEBUG if args.verbose else logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s"
+    )
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    settings = Settings.from_env()
+    site = args.site or settings.site_url
+    token = args.token or settings.api_token
+    with SiteClient(site, token) as client:
         if args.command == "ping":
             return cmd_ping(client)
+        if args.command == "run":
+            from .runner import run_forever, run_one
+
+            kinds = args.kinds.split(",") if args.kinds else None
+            if args.once:
+                return 0 if run_one(settings, client, kinds) else 3
+            run_forever(settings, client, kinds)
+            return 0
+        if args.command == "eval":
+            from .eval import evaluate
+
+            return evaluate(settings, client, args.trope or None, args.out)
     return 2
-
-
-if __name__ == "__main__":
-    sys.exit(main())

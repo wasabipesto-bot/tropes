@@ -95,23 +95,28 @@ owner session for the two the review pages call.
   idle; the review page polls `GET /api/jobs/:id` every 2 s until done.
   Recommendation: polling. Server-sent events or websockets save nothing at
   this scale and add a long-lived connection to debug.
+APPROVED: No notes.
 - **D2. One worker, one job at a time.** Parallelism lives inside a job
   (concurrent model calls), not across jobs. Recommendation: yes. It keeps
   rate limiting and progress reporting trivial. A second worker can be
   added later by making `claim` atomic, which it will be from day one
   (`UPDATE … WHERE status='queued' … RETURNING`).
+APPROVED: Add note for later to check if additional workers would be helpful.
 - **D3. Stale jobs.** A running job with no heartbeat for 10 minutes goes
   back to queued once, then fails. Recommendation: yes, in the claim query
   itself, so there is no reaper process.
+APPROVED: No notes.
 - **D4. Job payloads and results are opaque JSON** validated by zod on the
   site and pydantic in the worker. Recommendation: yes. The alternative, a
   column per field, means a migration per prompt change.
+APPROVED: No notes.
 
 **Tradeoffs.** SQLite as a queue is fine for one worker and a few jobs a day.
 It would not be fine for many workers hammering `claim`; that is not this
 project. Keeping dossiers in the site database (rather than worker-local
 files) costs an endpoint but means backups cover them and a second worker
 host sees them.
+APPROVED: No notes.
 
 **Acceptance.** A job created by hand with `sqlite3` is claimed by the
 worker's `ping`-style command, progressed, and finished; the owner page
@@ -140,31 +145,38 @@ manual debugging use.
   handles retries, streaming and timeouts, OpenRouter speaks its wire
   format, and switching models or providers is a config change. The cost is
   one dependency.
+APPROVED: Does it also support batch mode, if we wanted to utilize that?
 - **D6. Structured output.** Ask for JSON in the prompt, parse, validate with
   pydantic, and retry once with the validation error appended. Do not rely
   on provider-side JSON schema enforcement. Recommendation: as stated.
   OpenRouter's structured-output support varies by model and route; a
   client-side check works everywhere and the failure mode is visible.
+APPROVED: Additionally look inot OpenRouter's auto-heal feature, only use if deemed helpful.
 - **D7. Concurrency.** `asyncio` with a semaphore, default 8 concurrent
   model calls, configurable. Recommendation: 8. Pass 1 is 32 calls, pass 2
   up to 60; at 8-wide a scan finishes in a minute or two.
+APPROVED: No notes.
 - **D8. Cost logging.** Sum `usage` from every response into the job's
   `usage` field (prompt tokens, completion tokens, cached tokens, model,
   call count). No separate table, no per-call log. Recommendation: this.
   The question "what did that scan cost" is answered from the job row; a
   per-call ledger is more to maintain than it is worth at cents per scan.
+APPROVED: No notes.
 - **D9. Configuration.** Environment variables only: `TROPES_SITE_URL`,
   `TROPES_API_TOKEN`, `OPENROUTER_API_KEY`, `TROPES_MODEL`
   (default `deepseek/deepseek-v4.1-flash-1017`), `TROPES_LLM_CONCURRENCY`,
   `TROPES_SOURCES_DIR`. Recommendation: this, read once at startup into a
   frozen `Settings` dataclass. No config file.
+APPROVED: No notes.
 - **D10. Sampling.** One temperature for everything, 0.3. Recommendation:
   start there and tune with the eval (T7) rather than guess per prompt.
+APPROVED: No notes.
 
 **Tradeoffs.** Prompts as files rather than Python strings means they can be
 read and edited without touching code, and diffs show prompt changes
 clearly; the cost is a tiny template step. pydantic adds a dependency but
 removes a class of silent bad-output bugs.
+APPROVED: No notes.
 
 **Acceptance.** `tropes-worker run --once` completes a `ping` job end to
 end; a fixture test runs each prompt's parser against saved good and bad
@@ -215,22 +227,27 @@ the prompt version changes.
   exists, the owner's verification mark, and never showing dossiers on the
   site. The alternative, metadata-only dossiers, would make pass 1 nearly
   blind until Phase 4 and 5.
+APPROVED: Allow and encourage use of model's own knowledge.
 - **D12. Dossiers live in the site database.** Recommendation: yes, see T1
   tradeoffs.
+APPROVED: No notes.
 - **D13. Phase 3 reads text files that are already on disk; it does not
   find media.** Plex paths, subtitles, frame sampling stay in Phase 5.
   Recommendation: yes. Today's sources (four novels, ten classics, five web
   serials, three Crystal books, qntm's three) are enough to build and tune
   the text path.
+APPROVED: No notes.
 - **D14. Series dossiers.** A series dossier is built from its members'
   dossiers (and texts, when present) in one call, so a scan sees Terra
   Ignota once. Recommendation: yes; instances already attach to series.
+APPROVED: No notes.
 
 **Tradeoffs.** Building 776 knowledge dossiers up front costs about a dollar
 and twenty minutes at 8-wide and makes every later scan fast; building
 lazily on first scan saves nothing worth having. Recommendation: a
 `build_dossiers` job that fills whatever is missing, run once after T3 and
 again whenever the prompt version bumps.
+APPROVED: But allow prompt text edits separate from prompt version bump.
 
 **Acceptance.** Dossiers exist for every subject; the ones with text
 sources are `text` depth; spot checks on Lent, Unsong and a well-known film
@@ -253,6 +270,7 @@ carried forward regardless of score so calibration can be reported.
 Candidates for pass 2: everything scoring ≥ 0.3, capped at 60 by score,
 plus seeds, minus subjects already associated (for rechecks) and subjects
 previously rejected for this trope (D17).
+APPROVED: Ensure these cutoffs/caps are configurable.
 
 *Pass 2, per candidate.* Input: trope description, seeds, the writing rules
 from `SPEC.md` section 9 verbatim, the candidate's dossier, and its full
@@ -261,6 +279,7 @@ text when there is one. Output: `score`, `prominence`, `who`, `text`,
 read, else empty. The prompt says plainly that no instance is also a valid
 answer. Text is checked by the writing post-check (below) and sent back for
 one rewrite if it trips.
+APPROVED: No notes.
 
 *Check subject, per work or series.* One call: the subject's dossier and
 text as the prefix, then every trope's description and seeds; output is
@@ -268,6 +287,7 @@ one entry per trope with the same shape as pass 2, most of them "no". For
 rechecks, tropes already attached are asked only for new evidence (text
 sources only), and the output is split into "new tropes" and "new
 evidence".
+APPROVED: No notes.
 
 *Writing post-check.* A regex list in `writing_check.py` for the tells in
 spec section 9: em-dash connectors, "not X but Y", process words (added,
@@ -275,24 +295,29 @@ approved, scan, verified, weak match, kept), rule-of-three closers, and
 the `||` balance. A trip means one rewrite call with the specific
 complaint; a second trip is accepted and flagged in the proposal so it
 shows a quiet mark on the review page.
+APPROVED: No notes.
 
 **Decisions.**
 
 - **D15. Thresholds.** Pass 2 at ≥ 0.3 with a cap of 60; review page
   unchecked below 0.5 (spec). Recommendation: as stated, tune with T7.
+APPROVED: Okay for now, keep configurable.
 - **D16. Evidence in Phase 3 is quotes only**, from text sources, with the
   locator the model gives (chapter heading and a short anchor phrase) that
   the worker verifies by searching the text; a quote that is not found
   verbatim is dropped. Recommendation: yes. This is the single most
   important hallucination guard and it is cheap.
+APPROVED: But I don't expect this to happen, flag loudly if it does.
 - **D17. Rejections are remembered.** A proposal the owner left unchecked at
   commit is `rejected`; later scans of the same trope skip that subject.
   Quick-add on the trope page remains the override. Recommendation: skip
   rather than rank last. Showing them again is the "I keep saying no to
   this" annoyance the spec's optional mechanism was meant to prevent.
+PASS: I don't need this, if I get annoyed and change my mind it should be easy to add. Simply rank last.
 - **D18. Scoring one trope at a time versus families.** Phase 3 scans one
   trope per job. The sibling-disambiguation idea from the roadmap waits for
   evidence that it is needed. Recommendation: one trope per job.
+APPROVED: No notes.
 
 **Tradeoffs.** Reading the full text in pass 2 for every candidate is the
 expensive, slow path, and with this model it costs cents and a minute. If
@@ -348,18 +373,24 @@ JavaScript the button says "Commit selected".
   button count. Everything else is forms. Recommendation: yes. The two
   review lists are the only places the spec's interaction is dense, and
   radio inputs plus server-side edits cover them.
+APPROVED: No notes.
 - **D20. Where draft state lives.** In the job row and its proposals, not in
   browser storage. Reloading the page or coming back later shows the same
   review. Recommendation: yes. A job's proposals are discarded when a new
   scan for the same trope or subject is committed or when the owner presses
   Discard.
+APPROVED: No notes.
 - **D21. Progress polling interval.** 2 s while running; stop when done.
+APPROVED: No notes.
 
 **Tradeoffs.** Rendering the prominence picker as radios means three inputs
 per row instead of three text buttons; the visual result matches the
-canvas and it works without a script. Editing proposal text through a
+canvas and it works without a script. 
+APPROVED: No notes.
+Editing proposal text through a
 round trip is slower than an inline textarea toggle but reuses the existing
 pattern and keeps the page stateless.
+APPROVED: No notes.
 
 **Acceptance.** Each flow works end to end against a real job; a browser
 refresh mid-review changes nothing; the committed instances show up
@@ -381,18 +412,25 @@ title, and stores them. Annual review posts on wasabipesto.com are fetched
 once, split by title mention, and stored the same way. The dossier prompt
 includes these as "the owner's own notes", which the writing rules say beat
 a rewrite.
+APPROVED: This will likely need some LLM, since things are often shortened or abbreviated on Tumblr
+(Dirk Gently's Holistic Detective Agency -> Dirk Gently or DGHDA). Also many things returned there
+will be reblogs, fanworks, etc. However I do think it's a very good datasource.
 
 **Decisions.**
 
 - **D22. Lazy, cached.** Fetch at dossier-build time, refresh only when
   rebuilding. Recommendation: yes.
+APPROVED: At dossier-build time. Later, a rare manual flow for me at the end of the year to inject 
+my media review notes.
 - **D23. Relevance.** The noisy-hits problem from the spec is handled by
   asking the dossier prompt to ignore notes that are plainly about
   something else, and by storing hits rather than counts. The media page's
   "n of your posts" line stays a search link (Phase 6 decides more).
+APPROVED: No notes.
 
 **Needs from you.** The midden API key, as `TROPES_MIDDEN_KEY` in the
 worker's environment.
+ADDED
 
 **Acceptance.** Pantheon's dossier cites something you wrote about it;
 notes for a title that only matches as a common word are not attached.
@@ -417,6 +455,7 @@ Nothing is written to the site; results go to stdout and a JSON file.
 - **D24. Include the eval now.** Recommendation: yes. You said you would
   benchmark models; this is the harness, and it is a hundred lines on top
   of T4.
+APPROVED: No notes.
 
 **Acceptance.** The eval runs against the seeded tropes and produces
 numbers you can compare across two model ids.
@@ -448,6 +487,7 @@ numbers you can compare across two model ids.
 
 - **D25. Where the worker runs.** On ivory next to the site for now, still
   over HTTP. Recommendation: yes; nothing changes when it moves.
+APPROVED: Run on ivory.
 
 ---
 

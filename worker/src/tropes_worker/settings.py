@@ -1,0 +1,71 @@
+"""Configuration, read once from the environment (and a .env in the cwd or the repo root)."""
+
+from __future__ import annotations
+
+import os
+from dataclasses import dataclass
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+
+def _load_env() -> None:
+    here = Path.cwd()
+    for candidate in (here / ".env", here.parent / ".env", Path(__file__).resolve().parents[3] / ".env"):
+        if candidate.is_file():
+            load_dotenv(candidate, override=False)
+
+
+@dataclass(frozen=True)
+class Settings:
+    site_url: str
+    api_token: str | None
+    openrouter_api_key: str | None
+    model: str
+    model_dossier: str
+    concurrency: int
+    temperature: float
+    sources_dir: Path
+    text_cache_dir: Path
+    midden_key: str | None
+    midden_url: str
+    midden_blog: str
+    # Pass thresholds (plan D15), all overridable.
+    pass1_batch: int
+    pass2_min_score: float
+    pass2_cap: int
+    unchecked_below: float
+    response_healing: bool
+    # OpenRouter reasoning control: off, low, medium, high, or default (send nothing).
+    reasoning: str
+    poll_seconds: float
+    call_timeout: float
+
+    @classmethod
+    def from_env(cls) -> Settings:
+        _load_env()
+        env = os.environ.get
+        root = Path(__file__).resolve().parents[3]
+        model = env("TROPES_MODEL", "deepseek/deepseek-v4.1-flash-1017")
+        return cls(
+            site_url=env("TROPES_SITE_URL", "http://127.0.0.1:4321").rstrip("/"),
+            api_token=env("TROPES_API_TOKEN") or None,
+            openrouter_api_key=env("OPENROUTER_API_KEY") or None,
+            model=model,
+            model_dossier=env("TROPES_MODEL_DOSSIER", model),
+            concurrency=int(env("TROPES_LLM_CONCURRENCY", "8")),
+            temperature=float(env("TROPES_TEMPERATURE", "0.3")),
+            sources_dir=Path(env("TROPES_SOURCES_DIR", str(root / "data" / "sources"))),
+            text_cache_dir=Path(env("TROPES_TEXT_CACHE_DIR", str(root / "data" / "text"))),
+            midden_key=env("TROPES_MIDDEN_KEY") or None,
+            midden_url=env("TROPES_MIDDEN_URL", "https://beta.midden.net/api/search"),
+            midden_blog=env("TROPES_MIDDEN_BLOG", "wasabipesto"),
+            pass1_batch=int(env("TROPES_PASS1_BATCH", "25")),
+            pass2_min_score=float(env("TROPES_PASS2_MIN_SCORE", "0.3")),
+            pass2_cap=int(env("TROPES_PASS2_CAP", "60")),
+            unchecked_below=float(env("TROPES_UNCHECKED_BELOW", "0.5")),
+            response_healing=env("TROPES_RESPONSE_HEALING", "1") not in ("0", "false", "no"),
+            reasoning=env("TROPES_REASONING", "off").lower(),
+            poll_seconds=float(env("TROPES_POLL_SECONDS", "2")),
+            call_timeout=float(env("TROPES_CALL_TIMEOUT", "120")),
+        )

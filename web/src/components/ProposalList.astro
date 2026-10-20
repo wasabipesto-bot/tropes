@@ -1,0 +1,144 @@
+---
+import { actions } from 'astro:actions';
+import { PROMINENCES } from '../db/schema';
+import { PROMINENCE_LABEL } from '../lib/queries';
+import type { ProposalView } from '../lib/jobs/view';
+import { renderInline, type RenderOptions } from '../lib/text';
+
+interface Props {
+  jobId: number;
+  items: ProposalView[];
+  /** 'trope' lists works (add trope, recheck trope); 'subject' lists tropes (add media, recheck media). */
+  mode: 'trope' | 'subject';
+  render: RenderOptions;
+  returnTo: string;
+  editing?: number | null;
+  /** Label of the primary button: "Commit", "Add to library", "Add". The count is appended. */
+  verb: string;
+  cancelHref: string;
+  cancelLabel?: string;
+  rescan?: { href: string; label: string } | null;
+}
+const { jobId, items, mode, render, returnTo, editing = null, verb, cancelHref, cancelLabel = 'Cancel', rescan = null } = Astro.props;
+const instances = items.filter((v) => v.p.kind === 'instance');
+const evidence = items.filter((v) => v.p.kind === 'evidence');
+const byTarget = new Map<number, ProposalView[]>();
+for (const v of evidence) byTarget.set(v.p.targetInstanceId!, [...(byTarget.get(v.p.targetInstanceId!) ?? []), v]);
+const checkedCount = items.filter((v) => v.checked).length;
+const editHref = (id: number) => `${returnTo}${returnTo.includes('?') ? '&' : '?'}edit=${id}`;
+const title = (v: ProposalView) => (mode === 'trope' ? v.subject.title : v.trope?.name ?? '');
+const titleHref = (v: ProposalView) => (mode === 'trope' ? v.subject.href : v.trope ? `/tropes/${v.trope.slug}` : '#');
+---
+
+<form method="POST" action={actions.commitProposals} class="review">
+  <input type="hidden" name="jobId" value={jobId} />
+  {instances.length > 0 && (
+    <section>
+      <slot name="instances-heading" />
+      {instances.map((v) => (
+        <article class:list={['prop', { off: !v.checked, last: v.p.rejectedBefore }]}>
+          <div class="score num">{v.p.score.toFixed(2)}</div>
+          <div>
+            <div class="head">
+              <label class="ck" style="font-weight: 700"><input type="checkbox" name="accept" value={v.p.id} checked={v.checked} />{title(v)}</label>
+              {mode === 'trope' && <span class="quiet" style="font-size: 15px">{v.subject.label}</span>}
+              {v.p.seed && <span class="quiet" style="font-size: 15px; font-style: italic">your example</span>}
+              {v.p.rejectedBefore && <span class="quiet" style="font-size: 15px">left unchecked before</span>}
+              <span class="proms">
+                {PROMINENCES.map((p) => (
+                  <label class:list={['prom', { on: p === v.p.prominence }]}><input type="radio" name={`prominence[${v.p.id}]`} value={p} checked={p === v.p.prominence} />{PROMINENCE_LABEL[p]}</label>
+                ))}
+              </span>
+            </div>
+            {editing === v.p.id ? (
+              <div class="textedit" id={`edit-${v.p.id}`}>
+                <label for={`who-${v.p.id}`} class="quiet" style="font-size: 15px">Who</label>
+                <input id={`who-${v.p.id}`} form={`pf-${v.p.id}`} name="who" class="fld" value={v.p.who} />
+                <label for={`text-${v.p.id}`} class="quiet" style="font-size: 15px">Text</label>
+                <textarea id={`text-${v.p.id}`} form={`pf-${v.p.id}`} name="text" class="fld" rows="4">{v.p.text}</textarea>
+                <p class="buttons"><button type="submit" form={`pf-${v.p.id}`} class="t">Save</button><a href={returnTo} class="quiet">Cancel</a></p>
+              </div>
+            ) : (
+              <p style="margin: 2px 0 0">
+                {v.p.who && <span style="font-style: italic">{v.p.who}.</span>}{v.p.who && ' '}
+                <Fragment set:html={renderInline(v.p.text, render)} />
+                {' '}<a href={editHref(v.p.id)} style="font-size: 15px">Edit</a>
+              </p>
+            )}
+            {v.flags.length > 0 && <p class="quiet" style="margin: 4px 0 0; font-size: 14px">{v.flags.join('. ')}.</p>}
+            {v.evidence.length > 0 && (
+              <div class="quotes">
+                {v.evidence.map((e) => <p class="quote"><Fragment set:html={renderInline(e.content, render)} /> <span class="quiet" style="font-style: normal">{e.locator}</span></p>)}
+              </div>
+            )}
+            <a href={titleHref(v)} class="quiet" style="font-size: 14px">Open</a>
+          </div>
+        </article>
+      ))}
+    </section>
+  )}
+
+  {evidence.length > 0 && (
+    <section style="margin-top: 40px">
+      <slot name="evidence-heading" />
+      {[...byTarget.entries()].map(([instId, group]) => (
+        <article class="prop">
+          <div></div>
+          <div>
+            <div class="head"><a href={titleHref(group[0])} style="font-weight: 700; color: #1B1B1B">{title(group[0])}</a><span class="quiet" style="font-size: 15px">{group[0].p.who}</span></div>
+            <div class="quotes" style="margin-top: 8px">
+              {group.map((v) => v.evidence.map((e) => (
+                <label class="ck" style="align-items: flex-start"><input type="checkbox" name="accept" value={v.p.id} checked={v.checked} style="margin-top: 6px" /><span class="quote"><Fragment set:html={renderInline(e.content, render)} /> <span class="quiet" style="font-style: normal; font-size: 15px">{e.locator}</span></span></label>
+              )))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </section>
+  )}
+
+  <div class="commit">
+    <button type="submit" class="go" id="commit-button" data-verb={verb}>{verb} {checkedCount} selected</button>
+    {rescan && <a href={rescan.href} style="font-size: 16px">{rescan.label}</a>}
+    <a href={cancelHref} style="font-size: 16px; color: #9A2B1E">{cancelLabel}</a>
+  </div>
+</form>
+{instances.map((v) => editing === v.p.id && (
+  <form id={`pf-${v.p.id}`} method="POST" action={actions.updateProposal}>
+    <input type="hidden" name="proposalId" value={v.p.id} />
+    <input type="hidden" name="returnTo" value={returnTo} />
+  </form>
+))}
+
+<script>
+  // Keep the primary button's count in step with the checkboxes. Without this the button still works.
+  const form = document.querySelector<HTMLFormElement>('form.review');
+  const button = document.getElementById('commit-button');
+  if (form && button) {
+    const update = () => {
+      const n = form.querySelectorAll<HTMLInputElement>('input[name="accept"]:checked').length;
+      button.textContent = `${button.dataset.verb} ${n} selected`;
+      form.querySelectorAll<HTMLElement>('article.prop').forEach((a) => {
+        const box = a.querySelector<HTMLInputElement>('input[name="accept"]');
+        if (box) a.classList.toggle('off', !box.checked);
+      });
+    };
+    form.addEventListener('change', update);
+  }
+</script>
+
+<style>
+  .prop { display: grid; grid-template-columns: 52px 1fr; gap: 0 16px; padding: 16px 0; border-top: 1px solid #ECEBE7; }
+  .prop.off { opacity: 0.55; }
+  .score { font-size: 17px; font-weight: 600; padding-top: 1px; }
+  .head { display: flex; flex-wrap: wrap; gap: 0 12px; align-items: baseline; }
+  .proms { margin-left: auto; display: inline-flex; gap: 0 12px; font-size: 15px; flex-wrap: wrap; }
+  .prom { padding: 8px 0; cursor: pointer; color: #66645E; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .prom.on, .prom:has(input:checked) { font-weight: 700; color: #1B1B1B; text-decoration: none; }
+  .prom input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .quotes { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+  .quote { margin: 0; font-style: italic; color: #3A3A36; font-size: 15px; line-height: 1.5; }
+  .textedit { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .buttons { margin: 4px 0 0; font-size: 16px; display: flex; gap: 16px; }
+  .commit { margin-top: 32px; padding-top: 20px; border-top: 1px solid #1B1B1B; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+</style>

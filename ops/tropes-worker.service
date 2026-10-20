@@ -1,0 +1,17 @@
+# systemd user unit for the pipeline worker on ivory.
+#   cp ops/tropes-worker.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload && systemctl --user enable --now tropes-worker
+#   journalctl --user -u tropes-worker -f
+# Needs `loginctl enable-linger $USER` once so it runs without a login session.
+[Unit]
+Description=Trope Log pipeline worker
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/projects/tropes/worker
+ExecStart=%h/.local/bin/uv run tropes-worker run
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

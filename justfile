@@ -65,6 +65,26 @@ import file *flags:
 seed *flags:
     npx tsx scripts/seed.ts {{flags}}
 
+# Create a worker API token (printed once): just api-key ivory-worker
+[working-directory('web')]
+api-key name:
+    npx tsx scripts/api-key.ts '{{name}}'
+
+# Register text sources for works: just link-sources ../data/sources/sources.json  |  just link-sources "Lent" path.epub
+[working-directory('web')]
+link-sources *args:
+    npx tsx scripts/link-sources.ts {{args}}
+
+# Run the pipeline worker in the foreground (reads the repo .env).
+[working-directory('worker')]
+worker *flags:
+    uv run tropes-worker run {{flags}}
+
+# Score the scan against verified instances: just eval --trope dog-duo
+[working-directory('worker')]
+eval *flags:
+    uv run tropes-worker eval {{flags}}
+
 # Print a password hash for OWNER_PASSWORD_HASH: just hash-password 'secret'
 [working-directory('web')]
 hash-password password:

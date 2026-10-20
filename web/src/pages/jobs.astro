@@ -1,0 +1,48 @@
+---
+import { desc } from 'drizzle-orm';
+import { actions } from 'astro:actions';
+import Base from '../layouts/Base.astro';
+import JobStatus from '../components/JobStatus.astro';
+import { db } from '../db';
+import { dossier, job } from '../db/schema';
+import { afterAction } from '../lib/after-action';
+import { reviewState } from '../lib/jobs/page';
+import { parseJson } from '../lib/jobs/queue';
+import { count } from 'drizzle-orm';
+
+if (!Astro.locals.owner) return Astro.redirect('/login');
+const { redirect, error } = afterAction(Astro);
+if (redirect) return redirect;
+const { job: current } = reviewState(Astro, db);
+const recent = db.select().from(job).orderBy(desc(job.id)).limit(30).all();
+const [{ n: dossiers }] = db.select({ n: count() }).from(dossier).all();
+const cost = (j: typeof recent[number]) => { const u = parseJson<any>(j.usage, null); return u?.costUsd ? `$${u.costUsd.toFixed(3)}` : ''; };
+---
+
+<Base title="Jobs">
+  <h1>Jobs</h1>
+  <p class="quiet" style="margin: 4px 0 0; font-size: 15px">{dossiers} dossiers built. The worker runs on ivory with `just worker`.</p>
+  {error && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">{error}</p>}
+  <form method="POST" action={actions.startDossierBuild} style="margin-top: 24px; display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap">
+    <button type="submit" class="t" name="onlyMissing" value="true">Build missing dossiers</button>
+    <button type="submit" class="t" name="onlyMissing" value="false">Rebuild all dossiers</button>
+  </form>
+  {current && current.status !== 'done' && <JobStatus job={current} returnTo="/jobs" what={`${current.kind} ${current.id}.`} />}
+  <div style="overflow-x: auto; margin-top: 32px">
+    <table style="min-width: 640px">
+      <thead><tr><th><span class="th">Job</span></th><th><span class="th">Kind</span></th><th><span class="th">Status</span></th><th><span class="th">Created</span></th><th><span class="th">Cost</span></th><th><span class="th">Summary</span></th></tr></thead>
+      <tbody>
+        {recent.map((j) => (
+          <tr>
+            <td class="num"><a href={`/jobs?job=${j.id}`}>{j.id}</a></td>
+            <td style="font-size: 15px">{j.kind}</td>
+            <td style="font-size: 15px">{j.status}</td>
+            <td class="quiet num" style="font-size: 15px">{j.createdAt.slice(0, 16)}</td>
+            <td class="num" style="font-size: 15px">{cost(j)}</td>
+            <td class="quiet" style="font-size: 14px; max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{j.error ? j.error.slice(0, 120) : JSON.stringify(parseJson<any>(j.result, {})?.summary ?? {}).slice(0, 160)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</Base>

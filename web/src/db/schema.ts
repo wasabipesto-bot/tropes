@@ -146,3 +146,107 @@ export type Series = typeof series.$inferSelect;
 export type Trope = typeof trope.$inferSelect;
 export type Instance = typeof instance.$inferSelect;
 export type Evidence = typeof evidence.$inferSelect;
+
+/** A text, subtitle or media file on this host for a work. Phase 3 uses kind='text' only. */
+export const localSource = sqliteTable('local_source', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  mediaId: integer('media_id').notNull().references(() => media.id, { onDelete: 'cascade' }),
+  kind: text('kind', { enum: ['text', 'video', 'subtitle', 'audio'] }).notNull(),
+  path: text('path').notNull(),
+  createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+});
+
+/** Something the owner wrote about a work, found on Tumblr or injected by hand. Feeds the dossier. */
+export const mediaNote = sqliteTable('media_note', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  mediaId: integer('media_id').notNull().references(() => media.id, { onDelete: 'cascade' }),
+  source: text('source', { enum: ['tumblr', 'review', 'manual'] }).notNull(),
+  url: text('url'),
+  text: text('text').notNull(),
+  fetchedAt: text('fetched_at').notNull().default(sql`(datetime('now'))`),
+});
+
+export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject'] as const;
+export const JOB_STATUSES = ['queued', 'running', 'done', 'failed', 'cancelled'] as const;
+
+/** Work handed to the worker. Payload and result are JSON validated by zod on the site and pydantic in the worker. */
+export const job = sqliteTable('job', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  kind: text('kind', { enum: JOB_KINDS }).notNull(),
+  payload: text('payload').notNull().default('{}'),
+  status: text('status', { enum: JOB_STATUSES }).notNull().default('queued'),
+  progress: text('progress'),
+  result: text('result'),
+  error: text('error'),
+  usage: text('usage'),
+  attempts: integer('attempts').notNull().default(0),
+  createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+  claimedAt: text('claimed_at'),
+  heartbeatAt: text('heartbeat_at'),
+  finishedAt: text('finished_at'),
+});
+
+export const PROPOSAL_KINDS = ['instance', 'evidence'] as const;
+export const DECISIONS = ['pending', 'accepted', 'rejected'] as const;
+
+/** One suggestion from a job, waiting for the owner. Committing turns accepted ones into instances or evidence. */
+export const proposal = sqliteTable(
+  'proposal',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    jobId: integer('job_id').notNull().references(() => job.id, { onDelete: 'cascade' }),
+    /** Null while the trope only exists in the job payload (add-trope flow); set at commit. */
+    tropeId: integer('trope_id').references(() => trope.id, { onDelete: 'cascade' }),
+    subjectKind: text('subject_kind', { enum: SUBJECT_KINDS }).notNull(),
+    subjectId: integer('subject_id').notNull(),
+    kind: text('kind', { enum: PROPOSAL_KINDS }).notNull().default('instance'),
+    /** For evidence proposals: the existing instance the evidence belongs to. */
+    targetInstanceId: integer('target_instance_id').references(() => instance.id, { onDelete: 'cascade' }),
+    score: real('score').notNull().default(0),
+    prominence: text('prominence', { enum: PROMINENCES }).notNull().default('brief'),
+    who: text('who').notNull().default(''),
+    text: text('text').notNull().default(''),
+    /** JSON list of {kind, content, locator}. */
+    evidence: text('evidence').notNull().default('[]'),
+    /** One of the owner's seed examples for this trope. */
+    seed: integer('seed', { mode: 'boolean' }).notNull().default(false),
+    /** The owner left this subject unchecked for this trope before; shown last. */
+    rejectedBefore: integer('rejected_before', { mode: 'boolean' }).notNull().default(false),
+    /** JSON list of warnings: writing check tripped twice, quotes dropped, and so on. */
+    flags: text('flags').notNull().default('[]'),
+    decision: text('decision', { enum: DECISIONS }).notNull().default('pending'),
+    createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+  },
+  (t) => [index('proposal_job_idx').on(t.jobId), index('proposal_trope_idx').on(t.tropeId)],
+);
+
+export const DOSSIER_DEPTHS = ['knowledge', 'text'] as const;
+
+/** The per-work summary the matcher reads. Internal; never shown on the site. */
+export const dossier = sqliteTable(
+  'dossier',
+  {
+    subjectKind: text('subject_kind', { enum: SUBJECT_KINDS }).notNull(),
+    subjectId: integer('subject_id').notNull(),
+    depth: text('depth', { enum: DOSSIER_DEPTHS }).notNull(),
+    body: text('body').notNull(),
+    model: text('model').notNull(),
+    promptVersion: integer('prompt_version').notNull(),
+    sourceHash: text('source_hash'),
+    builtAt: text('built_at').notNull().default(sql`(datetime('now'))`),
+  },
+  (t) => [primaryKey({ columns: [t.subjectKind, t.subjectId] })],
+);
+
+/** Bearer tokens for the worker. The token is shown once; only its hash is stored. */
+export const apiKey = sqliteTable('api_key', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  hash: text('hash').notNull().unique(),
+  createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+  lastUsedAt: text('last_used_at'),
+});
+
+export type Job = typeof job.$inferSelect;
+export type Proposal = typeof proposal.$inferSelect;
+export type Dossier = typeof dossier.$inferSelect;
