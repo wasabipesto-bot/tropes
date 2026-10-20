@@ -71,8 +71,8 @@ def evaluate(settings: Settings, client: SiteClient, slugs: list[str] | None, ou
         }
         report.append(row)
         print(
-            f"{t['name']}: truth {row['truth']} (seeds {len(truth & seeds)}), proposed {row['proposed']} of {row['candidates']} cands; "
-            f"seed agreement {row['seed_agreement']}, non-seed recall {row['non_seed_recall_at_cutoff']} of {row['non_seed_truth']}, "
+            f"{t['name']}: truth {row['truth']} (seeds {len(truth & seeds)}), proposed {row['proposed']} of {row['candidates']} cands; "  # noqa: E501
+            f"seed agreement {row['seed_agreement']}, non-seed recall {row['non_seed_recall_at_cutoff']} of {row['non_seed_truth']}, "  # noqa: E501
             f"noise at cutoff {noise}, precision {row['precision_at_cutoff']}, mean true score {row['mean_score_of_true']}, "
             f"{row['seconds']}s, ${row['usage']['costUsd']:.4f}"
         )
