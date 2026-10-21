@@ -521,6 +521,8 @@ from the mock, or we learn why not and tune the prompt.
 
 ### Phase 4: external metadata and posters (M)
 
+Plan for approval: [`plans/phase-4.md`](plans/phase-4.md) (2026-10-21).
+
 - `lookup_media` job: TMDB (films, TV, posters), Jikan (MAL), Wikipedia
   summary and infobox, TVDB, Open Library, Steam store API, Letterboxd and
   Metacritic and Rotten Tomatoes only where an API or clean page exists. IMDb
