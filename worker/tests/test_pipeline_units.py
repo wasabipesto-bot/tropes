@@ -39,3 +39,15 @@ def test_blurb_non_answers_are_not_descriptions():
     assert not usable("A Remedy game logged for 2026. I do not know this title, so I cannot describe its premise.")
     assert not usable("Short.")
     assert usable("An animated gothic action series based on the Konami games, following Trevor Belmont as he fights Dracula.")
+
+
+def test_extract_feeds_only_weakly_known_dossiers():
+    from tropes_worker.pipeline import dossier_needed, extract_hash, wants_extract
+
+    strong = {"wikiExtract": "x", "dossier": {"known": "strong", "promptVersion": 2, "depth": "knowledge", "sourceHash": None}}
+    partial = {"wikiExtract": "x", "dossier": {"known": "partial", "promptVersion": 2, "depth": "knowledge", "sourceHash": None}}
+    assert not wants_extract(strong) and wants_extract(partial)
+    assert not dossier_needed(strong, 2, False, None)
+    assert dossier_needed(partial, 2, False, None)
+    partial["dossier"]["sourceHash"] = extract_hash(partial)
+    assert not dossier_needed(partial, 2, False, None)

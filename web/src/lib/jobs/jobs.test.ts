@@ -28,11 +28,11 @@ describe('job queue', () => {
     expect(progressJob(db, j.id, { done: 1, total: 2 })?.progress).toContain('"done":1');
     completeJob(db, j.id, {
       summary: { proposals: 1, seeds: [{ title: 'Pantheon', resolved: true, found: true, score: 0.9 }] },
-      proposals: [{ tropeId: null, subject: { kind: 'media', id: m1.id }, kind: 'instance', score: 0.9, prominence: 'core', who: 'UIs', text: 'Text.', evidence: [{ kind: 'quote', content: 'q', locator: 'ch. 1' }], seed: true, rejectedBefore: false, flags: [] }],
+      proposals: [{ tropeId: null, subject: { kind: 'media', id: m1.id }, kind: 'instance', score: 0.9, prominence: 'core', who: 'UIs', text: 'Text.', evidence: [{ kind: 'quote', content: 'q', locator: 'ch. 1' }], seed: true, rejectedBefore: false, flags: [], payload: {} }],
       dossiers: [{ subject: { kind: 'media', id: m1.id }, depth: 'knowledge', body: { known: 'strong' }, model: 'm', promptVersion: 1 }],
       notes: [{ mediaId: m1.id, source: 'tumblr', url: null, text: 'a post' }],
       usage: { calls: 3, promptTokens: 10, completionTokens: 5, cachedTokens: 0, costUsd: 0.01 },
-      warnings: [],
+      descriptions: [], warnings: [],
     });
     const done = db.select().from(job).where(eq(job.id, j.id)).get()!;
     expect(done.status).toBe('done');
@@ -67,10 +67,10 @@ describe('job queue', () => {
     completeJob(db, j.id, {
       summary: {},
       proposals: [
-        { subject: { kind: 'media', id: m1.id }, kind: 'instance', score: 0.9, prominence: 'core', who: 'A', text: 'One.', evidence: [{ kind: 'quote', content: 'q1', locator: '' }], seed: false, rejectedBefore: false, flags: [] },
-        { subject: { kind: 'media', id: m2.id }, kind: 'instance', score: 0.6, prominence: 'brief', who: 'B', text: 'Two.', evidence: [], seed: false, rejectedBefore: false, flags: [] },
+        { subject: { kind: 'media', id: m1.id }, kind: 'instance', score: 0.9, prominence: 'core', who: 'A', text: 'One.', evidence: [{ kind: 'quote', content: 'q1', locator: '' }], seed: false, rejectedBefore: false, flags: [], payload: {} },
+        { subject: { kind: 'media', id: m2.id }, kind: 'instance', score: 0.6, prominence: 'brief', who: 'B', text: 'Two.', evidence: [], seed: false, rejectedBefore: false, flags: [], payload: {} },
       ],
-      dossiers: [], notes: [], warnings: [],
+      dossiers: [], notes: [], descriptions: [], warnings: [],
     });
     const ids = db.select().from(proposal).all().map((p) => p.id);
     const out = commitProposals(db, j.id, new Set([ids[0]]), { [String(ids[0])]: 'recurring' });
@@ -109,6 +109,7 @@ describe('job queue', () => {
     const inst = db.select().from(instance).all();
     expect(inst).toHaveLength(1);
     expect(inst[0].verified).toBe(false);
+    expect(inst[0].origin).toBe('auto');
     const decisions = db.select().from(proposal).all().map((p) => p.decision);
     expect(decisions).toEqual(['accepted', 'pending']);
   });

@@ -4,6 +4,7 @@ the writing check. Jobs and the eval command call these; they do not talk to the
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import logging
 from dataclasses import dataclass, field
@@ -62,6 +63,18 @@ def load_subject_text(settings: Settings, subject: dict[str, Any], texts_by_medi
 # Dossiers -----------------------------------------------------------------
 
 
+def extract_hash(subject: dict[str, Any]) -> str | None:
+    """Source hash for a knowledge dossier built with the Wikipedia extract, so a changed extract rebuilds it."""
+    text = subject.get("wikiExtract")
+    return "wiki:" + hashlib.sha1(text.encode()).hexdigest() if text else None
+
+
+def wants_extract(subject: dict[str, Any]) -> bool:
+    """The extract feeds dossiers the model knows only partly or not at all (plan D16); strong ones do without."""
+    d = subject.get("dossier")
+    return bool(subject.get("wikiExtract")) and (not d or d.get("known") in ("partial", "none"))
+
+
 def dossier_needed(subject: dict[str, Any], prompt_version: int, has_text: bool, source_hash: str | None) -> bool:
     d = subject.get("dossier")
     if not d:
@@ -72,6 +85,8 @@ def dossier_needed(subject: dict[str, Any], prompt_version: int, has_text: bool,
         return True
     if has_text and d.get("sourceHash") != source_hash:
         return True
+    if not has_text and wants_extract(subject) and d.get("sourceHash") != extract_hash(subject):
+        return True
     return False
 
 
@@ -79,9 +94,11 @@ async def build_dossier(
     llm: LLM, settings: Settings, subject: dict[str, Any], text: Text | None, notes: list[dict[str, Any]]
 ) -> dict[str, Any]:
     notes_block = "\n\n".join(f"- {n['text'][:2000]}" for n in notes) or "(none)"
+    use_extract = text is None and wants_extract(subject)
+    extract = f"Encyclopaedia summary:\n{subject['wikiExtract']}" if use_extract else ""
     out = await llm.complete(
         "dossier",
-        {"entry": entry_text(subject), "notes": notes_block, "text_section": text_section(text)},
+        {"entry": entry_text(subject), "notes": notes_block, "extract": extract, "text_section": text_section(text)},
         DossierOut,
         model=settings.model_dossier,
     )
@@ -91,7 +108,7 @@ async def build_dossier(
         "body": out.model_dump(),
         "model": settings.model_dossier,
         "promptVersion": load_prompt("dossier").version,
-        "sourceHash": text.source_hash if text else None,
+        "sourceHash": text.source_hash if text else (extract_hash(subject) if use_extract else None),
     }
 
 

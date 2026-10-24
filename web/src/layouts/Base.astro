@@ -2,17 +2,20 @@
 import { actions } from 'astro:actions';
 import '../styles/global.css';
 import Spoilers from '../components/Spoilers.astro';
+import { db } from '../db';
+import { reviewCount } from '../lib/review';
 
 interface Props {
   title: string;
   /** Trope, media and library pages use the 1440px frame; index and form pages use 980px. */
   wide?: boolean;
-  current?: 'tropes' | 'library' | 'add-trope' | 'add-media';
+  current?: 'tropes' | 'library' | 'add-trope' | 'review' | 'jobs';
 }
 
 const { title, wide = false, current } = Astro.props;
 const owner = Astro.locals.owner;
 const at = (page: Props['current']) => (current === page ? 'page' : undefined);
+const waiting = owner ? reviewCount(db) : 0;
 ---
 
 <!doctype html>
@@ -31,7 +34,8 @@ const at = (page: Props['current']) => (current === page ? 'page' : undefined);
             <a href="/tropes" aria-current={at('tropes')}>Tropes</a>
             <a href="/library" aria-current={at('library')}>Library</a>
             {owner && <a href="/add/trope" aria-current={at('add-trope')}>Add trope</a>}
-            {owner && <a href="/add/media" aria-current={at('add-media')}>Add media</a>}
+            {owner && <a href="/review" aria-current={at('review')}>Review{waiting > 0 && <span class="quiet"> {waiting}</span>}</a>}
+            {owner && <a href="/jobs" aria-current={at('jobs')}>Jobs</a>}
           </nav>
           <form class="search" action="/search" method="get" role="search">
             <label for="q" class="visually-hidden">Search</label>
@@ -47,11 +51,13 @@ const at = (page: Props['current']) => (current === page ? 'page' : undefined);
           <span>Trope Log</span>
           <a href="/tropes">Tropes</a>
           <a href="/library">Library</a>
-          {owner && (
+          {owner ? (
             <form method="POST" action={actions.logout} style="display: inline">
               <input type="hidden" name="returnTo" value={Astro.url.pathname} />
               <button type="submit" class="t" style="color: inherit">Log out</button>
             </form>
+          ) : (
+            <a href="/login">Log in</a>
           )}
           <a href="https://wasabipesto.com" class="home">wasabipesto.com</a>
         </div>

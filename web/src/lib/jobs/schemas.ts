@@ -15,7 +15,13 @@ export const checkSubjectPayload = z.object({ mode: z.enum(['add', 'recheck']), 
 export const buildDossiersPayload = z.object({ onlyMissing: z.boolean().default(true), subjects: z.array(subjectRef).optional(), auto: z.boolean().default(false) });
 export const pingPayload = z.object({});
 /** lookup_media: resolve and fetch metadata for these works. `refresh` re-fetches from the pinned identity and never re-matches. */
-export const lookupMediaPayload = z.object({ mediaIds: z.array(z.number().int().positive()).min(1), auto: z.boolean().default(false), refresh: z.boolean().default(false) });
+export const lookupMediaPayload = z.object({
+  mediaIds: z.array(z.number().int().positive()).min(1),
+  auto: z.boolean().default(false),
+  refresh: z.boolean().default(false),
+  /** A poster URL the owner picked; the worker tries it first. */
+  poster: z.string().optional(),
+});
 export const syncNotionPayload = z.object({});
 export const writeBlurbsPayload = z.object({ mediaIds: z.array(z.number().int().positive()).min(1), auto: z.boolean().default(false) });
 

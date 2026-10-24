@@ -85,6 +85,16 @@ worker *flags:
 eval *flags:
     uv run tropes-worker eval {{flags}}
 
+# Read the Notion Media Log once and hand the rows to the site (the worker loop also does this on a timer).
+[working-directory('worker')]
+sync-notion:
+    uv run tropes-worker sync
+
+# Resolve identities for a sample of the library and print the report; writes nothing: just lookup --sample 50
+[working-directory('worker')]
+lookup *flags:
+    uv run tropes-worker lookup {{flags}}
+
 # Print a password hash for OWNER_PASSWORD_HASH: just hash-password 'secret'
 [working-directory('web')]
 hash-password password:

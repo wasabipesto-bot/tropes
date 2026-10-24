@@ -19,6 +19,7 @@ export interface CommitOptions {
 export function commitProposals(db: Db, jobId: number, accepted: Set<number>, prominence: Record<string, Prominence>, opts: CommitOptions = {}): { returnTo: string; created: number } {
   const verified = opts.verified ?? true;
   const rejectRest = opts.rejectRest ?? true;
+  const origin = verified ? 'model' : 'auto';
   return db.transaction((tx) => {
     const j = tx.select().from(job).where(eq(job.id, jobId)).get();
     if (!j || j.status !== 'done') throw new Error('That scan is no longer open.');
@@ -58,7 +59,7 @@ export function commitProposals(db: Db, jobId: number, accepted: Set<number>, pr
           const already = tx.select().from(instance).where(and(eq(instance.tropeId, tId), eq(instance.subjectKind, p.subjectKind), eq(instance.subjectId, p.subjectId))).get();
           const inst = already ?? tx
             .insert(instance)
-            .values({ tropeId: tId, subjectKind: p.subjectKind, subjectId: p.subjectId, who: p.who, text: p.text, prominence: prominence[String(p.id)] ?? p.prominence, verified, score: p.score, origin: 'model' })
+            .values({ tropeId: tId, subjectKind: p.subjectKind, subjectId: p.subjectId, who: p.who, text: p.text, prominence: prominence[String(p.id)] ?? p.prominence, verified, score: p.score, origin })
             .returning()
             .get();
           addEvidence(tx as unknown as Db, inst.id, parseJson<any[]>(p.evidence, []));

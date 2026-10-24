@@ -11,6 +11,8 @@ uv run tropes-worker ping                 # is the site up?
 uv run tropes-worker run                  # claim and run jobs until stopped
 uv run tropes-worker run --once           # one job, then exit (debugging)
 uv run tropes-worker eval --trope dog-duo # score the scan against verified instances
+uv run tropes-worker sync                 # read the Notion Media Log once and hand the rows to the site
+uv run tropes-worker lookup --sample 50   # resolve identities for a sample; prints a report, writes nothing
 ```
 
 From the repo root: `just worker`, `just eval --trope dog-duo`, `just api-key
@@ -41,6 +43,10 @@ repo root. Values in parentheses are defaults.
 | `TROPES_SOURCES_DIR` (`<repo>/data/sources`) | where relative text-source paths resolve |
 | `TROPES_TEXT_CACHE_DIR` (`<repo>/data/text`) | extracted text, keyed by file hash |
 | `TROPES_MIDDEN_KEY` | key for the Tumblr archive search; without it dossiers skip the owner's posts |
+| `NOTION_API_KEY` | read-only integration shared with the Media Log; the loop queues a `sync_notion` job every `TROPES_NOTION_SYNC_MINUTES` (15; 0 disables) |
+| `TROPES_TMDB_TOKEN` | TMDB API read access token; without it TV and film details fall back to Wikidata |
+| `TROPES_MAL_CLIENT_ID` | MyAnimeList API client id; without it anime details and scores are skipped |
+| `TROPES_LOOKUP_CACHE_DIR` (`<repo>/data/cache/lookup`) | raw responses from every metadata source, keyed by URL, so merges can be re-run without fetching |
 
 ## Job kinds
 
@@ -58,8 +64,35 @@ repo root. Values in parentheses are defaults.
 - `check_subject`: one work or series against every trope in one call, plus
   new evidence for its existing instances on a recheck. Payload `{mode, subject}`.
 
+- `sync_notion`: read every row of the Media Log through Notion's API and
+  post them to `POST /api/import/notion`; the site upserts, marks rows that
+  stopped coming back, and queues `lookup_media` for new entries.
+- `lookup_media`: for each work, resolve its identity (an exact id from the
+  Notion Media Link, else a Wikidata search restricted to the type's classes
+  and scored on title, class, creator and year; the model only breaks ties;
+  per-site search when Wikidata has nothing), then fetch details, links and
+  scores from TMDB, MAL, Steam, Open Library, MusicBrainz, iTunes, the IMDb
+  ratings dataset and the Rotten Tomatoes, Metacritic and Goodreads pages,
+  download the first usable poster into 900/300/50 px WebP uploads, and map
+  the sources' genres onto the site's vocabulary. Payload
+  `{mediaIds, auto?, refresh?, poster?}`; `refresh` re-fetches from the pinned
+  identity and never re-matches. The result is one `match` proposal per work;
+  with `auto`, confident matches are committed by the site at once.
+- `write_blurbs`: a two- or three-sentence description draft per work from
+  its dossier and Wikipedia extract; non-answers are dropped. Payload `{mediaIds}`.
+
 Results carry `usage` (calls, tokens, cost in USD as OpenRouter reports it)
 and `warnings`; the review pages show both.
+
+## Metadata sources
+
+`src/tropes_worker/lookup/`: one module per site (`tmdb`, `mal`, `steam`,
+`openlibrary`, `musicbrainz`, `itunes`, `imdb`, `scores`), each a `fetch(ids)`
+returning a `Partial` and a `search(title)` returning candidates; `wikidata`
+and `wikipedia` for the identity hub and extracts; `resolve` for the scoring;
+`merge` for the per-type precedence; `posters` and `genres`; `http` for the
+one polite client (per-host gaps, project User-Agent, raw-response cache).
+Every parser has a test against a saved response in `tests/fixtures/lookup/`.
 
 ## Prompts
 

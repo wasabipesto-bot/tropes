@@ -1,13 +1,18 @@
 ---
+import { statSync } from 'node:fs';
 import { eq } from 'drizzle-orm';
 import { actions } from 'astro:actions';
 import Base from '../../layouts/Base.astro';
 import InstanceList from '../../components/InstanceList.astro';
 import RatingMark from '../../components/RatingMark.astro';
 import { db } from '../../db';
-import { media } from '../../db/schema';
+import { media, mediaGenre, mediaLink } from '../../db/schema';
 import { afterAction } from '../../lib/after-action';
-import { linkLabel, metadataLine } from '../../lib/media';
+import { posterPath } from '../../lib/files';
+import { genreVocabulary, kindsFor } from '../../lib/genres';
+import { pendingReviewFor } from '../../lib/jobs/pending';
+import { linkLabel, metadataLine, orderedLinks, type Details } from '../../lib/media';
+import { parseDetails } from '../../lib/metadata';
 import { allTropes, instancesForMedia, seriesForMedia, tropeHrefResolver } from '../../lib/queries';
 import { ratingsOf } from '../../lib/rating';
 import { renderText } from '../../lib/text';
@@ -21,6 +26,8 @@ if (redirect) return redirect;
 const owner = Astro.locals.owner;
 const p = Astro.url.searchParams;
 const editDesc = owner && p.get('edit') === 'desc';
+const editLinks = owner && p.get('edit') === 'links';
+const editGenres = owner && p.get('edit') === 'genres';
 const editing = owner && /^\d+$/.test(p.get('edit') ?? '') ? Number(p.get('edit')) : null;
 const render = { tropeHref: tropeHrefResolver(db) };
 const items = instancesForMedia(db, m.id);
@@ -28,16 +35,36 @@ const partOf = seriesForMedia(db, m.id);
 const here = `/media/${m.id}`;
 const returnTo = Astro.url.pathname + Astro.url.search;
 const tumblr = `https://wasabipesto.tumblr.com/search/${encodeURIComponent(m.title)}`;
+
+const details = parseDetails(m) as Details;
+const genres = db.select({ g: mediaGenre.genre }).from(mediaGenre).where(eq(mediaGenre.mediaId, m.id)).all().map((r) => r.g);
+const links = orderedLinks(m.type, db.select().from(mediaLink).where(eq(mediaLink.mediaId, m.id)).all());
+const shown = links.filter((l) => !l.hidden);
+// The Notion Media Link stays in the margin unless the lookup already carries that site.
+const notionLink = m.notionMediaUrl && !shown.some((l) => l.label === linkLabel(m.notionMediaUrl!)) ? m.notionMediaUrl : null;
+const reviews = details.reviews ?? [];
+
+let poster: string | null = null;
+if (m.posterPath) {
+  try { poster = `/posters/${m.id}-300.webp?v=${Math.floor(statSync(posterPath(m.id, 300)).mtimeMs)}`; } catch { poster = null; }
+}
+// Entries the lookup has not reached yet keep Notion's image for now; after the backfill every poster is local.
+if (!poster && !m.identity && m.notionImageUrl) poster = m.notionImageUrl;
+
+const vocab = genreVocabulary();
+const genreOptions = vocab.genres.filter((g) => kindsFor(m.type).includes(g.kind));
+const pending = owner ? pendingReviewFor(db, 'media', m.id) : null;
+const fmt = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
 ---
 
 <Base title={m.title} wide>
   <div class="row">
     <div class="lab">
-      {m.notionImageUrl && <img src={m.notionImageUrl} alt={`${m.title} poster`} style="display: block; width: 150px; max-width: 100%; height: auto" loading="lazy" />}
+      {poster && <img src={poster} alt={`${m.title} poster`} style="display: block; width: 150px; max-width: 100%; height: auto" loading="lazy" />}
     </div>
     <div>
       <h1>{m.title}</h1>
-      <p class="quiet" style="margin: 4px 0 0; font-size: 15px">{metadataLine(m)}{partOf.length > 0 && <> Part of {partOf.map((s, i) => <><a href={`/series/${s.slug}`} style="color: inherit">{s.name}</a>{i < partOf.length - 1 ? ', ' : '.'}</>)}</>}</p>
+      <p class="quiet" style="margin: 4px 0 0; font-size: 15px">{metadataLine(m, details, genres)}{partOf.length > 0 && <> Part of {partOf.map((s, i) => <><a href={`/series/${s.slug}`} style="color: inherit">{s.name}</a>{i < partOf.length - 1 ? ', ' : '.'}</>)}</>}</p>
       {editDesc ? (
         <form method="POST" action={actions.updateMediaDescription} style="margin-top: 20px">
           <input type="hidden" name="mediaId" value={m.id} />
@@ -45,19 +72,75 @@ const tumblr = `https://wasabipesto.tumblr.com/search/${encodeURIComponent(m.tit
           <label for="desc" class="visually-hidden">Description</label>
           <textarea id="desc" name="description" class="fld" rows="4">{m.description}</textarea>
           <p class="quiet" style="margin: 4px 0 0; font-size: 15px">[[Trope name]] links to a trope.</p>
+          {m.wikiExtract && <p class="quiet" style="margin: 10px 0 0; font-size: 15px"><span style="font-style: italic">Wikipedia:</span> {m.wikiExtract}</p>}
           <p style="margin: 8px 0 0; font-size: 16px; display: flex; gap: 16px"><button type="submit" class="t" style="padding: 8px 0">Save</button><a href={here} class="quiet" style="padding: 8px 0">Cancel</a></p>
         </form>
       ) : (
         <>
           {m.description && <Fragment set:html={renderText(m.description, render, ' style="margin: 20px 0 0"')} />}
-          {owner && <p style="margin: 8px 0 0; font-size: 15px; display: flex; gap: 16px; flex-wrap: wrap"><a href={`${here}?edit=desc`} style="padding: 6px 0">Edit description</a><a href={`/recheck/media/${m.id}`} style="padding: 6px 0">Recheck tropes</a></p>}
+          {owner && (
+            <p style="margin: 8px 0 0; font-size: 15px; display: flex; gap: 16px; flex-wrap: wrap; align-items: baseline">
+              <a href={`${here}?edit=desc`} style="padding: 6px 0">{m.description ? 'Edit description' : 'Write a description'}</a>
+              {m.descriptionOrigin === 'model' && <span class="quiet" title="Written by the model; edit or keep it">draft</span>}
+              <a href={`/update/media/${m.id}`} style="padding: 6px 0">Update</a>
+              <a href={`/media/${m.id}/dossier`} style="padding: 6px 0">Dossier</a>
+            </p>
+          )}
         </>
       )}
+      {owner && pending && <p class="quiet" style="margin: 6px 0 0; font-size: 15px">A {pending.kind === 'check_subject' ? 'check' : 'lookup'} from {fmt(pending.createdAt)} is <a href={pending.href}>waiting for review</a>.</p>}
+      {owner && !m.notionId && <p class="quiet" style="margin: 6px 0 0; font-size: 15px">Not in your Notion log yet.</p>}
+      {owner && m.notionMissingSince && <p class="quiet" style="margin: 6px 0 0; font-size: 15px">Gone from Notion since {fmt(m.notionMissingSince)}.</p>}
+      {owner && m.reviewNote && <p class="quiet" style="margin: 6px 0 0; font-size: 15px">{m.reviewNote}</p>}
       {error && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">{error}</p>}
     </div>
     <aside class="mar" style="font-size: 16px; line-height: 1.6; padding-top: 6px">
       <RatingMark ratings={ratingsOf(m)} size="page" />
-      {m.notionMediaUrl && <p style="margin: 10px 0 0"><a href={m.notionMediaUrl}>{linkLabel(m.notionMediaUrl)}</a></p>}
+      {(shown.length > 0 || notionLink || reviews.length > 0) && (
+        <p style="margin: 10px 0 0" class="links">
+          {shown.map((l, i) => <>{i > 0 && <span class="quiet"> · </span>}<a href={l.url}>{l.label}</a>{l.score && <span class="num"> {l.score}</span>}</>)}
+          {notionLink && <>{shown.length > 0 && <span class="quiet"> · </span>}<a href={notionLink}>{linkLabel(notionLink)}</a></>}
+          {reviews.map((r) => <><span class="quiet"> · </span><span class="quiet">{r.by} <span class="num">{r.score}</span></span></>)}
+        </p>
+      )}
+      {owner && !editLinks && !editGenres && (
+        <p style="margin: 4px 0 0; font-size: 15px; display: flex; gap: 14px; flex-wrap: wrap"><a href={`${here}?edit=links`}>Edit links</a><a href={`${here}?edit=genres`}>Edit genres</a></p>
+      )}
+      {editLinks && (
+        <div class="panel">
+          {links.map((l) => (
+            <form method="POST" action={actions.toggleLinkHidden} class="line-form">
+              <input type="hidden" name="linkId" value={l.id} />
+              <input type="hidden" name="returnTo" value={`${here}?edit=links`} />
+              <span class:list={{ quiet: l.hidden }}>{l.label}{l.score ? ` ${l.score}` : ''}{l.origin === 'owner' ? ' (yours)' : ''}</span>
+              <button type="submit" class="t">{l.hidden ? 'Show' : 'Hide'}</button>
+              {l.origin === 'owner' && <button type="submit" class="t danger" name="remove" value="1">Remove</button>}
+            </form>
+          ))}
+          <form method="POST" action={actions.addLink} class="line-form" style="margin-top: 8px">
+            <input type="hidden" name="mediaId" value={m.id} />
+            <input type="hidden" name="returnTo" value={`${here}?edit=links`} />
+            <input name="url" type="url" class="line" placeholder="https://" style="width: 220px" />
+            <button type="submit" class="t">Add link</button>
+          </form>
+          <p style="margin: 8px 0 0; font-size: 15px"><a href={here}>Done</a></p>
+        </div>
+      )}
+      {editGenres && (
+        <form method="POST" action={actions.updateGenres} class="panel">
+          <input type="hidden" name="mediaId" value={m.id} />
+          <input type="hidden" name="returnTo" value={here} />
+          <div class="genre-grid">
+            {genreOptions.map((g) => (
+              <div>
+                <label class="ck" style="font-weight: 600"><input type="checkbox" name="genre" value={g.name} checked={genres.includes(g.name)} />{g.name}</label>
+                {g.sub.length > 0 && <div style="padding-left: 26px; display: flex; flex-direction: column">{g.sub.map((s) => <label class="ck" style="font-size: 15px; padding: 1px 0"><input type="checkbox" name="genre" value={s} checked={genres.includes(s)} />{s}</label>)}</div>}
+              </div>
+            ))}
+          </div>
+          <p style="margin: 10px 0 0; font-size: 15px; display: flex; gap: 16px"><button type="submit" class="t">Save genres</button><a href={here} class="quiet">Cancel</a></p>
+        </form>
+      )}
       {m.localRoot && <p class="quiet" style="margin: 4px 0 0; font-size: 15px">Local copy: {m.localRoot}</p>}
       <p style="margin: 4px 0 0; font-size: 15px"><a href={tumblr}>Your posts mentioning “{m.title}”</a></p>
     </aside>
@@ -85,4 +168,9 @@ const tumblr = `https://wasabipesto.tumblr.com/search/${encodeURIComponent(m.tit
 
 <style>
   .add { border-top: 1px solid #1B1B1B; padding-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; font-size: 16px; }
+  .links { font-size: 15px; line-height: 1.7; }
+  .panel { margin: 10px 0 0; padding: 8px 0 8px 14px; border-left: 1px solid #C9C7C0; font-size: 15px; }
+  .line-form { display: flex; flex-wrap: wrap; gap: 0 12px; align-items: baseline; }
+  .line-form .t { padding: 4px 0; }
+  .genre-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 6px 14px; font-size: 16px; }
 </style>

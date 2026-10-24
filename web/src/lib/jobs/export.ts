@@ -23,7 +23,8 @@ export function exportTropes(db: Db) {
 export function exportSubjects(db: Db) {
   const sources = db.select().from(localSource).where(eq(localSource.kind, 'text')).all();
   const notes = db.select().from(mediaNote).all();
-  const built = db.select({ kind: dossier.subjectKind, id: dossier.subjectId, depth: dossier.depth, promptVersion: dossier.promptVersion, sourceHash: dossier.sourceHash }).from(dossier).all();
+  const built = db.select({ kind: dossier.subjectKind, id: dossier.subjectId, depth: dossier.depth, promptVersion: dossier.promptVersion, sourceHash: dossier.sourceHash, body: dossier.body }).from(dossier).all()
+    .map(({ body, ...rest }) => ({ ...rest, known: (() => { try { return JSON.parse(body).known ?? null; } catch { return null; } })() as string | null }));
   const members = db.select().from(seriesMember).all();
   const dossierFor = (kind: 'media' | 'series', id: number) => built.find((b) => b.kind === kind && b.id === id) ?? null;
   const mediaRows = db.select().from(media).all().map((m) => ({

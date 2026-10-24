@@ -4,13 +4,16 @@ import { z } from 'astro/zod';
 import { and, eq, sql } from 'drizzle-orm';
 import type { ActionAPIContext } from 'astro:actions';
 import { db } from '../db';
-import { MEDIA_TYPES, PROMINENCES, evidence, instance, job, media, notable, proposal, series, trope, tropeSeed } from '../db/schema';
+import { PROMINENCES, dossier, evidence, instance, job, media, mediaGenre, mediaLink, notable, proposal, series, trope, tropeAlias, tropeSeed } from '../db/schema';
 import { cancelJob, createJob, jobById, parseJson } from '../lib/jobs/queue';
 import { commitProposals } from '../lib/jobs/commit';
 import { commitInput, commitMatchesInput } from '../lib/jobs/forms';
 import { BACKFILL_BATCH, matchesFor, pinnedMediaIds, unresolvedMediaIds } from '../lib/jobs/matches';
 import { commitMatch, markNoMatch, pinCandidate, type Candidate } from '../lib/metadata';
 import { seedFromUrl } from '../lib/seeds';
+import { isGenre } from '../lib/genres';
+import { siteOf } from '../lib/media';
+import { renameTrope } from '../lib/rename';
 import { RateLimiter, SESSION_COOKIE, SESSION_DAYS, createSession, deleteSession } from '../lib/auth';
 import { verifyPassword } from '../lib/password';
 import { resolveSubject, resolveTrope } from '../lib/queries';
@@ -95,16 +98,6 @@ export const server = {
         db.insert(tropeSeed).values({ tropeId: created.id, title: line, mediaId: subject?.kind === 'media' ? subject.id : null }).run();
       }
       return { returnTo: `/tropes/${slug}` };
-    },
-  }),
-
-  createMedia: defineAction({
-    accept: 'form',
-    input: z.object({ title: z.string().trim().min(1), type: z.enum(MEDIA_TYPES), creator: z.string().trim().optional() }),
-    handler: async (input, context) => {
-      requireOwner(context);
-      const created = db.insert(media).values({ title: input.title, type: input.type, creator: input.creator || null }).returning().get();
-      return { returnTo: `/media/${created.id}` };
     },
   }),
 
@@ -243,27 +236,27 @@ export const server = {
     },
   }),
 
-  /** Add-media (Phase 3 form): the title must already be in the library; then check it against every trope. */
+  /** Check one work or series against every trope (the update flow's tropes part). */
   startSubjectCheck: defineAction({
     accept: 'form',
-    input: z.object({ title: z.string().trim().optional(), subjectKind: z.enum(['media', 'series']).optional(), subjectId: id.optional(), mode: z.enum(['add', 'recheck']).default('add') }),
+    input: z.object({ subjectKind: z.enum(['media', 'series']), subjectId: id }),
     handler: async (input, context) => {
       requireOwner(context);
-      const subject = input.subjectKind && input.subjectId ? { kind: input.subjectKind, id: input.subjectId } : resolveSubject(db, input.title ?? '');
-      if (!subject) throw new ActionError({ code: 'NOT_FOUND', message: `Nothing in the library is called “${input.title ?? ''}”. Import it from Notion or create it below first.` });
-      const j = createJob(db, 'check_subject', { mode: input.mode, subject });
-      const back = subject.kind === 'media' ? `/recheck/media/${subject.id}` : `/recheck/series/${subject.id}`;
-      return { returnTo: input.mode === 'add' ? `/add/media?job=${j.id}` : `${back}?job=${j.id}` };
+      const subject = { kind: input.subjectKind, id: input.subjectId };
+      const j = createJob(db, 'check_subject', { mode: 'recheck', subject });
+      const back = subject.kind === 'media' ? `/update/media/${subject.id}` : `/recheck/series/${subject.id}`;
+      return { returnTo: `${back}?job=${j.id}` };
     },
   }),
 
   startDossierBuild: defineAction({
     accept: 'form',
-    input: z.object({ onlyMissing: z.coerce.boolean().default(true) }),
+    input: z.object({ onlyMissing: z.coerce.boolean().default(true), subjectKind: z.enum(['media', 'series']).optional(), subjectId: id.optional(), returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
-      const j = createJob(db, 'build_dossiers', { onlyMissing: input.onlyMissing });
-      return { returnTo: `/jobs?job=${j.id}` };
+      const one = input.subjectKind && input.subjectId ? [{ kind: input.subjectKind, id: input.subjectId }] : undefined;
+      const j = createJob(db, 'build_dossiers', { onlyMissing: input.onlyMissing, ...(one ? { subjects: one } : {}) });
+      return { returnTo: input.returnTo ? `${input.returnTo}?job=${j.id}` : `/jobs?job=${j.id}` };
     },
   }),
 
@@ -285,6 +278,142 @@ export const server = {
       requireOwner(context);
       db.update(proposal).set({ who: input.who.trim(), text: input.text.trim() }).where(eq(proposal.id, input.proposalId)).run();
       return { returnTo: input.returnTo ?? '/tropes' };
+    },
+  }),
+
+  /** Hide or show a link in the links line; the owner's own links can be removed. */
+  toggleLinkHidden: defineAction({
+    accept: 'form',
+    input: z.object({ linkId: id, remove: z.string().optional(), returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const l = db.select().from(mediaLink).where(eq(mediaLink.id, input.linkId)).get();
+      if (!l) throw new ActionError({ code: 'NOT_FOUND', message: 'No such link.' });
+      if (input.remove && l.origin === 'owner') db.delete(mediaLink).where(eq(mediaLink.id, l.id)).run();
+      else db.update(mediaLink).set({ hidden: !l.hidden }).where(eq(mediaLink.id, l.id)).run();
+      return { returnTo: input.returnTo ?? `/media/${l.mediaId}` };
+    },
+  }),
+
+  /** Add a link by URL; the site is recognised from the host and replaces the lookup's link for that site. */
+  addLink: defineAction({
+    accept: 'form',
+    input: z.object({ mediaId: id, url: z.url().trim(), returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const site = siteOf(input.url) ?? new URL(input.url).hostname.replace(/^www\./, '');
+      db.transaction((tx) => {
+        tx.delete(mediaLink).where(and(eq(mediaLink.mediaId, input.mediaId), eq(mediaLink.site, site))).run();
+        tx.insert(mediaLink).values({ mediaId: input.mediaId, site, url: input.url, origin: 'owner' }).run();
+      });
+      return { returnTo: input.returnTo ?? `/media/${input.mediaId}` };
+    },
+  }),
+
+  /** Replace an entry's genres with the checked vocabulary entries; from then on refreshes leave them alone. */
+  updateGenres: defineAction({
+    accept: 'form',
+    input: z.object({ mediaId: id, genre: z.array(z.string()).optional(), returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const picked = [...new Set((input.genre ?? []).filter((g) => isGenre(g)))];
+      db.transaction((tx) => {
+        tx.delete(mediaGenre).where(eq(mediaGenre.mediaId, input.mediaId)).run();
+        for (const g of picked) tx.insert(mediaGenre).values({ mediaId: input.mediaId, genre: g }).run();
+        tx.update(media).set({ genresEdited: true, updatedAt: now() }).where(eq(media.id, input.mediaId)).run();
+      });
+      return { returnTo: input.returnTo ?? `/media/${input.mediaId}` };
+    },
+  }),
+
+  /**
+   * The update flow's one commit (plan T13): the identity choice (keep, a runner-up, none, or a pasted link),
+   * the description, and the poster choice. A changed identity or poster queues a refresh to fetch it.
+   */
+  updateMedia: defineAction({
+    accept: 'form',
+    input: z.object({ mediaId: id, identity: z.string().default('keep'), seedUrl: z.string().trim().optional(), description: z.string().optional(), poster: z.string().optional(), posterUrl: z.string().trim().optional() }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const m = db.select().from(media).where(eq(media.id, input.mediaId)).get();
+      if (!m) throw new ActionError({ code: 'NOT_FOUND', message: 'No such entry.' });
+      const candidates: Candidate[] = JSON.parse(m.identityCandidates || '[]');
+      let refresh = false;
+      let posterWanted: string | null = null;
+      if (input.identity === 'none') {
+        markNoMatch(db, m.id, candidates);
+      } else if (input.identity === 'link') {
+        const seed = input.seedUrl ? seedFromUrl(input.seedUrl) : null;
+        if (!seed) throw new ActionError({ code: 'BAD_REQUEST', message: 'Paste an IMDb, Steam, Goodreads, TMDB, MyAnimeList, Open Library, MusicBrainz, Wikipedia or Wikidata link.' });
+        const ids = { ...seed.ids, ...(seed.wikipedia ? { wikipedia: seed.wikipedia } : {}) };
+        pinCandidate(db, m.id, { qid: seed.qid ?? null, label: m.title, description: '', year: null, creator: m.creator, kinds: [], ids, wikipedia: seed.wikipedia ?? null, score: 1, reasons: ['link from the owner'], source: 'owner' }, candidates);
+        refresh = true;
+      } else if (/^\d+$/.test(input.identity) && candidates[Number(input.identity)]) {
+        pinCandidate(db, m.id, candidates[Number(input.identity)], candidates);
+        refresh = true;
+      }
+      if (input.description !== undefined) {
+        const text = input.description.trim();
+        if (text !== (m.description ?? '')) db.update(media).set({ description: text || null, descriptionOrigin: text ? 'owner' : null, updatedAt: now() }).where(eq(media.id, m.id)).run();
+        else if (text && m.descriptionOrigin === 'model' && input.identity === 'keep') db.update(media).set({ descriptionOrigin: 'owner' }).where(eq(media.id, m.id)).run();
+      }
+      if (!m.notionImageUrl) {
+        if (input.poster === 'url' && input.posterUrl) posterWanted = input.posterUrl;
+        else if (input.poster && /^https?:\/\//.test(input.poster) && input.poster !== m.posterSource) posterWanted = input.poster;
+      }
+      if (posterWanted || refresh) {
+        const fresh = db.select().from(media).where(eq(media.id, m.id)).get()!;
+        if (fresh.identity === 'pinned') createJob(db, 'lookup_media', { mediaIds: [m.id], refresh: true, auto: true, ...(posterWanted ? { poster: posterWanted } : {}) });
+      }
+      return { returnTo: `/media/${m.id}` };
+    },
+  }),
+
+  /** Save the owner's edits to a dossier. Rebuilds overwrite them (plan D21, as decided). */
+  updateDossier: defineAction({
+    accept: 'form',
+    input: z.object({ subjectKind: z.enum(['media', 'series']), subjectId: id, summary: z.string(), characters: z.string(), settings: z.string(), arcs: z.string(), motifs: z.string(), themes: z.string(), notable_scenes: z.string(), returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const d = db.select().from(dossier).where(and(eq(dossier.subjectKind, input.subjectKind), eq(dossier.subjectId, input.subjectId))).get();
+      if (!d) throw new ActionError({ code: 'NOT_FOUND', message: 'No dossier yet.' });
+      const body = JSON.parse(d.body);
+      const lines = (s: string) => s.split('\n').map((l) => l.trim()).filter(Boolean);
+      body.summary = input.summary.trim();
+      body.characters = lines(input.characters).map((l) => { const [name, ...rest] = l.split(':'); return { name: name.trim(), role: rest.join(':').trim(), descriptors: [], relationships: [] }; });
+      body.settings = lines(input.settings);
+      body.arcs = lines(input.arcs).map((l) => ({ summary: l, locator: null }));
+      body.motifs = lines(input.motifs);
+      body.themes = lines(input.themes);
+      body.notable_scenes = lines(input.notable_scenes).map((l) => ({ summary: l, locator: null }));
+      db.update(dossier).set({ body: JSON.stringify(body) }).where(and(eq(dossier.subjectKind, input.subjectKind), eq(dossier.subjectId, input.subjectId))).run();
+      return { returnTo: input.returnTo ?? '/tropes' };
+    },
+  }),
+
+  /** Rename a trope: links are rewritten and the old name keeps working (plan T15). */
+  renameTrope: defineAction({
+    accept: 'form',
+    input: z.object({ tropeId: id, name: z.string().trim().min(1) }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const out = renameTrope(db, input.tropeId, input.name);
+      if ('error' in out) throw new ActionError({ code: 'CONFLICT', message: out.error });
+      return { returnTo: `/tropes/${out.slug}` };
+    },
+  }),
+
+  /** Remove an entry that is gone from Notion (listed in /review); its instances and files go with it. */
+  removeMedia: defineAction({
+    accept: 'form',
+    input: z.object({ mediaId: id }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const m = db.select().from(media).where(eq(media.id, input.mediaId)).get();
+      if (!m) throw new ActionError({ code: 'NOT_FOUND', message: 'No such entry.' });
+      if (!m.notionMissingSince) throw new ActionError({ code: 'BAD_REQUEST', message: 'Only entries gone from Notion can be removed here.' });
+      db.delete(media).where(eq(media.id, m.id)).run();
+      return { returnTo: '/review' };
     },
   }),
 
@@ -344,7 +473,7 @@ export const server = {
   /** The owner pastes an IMDb, Steam, Goodreads, Wikipedia or Wikidata URL for an entry the lookup could not place. */
   seedMedia: defineAction({
     accept: 'form',
-    input: z.object({ mediaId: id, url: z.string().trim().url(), returnTo }),
+    input: z.object({ mediaId: id, url: z.url().trim(), returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
       const seed = seedFromUrl(input.url);

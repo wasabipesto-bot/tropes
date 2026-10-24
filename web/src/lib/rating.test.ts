@@ -29,3 +29,32 @@ describe('rating', () => {
     expect(barHeight(null, 26)).toBe(2);
   });
 });
+
+import { metadataLine, orderedLinks, siteOf, yearSpan } from './media';
+
+describe('metadata line', () => {
+  it('builds the per-type middle sentence from the lookup details', () => {
+    const tv = { type: 'TV Series' as const, label: null, loggedDate: '2022-11-10', creator: 'AMC' };
+    expect(metadataLine(tv, { start: '2022-09-01', end: '2025-02-21', seasons: 2, episodes: 16 }, ['Science fiction', 'Thriller']))
+      .toBe('TV series, 2022 to 2025, 2 seasons, 16 episodes. Science fiction, Thriller. Watched November 2022.');
+    expect(metadataLine({ type: 'TV Series', label: null, loggedDate: '2026-10-08', creator: null }, { start: '2024-01-11', end: '2024-04-04', episodes: 13, studio: 'Bones' }, ['Action', 'Anime']))
+      .toBe('TV series, 2024, 13 episodes, Bones. Action, Anime. Watched October 2026.');
+    expect(metadataLine({ type: 'Movie', label: null, loggedDate: null, creator: null }, { start: '2021-09-15', runtime_min: 155 })).toBe('Film, 2021, 2 h 35 min.');
+    expect(metadataLine({ type: 'Book', label: null, loggedDate: '2023-03-04', creator: 'Tamsyn Muir' }, { start: '2019-09-10' })).toBe('Book by Tamsyn Muir, 2019. Read March 2023.');
+    expect(metadataLine({ type: 'Album', label: null, loggedDate: null, creator: 'Radiohead' }, { start: '1997-05-21', tracks: 12 })).toBe('Album by Radiohead, 1997, 12 tracks.');
+    expect(metadataLine({ type: 'Game', label: null, loggedDate: null, creator: 'Remedy' }, { start: '2019', developer: 'Remedy Entertainment' })).toBe('Game, 2019, Remedy Entertainment.');
+    expect(metadataLine({ type: 'Book', label: 'web serial', loggedDate: null, creator: 'Scott Alexander' }, {})).toBe('Web serial by Scott Alexander.');
+    expect(yearSpan({ start: '2022', status: 'Returning Series' })).toBe('since 2022');
+  });
+
+  it('orders links per type and recognises pasted hosts', () => {
+    const links = [
+      { id: 1, mediaId: 1, site: 'metacritic', url: 'https://www.metacritic.com/tv/pantheon/', score: '77', scoreValue: 77, origin: 'lookup', hidden: false, fetchedAt: '' },
+      { id: 2, mediaId: 1, site: 'wikipedia', url: 'https://en.wikipedia.org/wiki/Pantheon', score: null, scoreValue: null, origin: 'lookup', hidden: false, fetchedAt: '' },
+      { id: 3, mediaId: 1, site: 'imdb', url: 'https://www.imdb.com/title/tt1/', score: '8.5', scoreValue: 8.5, origin: 'lookup', hidden: true, fetchedAt: '' },
+    ] as const;
+    expect(orderedLinks('TV Series', [...links] as any).map((l) => `${l.label}${l.score ? ' ' + l.score : ''}`)).toEqual(['Wikipedia', 'IMDb 8.5', 'Metacritic 77']);
+    expect(siteOf('https://www.rottentomatoes.com/tv/pantheon')).toBe('rt');
+    expect(siteOf('https://example.org/x')).toBeNull();
+  });
+});

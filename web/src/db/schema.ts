@@ -149,7 +149,8 @@ export const PROMINENCES = ['core', 'recurring', 'brief'] as const;
 export type Prominence = (typeof PROMINENCES)[number];
 export const SUBJECT_KINDS = ['media', 'series'] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];
-export const ORIGINS = ['model', 'manual'] as const;
+/** model: proposed by a scan and committed by the owner; manual: typed in; auto: committed by the automatic path without review. */
+export const ORIGINS = ['model', 'manual', 'auto'] as const;
 
 /** A trope ↔ work association. The subject is a media row or a series row. */
 export const instance = sqliteTable(

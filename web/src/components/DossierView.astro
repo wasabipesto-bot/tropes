@@ -1,0 +1,79 @@
+---
+import { and, eq } from 'drizzle-orm';
+import { actions } from 'astro:actions';
+import { db } from '../db';
+import { dossier, localSource, mediaNote } from '../db/schema';
+
+interface Props { subjectKind: 'media' | 'series'; subjectId: number; title: string; backHref: string; editing: boolean }
+const { subjectKind, subjectId, title, backHref, editing } = Astro.props;
+const d = db.select().from(dossier).where(and(eq(dossier.subjectKind, subjectKind), eq(dossier.subjectId, subjectId))).get();
+const body = d ? JSON.parse(d.body) : null;
+const here = `${backHref}/dossier`;
+const sources: string[] = [];
+if (d && subjectKind === 'media') {
+  const texts = db.select().from(localSource).where(and(eq(localSource.mediaId, subjectId), eq(localSource.kind, 'text'))).all();
+  const notes = db.select().from(mediaNote).where(eq(mediaNote.mediaId, subjectId)).all();
+  if (texts.length) sources.push(`the text (${texts.map((t) => t.path.split('/').pop()).join(', ')})`);
+  if (notes.length) sources.push(`${notes.length} of your posts`);
+}
+const lines = (xs: unknown[] | undefined, f: (x: any) => string) => (xs ?? []).map(f).join('\n');
+const charLine = (c: any) => `${c.name}${c.role ? `: ${c.role}` : ''}`;
+const located = (x: any) => (x.locator ? `${x.summary} (${x.locator})` : x.summary);
+const known: Record<string, string> = { strong: 'knows the work well', partial: 'knows the work in part', none: 'does not know the work' };
+---
+
+<h1>Dossier <a href={backHref} style="color: #1B1B1B">{title}</a></h1>
+{!d && <p class="quiet" style="margin: 12px 0 0">No dossier yet. <a href="/jobs">Build it from the jobs page.</a></p>}
+{d && body && (
+  <>
+    <p class="quiet" style="margin: 4px 0 0; font-size: 15px">
+      Internal: the matcher reads this; it is never shown publicly. Built {d.builtAt.slice(0, 10)} with {d.model}, prompt v{d.promptVersion}, {d.depth === 'text' ? 'from the full text' : 'from what the model knows'}
+      {body.known && ` (${known[body.known] ?? body.known})`}{sources.length > 0 && `, plus ${sources.join(' and ')}`}.
+      A rebuild overwrites your edits.
+    </p>
+    {!editing ? (
+      <>
+        <p style="margin: 8px 0 0; font-size: 15px; display: flex; gap: 16px"><a href={`${here}?edit=1`}>Edit</a>
+          <form method="POST" action={actions.startDossierBuild} style="display: inline">
+            <input type="hidden" name="subjectKind" value={subjectKind} />
+            <input type="hidden" name="subjectId" value={subjectId} />
+            <input type="hidden" name="returnTo" value={here} />
+            <button type="submit" class="t">Rebuild</button>
+          </form>
+        </p>
+        <div class="dossier">
+          <h2>Summary</h2><p>{body.summary}</p>
+          <h2>Characters</h2><ul>{(body.characters ?? []).map((c: any) => <li><span style="font-weight: 600">{c.name}</span>{c.role && <span class="quiet"> · {c.role}</span>}{c.descriptors?.length > 0 && <span class="quiet"> · {c.descriptors.join(', ')}</span>}{c.relationships?.length > 0 && <div class="quiet" style="font-size: 15px">{c.relationships.join('; ')}</div>}</li>)}</ul>
+          <h2>Settings</h2><ul>{(body.settings ?? []).map((x: string) => <li>{x}</li>)}</ul>
+          <h2>Arcs</h2><ul>{(body.arcs ?? []).map((x: any) => <li>{located(x)}</li>)}</ul>
+          <h2>Motifs</h2><ul>{(body.motifs ?? []).map((x: string) => <li>{x}</li>)}</ul>
+          <h2>Themes</h2><ul>{(body.themes ?? []).map((x: string) => <li>{x}</li>)}</ul>
+          <h2>Notable scenes</h2><ul>{(body.notable_scenes ?? []).map((x: any) => <li>{located(x)}</li>)}</ul>
+        </div>
+      </>
+    ) : (
+      <form method="POST" action={actions.updateDossier} class="dossier edit">
+        <input type="hidden" name="subjectKind" value={subjectKind} />
+        <input type="hidden" name="subjectId" value={subjectId} />
+        <input type="hidden" name="returnTo" value={here} />
+        <h2><label for="d-summary">Summary</label></h2><textarea id="d-summary" name="summary" class="fld" rows="5">{body.summary}</textarea>
+        <h2><label for="d-characters">Characters</label></h2><p class="quiet" style="margin: 0 0 4px; font-size: 14px">One per line: Name: role.</p><textarea id="d-characters" name="characters" class="fld" rows="8">{lines(body.characters, charLine)}</textarea>
+        <h2><label for="d-settings">Settings</label></h2><textarea id="d-settings" name="settings" class="fld" rows="3">{lines(body.settings, String)}</textarea>
+        <h2><label for="d-arcs">Arcs</label></h2><textarea id="d-arcs" name="arcs" class="fld" rows="5">{lines(body.arcs, (x) => x.summary)}</textarea>
+        <h2><label for="d-motifs">Motifs</label></h2><textarea id="d-motifs" name="motifs" class="fld" rows="4">{lines(body.motifs, String)}</textarea>
+        <h2><label for="d-themes">Themes</label></h2><textarea id="d-themes" name="themes" class="fld" rows="3">{lines(body.themes, String)}</textarea>
+        <h2><label for="d-scenes">Notable scenes</label></h2><textarea id="d-scenes" name="notable_scenes" class="fld" rows="5">{lines(body.notable_scenes, (x) => x.summary)}</textarea>
+        <p style="margin: 16px 0 0; font-size: 16px; display: flex; gap: 16px"><button type="submit" class="go">Save</button><a href={here} class="quiet" style="padding: 10px 0">Cancel</a></p>
+      </form>
+    )}
+  </>
+)}
+
+<style>
+  .dossier { max-width: 760px; margin-top: 8px; }
+  .dossier h2 { margin: 24px 0 4px; font-size: 20px; font-weight: 700; }
+  .dossier p { margin: 0; }
+  .dossier ul { margin: 0; padding-left: 20px; }
+  .dossier li { margin: 2px 0; }
+  .edit textarea { font-size: 16px; }
+</style>

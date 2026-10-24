@@ -37,6 +37,8 @@ export interface MatchPayload {
   extract: string | null;
   /** The poster the worker uploaded to the pending directory, and where it came from. */
   poster: { source: string } | null;
+  /** Other poster URLs the sites offered, kept in details.posters for the update flow's picker. */
+  posters?: string[];
   notes: string[];
 }
 
@@ -53,7 +55,7 @@ export function commitMatch(db: Db, mediaId: number, p: MatchPayload): void {
         identity: 'pinned',
         wikidataId: p.chosen!.qid,
         externalIds: JSON.stringify({ ...p.chosen!.ids, ...p.ids }),
-        details: JSON.stringify(p.details ?? {}),
+        details: JSON.stringify({ ...(p.details ?? {}), ...(p.posters?.length ? { posters: p.posters.slice(0, 12) } : {}) }),
         identityCandidates: JSON.stringify(p.candidates.filter((c) => c.qid !== p.chosen!.qid || c.label !== p.chosen!.label).slice(0, 5)),
         wikiExtract: p.extract ?? m.wikiExtract,
         metadataAt: now(),

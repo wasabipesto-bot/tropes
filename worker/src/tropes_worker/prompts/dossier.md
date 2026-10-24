@@ -11,6 +11,8 @@ Log entry:
 The owner's own notes about it (may be empty; may include reblogs or passing mentions, ignore anything plainly about something else):
 {{notes}}
 
+{{extract}}
+
 {{text_section}}
 
 Reply with JSON of this shape, and fill every list when you know the work:

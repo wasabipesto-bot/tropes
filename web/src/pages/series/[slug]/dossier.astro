@@ -1,0 +1,18 @@
+---
+import Base from '../../../layouts/Base.astro';
+import DossierView from '../../../components/DossierView.astro';
+import { db } from '../../../db';
+import { afterAction } from '../../../lib/after-action';
+import { seriesBySlug } from '../../../lib/queries';
+
+if (!Astro.locals.owner) return Astro.redirect('/login');
+const s = seriesBySlug(db, Astro.params.slug ?? '');
+if (!s) return new Response(null, { status: 404 });
+const { redirect, error } = afterAction(Astro);
+if (redirect) return redirect;
+---
+
+<Base title={`Dossier: ${s.name}`}>
+  {error && <p class="quiet" style="margin: 0 0 8px; font-size: 15px">{error}</p>}
+  <DossierView subjectKind="series" subjectId={s.id} title={s.name} backHref={`/series/${s.slug}`} editing={Astro.url.searchParams.get('edit') === '1'} />
+</Base>

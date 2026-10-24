@@ -1,0 +1,96 @@
+---
+import { actions } from 'astro:actions';
+import Base from '../layouts/Base.astro';
+import { db } from '../db';
+import { afterAction } from '../lib/after-action';
+import { parseJson } from '../lib/jobs/queue';
+import { AUTO_WINDOW_DAYS, reviewItems } from '../lib/review';
+import { typeLabel } from '../lib/media';
+
+if (!Astro.locals.owner) return Astro.redirect('/login');
+const { redirect, error } = afterAction(Astro);
+if (redirect) return redirect;
+const items = reviewItems(db);
+const fmt = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+const describe = (j: typeof items.jobs[number]) => {
+  const payload = parseJson<any>(j.job.payload, {});
+  const summary = parseJson<any>(j.job.result, {})?.summary ?? {};
+  if (j.kind === 'scan_trope') return `${payload.tropeId ? 'Recheck of' : 'New trope'} ${summary.trope ?? payload.draft?.name ?? ''}`;
+  if (j.kind === 'check_subject') return `Check of ${summary.subject ?? 'a work'}`;
+  if (j.kind === 'lookup_media') return `Metadata lookup, ${summary.looked_up ?? ''} entries`;
+  return j.kind;
+};
+const empty = items.jobs.length + items.identity.length + items.missing.length + items.flagged.length === 0;
+---
+
+<Base title="Review" current="review">
+  <h1>Review</h1>
+  {error && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">{error}</p>}
+  {empty && <p class="quiet" style="margin: 8px 0 0">Nothing is waiting for you.</p>}
+
+  {items.jobs.length > 0 && (
+    <section>
+      <h2>Waiting for a decision</h2>
+      <ul>
+        {items.jobs.map((j) => <li><a href={j.href}>{describe(j)}</a><span class="quiet"> · {fmt(j.createdAt)} · {j.pending} waiting</span></li>)}
+      </ul>
+    </section>
+  )}
+
+  {items.identity.length > 0 && (
+    <section>
+      <h2>Matches to check</h2>
+      <ul>
+        {items.identity.map((m) => <li><a href={`/update/media/${m.id}`}>{m.title}</a><span class="quiet"> · {typeLabel(m)}</span></li>)}
+      </ul>
+    </section>
+  )}
+
+  {items.flagged.length > 0 && (
+    <section>
+      <h2>Changed in Notion</h2>
+      <ul>
+        {items.flagged.map((m) => <li><a href={`/update/media/${m.id}`}>{m.title}</a><span class="quiet"> · {m.reviewNote}</span></li>)}
+      </ul>
+    </section>
+  )}
+
+  {items.missing.length > 0 && (
+    <section>
+      <h2>Gone from Notion</h2>
+      <p class="quiet" style="margin: 0 0 6px; font-size: 15px">Rows that stopped coming back from the Media Log. Nothing is removed here without you.</p>
+      <ul>
+        {items.missing.map((m) => (
+          <li style="display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap">
+            <a href={`/media/${m.id}`}>{m.title}</a><span class="quiet">{typeLabel(m)} · since {fmt(m.notionMissingSince!)}</span>
+            <form method="POST" action={actions.removeMedia} onsubmit="return confirm('Remove this entry and everything attached to it? There is no undo.')">
+              <input type="hidden" name="mediaId" value={m.id} />
+              <button type="submit" class="t danger">Remove</button>
+            </form>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section>
+    <h2>Added without review <span class="quiet" style="font-weight: 400; font-size: 16px">last {AUTO_WINDOW_DAYS} days</span></h2>
+    {items.auto.length === 0 ? (
+      <p class="quiet" style="margin: 0; font-size: 15px">No instances were added by the automatic path recently.</p>
+    ) : (
+      <ul>
+        {items.auto.map((a) => <li><a href={`/media/${a.subjectId}?edit=${a.id}`}>{a.title}</a><span class="quiet"> · </span><a href={`/tropes/${a.tropeSlug}`} style="color: inherit">{a.tropeName}</a><span class="quiet"> · {fmt(a.createdAt)}</span></li>)}
+      </ul>
+    )}
+  </section>
+
+  <p class="quiet" style="margin: 36px 0 0; font-size: 15px"><a href="/metadata">Metadata lookups</a> · <a href="/jobs">All jobs</a></p>
+</Base>
+
+<style>
+  section { margin-top: 32px; }
+  h2 { margin: 0 0 6px; font-size: 22px; font-weight: 700; }
+  ul { margin: 0; padding: 0; list-style: none; font-size: 17px; }
+  li { padding: 5px 0; }
+  li form { display: inline; }
+</style>

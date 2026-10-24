@@ -39,7 +39,7 @@ const returnTo = Astro.url.pathname + Astro.url.search;
       ) : (
         <>
           {s.description && <Fragment set:html={renderText(s.description, render, ' style="margin: 20px 0 0"')} />}
-          {owner && <p style="margin: 8px 0 0; font-size: 15px"><a href={`${here}?edit=desc`} style="padding: 6px 0">Edit description</a></p>}
+          {owner && <p style="margin: 8px 0 0; font-size: 15px; display: flex; gap: 16px"><a href={`${here}?edit=desc`} style="padding: 6px 0">Edit description</a><a href={`/recheck/series/${s.id}`} style="padding: 6px 0">Recheck tropes</a><a href={`${here}/dossier`} style="padding: 6px 0">Dossier</a></p>}
         </>
       )}
       {error && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">{error}</p>}

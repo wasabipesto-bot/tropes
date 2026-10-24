@@ -4,17 +4,26 @@ import Base from '../../layouts/Base.astro';
 import InstanceList from '../../components/InstanceList.astro';
 import { db } from '../../db';
 import { afterAction } from '../../lib/after-action';
-import { instancesForTrope, notableFor, subjectTitles, tropeBySlug, tropeHrefResolver } from '../../lib/queries';
+import { pendingReviewFor } from '../../lib/jobs/pending';
+import { instancesForTrope, notableFor, subjectTitles, tropeByAliasSlug, tropeBySlug, tropeHrefResolver } from '../../lib/queries';
 import { renderText } from '../../lib/text';
 
 const t = tropeBySlug(db, Astro.params.slug ?? '');
-if (!t) return new Response(null, { status: 404 });
+if (!t) {
+  // A renamed trope keeps answering at its old address.
+  const moved = tropeByAliasSlug(db, Astro.params.slug ?? '');
+  if (moved) return Astro.redirect(`/tropes/${moved.slug}`, 301);
+  return new Response(null, { status: 404 });
+}
 const { redirect, error } = afterAction(Astro);
 if (redirect) return redirect;
 
 const owner = Astro.locals.owner;
 const p = Astro.url.searchParams;
 const editDesc = owner && p.get('edit') === 'desc';
+const editName = owner && p.get('edit') === 'name';
+const pending = owner ? pendingReviewFor(db, 'trope', t.id) : null;
+const fmt = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
 const editing = owner && /^\d+$/.test(p.get('edit') ?? '') ? Number(p.get('edit')) : null;
 const textEdit = owner && p.get('text') === '1';
 const evidenceAdd = owner && p.get('evidence') === '1';
@@ -30,7 +39,17 @@ const returnTo = Astro.url.pathname + Astro.url.search;
   <div class="row">
     <div class="lab"></div>
     <div>
-      <h1>{t.name}</h1>
+      {editName ? (
+        <form method="POST" action={actions.renameTrope} style="display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap">
+          <input type="hidden" name="tropeId" value={t.id} />
+          <label for="nm" class="visually-hidden">Name</label>
+          <input id="nm" name="name" class="fld" value={t.name} style="font-size: 28px; font-weight: 700; max-width: 520px" autofocus />
+          <button type="submit" class="t">Save</button><a href={here} class="quiet">Cancel</a>
+          <span class="quiet" style="font-size: 15px; flex-basis: 100%">[[{t.name}]] links everywhere become the new name; the old address keeps working.</span>
+        </form>
+      ) : (
+        <h1>{t.name}</h1>
+      )}
       {editDesc ? (
         <form method="POST" action={actions.updateTropeDescription} style="margin-top: 20px">
           <input type="hidden" name="tropeId" value={t.id} />
@@ -45,7 +64,8 @@ const returnTo = Astro.url.pathname + Astro.url.search;
           {t.description
             ? <div class="desc"><Fragment set:html={renderText(t.description, render, ' style="margin: 20px 0 0"')} /></div>
             : owner && <p class="quiet" style="margin: 20px 0 0">No description yet.</p>}
-          {owner && <p style="margin: 8px 0 0; font-size: 15px; display: flex; gap: 16px; flex-wrap: wrap"><a href={`${here}?edit=desc`} style="padding: 6px 0">Edit description</a><a href={`/recheck/trope/${t.slug}`} style="padding: 6px 0">Recheck instances</a></p>}
+          {owner && <p style="margin: 8px 0 0; font-size: 15px; display: flex; gap: 16px; flex-wrap: wrap"><a href={`${here}?edit=desc`} style="padding: 6px 0">Edit description</a><a href={`${here}?edit=name`} style="padding: 6px 0">Edit name</a><a href={`/recheck/trope/${t.slug}`} style="padding: 6px 0">Recheck instances</a></p>}
+          {owner && pending && <p class="quiet" style="margin: 6px 0 0; font-size: 15px">A recheck from {fmt(pending.createdAt)} is <a href={pending.href}>waiting for review</a>.</p>}
         </>
       )}
       {error && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">{error}</p>}

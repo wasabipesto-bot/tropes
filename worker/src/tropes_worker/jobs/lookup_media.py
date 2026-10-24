@@ -144,6 +144,8 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     client = ctx.client
     wanted = set(payload["mediaIds"])
     refresh = bool(payload.get("refresh"))
+    # The owner's poster choice from the update flow, tried before every other candidate.
+    poster_wanted = payload.get("poster")
     all_media = client.subjects()["media"]
     rows = [m for m in all_media if m["id"] in wanted]
     shared = shared_media_links(all_media)
@@ -216,7 +218,8 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
         merged = merge(m["type"], parts)
         merged.ids = ids
         poster_info = None
-        urls = ([m["imageUrl"]] if m.get("imageUrl") else []) + merged.posters
+        urls = ([poster_wanted] if poster_wanted else []) + ([m["imageUrl"]] if m.get("imageUrl") else []) + merged.posters
+        urls = list(dict.fromkeys(urls))
         keep = refresh and m.get("posterPath") and urls and m.get("posterSource") == urls[0]
         if urls and not keep:
             got = prepare(f, urls)
@@ -291,6 +294,7 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
                     "ids": merged.ids if merged else (c.ids if c else {}),
                     "extract": merged.extract if merged else None,
                     "poster": poster,
+                    "posters": (merged.posters if merged else [])[:12],
                     "notes": r.notes + (merged.warnings if merged else []),
                 },
             }

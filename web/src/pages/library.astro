@@ -6,6 +6,8 @@ import { media, type Media } from '../db/schema';
 import { typeLabel } from '../lib/media';
 import { AXES, average, ratingsOf, type Ratings } from '../lib/rating';
 import { tropesByMedia } from '../lib/queries';
+import { genresByMedia } from '../lib/queries';
+import { genreVocabulary, parentMap } from '../lib/genres';
 
 const p = Astro.url.searchParams;
 const TYPES = ['All', 'Book', 'TV', 'Movie', 'Game', 'Podcast', 'Album', 'Other'] as const;
@@ -15,6 +17,11 @@ const pick = <T extends string>(options: readonly T[], v: string | null, fallbac
 const type = pick(TYPES, p.get('type'), 'All');
 const min = pick(Object.keys(MINS) as (keyof typeof MINS)[], p.get('min'), 'Any');
 const tropeQ = (p.get('trope') ?? '').trim();
+const genreQ = (p.get('genre') ?? '').trim();
+const parents = parentMap(genreVocabulary());
+const genreOf = genresByMedia(db);
+/** A top-level genre matches its subgenres too (plan T5). */
+const hasGenre = (id: number, g: string) => (genreOf.get(id) ?? []).some((x) => x === g || parents.get(x) === g);
 const coreOnly = p.get('core') === '1';
 const detail = p.get('detail') === '1';
 const all = p.get('all') === '1';
@@ -37,6 +44,7 @@ const total = everything.length;
 let list = everything
   .filter((x) => type === 'All' || (type === 'TV' ? x.m.type === 'TV Series' : x.m.type === type))
   .filter((x) => MINS[min] < 0 || (x.avg !== null && x.avg >= MINS[min]))
+  .filter((x) => !genreQ || hasGenre(x.m.id, genreQ))
   .filter((x) => {
     const q = tropeQ.toLowerCase();
     if (q) return x.tropes.some((t) => t.name.toLowerCase().includes(q) && (!coreOnly || t.prominence === 'core'));
@@ -63,7 +71,12 @@ list = list.slice().sort((a, b) => {
   return a.m.id - b.m.id;
 });
 
-const filtered = type !== 'All' || tropeQ !== '' || coreOnly || MINS[min] >= 0;
+const filtered = type !== 'All' || tropeQ !== '' || coreOnly || MINS[min] >= 0 || genreQ !== '';
+// Genre rows: the top-level entries used by the current type selection; a chosen parent opens its used subgenres.
+const inType = everything.filter((x) => type === 'All' || (type === 'TV' ? x.m.type === 'TV Series' : x.m.type === type));
+const usedTop = [...new Set(inType.flatMap((x) => (genreOf.get(x.m.id) ?? []).map((g) => parents.get(g) ?? g)))].sort();
+const chosenParent = genreQ ? parents.get(genreQ) ?? genreQ : null;
+const usedSub = chosenParent ? [...new Set(inType.flatMap((x) => (genreOf.get(x.m.id) ?? []).filter((g) => g !== chosenParent && parents.get(g) === chosenParent)))].sort() : [];
 const matching = list.length;
 const truncated = !all && matching > 100;
 const shown = truncated ? list.slice(0, 100) : list;
@@ -103,6 +116,7 @@ const fmt = (v: number | null) => (v === null ? '–' : String(v));
     <form class="filter" method="get" action="/library">
       {type !== 'All' && <input type="hidden" name="type" value={type} />}
       {min !== 'Any' && <input type="hidden" name="min" value={min} />}
+      {genreQ && <input type="hidden" name="genre" value={genreQ} />}
       {detail && <input type="hidden" name="detail" value="1" />}
       <label for="tf" class="quiet">Trope</label>
       <input id="tf" name="trope" list="tropenames" value={tropeQ} placeholder="any" class="line" style="width: 260px" autocomplete="off" />
@@ -111,6 +125,20 @@ const fmt = (v: number | null) => (v === null ? '–' : String(v));
         ? <button type="submit" class="t on" name="core" value="">Core theme only</button>
         : <button type="submit" class="t" name="core" value="1">Core theme only</button>}
     </form>
+    {usedTop.length > 0 && (
+      <div class="filter">
+        <span class="quiet">Genre</span>
+        {!genreQ ? <span class="on">All</span> : <a href={link({ genre: null, all: null })}>All</a>}
+        {usedTop.map((g) => g === chosenParent ? <span class="on">{g}</span> : <a href={link({ genre: g, all: null })}>{g}</a>)}
+      </div>
+    )}
+    {usedSub.length > 0 && (
+      <div class="filter">
+        <span class="quiet" style="font-size: 15px">{chosenParent}</span>
+        {genreQ === chosenParent ? <span class="on">All</span> : <a href={link({ genre: chosenParent, all: null })}>All</a>}
+        {usedSub.map((g) => g === genreQ ? <span class="on">{g}</span> : <a href={link({ genre: g, all: null })}>{g}</a>)}
+      </div>
+    )}
     <div class="filter">
       <span class="quiet">Rating</span>
       {(Object.keys(MINS) as (keyof typeof MINS)[]).map((o) => o === min ? <span class="on">{o}</span> : <a href={link({ min: o === 'Any' ? null : o, all: null })}>{o}</a>)}
@@ -155,7 +183,7 @@ const fmt = (v: number | null) => (v === null ? '–' : String(v));
   :global(main.frame) { padding-top: 48px; }
   .filters { margin-top: 24px; display: flex; flex-direction: column; gap: 2px; font-size: 16px; }
   .filter { display: flex; flex-wrap: wrap; gap: 0 16px; align-items: baseline; }
-  .filter > .quiet:first-child, .filter > label:first-child { width: 64px; }
+  .filter > .quiet:first-child, .filter > label:first-child { min-width: 64px; }
   .filter a, .filter .on, .filter button { padding: 8px 0; }
   .on { font-weight: 600; color: #1B1B1B; text-decoration: none; }
   .right { margin-left: auto; }

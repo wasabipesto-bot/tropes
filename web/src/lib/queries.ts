@@ -1,7 +1,7 @@
 import { and, asc, eq, inArray, sql } from 'drizzle-orm';
 import type { Db } from '../db/open';
 import {
-  evidence, instance, media, notable, series, seriesMember, trope,
+  evidence, instance, media, mediaGenre, notable, series, seriesMember, trope, tropeAlias,
   type Evidence, type Instance, type Media, type Prominence, type Series, type SubjectKind, type Trope,
 } from '../db/schema';
 import { typeLabel } from './media';
@@ -40,10 +40,21 @@ export function allTropes(db: Db): Trope[] {
   return db.select().from(trope).orderBy(asc(trope.name)).all();
 }
 
-/** Resolve [[Trope name]] links, case-insensitively. */
+/** Resolve [[Trope name]] links, case-insensitively; former names (trope_alias) still resolve. */
 export function tropeHrefResolver(db: Db): (name: string) => string | null {
-  const bySlug = new Map(allTropes(db).map((t) => [t.name.toLowerCase(), `/tropes/${t.slug}`]));
+  const tropes = allTropes(db);
+  const bySlug = new Map(tropes.map((t) => [t.name.toLowerCase(), `/tropes/${t.slug}`]));
+  for (const a of db.select().from(tropeAlias).all()) {
+    const t = tropes.find((x) => x.id === a.tropeId);
+    if (t && !bySlug.has(a.name.toLowerCase())) bySlug.set(a.name.toLowerCase(), `/tropes/${t.slug}`);
+  }
   return (name) => bySlug.get(name.trim().toLowerCase()) ?? null;
+}
+
+/** The trope a former slug now belongs to, for a redirect. */
+export function tropeByAliasSlug(db: Db, slug: string): Trope | undefined {
+  const a = db.select().from(tropeAlias).where(eq(tropeAlias.slug, slug)).get();
+  return a ? db.select().from(trope).where(eq(trope.id, a.tropeId)).get() : undefined;
 }
 
 export function seriesMembers(db: Db, seriesId: number): Media[] {
@@ -204,5 +215,12 @@ export function tropesByMedia(db: Db): Map<number, { name: string; slug: string;
   }
   const rank = (p: Prominence) => PROMINENCE_ORDER.indexOf(p);
   for (const [k, v] of out) out.set(k, v.sort((a, b) => rank(a.prominence) - rank(b.prominence) || a.name.localeCompare(b.name)));
+  return out;
+}
+
+/** Genres per media id, for the library filter. */
+export function genresByMedia(db: Db): Map<number, string[]> {
+  const out = new Map<number, string[]>();
+  for (const r of db.select().from(mediaGenre).all()) out.set(r.mediaId, [...(out.get(r.mediaId) ?? []), r.genre]);
   return out;
 }

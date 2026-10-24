@@ -1,0 +1,20 @@
+---
+import { eq } from 'drizzle-orm';
+import Base from '../../../layouts/Base.astro';
+import DossierView from '../../../components/DossierView.astro';
+import { db } from '../../../db';
+import { media } from '../../../db/schema';
+import { afterAction } from '../../../lib/after-action';
+
+if (!Astro.locals.owner) return Astro.redirect('/login');
+const id = Number(Astro.params.id);
+const m = Number.isInteger(id) ? db.select().from(media).where(eq(media.id, id)).get() : undefined;
+if (!m) return new Response(null, { status: 404 });
+const { redirect, error } = afterAction(Astro);
+if (redirect) return redirect;
+---
+
+<Base title={`Dossier: ${m.title}`}>
+  {error && <p class="quiet" style="margin: 0 0 8px; font-size: 15px">{error}</p>}
+  <DossierView subjectKind="media" subjectId={m.id} title={m.title} backHref={`/media/${m.id}`} editing={Astro.url.searchParams.get('edit') === '1'} />
+</Base>
