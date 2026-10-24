@@ -521,7 +521,14 @@ from the mock, or we learn why not and tune the prompt.
 
 ### Phase 4: external metadata and posters (M)
 
-Plan for approval: [`plans/phase-4.md`](plans/phase-4.md) (2026-10-21).
+Plan: [`plans/phase-4.md`](plans/phase-4.md) (approved 2026-10-24 with the
+owner's notes). Status: built 2026-10-24; the backfill of the existing
+library runs in batches of 200 and each batch is reviewed on `/metadata`
+(the first batch: 170 of 200 confident, 23 to check, 7 not found, 10 min,
+2 cents). Built as planned except: Add media is gone (every entry comes
+through the Notion sync and the automatic path, plan T14/T17); dossier edits
+are overwritten by a rebuild (D21 rejected); the Wikipedia extract only
+feeds dossiers the model knows partly or not at all (D16).
 
 - `lookup_media` job: TMDB (films, TV, posters), Jikan (MAL), Wikipedia
   summary and infobox, TVDB, Open Library, Steam store API, Letterboxd and

@@ -1,5 +1,15 @@
 # Phase 4 plan: external metadata and posters
 
+**Status 2026-10-24: approved with the owner's notes and built.** What
+differs from the text below: Add media (T8) was dropped on the owner's T17
+note, since every entry now arrives through the Notion sync and the
+automatic path; its "confirm what was found" parts live in the update flow
+(T13). The backfill (T7) runs in batches of 200 and each batch is reviewed
+on its own. Dossier edits do not survive rebuilds (D21 rejected). The
+Wikipedia extract feeds only dossiers the model knows partly or not at all
+(D16). Match proposals a newer lookup supersedes are retired. The
+identity-resolution checkpoint is in `docs/evals/2026-10-24-phase-4-identity.md`.
+
 Written 2026-10-21 for approval before any of it is built. Same shape as
 `phase-3.md`: tasks, each with scope, approach, the decisions it needs (with
 a recommendation), implementation detail and tradeoffs. The bias is the
@@ -731,6 +741,7 @@ model, build date, prompt version and the sources used (text file, number
 of your notes, Wikipedia once D16 lands). "Edit" turns each section into
 a plain textarea, lists as one item per line, and saves through an
 Action. "Rebuild" queues a rebuild of this one dossier.
+APPROVED: No notes. Keep it simple.
 
 - **D21. Edits survive rebuilds.** Saving sets `dossier.owner_edited`.
   A rebuild of an edited dossier gets the edited version as an extra input
@@ -739,6 +750,7 @@ Action. "Rebuild" queues a rebuild of this one dossier.
   treat edited dossiers the same way. Recommendation: this. The
   alternatives are skipping edited dossiers forever (they go stale) or
   overwriting them (edits are lost).
+REJECTED: Simply overwrte. Full rebuilds should be rare and manual.
 
 ### T12. Pending reviews and the way back to them (S)
 
@@ -751,12 +763,15 @@ Today a finished scan's review page is only reachable through its
   whose metadata match needs checking. Notion rows that disappeared (see
   T14). Instances auto-added since your last visit (T14), linking to a
   filtered list where you can verify them.
+APPROVED: No notes.
 - The recheck and add pages, opened without `?job=`, show the latest done
   job for that trope or work that still has undecided proposals, instead of
   the start button. The trope and media pages get an owner-only line: "A
   recheck from 20 October is waiting for review."
+APPROVED: No notes.
 - Phase 3's discard rule stays: committing a newer job for the same
   subject discards the older pending one.
+APPROVED: No notes.
 
 Spec 11 lists a "review queue" as rejected. Your request is the new
 reason, and this is deliberately smaller: a plain list of links to pages
@@ -770,6 +785,7 @@ stored runners-up, per your D1 note), description (the D15 blurb or yours,
 editable), poster (picker under the D11 rule), and tropes (the existing
 check). One commit at the end. Add media step 2 (T8) is the same page for
 a work with no row yet, so the two flows share one template.
+APPROVED: No notes.
 
 ### T14. New Notion entries without approval (M)
 
@@ -799,6 +815,7 @@ To meet the goal, the automatic path would be:
 5. Rows deleted in Notion are never deleted here. They are listed in
    `/review` as "gone from Notion" for you to remove, which keeps the
    earlier rule that deletions need your approval.
+APPROVED: No notes.
 
 Public pages show auto-added instances with the existing unverified mark.
 A new entry costs a few cents and is complete within a few minutes of the
@@ -807,10 +824,12 @@ sync.
 - **D22. Automatic commit for synced entries**, replacing "nothing is
   saved until you commit" on this one path. Recommendation: yes, with the
   0.7 cut. The unverified mark is what makes this safe to show.
+APPROVED: No notes.
 - **D23. The cut.** 0.7, configurable. Phase 3's measurements put the
   owner's own examples above 0.9 and most noise below 0.6, so 0.7 should
   admit few false positives. I will check it against the eval before
   turning it on.
+APPROVED: Also add followup item to monitor calibration over time from approved items and tune TROPES_AUTO_COMMIT_MIN if necessary. Keep in mind it's easy to remove a false positive, but hard to remember a false negative.
 
 ### T15. Rename a trope (S)
 
@@ -821,9 +840,11 @@ transaction:
 - Rewrites `[[Old name]]` to `[[New name]]` (case-insensitive) in every
   trope description, instance text, media and series description, and
   pending proposal.
+APPROVED: No notes.
 - Records the old name and slug in a new `trope_alias` table. Old URLs
   redirect (301), and `[[Old name]]` still resolves if it turns up later,
   for example in model output from a job queued before the rename.
+APPROVED: I would really eather keep it simple but it seems potentially useful.
 
 Evidence quotes are never rewritten, because they are verbatim source
 text. The new name is refused if it collides with another trope's name,
@@ -835,6 +856,7 @@ slug or alias.
 checked. Instances added by T14's automatic path stay unverified. One
 instance in the database came through the pipeline before this change and
 is unverified; it is listed in the reply rather than flipped silently.
+APPROVED: No notes.
 
 ### T17. Navigation (S)
 
@@ -842,6 +864,7 @@ is unverified; it is listed in the reply rather than flipped silently.
   public header stays Tropes and Library, as the canvas has it.
 - Owner header: Tropes, Library, Add trope, Add media, Review (with a
   count when there is anything waiting), Jobs.
+APPROVED: But remove "add media" since all inputs should come through notion now.
 
 ### Backlog (recorded, not planned)
 
