@@ -1,0 +1,342 @@
+{
+  "id": "b1392450-e666-3926-a536-22c65f834433",
+  "title": "OK Computer",
+  "primary-type": "Album",
+  "first-release-date": "1997-05-21",
+  "artist-credit": [
+    {
+      "joinphrase": "",
+      "name": "Radiohead",
+      "artist": {
+        "id": "a74b1b7f-71a5-4011-9441-d0b5e4122711",
+        "type-id": "e431f5f6-b5d2-343d-8b36-72607fffb74b",
+        "sort-name": "Radiohead",
+        "type": "Group",
+        "name": "Radiohead",
+        "disambiguation": "",
+        "country": "GB"
+      }
+    }
+  ],
+  "tags": [
+    {
+      "count": 1,
+      "name": "1997"
+    },
+    {
+      "count": 2,
+      "name": "5+ wochen"
+    },
+    {
+      "count": 1,
+      "name": "acoustic"
+    },
+    {
+      "name": "alienation",
+      "count": 2
+    },
+    {
+      "count": 1,
+      "name": "alt rock"
+    },
+    {
+      "name": "alternative",
+      "count": 1
+    },
+    {
+      "count": 1,
+      "name": "alternative & punk"
+    },
+    {
+      "count": 2,
+      "name": "alternative and punk"
+    },
+    {
+      "name": "alternative pop/rock",
+      "count": 1
+    },
+    {
+      "name": "alternative rock",
+      "count": 27
+    },
+    {
+      "name": "alternative/indie",
+      "count": 1
+    },
+    {
+      "count": 1,
+      "name": "alternative/indie rock"
+    },
+    {
+      "count": 1,
+      "name": "anti-authoritarian"
+    },
+    {
+      "name": "anticonsumerism",
+      "count": 1
+    },
+    {
+      "count": 2,
+      "name": "anxious"
+    },
+    {
+      "name": "art rock",
+      "count": 15
+    },
+    {
+      "name": "atmospheric",
+      "count": 4
+    },
+    {
+      "name": "brit rock",
+      "count": 1
+    },
+    {
+      "count": 1,
+      "name": "britannique"
+    },
+    {
+      "name": "british",
+      "count": 1
+    },
+    {
+      "name": "britpop",
+      "count": 1
+    },
+    {
+      "count": 1,
+      "name": "britrock"
+    },
+    {
+      "name": "cd",
+      "count": 1
+    },
+    {
+      "count": 3,
+      "name": "cold"
+    },
+    {
+      "name": "contemporary rock",
+      "count": 1
+    },
+    {
+      "name": "cynical",
+      "count": 1
+    },
+    {
+      "count": 1,
+      "name": "dense"
+    },
+    {
+      "name": "depressive",
+      "count": 1
+    },
+    {
+      "count": 1,
+      "name": "discogs/the most popular album released every year from 1950 to 2020"
+    },
+    {
+      "count": 1,
+      "name": "dystopian"
+    },
+    {
+      "name": "electronic",
+      "count": 2
+    },
+    {
+      "name": "english",
+      "count": 2
+    },
+    {
+      "count": 3,
+      "name": "existential"
+    },
+    {
+      "name": "experimental",
+      "count": 3
+    },
+    {
+      "name": "experimental rock",
+      "count": 2
+    },
+    {
+      "name": "falsetto",
+      "count": 1
+    },
+    {
+      "name": "futuristic",
+      "count": 3
+    },
+    {
+      "name": "i own this",
+      "count": 1
+    },
+    {
+      "name": "indie rock",
+      "count": 2
+    },
+    {
+      "name": "insecure",
+      "count": 1
+    },
+    {
+      "name": "introspective",
+      "count": 1
+    },
+    {
+      "name": "leftfield",
+      "count": 2
+    },
+    {
+      "name": "lonely",
+      "count": 3
+    },
+    {
+      "count": 1,
+      "name": "longing"
+    },
+    {
+      "count": 1,
+      "name": "male vocalist"
+    },
+    {
+      "name": "melancholic",
+      "count": 3
+    },
+    {
+      "name": "melodic",
+      "count": 1
+    },
+    {
+      "count": 1,
+      "name": "mental health"
+    },
+    {
+      "name": "neo-psychedelia",
+      "count": 1
+    },
+    {
+      "count": 2,
+      "name": "nihilistic"
+    },
+    {
+      "count": 2,
+      "name": "offizielle charts"
+    },
+    {
+      "count": 1,
+      "name": "owned"
+    },
+    {
+      "count": 1,
+      "name": "paranoia"
+    },
+    {
+      "name": "passionate",
+      "count": 1
+    },
+    {
+      "name": "pessimistic",
+      "count": 1
+    },
+    {
+      "name": "poetic",
+      "count": 1
+    },
+    {
+      "name": "political",
+      "count": 1
+    },
+    {
+      "count": 2,
+      "name": "pop rock"
+    },
+    {
+      "count": 1,
+      "name": "pop/rock"
+    },
+    {
+      "count": 1,
+      "name": "poprock"
+    },
+    {
+      "name": "post-britpop",
+      "count": 4
+    },
+    {
+      "name": "progressive",
+      "count": 1
+    },
+    {
+      "count": 13,
+      "name": "rock"
+    },
+    {
+      "name": "rock and indie",
+      "count": 1
+    },
+    {
+      "count": 1,
+      "name": "rock/alternative rock"
+    },
+    {
+      "count": 1,
+      "name": "sad"
+    },
+    {
+      "count": 1,
+      "name": "sarcastic"
+    },
+    {
+      "name": "serious",
+      "count": 1
+    },
+    {
+      "name": "space rock revival",
+      "count": 3
+    },
+    {
+      "name": "technology",
+      "count": 1
+    },
+    {
+      "count": 1,
+      "name": "travel"
+    },
+    {
+      "name": "uk",
+      "count": 1
+    },
+    {
+      "count": 1,
+      "name": "urban"
+    },
+    {
+      "count": 1,
+      "name": "vyrzukhisuc-album"
+    }
+  ],
+  "releases": [
+    {
+      "id": "1834eae1-741b-3c03-9ca5-0df3decb43ea",
+      "status": "Official",
+      "date": "1997-05-21",
+      "country": "JP",
+      "title": "OK Computer"
+    },
+    {
+      "id": "425d8db9-88a3-31e2-bd23-b1a967626dd5",
+      "status": "Official",
+      "date": "1997-06-16",
+      "country": "XE",
+      "title": "OK Computer"
+    },
+    {
+      "id": "52709206-8816-3c12-9ff6-f957f2f1eecf",
+      "status": "Official",
+      "date": "1997-06-16",
+      "country": "XE",
+      "title": "OK Computer"
+    }
+  ]
+}

@@ -47,7 +47,12 @@ export const proposalIn = z.object({
   seed: z.boolean().default(false),
   rejectedBefore: z.boolean().default(false),
   flags: z.array(z.string()).default([]),
+  /** Match proposals (lookup_media) carry the whole lookup result here; see lib/metadata.ts MatchPayload. */
+  payload: z.record(z.string(), z.unknown()).default({}),
 });
+
+/** A model-written description draft (write_blurbs). Stored only where the owner has not written one. */
+export const descriptionIn = z.object({ mediaId: z.number().int().positive(), text: z.string().min(1) });
 
 export const dossierIn = z.object({
   subject: subjectRef,
@@ -74,6 +79,7 @@ export const resultBody = z.object({
   proposals: z.array(proposalIn).default([]),
   dossiers: z.array(dossierIn).default([]),
   notes: z.array(noteIn).default([]),
+  descriptions: z.array(descriptionIn).default([]),
   usage: usageIn.optional(),
   warnings: z.array(z.string()).default([]),
 });

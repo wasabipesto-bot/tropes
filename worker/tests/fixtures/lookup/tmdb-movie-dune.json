@@ -1,0 +1,138 @@
+{
+ "id": 438631,
+ "title": "Dune",
+ "overview": "Paul Atreides, a brilliant and gifted young man born into a great destiny beyond his understanding, must travel to the most dangerous planet in the universe to ensure the future of his family and his people. As malevolent forces explode into conflict over the planet's exclusive supply of the most pr",
+ "release_date": "2021-09-15",
+ "runtime": 155,
+ "genres": [
+  {
+   "id": 878,
+   "name": "Science Fiction"
+  },
+  {
+   "id": 12,
+   "name": "Adventure"
+  }
+ ],
+ "production_companies": [
+  {
+   "id": 923,
+   "logo_path": "/5UQsZrfbfG2dYJbx8DxfoTr2Bvu.png",
+   "name": "Legendary Pictures",
+   "origin_country": "US"
+  }
+ ],
+ "poster_path": "/v1tRXZ4JtD2Iv6fjkPvT4GiwslV.jpg",
+ "external_ids": {
+  "imdb_id": "tt1160419"
+ },
+ "images": {
+  "posters": [
+   {
+    "file_path": "/cDbNAY0KM84cxXhmj8f0dLWza3t.jpg",
+    "vote_count": 97,
+    "vote_average": 6.572
+   },
+   {
+    "file_path": "/8hoD5BQuUV9dDecAbiyVIxLjzZ9.jpg",
+    "vote_count": 74,
+    "vote_average": 7.56
+   },
+   {
+    "file_path": "/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
+    "vote_count": 74,
+    "vote_average": 4.352
+   },
+   {
+    "file_path": "/nfCFIbh03XJZFqNNrQBvvMhTsXN.jpg",
+    "vote_count": 53,
+    "vote_average": 4.982
+   },
+   {
+    "file_path": "/lr3cYNDlJcpT1EWzFH42aSIvkab.jpg",
+    "vote_count": 45,
+    "vote_average": 6.2
+   },
+   {
+    "file_path": "/s1FhMAr91WL8D5DeHOcuBELtiHJ.jpg",
+    "vote_count": 44,
+    "vote_average": 5.25
+   },
+   {
+    "file_path": "/ebyPRFv8aA1hLXxs9AKab3UZoPR.jpg",
+    "vote_count": 41,
+    "vote_average": 6.06
+   },
+   {
+    "file_path": "/xpCxi7lcXjfXZdQ1haSDOqYPAta.jpg",
+    "vote_count": 34,
+    "vote_average": 4.97
+   },
+   {
+    "file_path": "/sq34ZabUKcBri389IY5TL2Pt7Gq.jpg",
+    "vote_count": 26,
+    "vote_average": 4.52
+   },
+   {
+    "file_path": "/fRGGZ1HdbF4LPrDsJq7kEwMEjPm.jpg",
+    "vote_count": 19,
+    "vote_average": 6.5
+   },
+   {
+    "file_path": "/gDzOcq0pfeCeqMBwKIJlSmQpjkZ.jpg",
+    "vote_count": 19,
+    "vote_average": 0.948
+   },
+   {
+    "file_path": "/wHmRNdlim18cykUjJyFtdFr5Ieo.jpg",
+    "vote_count": 15,
+    "vote_average": 5.566
+   }
+  ]
+ },
+ "credits": {
+  "cast": [
+   {
+    "id": 1190668,
+    "name": "Timoth\u00e9e Chalamet",
+    "character": "Paul Atreides"
+   },
+   {
+    "id": 933238,
+    "name": "Rebecca Ferguson",
+    "character": "Lady Jessica Atreides"
+   },
+   {
+    "id": 25072,
+    "name": "Oscar Isaac",
+    "character": "Duke Leto Atreides"
+   }
+  ],
+  "crew": [
+   {
+    "id": 137427,
+    "name": "Denis Villeneuve",
+    "job": "Director",
+    "character": null
+   },
+   {
+    "id": 3482366,
+    "name": "M\u00e1t\u00e9 Papucsek",
+    "job": "Set Dresser",
+    "character": null
+   },
+   {
+    "id": 2069511,
+    "name": "Istv\u00e1n Draco Markolt",
+    "job": "Stunts",
+    "character": null
+   },
+   {
+    "id": 2069518,
+    "name": "Zolt\u00e1n Sz\u00e1nt\u00f3",
+    "job": "Stunts",
+    "character": null
+   }
+  ]
+ }
+}

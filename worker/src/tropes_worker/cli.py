@@ -23,6 +23,10 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--once", action="store_true", help="run at most one job, then exit")
     run.add_argument("--kinds", default=None, help="comma-separated job kinds to handle (default: all)")
     sub.add_parser("sync", parents=[common], help="read the Notion Media Log once and hand the rows to the site")
+    lk = sub.add_parser("lookup", parents=[common], help="resolve identities for a sample of the library; writes nothing")
+    lk.add_argument("--sample", type=int, default=50, help="how many entries, spread across types (default 50)")
+    lk.add_argument("--ids", default=None, help="comma-separated media ids instead of a sample")
+    lk.add_argument("--out", default=None, help="write the markdown report here")
     ev = sub.add_parser("eval", parents=[common], help="score the scan against verified instances; writes nothing")
     ev.add_argument("--trope", action="append", default=[], help="trope slug (repeatable); default: all with verified instances")
     ev.add_argument("--out", default=None, help="write the report as JSON here")
@@ -64,6 +68,16 @@ def main(argv: list[str] | None = None) -> int:
                 f"{report['rows']} rows: inserted {report['inserted']}, updated {report['updated']}, "
                 f"unchanged {report['unchanged']}, skipped {len(report.get('skipped', []))}, missing {report.get('missing', 0)}"
             )
+            return 0
+        if args.command == "lookup":
+            from .lookup.report import run_sample
+
+            ids = [int(x) for x in args.ids.split(",")] if args.ids else None
+            report = run_sample(settings, client, sample=args.sample, ids=ids)
+            if args.out:
+                with open(args.out, "w", encoding="utf-8") as fh:
+                    fh.write(report + "\n")
+            print(report)
             return 0
         if args.command == "eval":
             from .eval import evaluate

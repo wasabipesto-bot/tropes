@@ -11,6 +11,7 @@ dependencies = [
     "python-dotenv>=1.0",
     "ebooklib>=0.18",
     "beautifulsoup4>=4.12",
+    "pillow>=13.0.0",
 ]
 
 [project.scripts]

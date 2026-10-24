@@ -1,0 +1,24 @@
+{
+ "data": [
+  {
+   "node": {
+    "id": 54794,
+    "title": "Metallic Rouge",
+    "main_picture": {
+     "medium": "https://cdn.myanimelist.net/images/anime/1859/140210.jpg",
+     "large": "https://cdn.myanimelist.net/images/anime/1859/140210l.jpg"
+    },
+    "start_date": "2024-01-11",
+    "media_type": "tv",
+    "alternative_titles": {
+     "synonyms": [],
+     "en": "Metallic Rouge",
+     "ja": "\u30e1\u30bf\u30ea\u30c3\u30af\u30eb\u30fc\u30b8\u30e5"
+    },
+    "mean": 6.21,
+    "synopsis": "After emerging victorious against an alien species known as Usurpers using combat androids called Neans, mankind colonized Mars and enjoyed post-war peace. Having fulfilled their purpose as soldiers, "
+   }
+  }
+ ],
+ "paging": {}
+}

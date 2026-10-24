@@ -1,0 +1,40 @@
+{
+  "870780": {
+    "success": true,
+    "data": {
+      "type": "game",
+      "name": "CONTROL Ultimate Edition",
+      "steam_appid": 870780,
+      "developers": [
+        "Remedy Entertainment"
+      ],
+      "publishers": [
+        "Remedy Entertainment"
+      ],
+      "platforms": {
+        "windows": true,
+        "mac": true,
+        "linux": false
+      },
+      "genres": [
+        {
+          "id": "1",
+          "description": "Action"
+        },
+        {
+          "id": "25",
+          "description": "Adventure"
+        }
+      ],
+      "metacritic": {
+        "score": 85,
+        "url": "https://www.metacritic.com/game/pc/control?ftag=MCD-06-10aaa1f"
+      },
+      "release_date": {
+        "coming_soon": false,
+        "date": "Aug 27, 2020"
+      },
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/870780/ec621653454cdad232187af4eb79f23c05aceca5/header.jpg?t=1781607969"
+    }
+  }
+}
