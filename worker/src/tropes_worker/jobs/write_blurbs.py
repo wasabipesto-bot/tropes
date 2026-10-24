@@ -11,9 +11,10 @@ from ..pipeline import entry_text, polish, run_async
 from ..runner import Context
 from ..schemas import RewriteOut
 
-
 # A model that does not know the work says so instead of describing it; that is not a description.
-NON_ANSWER = re.compile(r"\b(I do not know|I don't know|cannot describe|can't describe|no information|unknown title|not familiar)\b", re.I)
+NON_ANSWER = re.compile(
+    r"\b(I do not know|I don't know|cannot describe|can't describe|no information|unknown title|not familiar)\b", re.I
+)
 
 
 def usable(text: str) -> bool:
