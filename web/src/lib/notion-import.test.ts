@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { openDb } from '../db/open';
 import { media } from '../db/schema';
-import { importCsv, parseNotionDate } from './notion-import';
+import { importCsv, importNotionRows, parseNotionDate } from './notion-import';
 import { searchMedia } from './search';
 
 const csv = `﻿Title,Type,Artist/Developer,Medium,Story,Tone,Enjoyability,Effect,Average Rating,Date,Image Link,Media Link
@@ -61,5 +61,36 @@ describe('notion import', () => {
     expect(searchMedia(db, 'relay').map((h) => h.title)).toEqual(['Cortex']);
     expect(searchMedia(db, 'don\'t die').map((h) => h.title)).toEqual(["Good Luck, Have Fun, Don't Die"]);
     expect(searchMedia(db, '')).toEqual([]);
+  });
+});
+
+describe('notion API sync', () => {
+  const row = (title: string, notionId: string, extra: Partial<Parameters<typeof importNotionRows>[1][number]> = {}) => ({
+    notionId, title, type: 'Book', creator: null, loggedDate: null,
+    ratings: { medium: null, story: null, tone: null, enjoyability: null, effect: null },
+    imageUrl: null, mediaUrl: null, ...extra,
+  });
+
+  it('adopts existing rows by title, reports new ids and changed fields, and marks rows that stopped coming back', () => {
+    const db = openDb(':memory:');
+    db.insert(media).values({ title: 'Lent', type: 'Book' }).run();
+    const first = importNotionRows(db, [row('Lent', 'aaaa-1'), row('Unsong', 'bbbb-2'), { ...row('Odd', 'cccc-3'), type: 'Laserdisc' }], { complete: true });
+    expect(first.inserted).toBe(1);
+    expect(first.insertedIds).toHaveLength(1);
+    expect(first.updated).toBe(1); // Lent gained its Notion id
+    expect(first.skipped[0].reason).toContain('Laserdisc');
+    expect(first.missing).toBe(0);
+    const lent = db.select().from(media).all().find((m) => m.title === 'Lent')!;
+    expect(lent.notionId).toBe('aaaa1');
+
+    const second = importNotionRows(db, [row('Lent', 'aaaa-1', { imageUrl: 'https://x/poster.png' })], { complete: true });
+    expect(second.changes).toEqual([{ id: lent.id, fields: ['notionImageUrl'] }]);
+    expect(second.missing).toBe(1);
+    const unsong = db.select().from(media).all().find((m) => m.title === 'Unsong')!;
+    expect(unsong.notionMissingSince).toBeTruthy();
+
+    const third = importNotionRows(db, [row('Lent', 'aaaa-1', { imageUrl: 'https://x/poster.png' }), row('Unsong', 'bbbb-2')], { complete: true });
+    expect(third.missing).toBe(0);
+    expect(db.select().from(media).all().find((m) => m.title === 'Unsong')!.notionMissingSince).toBeNull();
   });
 });

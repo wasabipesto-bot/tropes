@@ -43,6 +43,15 @@ class Settings:
     reasoning: str
     poll_seconds: float
     call_timeout: float
+    # Phase 4: external metadata.
+    notion_api_key: str | None
+    notion_data_source: str
+    # Minutes between Notion syncs queued by the worker loop; 0 disables the timer.
+    notion_sync_minutes: float
+    tmdb_token: str | None
+    mal_client_id: str | None
+    lookup_cache_dir: Path
+    user_agent: str
 
     @classmethod
     def from_env(cls) -> Settings:
@@ -72,4 +81,11 @@ class Settings:
             reasoning=env("TROPES_REASONING", "off").lower(),
             poll_seconds=float(env("TROPES_POLL_SECONDS", "2")),
             call_timeout=float(env("TROPES_CALL_TIMEOUT", "120")),
+            notion_api_key=env("NOTION_API_KEY") or None,
+            notion_data_source=env("NOTION_DATA_SOURCE", "993327c5-6f33-4429-ad1a-88a0d603bded"),
+            notion_sync_minutes=float(env("TROPES_NOTION_SYNC_MINUTES", "15")),
+            tmdb_token=env("TROPES_TMDB_TOKEN") or None,
+            mal_client_id=env("TROPES_MAL_CLIENT_ID") or None,
+            lookup_cache_dir=Path(env("TROPES_LOOKUP_CACHE_DIR", str(root / "data" / "cache" / "lookup"))),
+            user_agent=env("TROPES_USER_AGENT", "TropeLog/0.1 (+https://github.com/wasabipesto-bot/tropes)"),
         )

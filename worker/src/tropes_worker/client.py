@@ -100,6 +100,14 @@ class SiteClient:
     def job(self, job_id: int) -> dict[str, Any]:
         return self._get(f"/api/jobs/{job_id}")
 
+    def create_job(self, kind: str, payload: dict[str, Any]) -> dict[str, Any]:
+        """Queue a job from the worker side (the sync timer uses this). The site validates the payload."""
+        return self._post("/api/jobs", {"kind": kind, "payload": payload}).json()
+
+    def import_notion(self, rows: list[dict[str, Any]], *, complete: bool) -> dict[str, Any]:
+        """Hand the Media Log rows to the site's importer; `complete` means every row was read, so missing ones can be marked."""
+        return self._post("/api/import/notion", {"rows": rows, "complete": complete}).json()
+
     # Exports ------------------------------------------------------------
 
     def tropes(self) -> list[dict[str, Any]]:

@@ -10,15 +10,23 @@ export const scanTropePayload = z.object({
   tropeId: z.number().int().positive().optional(),
   draft: z.object({ name: z.string().min(1), description: z.string(), seeds: z.array(z.string()) }).optional(),
 });
-export const checkSubjectPayload = z.object({ mode: z.enum(['add', 'recheck']), subject: subjectRef });
-export const buildDossiersPayload = z.object({ onlyMissing: z.boolean().default(true), subjects: z.array(subjectRef).optional() });
+/** `auto` marks a job on the automatic path for Notion-synced entries (plan T14): its result is committed without review. */
+export const checkSubjectPayload = z.object({ mode: z.enum(['add', 'recheck']), subject: subjectRef, auto: z.boolean().default(false) });
+export const buildDossiersPayload = z.object({ onlyMissing: z.boolean().default(true), subjects: z.array(subjectRef).optional(), auto: z.boolean().default(false) });
 export const pingPayload = z.object({});
+/** lookup_media: resolve and fetch metadata for these works. `refresh` re-fetches from the pinned identity and never re-matches. */
+export const lookupMediaPayload = z.object({ mediaIds: z.array(z.number().int().positive()).min(1), auto: z.boolean().default(false), refresh: z.boolean().default(false) });
+export const syncNotionPayload = z.object({});
+export const writeBlurbsPayload = z.object({ mediaIds: z.array(z.number().int().positive()).min(1), auto: z.boolean().default(false) });
 
 export const payloadByKind = {
   ping: pingPayload,
   build_dossiers: buildDossiersPayload,
   scan_trope: scanTropePayload,
   check_subject: checkSubjectPayload,
+  lookup_media: lookupMediaPayload,
+  sync_notion: syncNotionPayload,
+  write_blurbs: writeBlurbsPayload,
 } as const;
 export type JobKind = (typeof JOB_KINDS)[number];
 
@@ -74,3 +82,18 @@ export type ResultBody = z.infer<typeof resultBody>;
 export type ProposalIn = z.infer<typeof proposalIn>;
 
 export const dossiersBody = z.object({ dossiers: z.array(dossierIn).default([]), notes: z.array(noteIn).default([]) });
+
+/** A Media Log row as the worker reads it from Notion; the same shape the CSV importer builds. */
+export const logRowIn = z.object({
+  notionId: z.string().nullable(),
+  title: z.string().min(1),
+  type: z.string(),
+  creator: z.string().nullable(),
+  loggedDate: z.string().nullable(),
+  ratings: z.object({ medium: z.number().nullable(), story: z.number().nullable(), tone: z.number().nullable(), enjoyability: z.number().nullable(), effect: z.number().nullable() }),
+  imageUrl: z.string().nullable(),
+  mediaUrl: z.string().nullable(),
+});
+export const notionImportBody = z.object({ rows: z.array(logRowIn), complete: z.boolean().default(false) });
+
+export const createJobBody = z.object({ kind: z.enum(JOB_KINDS), payload: z.record(z.string(), z.unknown()).default({}) });

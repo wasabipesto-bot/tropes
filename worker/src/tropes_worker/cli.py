@@ -22,6 +22,7 @@ def build_parser() -> argparse.ArgumentParser:
     run = sub.add_parser("run", parents=[common], help="claim and run jobs")
     run.add_argument("--once", action="store_true", help="run at most one job, then exit")
     run.add_argument("--kinds", default=None, help="comma-separated job kinds to handle (default: all)")
+    sub.add_parser("sync", parents=[common], help="read the Notion Media Log once and hand the rows to the site")
     ev = sub.add_parser("eval", parents=[common], help="score the scan against verified instances; writes nothing")
     ev.add_argument("--trope", action="append", default=[], help="trope slug (repeatable); default: all with verified instances")
     ev.add_argument("--out", default=None, help="write the report as JSON here")
@@ -54,6 +55,15 @@ def main(argv: list[str] | None = None) -> int:
             if args.once:
                 return 0 if run_one(settings, client, kinds) else 3
             run_forever(settings, client, kinds)
+            return 0
+        if args.command == "sync":
+            from .jobs.sync_notion import sync_once
+
+            report = sync_once(settings, client)
+            print(
+                f"{report['rows']} rows: inserted {report['inserted']}, updated {report['updated']}, "
+                f"unchanged {report['unchanged']}, skipped {len(report.get('skipped', []))}, missing {report.get('missing', 0)}"
+            )
             return 0
         if args.command == "eval":
             from .eval import evaluate

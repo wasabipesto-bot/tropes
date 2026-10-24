@@ -1,0 +1,48 @@
+{
+  "_comment": "The genre vocabulary (plan T5, 2026-10-24). Two levels: a subgenre implies its parent, so filtering by the parent includes it. `kind` says which media types an entry applies to: story = everything but albums, game = games, music = albums, podcast = podcasts. Edit freely; the model only ever picks from this list.",
+  "genres": [
+    { "name": "Science fiction", "kind": "story", "sub": ["Space opera", "Dystopian", "Cyberpunk", "Hard science fiction", "Time travel", "Military science fiction", "Post-apocalyptic", "Steampunk", "First contact", "Mecha"] },
+    { "name": "Fantasy", "kind": "story", "sub": ["Epic fantasy", "Dark fantasy", "Urban fantasy", "Science fantasy", "Comic fantasy", "Portal fantasy", "Children's fantasy", "Mythological fantasy", "Fairy tale", "Cozy fantasy", "Progression fantasy"] },
+    { "name": "Speculative fiction", "kind": "story", "sub": ["Alternate history", "Supernatural"] },
+    { "name": "Superhero", "kind": "story", "sub": [] },
+    { "name": "Horror", "kind": "story", "sub": ["Horror comedy", "Cosmic horror", "Psychological horror"] },
+    { "name": "Mystery", "kind": "story", "sub": ["Neo-noir"] },
+    { "name": "Thriller", "kind": "story", "sub": ["Spy", "Political thriller", "Psychological thriller"] },
+    { "name": "Crime", "kind": "story", "sub": ["Heist"] },
+    { "name": "Comedy", "kind": "story", "sub": ["Satire", "Dark comedy", "Sitcom", "Action comedy", "Workplace comedy", "Romantic comedy"] },
+    { "name": "Drama", "kind": "story", "sub": ["Historical", "Coming of age", "War", "Slice of life"] },
+    { "name": "Romance", "kind": "story", "sub": [] },
+    { "name": "Action", "kind": "story", "sub": [] },
+    { "name": "Adventure", "kind": "story", "sub": [] },
+    { "name": "Literary fiction", "kind": "story", "sub": [] },
+    { "name": "Young adult", "kind": "story", "sub": [] },
+    { "name": "Nonfiction", "kind": "story", "sub": [] },
+    { "name": "Animation", "kind": "story", "sub": ["Anime", "Adult animation"] },
+
+    { "name": "Shooter", "kind": "game", "sub": ["Looter shooter"] },
+    { "name": "RPG", "kind": "game", "sub": ["Action RPG", "Tactical RPG", "CRPG"] },
+    { "name": "Puzzle", "kind": "game", "sub": [] },
+    { "name": "Roguelike", "kind": "game", "sub": ["Deckbuilder"] },
+    { "name": "Narrative game", "kind": "game", "sub": ["Walking simulator", "Interactive fiction", "Visual novel"] },
+    { "name": "Immersive sim", "kind": "game", "sub": [] },
+    { "name": "Open world", "kind": "game", "sub": [] },
+    { "name": "Sandbox", "kind": "game", "sub": ["Survival", "Factory building"] },
+    { "name": "Simulation", "kind": "game", "sub": [] },
+    { "name": "Strategy", "kind": "game", "sub": [] },
+    { "name": "Stealth", "kind": "game", "sub": [] },
+    { "name": "Platformer", "kind": "game", "sub": ["Metroidvania"] },
+    { "name": "Party and co-op", "kind": "game", "sub": [] },
+
+    { "name": "Rock", "kind": "music", "sub": ["Indie rock", "Alternative rock", "Art rock", "Hard rock"] },
+    { "name": "Pop", "kind": "music", "sub": ["Synth-pop", "Indie pop", "Art pop", "Power pop", "Dream pop", "Hyperpop"] },
+    { "name": "Electronic", "kind": "music", "sub": ["Dance"] },
+    { "name": "Funk and soul", "kind": "music", "sub": [] },
+    { "name": "Folk", "kind": "music", "sub": [] },
+    { "name": "Jazz", "kind": "music", "sub": [] },
+    { "name": "Comedy music", "kind": "music", "sub": [] },
+    { "name": "Hip hop", "kind": "music", "sub": [] },
+
+    { "name": "Actual play", "kind": "podcast", "sub": [] },
+    { "name": "Talk", "kind": "podcast", "sub": [] }
+  ]
+}

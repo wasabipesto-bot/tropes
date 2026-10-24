@@ -1,8 +1,13 @@
 import { sql } from 'drizzle-orm';
-import { index, integer, primaryKey, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, integer, primaryKey, real, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 export const MEDIA_TYPES = ['Book', 'TV Series', 'Movie', 'Game', 'Podcast', 'Album', 'Other'] as const;
 export type MediaType = (typeof MEDIA_TYPES)[number];
+export const DESCRIPTION_ORIGINS = ['owner', 'model'] as const;
+/** pinned: identity confirmed (by a confident lookup or the owner); check: a lookup was unsure, waiting in /review;
+ *  not_found: nothing matched, tried again by the next backfill; none: the owner said there is no public match. */
+export const IDENTITY_STATES = ['pinned', 'check', 'not_found', 'none'] as const;
+export type IdentityState = (typeof IDENTITY_STATES)[number];
 
 const timestamps = {
   createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
@@ -28,6 +33,28 @@ export const media = sqliteTable(
     notionImageUrl: text('notion_image_url'),
     notionMediaUrl: text('notion_media_url'),
     localRoot: text('local_root'),
+    /** Who wrote the description: the owner, or the model's draft blurb (shown with a quiet mark to the owner). */
+    descriptionOrigin: text('description_origin', { enum: DESCRIPTION_ORIGINS }),
+    /** The pinned public identity (Phase 4). Null until a lookup ran; see IDENTITY_STATES. */
+    identity: text('identity', { enum: IDENTITY_STATES }),
+    wikidataId: text('wikidata_id'),
+    /** JSON {imdb, tmdb_tv, tmdb_movie, tvdb, mal, steam, openlibrary, musicbrainz_rg, itunes, goodreads, …}. */
+    externalIds: text('external_ids').notNull().default('{}'),
+    /** JSON, fields by type: start, end, seasons, episodes, runtime_min, studio, network, developer, publisher, tracks, … */
+    details: text('details').notNull().default('{}'),
+    /** JSON list of the lookup's runners-up, so "Wrong match" can offer them without another search. */
+    identityCandidates: text('identity_candidates').notNull().default('[]'),
+    /** Wikipedia's lead paragraph. Internal: a dossier input and a reference beside the description field. */
+    wikiExtract: text('wiki_extract'),
+    /** URL the stored poster came from; a changed Notion Image Link no longer matches and triggers a re-fetch. */
+    posterSource: text('poster_source'),
+    metadataAt: text('metadata_at'),
+    /** Once the owner edits genres, a refresh leaves them alone. */
+    genresEdited: integer('genres_edited', { mode: 'boolean' }).notNull().default(false),
+    /** Set by the Notion sync when a row with this id stopped coming back; cleared when it returns. */
+    notionMissingSince: text('notion_missing_since'),
+    /** A short note for /review, set by the sync ("Media Link changed since the match was pinned"). */
+    reviewNote: text('review_note'),
     ratingMedium: real('rating_medium'),
     ratingStory: real('rating_story'),
     ratingTone: real('rating_tone'),
@@ -40,6 +67,38 @@ export const media = sqliteTable(
 
 export type Media = typeof media.$inferSelect;
 export type NewMedia = typeof media.$inferInsert;
+
+export const LINK_ORIGINS = ['lookup', 'notion', 'owner'] as const;
+
+/** One external link per site per work, with its score where the site has one ("77", "100%", "6.21"). */
+export const mediaLink = sqliteTable(
+  'media_link',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    mediaId: integer('media_id').notNull().references(() => media.id, { onDelete: 'cascade' }),
+    /** Site key: wikipedia, imdb, tmdb, tvdb, mal, anidb, ann, rt, metacritic, steam, goodreads, openlibrary, musicbrainz, spotify, bandcamp, itunes, letterboxd, official. */
+    site: text('site').notNull(),
+    url: text('url').notNull(),
+    score: text('score'),
+    scoreValue: real('score_value'),
+    origin: text('origin', { enum: LINK_ORIGINS }).notNull().default('lookup'),
+    hidden: integer('hidden', { mode: 'boolean' }).notNull().default(false),
+    fetchedAt: text('fetched_at').notNull().default(sql`(datetime('now'))`),
+  },
+  (t) => [uniqueIndex('media_link_media_site').on(t.mediaId, t.site)],
+);
+
+/** Genres from the controlled vocabulary in web/seed/genres.json. */
+export const mediaGenre = sqliteTable(
+  'media_genre',
+  {
+    mediaId: integer('media_id').notNull().references(() => media.id, { onDelete: 'cascade' }),
+    genre: text('genre').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.mediaId, t.genre] }), index('media_genre_genre_idx').on(t.genre)],
+);
+
+export type MediaLink = typeof mediaLink.$inferSelect;
 
 /** Several log entries that count as one work for trope purposes (Terra Ignota, the Murderbot books). */
 export const series = sqliteTable('series', {
@@ -75,6 +134,15 @@ export const tropeSeed = sqliteTable('trope_seed', {
   tropeId: integer('trope_id').notNull().references(() => trope.id, { onDelete: 'cascade' }),
   title: text('title').notNull(),
   mediaId: integer('media_id').references(() => media.id, { onDelete: 'set null' }),
+});
+
+/** Former names of a renamed trope: old URLs redirect and old [[links]] still resolve. */
+export const tropeAlias = sqliteTable('trope_alias', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  tropeId: integer('trope_id').notNull().references(() => trope.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+  slug: text('slug').notNull().unique(),
+  createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
 });
 
 export const PROMINENCES = ['core', 'recurring', 'brief'] as const;
@@ -166,7 +234,7 @@ export const mediaNote = sqliteTable('media_note', {
   fetchedAt: text('fetched_at').notNull().default(sql`(datetime('now'))`),
 });
 
-export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject'] as const;
+export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs'] as const;
 export const JOB_STATUSES = ['queued', 'running', 'done', 'failed', 'cancelled'] as const;
 
 /** Work handed to the worker. Payload and result are JSON validated by zod on the site and pydantic in the worker. */
@@ -186,7 +254,7 @@ export const job = sqliteTable('job', {
   finishedAt: text('finished_at'),
 });
 
-export const PROPOSAL_KINDS = ['instance', 'evidence'] as const;
+export const PROPOSAL_KINDS = ['instance', 'evidence', 'match'] as const;
 export const DECISIONS = ['pending', 'accepted', 'rejected'] as const;
 
 /** One suggestion from a job, waiting for the owner. Committing turns accepted ones into instances or evidence. */
@@ -214,6 +282,8 @@ export const proposal = sqliteTable(
     rejectedBefore: integer('rejected_before', { mode: 'boolean' }).notNull().default(false),
     /** JSON list of warnings: writing check tripped twice, quotes dropped, and so on. */
     flags: text('flags').notNull().default('[]'),
+    /** For match proposals (lookup_media): the resolved identity, candidates, details, links, genres and poster. */
+    payload: text('payload').notNull().default('{}'),
     decision: text('decision', { enum: DECISIONS }).notNull().default('pending'),
     createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
   },

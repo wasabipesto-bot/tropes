@@ -29,13 +29,14 @@ class Context:
 
 
 def registry() -> dict[str, JobFn]:
-    from .jobs import build_dossiers, check_subject, ping, scan_trope
+    from .jobs import build_dossiers, check_subject, ping, scan_trope, sync_notion
 
     return {
         "ping": ping.run,
         "build_dossiers": build_dossiers.run,
         "scan_trope": scan_trope.run,
         "check_subject": check_subject.run,
+        "sync_notion": sync_notion.run,
     }
 
 
@@ -60,10 +61,21 @@ def run_one(settings: Settings, client: SiteClient, kinds: list[str] | None = No
     return True
 
 
+def sync_due(settings: Settings, last: float | None, now: float) -> bool:
+    """The Notion sync timer: every `notion_sync_minutes` when a key is configured. The first run is immediate."""
+    if not settings.notion_api_key or settings.notion_sync_minutes <= 0:
+        return False
+    return last is None or now - last >= settings.notion_sync_minutes * 60
+
+
 def run_forever(settings: Settings, client: SiteClient, kinds: list[str] | None = None) -> None:
     log.info("worker started against %s (model %s)", settings.site_url, settings.model)
+    last_sync: float | None = None
     while True:
         try:
+            if (kinds is None or "sync_notion" in kinds) and sync_due(settings, last_sync, time.monotonic()):
+                last_sync = time.monotonic()
+                client.create_job("sync_notion", {})
             if not run_one(settings, client, kinds):
                 time.sleep(settings.poll_seconds)
         except KeyboardInterrupt:

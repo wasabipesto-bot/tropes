@@ -30,6 +30,9 @@ export interface ImportReport {
   unchanged: number;
   skipped: { line: number; reason: string }[];
   duplicates: string[];
+  insertedIds: number[];
+  /** Updated rows and which Notion-owned fields changed, so the sync can react to a new Image or Media Link. */
+  changes: { id: number; fields: string[] }[];
 }
 
 const MONTHS: Record<string, number> = {
@@ -123,7 +126,7 @@ function notionFields(r: LogRow): Omit<NewMedia, 'id'> {
 }
 
 export function importRows(db: Db, rows: LogRow[], opts: { dryRun?: boolean } = {}): ImportReport {
-  const report: ImportReport = { inserted: 0, updated: 0, unchanged: 0, skipped: [], duplicates: [] };
+  const report: ImportReport = { inserted: 0, updated: 0, unchanged: 0, skipped: [], duplicates: [], insertedIds: [], changes: [] };
   const seen = new Set<string>();
   const run = () => {
     for (const r of rows) {
@@ -137,18 +140,19 @@ export function importRows(db: Db, rows: LogRow[], opts: { dryRun?: boolean } = 
 
       const fields = notionFields(r);
       if (!existing) {
-        if (!opts.dryRun) db.insert(media).values(fields).run();
+        if (!opts.dryRun) report.insertedIds.push(db.insert(media).values(fields).returning({ id: media.id }).get().id);
         report.inserted++;
         continue;
       }
       // Keep an id we already know if the file has none.
       if (!fields.notionId) fields.notionId = existing.notionId;
-      const changed = (Object.keys(fields) as (keyof typeof fields)[]).some((k) => (fields[k] ?? null) !== (existing[k] ?? null));
-      if (!changed) { report.unchanged++; continue; }
+      const changedFields = (Object.keys(fields) as (keyof typeof fields)[]).filter((k) => (fields[k] ?? null) !== (existing[k] ?? null));
+      if (changedFields.length === 0) { report.unchanged++; continue; }
       if (!opts.dryRun) {
         db.update(media).set({ ...fields, updatedAt: sql`(datetime('now'))` }).where(eq(media.id, existing.id)).run();
       }
       report.updated++;
+      report.changes.push({ id: existing.id, fields: changedFields });
     }
   };
   if (opts.dryRun) run();
@@ -161,4 +165,37 @@ export function importCsv(db: Db, text: string, opts: { dryRun?: boolean } = {})
   const report = importRows(db, rows, opts);
   report.skipped.push(...skipped);
   return report;
+}
+
+/**
+ * Rows read through the Notion API (the worker's sync). Unknown types are skipped
+ * rather than failing the batch. When the batch is complete, entries whose Notion
+ * row stopped coming back are marked (never deleted; /review lists them), and
+ * returning ones are cleared.
+ */
+export function importNotionRows(db: Db, raw: { notionId: string | null; title: string; type: string; creator: string | null; loggedDate: string | null; ratings: LogRow['ratings']; imageUrl: string | null; mediaUrl: string | null }[], opts: { complete?: boolean } = {}): ImportReport & { missing: number } {
+  const rows: LogRow[] = [];
+  const skipped: ImportReport['skipped'] = [];
+  raw.forEach((r, i) => {
+    if (!(MEDIA_TYPES as readonly string[]).includes(r.type)) return skipped.push({ line: i + 1, reason: `unknown type "${r.type}" for "${r.title}"` });
+    rows.push({ ...r, type: r.type as MediaType, notionId: r.notionId ? r.notionId.replace(/-/g, '').toLowerCase() : null });
+  });
+  const report = importRows(db, rows);
+  report.skipped.push(...skipped);
+  let missing = 0;
+  if (opts.complete) {
+    const seen = new Set(rows.map((r) => r.notionId).filter((x): x is string => !!x));
+    db.transaction((tx) => {
+      for (const m of tx.select({ id: media.id, notionId: media.notionId, missingSince: media.notionMissingSince }).from(media).all()) {
+        if (!m.notionId) continue;
+        if (seen.has(m.notionId)) {
+          if (m.missingSince) tx.update(media).set({ notionMissingSince: null }).where(eq(media.id, m.id)).run();
+        } else {
+          missing++;
+          if (!m.missingSince) tx.update(media).set({ notionMissingSince: sql`(datetime('now'))` }).where(eq(media.id, m.id)).run();
+        }
+      }
+    });
+  }
+  return { ...report, missing };
 }
