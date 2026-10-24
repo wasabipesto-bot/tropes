@@ -60,3 +60,16 @@ describe('auth', () => {
     expect(rl.allow('a', 1001)).toBe(true);
   });
 });
+
+import { formatLocator } from './text';
+
+describe('formatLocator', () => {
+  it('shortens chapter headings and calms shouting ones', () => {
+    expect(formatLocator('CHAPTER 17')).toBe('ch. 17');
+    expect(formatLocator('Chapter XII: The Fall')).toBe('ch. 12');
+    expect(formatLocator('THE WARREN')).toBe('The Warren');
+    expect(formatLocator('S01E03 12:40')).toBe('S01E03 12:40');
+    expect(formatLocator('p. 203')).toBe('p. 203');
+    expect(formatLocator('')).toBe('');
+  });
+});

@@ -58,3 +58,32 @@ export function tropeLinksIn(src: string): string[] {
   for (const m of src.matchAll(/\[\[([^\]\n]+?)\]\]/g)) seen.add(m[1].trim());
   return [...seen];
 }
+
+/**
+ * A quote's citation, kept short and quiet after the quote: "ch. 17", "S01E03 12:40".
+ * Chapter headings copied from a text ("CHAPTER XVII", "Chapter 17: The Fall") become "ch. 17";
+ * anything else is shown as written, with shouting headings brought down to title case.
+ */
+export function formatLocator(locator: string): string {
+  const s = locator.trim();
+  if (!s) return '';
+  const ch = /^chapter\s+([0-9]+|[ivxlc]+)\b\.?:?\s*(.*)$/i.exec(s);
+  if (ch) {
+    const n = /^[0-9]+$/.test(ch[1]) ? ch[1] : String(roman(ch[1].toUpperCase()));
+    return `ch. ${n}`;
+  }
+  const letters = s.replace(/[^a-z]/gi, '');
+  if (letters.length >= 4 && letters === letters.toUpperCase()) return s.toLowerCase().replace(/(^|\s)(\S)/g, (_, pre: string, c: string) => pre + c.toUpperCase());
+  return s;
+}
+
+function roman(s: string): number {
+  const v: Record<string, number> = { I: 1, V: 5, X: 10, L: 50, C: 100 };
+  let total = 0;
+  for (let i = 0; i < s.length; i++) {
+    const cur = v[s[i]] ?? 0;
+    const next = v[s[i + 1]] ?? 0;
+    total += cur < next ? -cur : cur;
+  }
+  return total;
+}

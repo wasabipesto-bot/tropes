@@ -3,7 +3,7 @@ import { actions } from 'astro:actions';
 import type { Evidence } from '../db/schema';
 import { PROMINENCES } from '../db/schema';
 import { PROMINENCE_LABEL, groupByProminence, type InstanceView } from '../lib/queries';
-import { renderInline, type RenderOptions } from '../lib/text';
+import { formatLocator, renderInline, type RenderOptions } from '../lib/text';
 import VerifyMark from './VerifyMark.astro';
 
 interface Props {
@@ -116,7 +116,7 @@ const quotes = (ev: Evidence[]) => ev.filter((e) => e.kind === 'quote');
     </div>
     <aside class="mar">
       {quotes(v.evidence).map((q) => (
-        <p class="quote"><Fragment set:html={renderInline(q.content ?? '', render)} /> <span class="quiet" style="font-style: normal">{q.locator}</span></p>
+        <p class="quote"><Fragment set:html={renderInline(q.content ?? '', render)} />{q.locator && <span class="loc">{formatLocator(q.locator)}</span>}</p>
       ))}
       {frames(v.evidence).length > 0 && (
         <div class="gal">
