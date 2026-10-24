@@ -51,3 +51,13 @@ def test_extract_feeds_only_weakly_known_dossiers():
     assert dossier_needed(partial, 2, False, None)
     partial["dossier"]["sourceHash"] = extract_hash(partial)
     assert not dossier_needed(partial, 2, False, None)
+
+
+def test_wikimedia_thumbnails_fetch_the_original():
+    from tropes_worker.lookup.posters import fetch_url
+
+    thumb = "https://upload.wikimedia.org/wikipedia/en/thumb/e/e5/Control_game_cover_art.jpg/220px-Control_game_cover_art.jpg"
+    assert fetch_url(thumb) == "https://upload.wikimedia.org/wikipedia/en/e/e5/Control_game_cover_art.jpg"
+    full = "https://upload.wikimedia.org/wikipedia/en/0/01/IainMBanksExcession.jpg"
+    assert fetch_url(full) == full
+    assert fetch_url("https://theposterdb.com/api/assets/263743") == "https://theposterdb.com/api/assets/263743"

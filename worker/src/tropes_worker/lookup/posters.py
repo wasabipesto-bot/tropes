@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from io import BytesIO
 
 from PIL import Image
@@ -16,10 +17,19 @@ QUALITY = {900: 82, 300: 80, 50: 70}
 MIN_WIDTH = 200
 
 
+WIKIMEDIA_THUMB = re.compile(r"^(https://upload\.wikimedia\.org/wikipedia/[a-z]+/)thumb/([^/]+/[^/]+/[^/]+)/\d+px-[^/]+$")
+
+
+def fetch_url(url: str) -> str:
+    """A Wikimedia thumbnail link (often 220 px, and 400 when stale) is fetched as its full-size original."""
+    m = WIKIMEDIA_THUMB.match(url)
+    return f"{m.group(1)}{m.group(2)}" if m else url
+
+
 def prepare(f: Fetcher, urls: list[str]) -> tuple[str, dict[int, bytes]] | None:
-    """Try the URLs in order; return (source url, {width: webp bytes}) for the first real image."""
+    """Try the URLs in order; return (source url as given, {width: webp bytes}) for the first real image."""
     for url in urls:
-        data = f.get_bytes(url)
+        data = f.get_bytes(fetch_url(url))
         if not data:
             continue
         try:
