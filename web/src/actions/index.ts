@@ -448,12 +448,14 @@ export const server = {
       const choices = input.choice ?? {};
       let committed = 0;
       const refresh: number[] = [];
+      const blurbs: number[] = [];
       for (const v of matchesFor(db, j)) {
         if (v.p.decision !== 'pending') continue;
         const choice = v.payload.status === 'confident' ? (accepted.has(v.p.id) ? 'chosen' : 'skip') : (choices[String(v.p.id)] ?? 'skip');
         if (choice === 'skip') continue;
         if (choice === 'chosen' && v.payload.chosen) {
           commitMatch(db, v.m.id, v.payload);
+          if (!v.m.description) blurbs.push(v.m.id); // D20: a draft description for every empty one
         } else if (choice === 'none') {
           markNoMatch(db, v.m.id, v.payload.candidates);
         } else if (/^\d+$/.test(choice) && v.payload.candidates[Number(choice)]) {
@@ -465,6 +467,7 @@ export const server = {
         committed++;
       }
       if (refresh.length > 0) createJob(db, 'lookup_media', { mediaIds: refresh, refresh: true, auto: true });
+      if (blurbs.length > 0) createJob(db, 'write_blurbs', { mediaIds: blurbs });
       db.update(job).set({ result: JSON.stringify({ ...parseJson<any>(j.result, {}), committed, committedAt: new Date().toISOString() }) }).where(eq(job.id, j.id)).run();
       return { returnTo: `/metadata?job=${j.id}&committed=${committed}` };
     },
