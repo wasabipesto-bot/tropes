@@ -5,9 +5,9 @@
  * (unverified instances, model descriptions), and anything uncertain goes to
  * /review instead.
  */
-import { and, eq, inArray, isNull } from 'drizzle-orm';
+import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 import type { Db } from '../../db/open';
-import { media, proposal, type Job } from '../../db/schema';
+import { dossier, media, proposal, type Job } from '../../db/schema';
 import { commitMatch, recordUnresolved, type MatchPayload } from '../metadata';
 import type { ImportReport } from '../notion-import';
 import { commitProposals } from './commit';
@@ -52,6 +52,7 @@ export function afterNotionSync(db: Db, report: ImportReport): { lookups: number
  */
 export function afterJobDone(db: Db, j: Job): void {
   const payload = parseJson<any>(j.payload, {});
+  if (j.kind === 'lookup_media') supersedeOlderMatches(db, j, payload.mediaIds ?? []);
   if (!payload.auto) return;
   if (j.kind === 'lookup_media') {
     const rows = db.select().from(proposal).where(and(eq(proposal.jobId, j.id), eq(proposal.kind, 'match'))).all();
@@ -65,8 +66,11 @@ export function afterJobDone(db: Db, j: Job): void {
         recordUnresolved(db, p.subjectId, mp);
       }
     }
-    if (!payload.refresh && payload.mediaIds?.length) {
-      createJob(db, 'build_dossiers', { onlyMissing: true, subjects: payload.mediaIds.map((id: number) => ({ kind: 'media', id })), auto: true });
+    // New entries go on to dossiers, a blurb and the trope check; a re-lookup of a known entry stops here.
+    const known = new Set(db.select({ id: dossier.subjectId }).from(dossier).where(eq(dossier.subjectKind, 'media')).all().map((r) => r.id));
+    const fresh: number[] = (payload.mediaIds ?? []).filter((id: number) => !known.has(id));
+    if (!payload.refresh && fresh.length > 0) {
+      createJob(db, 'build_dossiers', { onlyMissing: true, subjects: fresh.map((id: number) => ({ kind: 'media', id })), auto: true });
     }
   } else if (j.kind === 'build_dossiers') {
     const ids: number[] = (payload.subjects ?? []).filter((s: any) => s.kind === 'media').map((s: any) => s.id);
@@ -82,4 +86,15 @@ export function afterJobDone(db: Db, j: Job): void {
     const accepted = new Set(rows.filter((p) => p.score >= min).map((p) => p.id));
     commitProposals(db, j.id, accepted, {}, { verified: false, rejectRest: false });
   }
+}
+
+/** A newer lookup of the same entries replaces older matches still waiting for a decision (Phase 3's discard rule). */
+function supersedeOlderMatches(db: Db, j: Job, mediaIds: number[]): void {
+  if (mediaIds.length === 0) return;
+  const older = db
+    .select({ id: proposal.id })
+    .from(proposal)
+    .where(and(eq(proposal.kind, 'match'), eq(proposal.decision, 'pending'), inArray(proposal.subjectId, mediaIds), sql`${proposal.jobId} < ${j.id}`))
+    .all();
+  if (older.length > 0) db.update(proposal).set({ decision: 'rejected' }).where(inArray(proposal.id, older.map((o) => o.id))).run();
 }

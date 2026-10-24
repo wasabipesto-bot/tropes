@@ -21,7 +21,7 @@ from ..lookup.merge import merge
 from ..lookup.models import Candidate, Partial
 from ..lookup.posters import prepare
 from ..lookup.report import entry_from, shared_media_links
-from ..lookup.resolve import Entry, Resolution, norm, resolve
+from ..lookup.resolve import Entry, Resolution, from_site_hit, norm, resolve
 from ..pipeline import entry_text, run_async
 from ..runner import Context
 from ..schemas import ResolveOut
@@ -196,8 +196,10 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
         if r.status == "not_found":
             c = await in_thread(site_search, f, settings, entry_from(m))
             if c:
-                r.status, r.chosen = "check", c
-                r.candidates = [c] + [x for x in r.candidates if x is not c][:4]
+                c = await in_thread(from_site_hit, f, entry_from(m), c)
+                r.status, r.chosen = ("confident" if c.qid else "check"), c
+                r.candidates = [c] + [x for x in r.candidates if x.qid != c.qid][:4]
+                r.notes = [n for n in r.notes if n != "nothing scored well enough"]
         return m, r
 
     settled = await asyncio.gather(*(settle(m, r) for m, r in resolved))

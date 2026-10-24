@@ -243,3 +243,20 @@ def _parent_show(f: Fetcher, entry: Entry, shared_links: set[str]) -> Resolution
     r.status = "check"
     r.chosen.reasons = r.chosen.reasons + [f"matched the parent title “{parent}”"]
     return r
+
+
+def from_site_hit(f: Fetcher, entry: Entry, hit: Candidate) -> Candidate:
+    """A per-site hit whose id Wikidata also carries becomes the Wikidata item, with the site id kept."""
+    for key, value in hit.ids.items():
+        qids = wikidata.by_seed(f, key, value)
+        if not qids:
+            continue
+        ents = wikidata.entities(f, qids[:1])
+        e = ents.get(qids[0])
+        if not e:
+            continue
+        c = wikidata.candidate(e, wikidata.labels(f, wikidata.linked_qids(e)))
+        c.ids = {**c.ids, **hit.ids}
+        c.score, c.reasons, c.source = 0.9, hit.reasons + [f"Wikidata item carrying the same {key} id"], hit.source
+        return c
+    return hit

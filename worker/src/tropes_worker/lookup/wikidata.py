@@ -101,7 +101,18 @@ ID_PROPS = {
     "P6127": "letterboxd",
 }
 # Seeds from the Notion Media Link: id key → property.
-SEED_PROPS = {"imdb": "P345", "steam": "P1733", "goodreads": "P2969", "spotify": "P2205"}
+SEED_PROPS = {
+    "imdb": "P345",
+    "steam": "P1733",
+    "goodreads": "P2969",
+    "spotify": "P2205",
+    "tmdb_tv": "P4983",
+    "tmdb_movie": "P4947",
+    "mal": "P4086",
+    "openlibrary": "P648",
+    "musicbrainz_rg": "P436",
+    "itunes": "P5842",
+}
 CREATOR_PROPS = ("P57", "P50", "P178", "P175", "P449", "P272", "P170", "P1040", "P2515", "P86")
 # Review scores with the reviewer as a qualifier; the ones we show for albums (D8).
 REVIEWERS = {"Q31181": "AllMusic", "Q19828811": "Album of the Year", "Q150248": "Metacritic", "Q1150452": "Pitchfork"}
@@ -155,12 +166,18 @@ def _quantity(entity: dict[str, Any], prop: str) -> int | None:
     return None
 
 
+# Wikidata keeps labels that are the same in every language under "mul"; English falls back to it.
+LANGS = "en|mul"
+
+
 def _label(entity: dict[str, Any]) -> str:
-    return entity.get("labels", {}).get("en", {}).get("value", "")
+    labels = entity.get("labels", {})
+    return labels.get("en", labels.get("mul", {})).get("value", "")
 
 
 def _aliases(entity: dict[str, Any]) -> list[str]:
-    return [a["value"] for a in entity.get("aliases", {}).get("en", [])]
+    aliases = entity.get("aliases", {})
+    return [a["value"] for lang in ("en", "mul") for a in aliases.get(lang, [])]
 
 
 # Requests ----------------------------------------------------------------------------------------
@@ -226,7 +243,7 @@ def entities(f: Fetcher, qids: list[str]) -> dict[str, dict[str, Any]]:
                 "action": "wbgetentities",
                 "ids": "|".join(qids[i : i + 50]),
                 "props": "labels|descriptions|aliases|claims|sitelinks",
-                "languages": "en",
+                "languages": LANGS,
                 "sitefilter": "enwiki",
                 "format": "json",
             },
@@ -245,7 +262,7 @@ def labels(f: Fetcher, qids: list[str]) -> dict[str, str]:
                 "action": "wbgetentities",
                 "ids": "|".join(qids[i : i + 50]),
                 "props": "labels",
-                "languages": "en",
+                "languages": LANGS,
                 "format": "json",
             },
         )
