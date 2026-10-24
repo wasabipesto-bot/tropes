@@ -61,6 +61,9 @@ class Prompt:
 
 
 _cache: dict[str, Prompt] = {}
+# Live clients, so a job's loop can close them before it ends (otherwise their connections are torn down
+# by the garbage collector on a closed loop, which asyncio logs as an error).
+_live: list[LLM] = []
 
 
 def load_prompt(name: str) -> Prompt:
@@ -121,6 +124,17 @@ class LLM:
         self._sem_loop: asyncio.AbstractEventLoop | None = None
         self.usage.model = self.settings.model
         self._schema_ok: dict[str, bool] = {}
+        _live.append(self)
+
+    async def aclose(self) -> None:
+        if self in _live:
+            _live.remove(self)
+        await self._client.close()
+
+    @staticmethod
+    async def close_all() -> None:
+        for llm in list(_live):
+            await llm.aclose()
 
     async def complete(self, prompt: str, variables: dict[str, Any], schema: type[T], *, model: str | None = None) -> T:
         """Render `prompt` with `variables`, get JSON back, validate as `schema`."""

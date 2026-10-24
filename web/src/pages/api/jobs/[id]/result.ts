@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { db } from '../../../../db';
 import { resultBody } from '../../../../lib/jobs/schemas';
+import { afterJobDone } from '../../../../lib/jobs/auto';
 import { completeJob, jobById } from '../../../../lib/jobs/queue';
 import { badRequest, unauthorized, workerAuthorized } from '../../../../lib/worker-auth';
 
@@ -13,5 +14,7 @@ export const POST: APIRoute = async ({ request, params }) => {
   const parsed = resultBody.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return badRequest(parsed.error.message);
   completeJob(db, id, parsed.data);
+  const done = jobById(db, id);
+  if (done) afterJobDone(db, done);
   return Response.json({ status: 'done', proposals: parsed.data.proposals.length, dossiers: parsed.data.dossiers.length });
 };

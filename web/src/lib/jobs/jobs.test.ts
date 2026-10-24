@@ -81,14 +81,36 @@ describe('job queue', () => {
     expect(inst).toHaveLength(1);
     expect(inst[0].prominence).toBe('recurring');
     expect(inst[0].origin).toBe('model');
-    expect(inst[0].verified).toBe(false);
+    expect(inst[0].verified).toBe(true); // the owner reviewed it (plan T16)
     expect(db.select().from(evidence).all()).toHaveLength(1);
     const exported = exportTropes(db).find((x) => x.id === t.id)!;
     expect(exported.rejected).toEqual([{ kind: 'media', id: m2.id }]);
-    expect(exported.instances[0].verified).toBe(false);
+    expect(exported.instances[0].verified).toBe(true);
     // A second commit of the same job does nothing destructive.
     expect(() => commitProposals(db, j.id, new Set(ids), {})).not.toThrow();
     expect(db.select().from(instance).all()).toHaveLength(2);
+  });
+
+  it('commits the automatic path unverified and leaves the rest pending for review', () => {
+    const { db, m1, m2 } = seed();
+    const t = db.insert(trope).values({ name: 'Dog Duo', slug: 'dog-duo', description: 'd' }).returning().get();
+    const j = createJob(db, 'check_subject', { mode: 'add', subject: { kind: 'media', id: m1.id }, auto: true });
+    claimJob(db, ['check_subject']);
+    completeJob(db, j.id, {
+      summary: {},
+      proposals: [
+        { tropeId: t.id, subject: { kind: 'media', id: m1.id }, kind: 'instance', score: 0.9, prominence: 'core', who: '', text: 'One.', evidence: [], seed: false, rejectedBefore: false, flags: [], payload: {} },
+        { tropeId: t.id, subject: { kind: 'media', id: m2.id }, kind: 'instance', score: 0.55, prominence: 'brief', who: '', text: 'Two.', evidence: [], seed: false, rejectedBefore: false, flags: [], payload: {} },
+      ],
+      dossiers: [], notes: [], descriptions: [], warnings: [],
+    });
+    const ids = db.select().from(proposal).all();
+    commitProposals(db, j.id, new Set([ids[0].id]), {}, { verified: false, rejectRest: false });
+    const inst = db.select().from(instance).all();
+    expect(inst).toHaveLength(1);
+    expect(inst[0].verified).toBe(false);
+    const decisions = db.select().from(proposal).all().map((p) => p.decision);
+    expect(decisions).toEqual(['accepted', 'pending']);
   });
 
   it('authorizes workers by hashed bearer token', () => {

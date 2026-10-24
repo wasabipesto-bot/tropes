@@ -5,11 +5,19 @@
  * (unverified instances, model descriptions), and anything uncertain goes to
  * /review instead.
  */
-import { eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, isNull } from 'drizzle-orm';
 import type { Db } from '../../db/open';
-import { media } from '../../db/schema';
+import { media, proposal, type Job } from '../../db/schema';
+import { commitMatch, recordUnresolved, type MatchPayload } from '../metadata';
 import type { ImportReport } from '../notion-import';
-import { createJob } from './queue';
+import { commitProposals } from './commit';
+import { createJob, parseJson } from './queue';
+
+/** Proposals scoring at least this are committed without review on the automatic path (plan D23; 0.5 is the review cut). */
+export function autoCommitMin(): number {
+  const n = Number(process.env.TROPES_AUTO_COMMIT_MIN ?? '0.7');
+  return Number.isFinite(n) ? n : 0.7;
+}
 
 /** After a sync: look up new entries; re-fetch posters when an Image Link changed; flag a changed Media Link on a pinned match. */
 export function afterNotionSync(db: Db, report: ImportReport): { lookups: number; refreshes: number; flagged: number } {
@@ -36,4 +44,42 @@ export function afterNotionSync(db: Db, report: ImportReport): { lookups: number
     out.refreshes = refresh.length;
   }
   return out;
+}
+
+/**
+ * The chain after a job on the automatic path finishes:
+ * lookup (confident matches committed, the rest recorded for /review) → dossiers → blurbs → trope check (≥ cut committed, unverified).
+ */
+export function afterJobDone(db: Db, j: Job): void {
+  const payload = parseJson<any>(j.payload, {});
+  if (!payload.auto) return;
+  if (j.kind === 'lookup_media') {
+    const rows = db.select().from(proposal).where(and(eq(proposal.jobId, j.id), eq(proposal.kind, 'match'))).all();
+    for (const p of rows) {
+      const mp = parseJson<MatchPayload | null>(p.payload, null);
+      if (!mp) continue;
+      if (mp.status === 'confident' && mp.chosen) {
+        commitMatch(db, p.subjectId, mp);
+        db.update(proposal).set({ decision: 'accepted' }).where(eq(proposal.id, p.id)).run();
+      } else {
+        recordUnresolved(db, p.subjectId, mp);
+      }
+    }
+    if (!payload.refresh && payload.mediaIds?.length) {
+      createJob(db, 'build_dossiers', { onlyMissing: true, subjects: payload.mediaIds.map((id: number) => ({ kind: 'media', id })), auto: true });
+    }
+  } else if (j.kind === 'build_dossiers') {
+    const ids: number[] = (payload.subjects ?? []).filter((s: any) => s.kind === 'media').map((s: any) => s.id);
+    if (ids.length === 0) return;
+    const empty = db.select({ id: media.id }).from(media).where(and(inArray(media.id, ids), isNull(media.description))).all().map((r) => r.id);
+    if (empty.length > 0) createJob(db, 'write_blurbs', { mediaIds: empty, auto: true });
+    for (const id of ids.filter((x) => !empty.includes(x))) createJob(db, 'check_subject', { mode: 'add', subject: { kind: 'media', id }, auto: true });
+  } else if (j.kind === 'write_blurbs') {
+    for (const id of payload.mediaIds ?? []) createJob(db, 'check_subject', { mode: 'add', subject: { kind: 'media', id }, auto: true });
+  } else if (j.kind === 'check_subject') {
+    const min = autoCommitMin();
+    const rows = db.select().from(proposal).where(and(eq(proposal.jobId, j.id), eq(proposal.kind, 'instance'))).all();
+    const accepted = new Set(rows.filter((p) => p.score >= min).map((p) => p.id));
+    commitProposals(db, j.id, accepted, {}, { verified: false, rejectRest: false });
+  }
 }

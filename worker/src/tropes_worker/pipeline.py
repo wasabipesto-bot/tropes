@@ -358,4 +358,12 @@ async def check_subject(
 
 
 def run_async(coro):  # noqa: ANN001
-    return asyncio.run(coro)
+    """Run a job coroutine in its own loop, closing the model clients it opened before the loop goes away."""
+
+    async def wrapped():  # noqa: ANN202
+        try:
+            return await coro
+        finally:
+            await LLM.close_all()
+
+    return asyncio.run(wrapped())

@@ -5,11 +5,20 @@ import { resolveSubject } from '../queries';
 import { slugify } from '../slug';
 import { parseJson } from './queue';
 
+export interface CommitOptions {
+  /** The owner reviewed these, so they are verified (plan T16). The automatic path passes false. */
+  verified?: boolean;
+  /** Mark everything not accepted as rejected (the owner's review). The automatic path leaves the rest pending for /review. */
+  rejectRest?: boolean;
+}
+
 /**
  * Turn a job's accepted proposals into instances and evidence. For an add-trope
  * job the trope row is created here, which is the first moment anything is saved.
  */
-export function commitProposals(db: Db, jobId: number, accepted: Set<number>, prominence: Record<string, Prominence>): { returnTo: string; created: number } {
+export function commitProposals(db: Db, jobId: number, accepted: Set<number>, prominence: Record<string, Prominence>, opts: CommitOptions = {}): { returnTo: string; created: number } {
+  const verified = opts.verified ?? true;
+  const rejectRest = opts.rejectRest ?? true;
   return db.transaction((tx) => {
     const j = tx.select().from(job).where(eq(job.id, jobId)).get();
     if (!j || j.status !== 'done') throw new Error('That scan is no longer open.');
@@ -41,6 +50,7 @@ export function commitProposals(db: Db, jobId: number, accepted: Set<number>, pr
     const rows = tx.select().from(proposal).where(eq(proposal.jobId, jobId)).all();
     let created = 0;
     for (const p of rows) {
+      if (p.kind === 'match') continue; // metadata matches are committed from /metadata, not here
       const take = accepted.has(p.id);
       const tId = p.tropeId ?? tropeId;
       if (take && tId) {
@@ -48,7 +58,7 @@ export function commitProposals(db: Db, jobId: number, accepted: Set<number>, pr
           const already = tx.select().from(instance).where(and(eq(instance.tropeId, tId), eq(instance.subjectKind, p.subjectKind), eq(instance.subjectId, p.subjectId))).get();
           const inst = already ?? tx
             .insert(instance)
-            .values({ tropeId: tId, subjectKind: p.subjectKind, subjectId: p.subjectId, who: p.who, text: p.text, prominence: prominence[String(p.id)] ?? p.prominence, verified: false, score: p.score, origin: 'model' })
+            .values({ tropeId: tId, subjectKind: p.subjectKind, subjectId: p.subjectId, who: p.who, text: p.text, prominence: prominence[String(p.id)] ?? p.prominence, verified, score: p.score, origin: 'model' })
             .returning()
             .get();
           addEvidence(tx as unknown as Db, inst.id, parseJson<any[]>(p.evidence, []));
@@ -58,7 +68,8 @@ export function commitProposals(db: Db, jobId: number, accepted: Set<number>, pr
           created++;
         }
       }
-      tx.update(proposal).set({ decision: take ? 'accepted' : 'rejected', tropeId: tId ?? null }).where(eq(proposal.id, p.id)).run();
+      if (take || rejectRest) tx.update(proposal).set({ decision: take ? 'accepted' : 'rejected', tropeId: tId ?? null }).where(eq(proposal.id, p.id)).run();
+      else if (tId && !p.tropeId) tx.update(proposal).set({ tropeId: tId }).where(eq(proposal.id, p.id)).run();
     }
     tx.update(job).set({ result: JSON.stringify({ ...parseJson<any>(j.result, {}), committed: created, committedAt: new Date().toISOString() }) }).where(eq(job.id, jobId)).run();
     return { returnTo: `${returnTo}${returnTo.includes('?') ? '&' : '?'}added=${created}`, created };

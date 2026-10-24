@@ -116,6 +116,17 @@ class SiteClient:
     def subjects(self) -> dict[str, list[dict[str, Any]]]:
         return self._get("/api/export/subjects")
 
+    def genres(self) -> dict[str, Any]:
+        return self._get("/api/export/genres")
+
+    def upload_poster(self, media_id: int, source: str, files: dict[int, bytes], *, pending: bool = True) -> dict[str, Any]:
+        """Three WebP sizes in one multipart request; pending files wait for the lookup to be committed."""
+        data = {"source": source, "pending": "1" if pending else "0"}
+        parts = {f"p{w}": (f"{media_id}-{w}.webp", body, "image/webp") for w, body in files.items()}
+        r = self._http.post(f"/api/media/{media_id}/poster", data=data, files=parts)
+        r.raise_for_status()
+        return r.json()
+
     def dossier(self, kind: str, subject_id: int) -> dict[str, Any] | None:
         r = self._http.get(f"/api/dossiers/{kind}/{subject_id}")
         if r.status_code == 404:

@@ -29,7 +29,7 @@ class Context:
 
 
 def registry() -> dict[str, JobFn]:
-    from .jobs import build_dossiers, check_subject, ping, scan_trope, sync_notion
+    from .jobs import build_dossiers, check_subject, lookup_media, ping, scan_trope, sync_notion, write_blurbs
 
     return {
         "ping": ping.run,
@@ -37,6 +37,8 @@ def registry() -> dict[str, JobFn]:
         "scan_trope": scan_trope.run,
         "check_subject": check_subject.run,
         "sync_notion": sync_notion.run,
+        "lookup_media": lookup_media.run,
+        "write_blurbs": write_blurbs.run,
     }
 
 

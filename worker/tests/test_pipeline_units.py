@@ -31,3 +31,11 @@ def test_writing_check_catches_tells():
     assert complaints("A reminder that the model found this.")
     assert "unbalanced" in " ".join(complaints("Gideon ||dies so Harrow"))
     assert complaints("Ned brings the dead back with a touch, and a second touch sends them back for good.") == []
+
+
+def test_blurb_non_answers_are_not_descriptions():
+    from tropes_worker.jobs.write_blurbs import usable
+
+    assert not usable("A Remedy game logged for 2026. I do not know this title, so I cannot describe its premise.")
+    assert not usable("Short.")
+    assert usable("An animated gothic action series based on the Konami games, following Trevor Belmont as he fights Dracula.")

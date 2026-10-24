@@ -1,6 +1,6 @@
-import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
 import type { Db } from '../../db/open';
-import { dossier, job, mediaNote, proposal, type Job } from '../../db/schema';
+import { dossier, job, media, mediaNote, proposal, type Job } from '../../db/schema';
 import type { z } from 'astro/zod';
 import type { dossiersBody } from './schemas';
 import { payloadByKind, type JobKind, type ResultBody } from './schemas';
@@ -101,10 +101,18 @@ export function completeJob(db: Db, id: number, body: ResultBody): void {
           seed: p.seed,
           rejectedBefore: p.rejectedBefore,
           flags: JSON.stringify(p.flags),
+          payload: JSON.stringify(p.payload ?? {}),
         })
         .run();
     }
     storeDossiers(tx as unknown as Db, { dossiers: body.dossiers, notes: body.notes });
+    // Model-written description drafts never replace the owner's words.
+    for (const d of body.descriptions ?? []) {
+      tx.update(media)
+        .set({ description: d.text, descriptionOrigin: 'model', updatedAt: sql`(datetime('now'))` })
+        .where(and(eq(media.id, d.mediaId), or(isNull(media.description), eq(media.descriptionOrigin, 'model'))))
+        .run();
+    }
     tx.update(job)
       .set({ status: 'done', result: JSON.stringify({ summary: body.summary, warnings: body.warnings }), usage: JSON.stringify(body.usage ?? {}), finishedAt: sql`(datetime('now'))`, progress: null })
       .where(eq(job.id, id))

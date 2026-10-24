@@ -85,3 +85,13 @@ class NoteVerdict(BaseModel):
 
 class NotesFilterOut(BaseModel):
     items: list[NoteVerdict]
+
+
+class ResolveOut(BaseModel):
+    choice: str | None = None
+    confidence: float = Field(ge=0, le=1, default=0)
+    why: str = ""
+
+
+class GenresOut(BaseModel):
+    genres: list[str] = Field(default_factory=list)
