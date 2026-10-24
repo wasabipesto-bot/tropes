@@ -11,3 +11,11 @@ export const commitInput = z.object({
   accept: z.array(z.coerce.number().int()).optional(),
   prominence: z.object({}).catchall(z.enum(PROMINENCES)).optional(),
 });
+
+/** Form input for committing a metadata lookup: accepted confident matches, and a choice per unsure one
+ * ("chosen", a candidate index, "none" or "skip"), named `choice.<proposal id>`. */
+export const commitMatchesInput = z.object({
+  jobId: z.coerce.number().int().positive(),
+  accept: z.array(z.coerce.number().int()).optional(),
+  choice: z.object({}).catchall(z.string()).optional(),
+});

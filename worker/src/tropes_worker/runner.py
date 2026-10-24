@@ -42,6 +42,19 @@ def registry() -> dict[str, JobFn]:
     }
 
 
+def post_result(client: SiteClient, job_id: int, result: dict[str, Any], attempts: int = 4) -> None:
+    """A long job's result is worth a few retries: the site may be restarting at that moment."""
+    for i in range(attempts):
+        try:
+            client.result(job_id, result)
+            return
+        except Exception as e:  # noqa: BLE001 - retried below
+            if i == attempts - 1:
+                raise
+            log.warning("posting result for job %d failed (%s); retrying", job_id, type(e).__name__)
+            time.sleep(3 * (i + 1))
+
+
 def run_one(settings: Settings, client: SiteClient, kinds: list[str] | None = None) -> bool:
     """Claim and run a single job. Returns False when the queue was empty."""
     handlers = registry()
@@ -53,7 +66,7 @@ def run_one(settings: Settings, client: SiteClient, kinds: list[str] | None = No
     started = time.monotonic()
     try:
         result = handlers[job.kind](ctx, job.payload)
-        client.result(job.id, result)
+        post_result(client, job.id, result)
         log.info("job %d done in %.0fs", job.id, time.monotonic() - started)
     except JobCancelled:
         log.info("job %d cancelled by the owner", job.id)

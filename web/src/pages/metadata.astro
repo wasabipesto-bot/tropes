@@ -1,0 +1,152 @@
+---
+import { actions } from 'astro:actions';
+import Base from '../layouts/Base.astro';
+import JobStatus from '../components/JobStatus.astro';
+import { db } from '../db';
+import { afterAction } from '../lib/after-action';
+import { candidateLine, identityCounts, matchesFor, pendingLookupJobs, unresolvedMediaIds, type MatchView } from '../lib/jobs/matches';
+import { reviewState } from '../lib/jobs/page';
+import { typeLabel } from '../lib/media';
+
+if (!Astro.locals.owner) return Astro.redirect('/login');
+const { redirect, error } = afterAction(Astro);
+if (redirect) return redirect;
+const { job, summary, warnings, returnTo } = reviewState(Astro, db);
+const counts = identityCounts(db);
+const unresolved = unresolvedMediaIds(db).length;
+const waiting = pendingLookupJobs(db);
+const items = job?.status === 'done' ? matchesFor(db, job) : [];
+const open = items.filter((v) => v.p.decision === 'pending');
+const check = open.filter((v) => v.payload.status === 'check');
+const notFound = open.filter((v) => v.payload.status === 'not_found');
+const confident = open.filter((v) => v.payload.status === 'confident');
+const decided = items.length - open.length;
+const committed = Astro.url.searchParams.get('committed');
+const poster = (v: MatchView) => (v.payload.poster ? `/posters/pending/${v.m.id}-300.webp` : v.m.posterPath ? `/posters/${v.m.id}-300.webp` : null);
+const who = (v: MatchView) => [typeLabel(v.m), v.m.creator, v.m.loggedDate?.slice(0, 4)].filter(Boolean).join(' · ');
+const chosenIndex = (v: MatchView) => v.payload.candidates.findIndex((c) => v.payload.chosen && c.qid === v.payload.chosen.qid && c.label === v.payload.chosen.label);
+const when = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+---
+
+<Base title="Metadata" wide>
+  <h1>Metadata</h1>
+  <p class="quiet" style="margin: 4px 0 0; font-size: 15px">
+    {counts.pinned} pinned · {counts.check} to check · {counts.not_found} not found · {counts.none} no public match · {counts.never} never looked up.
+  </p>
+  {error && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">{error}</p>}
+
+  {!job && (
+    <>
+      <form method="POST" action={actions.startMetadataLookup} class="start">
+        <button type="submit" class="go" name="mode" value="backfill" disabled={unresolved === 0}>Look up {unresolved} entries</button>
+        <button type="submit" class="t" name="mode" value="refresh">Refresh {counts.pinned} pinned entries</button>
+      </form>
+      <p class="quiet" style="margin: 10px 0 0; font-size: 15px">Lookups run in batches of 200. Each batch comes back here for review; nothing is pinned until you commit it. A refresh re-fetches details and scores for pinned identities and lands on its own.</p>
+      {waiting.length > 0 && (
+        <ul style="margin: 28px 0 0; padding: 0; list-style: none; font-size: 17px">
+          {waiting.map((w) => <li style="padding: 6px 0"><a href={`/metadata?job=${w.job.id}`}>Lookup from {when(w.job.createdAt)}</a> <span class="quiet">{w.pending} waiting for review</span></li>)}
+        </ul>
+      )}
+    </>
+  )}
+
+  {job && job.status !== 'done' && <JobStatus job={job} returnTo="/metadata" what="Looking up identities, details, scores and posters." />}
+
+  {job && job.status === 'done' && (
+    <>
+      <p class="quiet" style="margin: 4px 0 0; font-size: 15px">
+        Lookup from {when(job.createdAt)}: {summary.looked_up ?? items.length} entries, {summary.confident ?? 0} confident, {summary.check ?? 0} to check, {summary.not_found ?? 0} not found.
+        {decided > 0 && ` ${decided} already decided.`} {committed && ` Committed ${committed}.`} <a href="/metadata">All lookups</a>
+      </p>
+      {warnings.map((w) => <p class="quiet" style="margin: 6px 0 0; font-size: 14px">{w}</p>)}
+
+      <form method="POST" action={actions.commitMatches} class="review">
+        <input type="hidden" name="jobId" value={job.id} />
+
+        {check.length > 0 && (
+          <section>
+            <h2>Check these <span class="quiet" style="font-weight: 400">{check.length}</span></h2>
+            {check.map((v) => (
+              <article class="match">
+                <div class="thumb">{poster(v) && <img src={poster(v)!} alt="" loading="lazy" />}</div>
+                <div>
+                  <div class="head"><a href={`/media/${v.m.id}`} class="title">{v.m.title}</a><span class="quiet" style="font-size: 15px">{who(v)}</span></div>
+                  <div class="choices">
+                    {v.payload.candidates.map((c, i) => (
+                      <label class="ck"><input type="radio" name={`choice.${v.p.id}`} value={String(i)} checked={i === chosenIndex(v)} /><span><span class="cand">{c.label}</span> <span class="quiet">{candidateLine(c)}</span>{c.source !== 'wikidata' && c.source !== 'seed' && <span class="quiet"> · via {c.source}</span>}</span></label>
+                    ))}
+                    <label class="ck"><input type="radio" name={`choice.${v.p.id}`} value="none" /><span>No public match</span></label>
+                    <label class="ck"><input type="radio" name={`choice.${v.p.id}`} value="skip" checked={chosenIndex(v) < 0} /><span class="quiet">Decide later</span></label>
+                  </div>
+                  {v.payload.notes.length > 0 && <p class="quiet" style="margin: 4px 0 0; font-size: 14px">{v.payload.notes.join('. ')}.</p>}
+                </div>
+              </article>
+            ))}
+          </section>
+        )}
+
+        {confident.length > 0 && (
+          <section>
+            <details open={check.length === 0}>
+              <summary><h2 style="display: inline">Confident <span class="quiet" style="font-weight: 400">{confident.length}</span></h2> <span class="quiet" style="font-size: 15px">all checked; uncheck any that look wrong</span></summary>
+              {confident.map((v) => (
+                <article class="match small">
+                  <div class="thumb">{poster(v) && <img src={poster(v)!} alt="" loading="lazy" />}</div>
+                  <div>
+                    <label class="ck"><input type="checkbox" name="accept" value={v.p.id} checked /><span><span class="title">{v.m.title}</span> <span class="quiet" style="font-size: 15px">{who(v)}</span> → <span class="cand">{v.payload.chosen?.label}</span> <span class="quiet">{v.payload.chosen && candidateLine(v.payload.chosen)}</span></span></label>
+                  </div>
+                </article>
+              ))}
+            </details>
+          </section>
+        )}
+
+        {(check.length > 0 || confident.length > 0) && (
+          <div class="commit">
+            <button type="submit" class="go">Commit</button>
+            <a href="/metadata" style="font-size: 16px">Back</a>
+          </div>
+        )}
+        {check.length === 0 && confident.length === 0 && notFound.length === 0 && <p style="margin: 28px 0 0">Nothing left to decide in this lookup.</p>}
+      </form>
+
+      {notFound.length > 0 && (
+        <section>
+          <h2>Not found <span class="quiet" style="font-weight: 400">{notFound.length}</span></h2>
+          <p class="quiet" style="margin: 0 0 8px; font-size: 15px">Nothing on Wikidata or the per-site searches matched. Paste a link (IMDb, Steam, Goodreads, TMDB, MyAnimeList, Open Library, MusicBrainz, Wikipedia or Wikidata) and the lookup runs again from it.</p>
+          {notFound.map((v) => (
+            <article class="match small">
+              <div class="thumb"></div>
+              <div>
+                <div class="head"><a href={`/media/${v.m.id}`} class="title">{v.m.title}</a><span class="quiet" style="font-size: 15px">{who(v)}</span></div>
+                <form method="POST" action={actions.seedMedia} class="seed">
+                  <input type="hidden" name="mediaId" value={v.m.id} />
+                  <input type="hidden" name="returnTo" value={returnTo} />
+                  <input name="url" type="url" class="line" placeholder="https://" style="width: 360px" />
+                  <button type="submit" class="t">Add link</button>
+                </form>
+              </div>
+            </article>
+          ))}
+        </section>
+      )}
+    </>
+  )}
+</Base>
+
+<style>
+  .start { margin-top: 28px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  section { margin-top: 36px; }
+  h2 { margin: 0 0 4px; font-size: 22px; font-weight: 700; }
+  summary { cursor: pointer; }
+  .match { display: grid; grid-template-columns: 60px 1fr; gap: 0 16px; padding: 14px 0; border-top: 1px solid #ECEBE7; }
+  .match.small { padding: 8px 0; }
+  .thumb img { display: block; width: 60px; height: auto; }
+  .head { display: flex; flex-wrap: wrap; gap: 0 12px; align-items: baseline; }
+  .title { font-weight: 700; color: #1B1B1B; }
+  .cand { font-weight: 600; }
+  .choices { display: flex; flex-direction: column; margin-top: 4px; font-size: 16px; }
+  .choices .ck { padding: 3px 0; }
+  .seed { display: flex; gap: 12px; align-items: baseline; margin-top: 4px; font-size: 16px; }
+  .commit { margin-top: 32px; padding-top: 20px; border-top: 1px solid #1B1B1B; display: flex; gap: 20px; align-items: center; }
+</style>

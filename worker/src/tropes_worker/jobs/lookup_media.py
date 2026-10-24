@@ -34,15 +34,15 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     return run_async(_run(ctx, payload))
 
 
-def pinned(m: dict[str, Any]) -> Resolution:
-    c = Candidate(
-        qid=m.get("wikidataId"),
-        label=m["title"],
-        ids=dict(m.get("externalIds") or {}),
-        score=1.0,
-        reasons=["pinned"],
-        source="pinned",
-    )
+def pinned(f: Fetcher, m: dict[str, Any]) -> Resolution:
+    """The identity as stored; a pin made from a Wikipedia link alone picks up its Wikidata id here."""
+    ids = dict(m.get("externalIds") or {})
+    qid = m.get("wikidataId")
+    title = ids.pop("wikipedia", None)
+    if not qid and title:
+        w = wikipedia.summary(f, title)
+        qid = w.ids.get("wikidata") if w else None
+    c = Candidate(qid=qid, label=m["title"], ids=ids, wikipedia=title, score=1.0, reasons=["pinned"], source="pinned")
     return Resolution("confident", c, [], None, ["refresh of the pinned identity"])
 
 
@@ -81,6 +81,8 @@ def gather_partials(
             names = wikidata.labels(f, wikidata.linked_qids(ent))
             parts["wikidata"] = wikidata.partial(ent, names, type_)
             ids = {**parts["wikidata"].ids, **ids}
+            if not chosen.wikipedia:
+                chosen.wikipedia = (ent.get("sitelinks") or {}).get("enwiki", {}).get("title")
     if chosen.wikipedia:
         w = wikipedia.summary(f, chosen.wikipedia)
         if w:
@@ -163,7 +165,7 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     async def resolve_one(m: dict[str, Any]) -> tuple[dict[str, Any], Resolution]:
         nonlocal done
         if refresh and m.get("identity") == "pinned" and (m.get("wikidataId") or m.get("externalIds")):
-            r = pinned(m)
+            r = await in_thread(pinned, f, m)
         else:
             r = await in_thread(lambda: resolve(f, entry_from(m), shared_links=shared))
         done += 1

@@ -4,10 +4,13 @@ import { z } from 'astro/zod';
 import { and, eq, sql } from 'drizzle-orm';
 import type { ActionAPIContext } from 'astro:actions';
 import { db } from '../db';
-import { MEDIA_TYPES, PROMINENCES, evidence, instance, media, notable, proposal, series, trope, tropeSeed } from '../db/schema';
-import { cancelJob, createJob, jobById } from '../lib/jobs/queue';
+import { MEDIA_TYPES, PROMINENCES, evidence, instance, job, media, notable, proposal, series, trope, tropeSeed } from '../db/schema';
+import { cancelJob, createJob, jobById, parseJson } from '../lib/jobs/queue';
 import { commitProposals } from '../lib/jobs/commit';
-import { commitInput } from '../lib/jobs/forms';
+import { commitInput, commitMatchesInput } from '../lib/jobs/forms';
+import { BACKFILL_BATCH, matchesFor, pinnedMediaIds, unresolvedMediaIds } from '../lib/jobs/matches';
+import { commitMatch, markNoMatch, pinCandidate, type Candidate } from '../lib/metadata';
+import { seedFromUrl } from '../lib/seeds';
 import { RateLimiter, SESSION_COOKIE, SESSION_DAYS, createSession, deleteSession } from '../lib/auth';
 import { verifyPassword } from '../lib/password';
 import { resolveSubject, resolveTrope } from '../lib/queries';
@@ -282,6 +285,77 @@ export const server = {
       requireOwner(context);
       db.update(proposal).set({ who: input.who.trim(), text: input.text.trim() }).where(eq(proposal.id, input.proposalId)).run();
       return { returnTo: input.returnTo ?? '/tropes' };
+    },
+  }),
+
+  /** Phase 4: look up every entry without a pinned identity (the backfill), or re-fetch the pinned ones. */
+  startMetadataLookup: defineAction({
+    accept: 'form',
+    input: z.object({ mode: z.enum(['backfill', 'refresh']).default('backfill') }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const refresh = input.mode === 'refresh';
+      const mediaIds = refresh ? pinnedMediaIds(db) : unresolvedMediaIds(db);
+      if (mediaIds.length === 0) throw new ActionError({ code: 'BAD_REQUEST', message: refresh ? 'Nothing is pinned yet.' : 'Every entry has been looked up.' });
+      // A refresh never re-matches, so its result can land without a review. Batches bound what one failure loses.
+      let first: number | null = null;
+      for (let i = 0; i < mediaIds.length; i += BACKFILL_BATCH) {
+        const j = createJob(db, 'lookup_media', { mediaIds: mediaIds.slice(i, i + BACKFILL_BATCH), refresh, auto: refresh });
+        first ??= j.id;
+      }
+      return { returnTo: refresh ? `/jobs?job=${first}` : `/metadata?job=${first}` };
+    },
+  }),
+
+  /** Commit a lookup's matches: accepted confident ones, and the owner's choice for each unsure one. */
+  commitMatches: defineAction({
+    accept: 'form',
+    input: commitMatchesInput,
+    handler: async (input, context) => {
+      requireOwner(context);
+      const j = jobById(db, input.jobId);
+      if (!j || j.status !== 'done') throw new ActionError({ code: 'BAD_REQUEST', message: 'That lookup is no longer open.' });
+      const accepted = new Set(input.accept ?? []);
+      const choices = input.choice ?? {};
+      let committed = 0;
+      const refresh: number[] = [];
+      for (const v of matchesFor(db, j)) {
+        if (v.p.decision !== 'pending') continue;
+        const choice = v.payload.status === 'confident' ? (accepted.has(v.p.id) ? 'chosen' : 'skip') : (choices[String(v.p.id)] ?? 'skip');
+        if (choice === 'skip') continue;
+        if (choice === 'chosen' && v.payload.chosen) {
+          commitMatch(db, v.m.id, v.payload);
+        } else if (choice === 'none') {
+          markNoMatch(db, v.m.id, v.payload.candidates);
+        } else if (/^\d+$/.test(choice) && v.payload.candidates[Number(choice)]) {
+          const c: Candidate = v.payload.candidates[Number(choice)];
+          pinCandidate(db, v.m.id, c, v.payload.candidates);
+          refresh.push(v.m.id);
+        } else continue;
+        db.update(proposal).set({ decision: choice === 'none' ? 'rejected' : 'accepted' }).where(eq(proposal.id, v.p.id)).run();
+        committed++;
+      }
+      if (refresh.length > 0) createJob(db, 'lookup_media', { mediaIds: refresh, refresh: true, auto: true });
+      db.update(job).set({ result: JSON.stringify({ ...parseJson<any>(j.result, {}), committed, committedAt: new Date().toISOString() }) }).where(eq(job.id, j.id)).run();
+      return { returnTo: `/metadata?job=${j.id}&committed=${committed}` };
+    },
+  }),
+
+  /** The owner pastes an IMDb, Steam, Goodreads, Wikipedia or Wikidata URL for an entry the lookup could not place. */
+  seedMedia: defineAction({
+    accept: 'form',
+    input: z.object({ mediaId: id, url: z.string().trim().url(), returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const seed = seedFromUrl(input.url);
+      if (!seed) throw new ActionError({ code: 'BAD_REQUEST', message: 'That link is not one the lookup understands (IMDb, Steam, Goodreads, Wikipedia or Wikidata).' });
+      const m = db.select().from(media).where(eq(media.id, input.mediaId)).get();
+      if (!m) throw new ActionError({ code: 'NOT_FOUND', message: 'No such entry.' });
+      const ids = { ...seed.ids, ...(seed.wikipedia ? { wikipedia: seed.wikipedia } : {}) };
+      const c: Candidate = { qid: seed.qid ?? null, label: m.title, description: '', year: null, creator: m.creator, kinds: [], ids, wikipedia: seed.wikipedia ?? null, score: 1, reasons: ['link from the owner'], source: 'owner' };
+      pinCandidate(db, m.id, c, []);
+      createJob(db, 'lookup_media', { mediaIds: [m.id], refresh: true, auto: true });
+      return { returnTo: input.returnTo ?? `/media/${m.id}` };
     },
   }),
 
