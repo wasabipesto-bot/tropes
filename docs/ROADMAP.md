@@ -575,6 +575,10 @@ Collections, review queue, drafts, related-tropes lists, "shares the most
 tropes with", confidence badges, the show-all-spoilers toggle. Spec 11 lists
 them as rejected; they do not come back without a new reason.
 
+Backlog (owner, 2026-10-24): a list of openings, endings and title
+sequences for works in the log; separately, a list of good edits. Scope to
+be discussed before planning.
+
 ---
 
 ## 9. Decisions
