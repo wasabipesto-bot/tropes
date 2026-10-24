@@ -7,6 +7,7 @@ import { db } from '../db';
 import { MEDIA_TYPES, PROMINENCES, evidence, instance, media, notable, proposal, series, trope, tropeSeed } from '../db/schema';
 import { cancelJob, createJob, jobById } from '../lib/jobs/queue';
 import { commitProposals } from '../lib/jobs/commit';
+import { commitInput } from '../lib/jobs/forms';
 import { RateLimiter, SESSION_COOKIE, SESSION_DAYS, createSession, deleteSession } from '../lib/auth';
 import { verifyPassword } from '../lib/password';
 import { resolveSubject, resolveTrope } from '../lib/queries';
@@ -287,14 +288,10 @@ export const server = {
   /** Commit the checked proposals of a job; the rest are remembered as rejected. */
   commitProposals: defineAction({
     accept: 'form',
-    input: z.object({
-      jobId: id,
-      accept: z.union([z.array(z.coerce.number().int()), z.coerce.number().int()]).optional(),
-      prominence: z.record(z.string(), z.enum(PROMINENCES)).optional(),
-    }),
+    input: commitInput,
     handler: async (input, context) => {
       requireOwner(context);
-      const accepted = new Set(input.accept === undefined ? [] : Array.isArray(input.accept) ? input.accept : [input.accept]);
+      const accepted = new Set(input.accept ?? []);
       const out = commitProposals(db, input.jobId, accepted, input.prominence ?? {});
       return { returnTo: out.returnTo };
     },

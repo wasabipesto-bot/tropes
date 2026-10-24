@@ -46,7 +46,7 @@ const titleHref = (v: ProposalView) => (mode === 'trope' ? v.subject.href : v.tr
               {v.p.rejectedBefore && <span class="quiet" style="font-size: 15px">left unchecked before</span>}
               <span class="proms">
                 {PROMINENCES.map((p) => (
-                  <label class:list={['prom', { on: p === v.p.prominence }]}><input type="radio" name={`prominence[${v.p.id}]`} value={p} checked={p === v.p.prominence} />{PROMINENCE_LABEL[p]}</label>
+                  <label class:list={['prom', { on: p === v.p.prominence }]}><input type="radio" name={`prominence.${v.p.id}`} value={p} checked={p === v.p.prominence} />{PROMINENCE_LABEL[p]}</label>
                 ))}
               </span>
             </div>
