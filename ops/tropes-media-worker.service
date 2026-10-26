@@ -1,0 +1,23 @@
+# systemd user unit for the media worker on celebrimbor (plan Phase 5 T1).
+#   mkdir -p ~/.config/systemd/user && cp ops/tropes-media-worker.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload && systemctl --user enable --now tropes-media-worker
+#   journalctl --user -u tropes-media-worker -f
+# Needs `loginctl enable-linger justin` once so it runs without a login session.
+# The worker reads /data and writes only to its checkout (text cache) and to the site over HTTP.
+[Unit]
+Description=Trope Log media worker (file jobs next to the media)
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/projects/tropes/worker
+# TROPES_MEDIA_ROOT in the repo .env makes this worker take only index_local, extract_text and extract_evidence.
+ExecStart=%h/.local/bin/uv run tropes-worker run
+Restart=on-failure
+RestartSec=10
+# Half of a 48-core box, for ffmpeg and Whisper together; the owner's cap.
+CPUQuota=2400%
+Nice=10
+IOSchedulingClass=idle
+
+[Install]
+WantedBy=default.target

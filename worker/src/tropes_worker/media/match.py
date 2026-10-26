@@ -29,8 +29,9 @@ ALIASES = {
 
 
 def parse_folder(name: str) -> tuple[str, int | None]:
-    """ "Children of Men (2006)" → ("Children of Men", 2006); "Food Wars [Shokugeki no Souma] [2015] [1080p]" → ("Food Wars", 2015);
-    "Sandman, The" → ("The Sandman", None); "The Avengers 4 - Endgame (2019)" keeps its number for title_keys to drop."""
+    """ "Children of Men (2006)" → ("Children of Men", 2006); "Food Wars [Shokugeki no Souma] [2015] [1080p]" →
+    ("Food Wars", 2015); "Sandman, The" → ("The Sandman", None); "The Avengers 4 - Endgame (2019)" keeps its
+    number for title_keys to drop."""
     m = FOLDER_RX.match(name)
     title, year = (m.group(1), int(m.group(2))) if m else (name, None)
     title = re.sub(r"\s*\[.*?\]\s*", " ", title).strip()
@@ -115,8 +116,7 @@ def match_video(entry: dict[str, Any], folders: list[Folder], index: dict[str, l
         if not fk:
             continue
         near = any(
-            (k.startswith(fk + " ") or k.endswith(" " + fk) or fk.startswith(k + " ") or fk.endswith(" " + k))
-            for k in keys[:2]
+            (k.startswith(fk + " ") or k.endswith(" " + fk) or fk.startswith(k + " ") or fk.endswith(" " + k)) for k in keys[:2]
         )
         if not near:
             continue
@@ -197,8 +197,8 @@ class BookMatch:
 
 def _calibre_rows(db: sqlite3.Connection) -> list[dict[str, Any]]:
     rows = db.execute(
-        "select b.id, b.title, b.path, (select group_concat(a.name, ' & ') from books_authors_link l join authors a on a.id=l.author "
-        "where l.book=b.id) as author from books b"
+        "select b.id, b.title, b.path, (select group_concat(a.name, ' & ') from books_authors_link l "
+        "join authors a on a.id=l.author where l.book=b.id) as author from books b"
     ).fetchall()
     ids = db.execute("select book, type, val from identifiers").fetchall()
     by_book: dict[int, dict[str, str]] = {}

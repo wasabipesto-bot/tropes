@@ -95,6 +95,19 @@ sync-notion:
 lookup *flags:
     uv run tropes-worker lookup {{flags}}
 
+# Report which works have files on the media disk; writes nothing: just media-match --root /data
+[working-directory('worker')]
+media-match *flags:
+    uv run tropes-worker media match {{flags}}
+
+# What to run on celebrimbor to set up the media worker (prints the commands; nothing is executed here).
+setup-media:
+    @echo 'curl -LsSf https://astral.sh/uv/install.sh | sh'
+    @echo 'git clone https://github.com/wasabipesto-bot/tropes ~/projects/tropes && cd ~/projects/tropes/worker && uv sync'
+    @echo 'printf "TROPES_SITE_URL=http://100.109.36.42:4321\nTROPES_API_TOKEN=<from just api-key celebrimbor>\nTROPES_MEDIA_ROOT=/data\nTROPES_OPENSUBTITLES_KEY=<key>\n" > ~/projects/tropes/.env'
+    @echo 'mkdir -p ~/.config/systemd/user && cp ~/projects/tropes/ops/tropes-media-worker.service ~/.config/systemd/user/'
+    @echo 'loginctl enable-linger $USER && systemctl --user daemon-reload && systemctl --user enable --now tropes-media-worker'
+
 # Print a password hash for OWNER_PASSWORD_HASH: just hash-password 'secret'
 [working-directory('web')]
 hash-password password:
