@@ -116,6 +116,8 @@ verbatim quote checking, dossiers at `text` depth for those 23, pass 2 and
 | T8 | Rechecks propose new evidence for video works | S | T6 |
 | T9 | Games and podcasts without text | ? | |
 | T10 | Operations: config, tests, docs, costs | S | all |
+| T11 | Visual notes: contact sheets per episode, read by the model into the dossier | M | T1, T2 |
+| T12 | Fandom summaries and transcripts for works with a wiki article | S | Phase 4 identities |
 
 ---
 
@@ -148,12 +150,19 @@ become one process.
   less cleanly. What it needs from you: the install on celebrimbor (uv,
   the checkout, the unit), or your go-ahead for me to do it over ssh as
   `justin`; it is a few commands and I would show them first.
+APPROVED: Yes another worker, I will deploy when necessary on celebrimbor.
+FOLLOW-UP 2026-10-26: Understood. I will add `ops/tropes-media-worker.service`
+(user unit, `CPUQuota=2400%` so it never takes more than half the box, see
+D6) and a `just setup-media` that prints the four commands, and tell you at
+checkpoint 1 when it is needed; nothing in Phase 5 runs before that except
+the fetches you approved below.
 - **D2. The media worker never calls the model.** Text it extracts is
   posted to the site; the ivory worker reads it from there as it reads
   the EPUB texts today (the site serves text sources under
   `/api/export/text/<id>`, bearer-protected, instead of the worker reading
   `data/sources` from disk). Recommendation: yes; it keeps one key, one
   spend ceiling, and lets either worker be restarted alone.
+APPROVED: No notes.
 
 **Acceptance.** `tropes-worker media probe "TV/Arcane (2021)/Season 01"`
 on celebrimbor lists the episodes with their subtitle streams in under
@@ -198,8 +207,10 @@ later step reads `local_source` rows instead of guessing paths.
   title plus year against a Plex-style layout is precise, and the review
   list catches the rest. The alternative, confirming 480 matches by hand,
   is the Phase 4 backfill again for less reason.
+APPROVED: No notes.
 - **D4. Schema: three columns on `local_source`** (`label`, `meta` JSON,
   `indexed_at`), not a new table. Phase 3 left the table for exactly this.
+APPROVED: No notes.
 
 **Acceptance.** The match report (checkpoint 1): matched, ambiguous and
 unmatched counts by type, with the unmatched titles listed.
@@ -229,17 +240,27 @@ Arcane's two seasons are about 150k, a long sitcom is over a million (D7).
   yes, as a fallback only; with 12,494 external files and embedded streams
   on most releases, the expected volume is small. Without it, the files
   with no subtitles simply have no text.
+APPROVED: key set
+FOLLOW-UP 2026-10-26: Seen (`TROPES_OPENSUBTITLES_KEY`).
 - **D6. Whisper for what is left.** Options: faster-whisper on
   celebrimbor's 48 cores (software to install there, roughly real time per
   file), on demoux's GPU when you lend it, or not at all. Recommendation:
   decide after checkpoint 2 says how many files lack subtitles; my guess is
   under ten.
+APPROVED: I also anticipate this will be few items, and whisper with a CPU usage cap (~50%) is a good fallback.
+FOLLOW-UP 2026-10-26: Whisper goes in as the fourth source, then: faster-whisper
+with the `small.en` model, eight threads, one file at a time, under the media
+worker's unit so the 50 % cap applies to it and ffmpeg together. About real
+time per file on those cores, so a 45-minute episode is 20 to 40 minutes
+of background work. It runs only for files with no subtitle from the first
+three sources, and checkpoint 2 lists them before it runs.
 - **D7. Long works.** The model's window is a million tokens. A series text
   over about 600k tokens is read in season blocks: the dossier is built per
   block and merged (the series-dossier path exists), and pass 2 reads the
   block the dossier's locators point at plus the one around it, rather than
   everything. Recommendation: this; it costs one more call for perhaps a
   dozen long shows and keeps the rest unchanged.
+APPROVED: No notes.
 
 **Acceptance.** Checkpoint 2: text coverage by type, five shows' texts
 read by eye for cue cleanliness, and the list of files with no subtitles.
@@ -254,6 +275,11 @@ read by eye for cue cleanliness, and the list of files with no subtitles.
   way a reader would (one request each, your own download). The site sets
   no content signal; if you would rather download them yourself and drop
   them in the folder, nothing changes.
+APPROVED: Grab them yourself now.
+FOLLOW-UP 2026-10-26: Done. The four EPUBs are in `data/sources/web/nostalgebraist/`
+and Almost Nowhere, Floornight and The Northern Caves are linked as text
+sources; The Apocalypse of Herschel Schoen has no log entry, so its file
+waits. Their text-depth dossiers come with the checkpoint 3 batch.
 - **Friends at the Table.** One transcript per episode from the published
   Google Docs (`export?format=txt`), one text per season with
   `## Episode` headings and the speaker labels kept; the Divine Cycle
@@ -261,8 +287,21 @@ read by eye for cue cleanliness, and the list of files with no subtitles.
   Mirage, Partizan and Palisade are in your log; the site has them all.
   Fetched politely, once, and cached. Locators are episode and timestamp
   where the transcript carries one, else episode.
+APPROVED: Grab these plus Sangfielle and Realis.
+FOLLOW-UP 2026-10-26: Fetching now, one request a second: Marielda (16
+documents), Counterweight (47), Twilight Mirage (72), Partizan (50),
+Palisade (74), Sangfielle (59) and Realis (6), one text per season with an
+episode heading per document, into `data/sources/web/fatt/`. I was wrong
+above that Palisade is in your log: Palisade, Sangfielle and Realis have no
+entry yet. Add them in Notion when you like and I link the texts; the four
+that exist are linked as soon as the fetch finishes. These are long: Twilight
+Mirage alone is over two million tokens, so the D7 blocks apply to
+podcasts first of all.
 - **Other podcasts** (Cortex, Hello Internet, The Adventure Zone): no
   transcripts of this kind that I know of; see T9.
+APPROVED: No notes. I may be able to get TAZ transcripts later.
+FOLLOW-UP 2026-10-26: `just link-sources "The Adventure Zone: Balance" <file>`
+takes any text file, so a transcript dropped into `data/sources` is enough.
 
 **Acceptance.** Checkpoint 2 includes book coverage; Gideon the Ninth and
 Oathbringer come from Calibre (both are EPUB there).
@@ -286,6 +325,55 @@ each. After that a trope scan reads full text for its candidates: up to 60
 works × 100k ≈ 6M tokens ≈ **$1 per scan**, against $0.30–0.50 today. Both
 are over the $0.50 line, so the rebuild is one approval and scans are
 priced on the review page.
+APPROVED: I like that scans list the price.
+FOLLOW-UP 2026-10-26: They do on the review page (from OpenRouter's own
+accounting); I will put the expected price on the start button too, since
+with text it becomes worth knowing before pressing it.
+QUESTION: Dossier generation seems like a natural place to also note visual imagery and other things that are shown but never said aloud, but no screenshots will have been taken by this point. What is the best way to incorporate those elements in the dossier?
+FOLLOW-UP 2026-10-26: This is the right question, and the answer is a
+small new task, **T11, visual notes**, because the ingredients turned out to
+be cheap. I tested it today on Arcane S01E01:
+
+- On celebrimbor, ffmpeg takes one keyframe every 80 seconds through the
+  episode (keyframes only, so it never decodes the whole thing: 52 s per
+  episode on eight threads) and tiles 30 of them into one 6×5 contact
+  sheet, a 200 KB JPEG.
+- The model we already use, DeepSeek V4.1 Flash, takes images. One sheet is
+  1,100 input tokens, 24 seconds and **$0.0011**. Asked to list what is shown
+  but never said, it returned the pink-haired woman with the side-shaved
+  hair and harness straps, the blue-haired girl, the woman with gold facial
+  markings and the high collar, the glowing blue hex device, the brass
+  machinery and the stained glass, the red-haze against cyan-glow colour
+  scheme, and "a small cat-like creature with glowing blue eyes" in the last
+  shot. A sheet of the first 25 cuts read the title cards verbatim
+  ("RIOT GAMES PRESENTS", the credits), which is what Full-Screen Location
+  Card needs.
+
+So: the media worker makes one sheet per episode (two for a feature film)
+during indexing; the ivory worker turns each into a short list of visual
+notes, stored as a `media_note` with a new source `visual` and the episode
+label; the dossier prompt gets them as a "Visual notes" block beside the
+text, and `Find` can search them. Cost for the whole library: about 2,400
+episodes plus 400 film sheets ≈ **$3** of model calls and some ten hours of
+celebrimbor time at four sheets in parallel, inside the CPU cap.
+
+What it does not catch: a visual that is on screen for one shot, since 30
+shots sample a 45-minute episode every 80 seconds. Two things cover that.
+First, the subtitles say when a scene is, so when a trope's description is
+visual (a halo, a leash, arms outstretched), pass 2's candidate moments can
+be checked by eye: the media worker grabs the frame at each cited timestamp
+and the model confirms or rejects the visual before the proposal reaches
+you (**D12**, below, about $0.001 per look). Second, the screenshot-at-approval
+change you asked for below means you see the frame yourself. Two things I
+checked and ruled out: audio-description tracks (none in 707 sampled files
+on celebrimbor), and reading every scene cut (ten times the sheets for
+little gain over sampling plus the targeted check).
+
+A cheaper companion, **T12**: 272 of the pinned works carry a Fandom wiki
+article id on Wikidata (56 shows, 119 films, 47 books, 49 games). Those
+wikis' episode and plot summaries are human-written and describe what is
+seen; fetched through the wiki's own API, once, they become one more
+dossier input for the works that have them, at no model cost.
 
 **Decisions.**
 
@@ -295,6 +383,11 @@ priced on the review page.
   If retrieval finds the same evidence for a fifth of the tokens, pass 2
   uses it for long works. Recommendation: run the experiment on the 20-work
   sample before the full rebuild; it decides whether scans cost $1 or 25 c.
+APPROVED: Test on 20 diverse items and watch closely for regressions.
+FOLLOW-UP 2026-10-26: Checkpoint 3 shows, for each of the 20, the knowledge
+dossier and the text dossier side by side, plus the same trope rescanned
+both ways with every change in its proposals listed, before anything is
+rebuilt at scale.
 
 **Acceptance.** Checkpoint 3: on 20 works, text dossiers read beside the
 knowledge ones; one rescan of Leash Your Damn Dog with text, its cost, and
@@ -333,10 +426,33 @@ of a video quote.
   `extract_evidence` job for the accepted instances whose locators carry a
   timestamp; the review page shows the quote with its timestamp and the
   frame appears on the page when the job lands (minutes).
+CHANGE: I would prefer to see the screenshot with the quote at approval time.
+FOLLOW-UP 2026-10-26: Changed. When a scan or check finishes with
+timestamped quotes, the site queues an `extract_evidence` job for them at
+once; the media worker grabs each frame (2 s each, so a 60-candidate scan
+has its pictures two to four minutes after its text) into a pending folder,
+and the review page shows each quote with its frame as they arrive. Accept
+moves the files onto the instance; reject or discard deletes them. The
+cost is celebrimbor time only.
 - **D10. Clips on request.** A "Clip" button beside a timestamped quote in
   the instance edit panel queues the extraction for that one quote.
   Recommendation: this, rather than a clip for every quote; frames are
   what the margin needs, clips are for the handful you want to show.
+APPROVED: I agree that the clips can be manual, letting the model decide the range.
+FOLLOW-UP 2026-10-26: The Clip button sends the quote and the cues around
+it; the model picks a start and end on cue boundaries within 30 seconds, and
+the clip is cut there.
+QUESTION: What about clipping audio from a podcast? Low importance but would be nice.
+FOLLOW-UP 2026-10-26: Possible, with two gaps to close. There are no podcast
+audio files on celebrimbor today (no `Podcasts` folder), though an episode
+MP3 is one fetch from the feed when a clip is wanted. And the FaTT
+transcripts carry timestamps only in their headers ("0:05:00 through
+2:06:12"), so a quote's position in the audio is known to within minutes,
+not seconds; aligning the transcript to the audio with Whisper's word
+timestamps fixes that for the one episode being clipped, at about the cost
+of transcribing it. Recommendation: build the clip path so it takes audio
+as well as video (the same `extract_evidence` job, an `<audio>` element in
+the margin), and do the alignment on request only, after T6 lands.
 
 **Acceptance.** The roadmap's line: a Gideon the Ninth quote with a chapter
 locator and a Pantheon frame with an episode timestamp appear on the live
@@ -356,6 +472,7 @@ pages from the pipeline, not by hand.
   and the "Clip" button (D10).
 - Backups: `just backup` already tars `data/evidence`; posters and text
   caches stay out, as rebuildable.
+APPROVED: No notes.
 
 ---
 
@@ -365,6 +482,7 @@ pages from the pipeline, not by hand.
 text; with subtitle texts that now includes TV and films, and the proposals
 carry timestamps. No new UI: the "New evidence for existing instances"
 section is already there, and committing queues T6.
+APPROVED: No notes.
 
 ---
 
@@ -379,8 +497,40 @@ none I know of. Recommendation: leave games and those podcasts at knowledge
 depth in this phase, keep the per-work "paste a text file" path
 (`just link-sources`), and revisit when a particular work needs evidence.
 Albums stay without text.
+APPROVED: Leave these items as they are. If you can find fan-wiki transcripts I'd love to use them but I don't expect to find many. Youtube captions would be too messy for this.
+FOLLOW-UP 2026-10-26: Agreed on YouTube. For transcripts, T12's Fandom
+lookup probes a `/Transcript` page beside each work's article (some game
+wikis keep full scripts there) and links it as a text source when it
+exists; expect a handful. Everything else stays at knowledge depth.
 
 ---
+
+## T11. Visual notes
+
+Added on 2026-10-26 from your question under T5; the design and the
+measurements are in that follow-up. In short: one keyframe every 80 s
+tiled into a 6×5 sheet per episode (two per film) by the media worker; one
+model call per sheet on ivory ($0.0011, 24 s) returning a bulleted list of
+designs, props, settings, colour and on-screen text; stored as
+`media_note` rows with source `visual` and the episode label; a "Visual
+notes" block in the dossier prompt; searchable by `Find`.
+
+- **D11. Visual notes for every video work during indexing.** About $3
+  for the library and ten hours of celebrimbor time inside the cap.
+  Recommendation: yes; checkpoint 2 includes five works' notes read by eye.
+- **D12. A look at the frame for visual tropes.** A trope gets an owner
+  checkbox, "needs a look"; for those, pass 2's candidate moments have their
+  frame grabbed and shown to the model with the trope description before the
+  proposal is made ($0.001 per look, 2 s each). Recommendation: yes, as the
+  precision step for the tropes that are about imagery.
+
+## T12. Fandom summaries and transcripts
+
+For the 272 pinned works with a Fandom article id (Wikidata P6262): fetch
+the article's plot or episode summaries through the wiki's MediaWiki API,
+once, as a dossier input labelled "wiki summary"; probe for a `/Transcript`
+page and link it as a text source when one exists. No model cost; polite,
+cached, one request a second per wiki.
 
 ## T10. Operations, tests, docs
 
@@ -393,6 +543,7 @@ Albums stay without text.
   parser; locator derivation from cues; the upload endpoint; the caps.
 - Docs: `worker/README.md` gains the media section; `ROADMAP.md` Phase 5
   status at the end.
+APPROVED: No notes.
 
 ---
 
@@ -415,14 +566,24 @@ Albums stay without text.
 9. **nostalgebraist's EPUBs:** the worker fetches them once, or you drop
    them in `data/sources`.
 
+Added 2026-10-26 after your notes:
+
+10. **D11.** Visual notes from contact sheets for every video work (about
+    $3 for the library).
+11. **D12.** A "needs a look" checkbox on tropes, with the frame checked by
+    the model before a proposal for those tropes.
+12. **T12.** Fandom summaries and transcripts as inputs for the 272 works
+    that have an article.
+
 ---
 
 ## 4. Order of work and checkpoints
 
 1. T1, T2 over the whole log. **Checkpoint 1:** the match report; nothing
    extracted yet.
-2. T3, T4. **Checkpoint 2:** text coverage by type, five shows' texts read by
-   eye, the list without subtitles (decides D6).
+2. T3, T4, T11, T12. **Checkpoint 2:** text coverage by type, five shows'
+   texts and visual notes read by eye, the list without subtitles (decides
+   when Whisper runs).
 3. T5 on 20 works plus the retrieval experiment. **Checkpoint 3:** dossier
    quality, one rescan with text and its cost, go/no-go on retrieval.
 4. T6, T7, T8. **Checkpoint 4:** the Gideon quote and the Pantheon frame on
