@@ -28,3 +28,14 @@ describe('commit form', () => {
     expect(parse(none).accept ?? []).toEqual([]);
   });
 });
+
+it('carries inline edits and treats a blank field as empty, not as an error', () => {
+  const fd = new FormData();
+  fd.set('jobId', '14');
+  fd.append('accept', '101');
+  fd.set('who.101', '');
+  fd.set('text.101', 'Edited text.');
+  const parsed = commitInput.parse(formDataToObject(fd, commitInput));
+  expect(parsed.who).toEqual({ '101': '' }); // a blank field inside a catchall object arrives empty, not null
+  expect(parsed.text).toEqual({ '101': 'Edited text.' });
+});

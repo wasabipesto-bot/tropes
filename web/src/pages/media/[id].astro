@@ -145,7 +145,7 @@ const fmt = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateS
   </div>
 
   {items.length === 0 && <div class="row" style="margin-top: 48px"><div class="lab"></div><p class="quiet" style="margin: 0">No tropes yet.</p><div></div></div>}
-  <InstanceList items={items} mode="subject" owner={owner} render={render} returnTo={returnTo} editing={editing} textEdit={p.get('text') === '1'} evidenceAdd={p.get('evidence') === '1'} />
+  <InstanceList items={items} mode="subject" owner={owner} render={render} returnTo={returnTo} editing={editing} />
 
   {owner && (
     <div class="row" style="margin-top: 56px">

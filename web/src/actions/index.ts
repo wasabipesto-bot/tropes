@@ -29,6 +29,8 @@ function requireOwner(context: ActionAPIContext) {
 /** Only same-site paths may be used as a post-action destination. */
 const returnTo = z.string().regex(/^\/[^/\\]?[^\\]*$/).optional();
 const id = z.coerce.number().int().positive();
+/** A free-text field. A blank input arrives as null from the form parser; it is an empty string here, never an error. */
+const text = z.string().nullable().optional().transform((v) => (v ?? '').trim());
 
 export const server = {
   login: defineAction({
@@ -56,44 +58,44 @@ export const server = {
 
   updateTropeDescription: defineAction({
     accept: 'form',
-    input: z.object({ tropeId: id, description: z.string(), returnTo }),
+    input: z.object({ tropeId: id, description: text, returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
-      db.update(trope).set({ description: input.description.trim(), updatedAt: now() }).where(eq(trope.id, input.tropeId)).run();
+      db.update(trope).set({ description: input.description, updatedAt: now() }).where(eq(trope.id, input.tropeId)).run();
       return { returnTo: input.returnTo ?? '/tropes' };
     },
   }),
 
   updateMediaDescription: defineAction({
     accept: 'form',
-    input: z.object({ mediaId: id, description: z.string(), returnTo }),
+    input: z.object({ mediaId: id, description: text, returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
-      db.update(media).set({ description: input.description.trim() || null, updatedAt: now() }).where(eq(media.id, input.mediaId)).run();
+      db.update(media).set({ description: input.description || null, descriptionOrigin: input.description ? 'owner' : null, updatedAt: now() }).where(eq(media.id, input.mediaId)).run();
       return { returnTo: input.returnTo ?? `/media/${input.mediaId}` };
     },
   }),
 
   updateSeriesDescription: defineAction({
     accept: 'form',
-    input: z.object({ seriesId: id, description: z.string(), returnTo }),
+    input: z.object({ seriesId: id, description: text, returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
-      db.update(series).set({ description: input.description.trim() || null, updatedAt: now() }).where(eq(series.id, input.seriesId)).run();
+      db.update(series).set({ description: input.description || null, updatedAt: now() }).where(eq(series.id, input.seriesId)).run();
       return { returnTo: input.returnTo ?? '/tropes' };
     },
   }),
 
   createTrope: defineAction({
     accept: 'form',
-    input: z.object({ name: z.string().trim().min(1), description: z.string(), examples: z.string().optional() }),
+    input: z.object({ name: z.string().trim().min(1), description: text, examples: text }),
     handler: async (input, context) => {
       requireOwner(context);
       const slug = slugify(input.name);
       if (!slug) throw new ActionError({ code: 'BAD_REQUEST', message: 'The name needs at least one letter or digit.' });
       if (db.select().from(trope).where(eq(trope.slug, slug)).get()) throw new ActionError({ code: 'CONFLICT', message: 'A trope with that name already exists.' });
-      const created = db.insert(trope).values({ name: input.name, slug, description: input.description.trim() }).returning().get();
-      for (const line of (input.examples ?? '').split('\n').map((l) => l.trim()).filter(Boolean)) {
+      const created = db.insert(trope).values({ name: input.name, slug, description: input.description }).returning().get();
+      for (const line of input.examples.split('\n').map((l) => l.trim()).filter(Boolean)) {
         const subject = resolveSubject(db, line);
         db.insert(tropeSeed).values({ tropeId: created.id, title: line, mediaId: subject?.kind === 'media' ? subject.id : null }).run();
       }
@@ -152,10 +154,10 @@ export const server = {
 
   updateInstanceText: defineAction({
     accept: 'form',
-    input: z.object({ instanceId: id, who: z.string(), text: z.string(), returnTo }),
+    input: z.object({ instanceId: id, who: text, text, returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
-      db.update(instance).set({ who: input.who.trim(), text: input.text.trim(), updatedAt: now() }).where(eq(instance.id, input.instanceId)).run();
+      db.update(instance).set({ who: input.who, text: input.text, updatedAt: now() }).where(eq(instance.id, input.instanceId)).run();
       return { returnTo: input.returnTo ?? '/tropes' };
     },
   }),
@@ -190,11 +192,13 @@ export const server = {
 
   addQuote: defineAction({
     accept: 'form',
-    input: z.object({ instanceId: id, content: z.string().trim().min(1), locator: z.string().trim().optional(), returnTo }),
+    input: z.object({ instanceId: id, content: text, locator: text, returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
-      const [{ n }] = db.select({ n: sql<number>`coalesce(max(${evidence.position}), -1) + 1` }).from(evidence).where(eq(evidence.instanceId, input.instanceId)).all();
-      db.insert(evidence).values({ instanceId: input.instanceId, kind: 'quote', content: input.content, locator: input.locator ?? '', position: n }).run();
+      if (input.content) {
+        const [{ n }] = db.select({ n: sql<number>`coalesce(max(${evidence.position}), -1) + 1` }).from(evidence).where(eq(evidence.instanceId, input.instanceId)).all();
+        db.insert(evidence).values({ instanceId: input.instanceId, kind: 'quote', content: input.content, locator: input.locator, position: n }).run();
+      }
       return { returnTo: input.returnTo ?? '/tropes' };
     },
   }),
@@ -212,13 +216,13 @@ export const server = {
   /** Add-trope step 1: nothing is saved; the draft travels in the job. */
   startTropeScan: defineAction({
     accept: 'form',
-    input: z.object({ name: z.string().trim().min(1), description: z.string(), examples: z.string().optional() }),
+    input: z.object({ name: z.string().trim().min(1), description: text, examples: text }),
     handler: async (input, context) => {
       requireOwner(context);
       if (!slugify(input.name)) throw new ActionError({ code: 'BAD_REQUEST', message: 'The name needs at least one letter or digit.' });
       if (db.select().from(trope).where(eq(trope.slug, slugify(input.name))).get()) throw new ActionError({ code: 'CONFLICT', message: 'A trope with that name already exists. Recheck it from its page instead.' });
-      const seeds = (input.examples ?? '').split('\n').map((l) => l.trim()).filter(Boolean);
-      const j = createJob(db, 'scan_trope', { mode: 'add', draft: { name: input.name, description: input.description.trim(), seeds } });
+      const seeds = input.examples.split('\n').map((l) => l.trim()).filter(Boolean);
+      const j = createJob(db, 'scan_trope', { mode: 'add', draft: { name: input.name, description: input.description, seeds } });
       return { returnTo: `/add/trope?job=${j.id}` };
     },
   }),
@@ -266,17 +270,6 @@ export const server = {
     handler: async (input, context) => {
       requireOwner(context);
       if (jobById(db, input.jobId)) cancelJob(db, input.jobId);
-      return { returnTo: input.returnTo ?? '/tropes' };
-    },
-  }),
-
-  /** Edit one proposal's who/text before committing. */
-  updateProposal: defineAction({
-    accept: 'form',
-    input: z.object({ proposalId: id, who: z.string(), text: z.string(), returnTo }),
-    handler: async (input, context) => {
-      requireOwner(context);
-      db.update(proposal).set({ who: input.who.trim(), text: input.text.trim() }).where(eq(proposal.id, input.proposalId)).run();
       return { returnTo: input.returnTo ?? '/tropes' };
     },
   }),
@@ -332,7 +325,7 @@ export const server = {
    */
   updateMedia: defineAction({
     accept: 'form',
-    input: z.object({ mediaId: id, identity: z.string().default('keep'), seedUrl: z.string().trim().optional(), description: z.string().optional(), poster: z.string().optional(), posterUrl: z.string().trim().optional() }),
+    input: z.object({ mediaId: id, identity: z.string().nullable().optional().transform((v) => v ?? 'keep'), seedUrl: text, description: text, poster: text, posterUrl: text }),
     handler: async (input, context) => {
       requireOwner(context);
       const m = db.select().from(media).where(eq(media.id, input.mediaId)).get();
@@ -352,10 +345,10 @@ export const server = {
         pinCandidate(db, m.id, candidates[Number(input.identity)], candidates);
         refresh = true;
       }
-      if (input.description !== undefined) {
-        const text = input.description.trim();
-        if (text !== (m.description ?? '')) db.update(media).set({ description: text || null, descriptionOrigin: text ? 'owner' : null, updatedAt: now() }).where(eq(media.id, m.id)).run();
-        else if (text && m.descriptionOrigin === 'model' && input.identity === 'keep') db.update(media).set({ descriptionOrigin: 'owner' }).where(eq(media.id, m.id)).run();
+      {
+        const desc = input.description;
+        if (desc !== (m.description ?? '')) db.update(media).set({ description: desc || null, descriptionOrigin: desc ? 'owner' : null, updatedAt: now() }).where(eq(media.id, m.id)).run();
+        else if (desc && m.descriptionOrigin === 'model' && input.identity === 'keep') db.update(media).set({ descriptionOrigin: 'owner' }).where(eq(media.id, m.id)).run();
       }
       if (!m.notionImageUrl) {
         if (input.poster === 'url' && input.posterUrl) posterWanted = input.posterUrl;
@@ -372,7 +365,7 @@ export const server = {
   /** Save the owner's edits to a dossier. Rebuilds overwrite them (plan D21, as decided). */
   updateDossier: defineAction({
     accept: 'form',
-    input: z.object({ subjectKind: z.enum(['media', 'series']), subjectId: id, summary: z.string(), characters: z.string(), settings: z.string(), arcs: z.string(), motifs: z.string(), themes: z.string(), notable_scenes: z.string(), returnTo }),
+    input: z.object({ subjectKind: z.enum(['media', 'series']), subjectId: id, summary: text, characters: text, settings: text, arcs: text, motifs: text, themes: text, notable_scenes: text, returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
       const d = db.select().from(dossier).where(and(eq(dossier.subjectKind, input.subjectKind), eq(dossier.subjectId, input.subjectId))).get();
@@ -528,6 +521,13 @@ export const server = {
     input: commitInput,
     handler: async (input, context) => {
       requireOwner(context);
+      // Inline edits travel with the commit, so nothing typed on the review page is lost to a reload.
+      for (const p of db.select().from(proposal).where(eq(proposal.jobId, input.jobId)).all()) {
+        const who = input.who?.[String(p.id)];
+        const body = input.text?.[String(p.id)];
+        const next = { who: who === undefined || who === null ? p.who : who.trim(), text: body === undefined || body === null ? p.text : body.trim() };
+        if (next.who !== p.who || next.text !== p.text) db.update(proposal).set(next).where(eq(proposal.id, p.id)).run();
+      }
       const accepted = new Set(input.accept ?? []);
       const out = commitProposals(db, input.jobId, accepted, input.prominence ?? {});
       return { returnTo: out.returnTo };

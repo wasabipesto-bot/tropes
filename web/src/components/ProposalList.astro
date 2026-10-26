@@ -12,20 +12,18 @@ interface Props {
   mode: 'trope' | 'subject';
   render: RenderOptions;
   returnTo: string;
-  editing?: number | null;
   /** Label of the primary button: "Commit", "Add to library", "Add". The count is appended. */
   verb: string;
   cancelHref: string;
   cancelLabel?: string;
   rescan?: { href: string; label: string } | null;
 }
-const { jobId, items, mode, render, returnTo, editing = null, verb, cancelHref, cancelLabel = 'Cancel', rescan = null } = Astro.props;
+const { jobId, items, mode, render, verb, cancelHref, cancelLabel = 'Cancel', rescan = null } = Astro.props;
 const instances = items.filter((v) => v.p.kind === 'instance');
 const evidence = items.filter((v) => v.p.kind === 'evidence');
 const byTarget = new Map<number, ProposalView[]>();
 for (const v of evidence) byTarget.set(v.p.targetInstanceId!, [...(byTarget.get(v.p.targetInstanceId!) ?? []), v]);
 const checkedCount = items.filter((v) => v.checked).length;
-const editHref = (id: number) => `${returnTo}${returnTo.includes('?') ? '&' : '?'}edit=${id}`;
 const title = (v: ProposalView) => (mode === 'trope' ? v.subject.title : v.trope?.name ?? '');
 const titleHref = (v: ProposalView) => (mode === 'trope' ? v.subject.href : v.trope ? `/tropes/${v.trope.slug}` : '#');
 ---
@@ -50,21 +48,21 @@ const titleHref = (v: ProposalView) => (mode === 'trope' ? v.subject.href : v.tr
                 ))}
               </span>
             </div>
-            {editing === v.p.id ? (
-              <div class="textedit" id={`edit-${v.p.id}`}>
+            <p style="margin: 2px 0 0">
+              {v.p.who && <span style="font-style: italic">{v.p.who}.</span>}{v.p.who && ' '}
+              <Fragment set:html={renderInline(v.p.text, render)} />
+            </p>
+            {/* Edits live inside the one form, so opening one never loses a checkbox or prominence set elsewhere; they are saved by the commit. */}
+            <details class="pedit">
+              <summary>Edit</summary>
+              <div class="textedit">
                 <label for={`who-${v.p.id}`} class="quiet" style="font-size: 15px">Who</label>
-                <input id={`who-${v.p.id}`} form={`pf-${v.p.id}`} name="who" class="fld" value={v.p.who} />
+                <input id={`who-${v.p.id}`} name={`who.${v.p.id}`} class="fld" value={v.p.who} />
                 <label for={`text-${v.p.id}`} class="quiet" style="font-size: 15px">Text</label>
-                <textarea id={`text-${v.p.id}`} form={`pf-${v.p.id}`} name="text" class="fld" rows="4">{v.p.text}</textarea>
-                <p class="buttons"><button type="submit" form={`pf-${v.p.id}`} class="t">Save</button><a href={returnTo} class="quiet">Cancel</a></p>
+                <textarea id={`text-${v.p.id}`} name={`text.${v.p.id}`} class="fld" rows="4">{v.p.text}</textarea>
+                <p class="quiet" style="margin: 0; font-size: 14px">Saved when you {verb.toLowerCase()}.</p>
               </div>
-            ) : (
-              <p style="margin: 2px 0 0">
-                {v.p.who && <span style="font-style: italic">{v.p.who}.</span>}{v.p.who && ' '}
-                <Fragment set:html={renderInline(v.p.text, render)} />
-                {' '}<a href={editHref(v.p.id)} style="font-size: 15px">Edit</a>
-              </p>
-            )}
+            </details>
             {v.flags.length > 0 && <p class="quiet" style="margin: 4px 0 0; font-size: 14px">{v.flags.join('. ')}.</p>}
             {v.evidence.length > 0 && (
               <div class="quotes">
@@ -103,12 +101,6 @@ const titleHref = (v: ProposalView) => (mode === 'trope' ? v.subject.href : v.tr
     <a href={cancelHref} style="font-size: 16px; color: #9A2B1E">{cancelLabel}</a>
   </div>
 </form>
-{instances.map((v) => editing === v.p.id && (
-  <form id={`pf-${v.p.id}`} method="POST" action={actions.updateProposal}>
-    <input type="hidden" name="proposalId" value={v.p.id} />
-    <input type="hidden" name="returnTo" value={returnTo} />
-  </form>
-))}
 
 <script>
   // Keep the primary button's count in step with the checkboxes. Without this the button still works.
@@ -136,9 +128,11 @@ const titleHref = (v: ProposalView) => (mode === 'trope' ? v.subject.href : v.tr
   .prom { padding: 8px 0; cursor: pointer; color: #66645E; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
   .prom:has(input:checked) { font-weight: 700; color: #1B1B1B; text-decoration: none; }
   .prom input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .pedit { margin-top: 4px; font-size: 15px; }
+  .pedit summary { cursor: pointer; color: #1F4FA3; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; width: max-content; padding: 4px 0; list-style: none; }
+  .pedit summary::-webkit-details-marker { display: none; }
   .quotes { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
   .quote { margin: 0; font-style: italic; color: #3A3A36; font-size: 15px; line-height: 1.5; }
-  .textedit { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-  .buttons { margin: 4px 0 0; font-size: 16px; display: flex; gap: 16px; }
+  .textedit { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
   .commit { margin-top: 32px; padding-top: 20px; border-top: 1px solid #1B1B1B; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
 </style>

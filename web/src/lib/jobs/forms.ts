@@ -10,6 +10,9 @@ export const commitInput = z.object({
   jobId: z.coerce.number().int().positive(),
   accept: z.array(z.coerce.number().int()).optional(),
   prominence: z.object({}).catchall(z.enum(PROMINENCES)).optional(),
+  /** Inline edits, named `who.<proposal id>` and `text.<proposal id>`; a blank field arrives as null. */
+  who: z.object({}).catchall(z.string().nullable()).optional(),
+  text: z.object({}).catchall(z.string().nullable()).optional(),
 });
 
 /** Form input for committing a metadata lookup: accepted confident matches, and a choice per unsure one

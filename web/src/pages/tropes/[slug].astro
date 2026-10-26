@@ -25,8 +25,6 @@ const editName = owner && p.get('edit') === 'name';
 const pending = owner ? pendingReviewFor(db, 'trope', t.id) : null;
 const fmt = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
 const editing = owner && /^\d+$/.test(p.get('edit') ?? '') ? Number(p.get('edit')) : null;
-const textEdit = owner && p.get('text') === '1';
-const evidenceAdd = owner && p.get('evidence') === '1';
 
 const render = { tropeHref: tropeHrefResolver(db) };
 const items = instancesForTrope(db, t.id);
@@ -77,7 +75,7 @@ const returnTo = Astro.url.pathname + Astro.url.search;
   {items.length === 0 && (
     <div class="row" style="margin-top: 48px"><div class="lab"></div><p class="quiet" style="margin: 0">No instances yet.</p><div></div></div>
   )}
-  <InstanceList items={items} mode="trope" owner={owner} render={render} returnTo={returnTo} editing={editing} textEdit={textEdit} evidenceAdd={evidenceAdd} />
+  <InstanceList items={items} mode="trope" owner={owner} render={render} returnTo={returnTo} editing={editing} />
 
   {owner && (
     <div class="row" style="margin-top: 56px">

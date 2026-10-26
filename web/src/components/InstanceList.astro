@@ -14,104 +14,100 @@ interface Props {
   render: RenderOptions;
   /** The current page path with its query string, for post-action redirects. */
   returnTo: string;
-  /** Owner UI state from the query string. */
+  /** The instance being edited (?edit=<id>): one level, with the text, prominence, evidence and the rest together. */
   editing?: number | null;
-  textEdit?: boolean;
-  evidenceAdd?: boolean;
 }
 
-const { items, mode, owner, render, returnTo, editing = null, textEdit = false, evidenceAdd = false } = Astro.props;
+const { items, mode, owner, render, returnTo, editing = null } = Astro.props;
 const groups = groupByProminence(items);
 const base = returnTo.split('?')[0];
-const withEdit = (id: number, extra = '') => `${base}?edit=${id}${extra}`;
+// Every action lands back at the instance it touched, not at the top of the page.
+const at = (id: number) => `#i-${id}`;
+const plain = (id: number) => `${base}${at(id)}`;
+const withEdit = (id: number) => `${base}?edit=${id}${at(id)}`;
 const frames = (ev: Evidence[]) => ev.filter((e) => e.kind !== 'quote');
 const quotes = (ev: Evidence[]) => ev.filter((e) => e.kind === 'quote');
 ---
 
 {groups.map((g) => g.items.map((v, i) => (
-  <article class="row" style={`padding-top: ${i === 0 ? 48 : 20}px`}>
+  <article class="row" id={`i-${v.inst.id}`} style={`padding-top: ${i === 0 ? 48 : 20}px`}>
     <div class="lab" style="padding-top: 3px">
       {i === 0 && <div class="sc group">{g.label}<span class="quiet" style="font-weight: 400">{g.items.length}</span></div>}
     </div>
     <div class="body">
       <div class="head">
-        {owner && <VerifyMark instanceId={v.inst.id} verified={v.inst.verified} returnTo={returnTo} />}
+        {owner && <VerifyMark instanceId={v.inst.id} verified={v.inst.verified} returnTo={`${returnTo}${at(v.inst.id)}`} />}
         {mode === 'trope'
           ? <a href={v.subject.href} class="name">{v.subject.title}</a>
           : <a href={`/tropes/${v.trope.slug}`} class="name">{v.trope.name}</a>}
         {mode === 'trope' && <span class="quiet" style="font-size: 15px">{v.subject.label}</span>}
         {mode !== 'trope' && v.viaSeries && <span class="quiet" style="font-size: 15px">as part of <a href={`/series/${v.viaSeries.slug}`} style="color: inherit">{v.viaSeries.name}</a></span>}
-        {owner && (editing === v.inst.id
-          ? <a href={base} class="edit">Done</a>
-          : <a href={withEdit(v.inst.id, '&text=1')} class="edit">Edit</a>)}
+        {owner && editing !== v.inst.id && <a href={withEdit(v.inst.id)} class="edit">Edit</a>}
       </div>
 
-      {owner && editing === v.inst.id && textEdit ? (
-        <form method="POST" action={actions.updateInstanceText} class="textedit">
-          <input type="hidden" name="instanceId" value={v.inst.id} />
-          <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
-          <label for={`who-${v.inst.id}`} class="quiet" style="font-size: 15px">Who</label>
-          <input id={`who-${v.inst.id}`} name="who" class="fld" value={v.inst.who} placeholder="The character, pair or element" />
-          <label for={`text-${v.inst.id}`} class="quiet" style="font-size: 15px">Text</label>
-          <textarea id={`text-${v.inst.id}`} name="text" class="fld" rows="4">{v.inst.text}</textarea>
-          <p class="quiet" style="margin: 0; font-size: 15px">||double bars|| hide a spoiler.</p>
-          <p class="buttons"><button type="submit" class="t">Save</button><a href={withEdit(v.inst.id)} class="quiet">Cancel</a></p>
-        </form>
+      {owner && editing === v.inst.id ? (
+        <>
+          <form method="POST" action={actions.updateInstanceText} class="textedit">
+            <input type="hidden" name="instanceId" value={v.inst.id} />
+            <input type="hidden" name="returnTo" value={plain(v.inst.id)} />
+            <label for={`who-${v.inst.id}`} class="quiet" style="font-size: 15px">Who</label>
+            <input id={`who-${v.inst.id}`} name="who" class="fld" value={v.inst.who} placeholder="The character, pair or element" />
+            <label for={`text-${v.inst.id}`} class="quiet" style="font-size: 15px">Text</label>
+            <textarea id={`text-${v.inst.id}`} name="text" class="fld" rows="4">{v.inst.text}</textarea>
+            <p class="quiet" style="margin: 0; font-size: 15px">||double bars|| hide a spoiler. Either field may be left empty.</p>
+            <p class="buttons"><button type="submit" class="t">Save</button><a href={plain(v.inst.id)} class="quiet">Cancel</a></p>
+          </form>
+          <div class="panel">
+            <form method="POST" action={actions.setProminence} class="line-form">
+              <input type="hidden" name="instanceId" value={v.inst.id} />
+              <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
+              <span class="quiet">Prominence</span>
+              {PROMINENCES.map((p) => p === v.inst.prominence
+                ? <span class="on">{PROMINENCE_LABEL[p]}</span>
+                : <button type="submit" name="prominence" value={p} class="t">{PROMINENCE_LABEL[p]}</button>)}
+            </form>
+            {v.evidence.length > 0 && (
+              <div class="evlist">
+                <span class="quiet">Evidence</span>
+                {v.evidence.map((e) => (
+                  <form method="POST" action={actions.removeEvidence} class="evrow">
+                    <input type="hidden" name="evidenceId" value={e.id} />
+                    <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
+                    <span class="evtext">{e.kind === 'quote' ? <Fragment set:html={renderInline(e.content ?? '', render)} /> : e.kind}{e.locator && <span class="loc">{formatLocator(e.locator)}</span>}</span>
+                    <button type="submit" class="t danger">Remove</button>
+                  </form>
+                ))}
+              </div>
+            )}
+            <form method="POST" action={actions.addQuote} class="textedit" style="margin-top: 8px">
+              <input type="hidden" name="instanceId" value={v.inst.id} />
+              <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
+              <label for={`q-${v.inst.id}`} class="quiet" style="font-size: 15px">Add a quote</label>
+              <textarea id={`q-${v.inst.id}`} name="content" class="fld" rows="2"></textarea>
+              <label for={`c-${v.inst.id}`} class="quiet" style="font-size: 15px">Citation</label>
+              <input id={`c-${v.inst.id}`} name="locator" class="fld" placeholder="ch. 12, p. 203, S01E03 12:40" />
+              <p class="buttons"><button type="submit" class="t">Add quote</button></p>
+            </form>
+            <div class="line-form" style="margin-top: 6px">
+              <form method="POST" action={actions.toggleNotable}>
+                <input type="hidden" name="instanceId" value={v.inst.id} />
+                <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
+                <button type="submit" class="t">{v.notable ? 'Unpin from notable' : 'Pin as notable'}</button>
+              </form>
+              <form method="POST" action={actions.removeInstance} onsubmit="return confirm('Remove this instance? There is no undo.')">
+                <input type="hidden" name="instanceId" value={v.inst.id} />
+                <input type="hidden" name="returnTo" value={base} />
+                <button type="submit" class="t danger">Remove instance</button>
+              </form>
+            </div>
+          </div>
+        </>
       ) : (
         <p style="margin: 2px 0 0">
           {v.inst.who && <span style="font-style: italic">{v.inst.who}.</span>}
           {v.inst.who && ' '}
           <Fragment set:html={renderInline(v.inst.text, render)} />
         </p>
-      )}
-
-      {owner && editing === v.inst.id && (
-        <div class="panel">
-          <form method="POST" action={actions.setProminence} class="line-form">
-            <input type="hidden" name="instanceId" value={v.inst.id} />
-            <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
-            <span class="quiet">Prominence</span>
-            {PROMINENCES.map((p) => p === v.inst.prominence
-              ? <span class="on">{PROMINENCE_LABEL[p]}</span>
-              : <button type="submit" name="prominence" value={p} class="t">{PROMINENCE_LABEL[p]}</button>)}
-          </form>
-          <div class="line-form">
-            {!textEdit && <a href={withEdit(v.inst.id, '&text=1')}>Edit text</a>}
-            <a href={withEdit(v.inst.id, '&evidence=1')}>Add evidence</a>
-            <form method="POST" action={actions.toggleNotable}>
-              <input type="hidden" name="instanceId" value={v.inst.id} />
-              <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
-              <button type="submit" class="t">{v.notable ? 'Unpin from notable' : 'Pin as notable'}</button>
-            </form>
-            <form method="POST" action={actions.removeInstance} onsubmit="return confirm('Remove this instance? There is no undo.')">
-              <input type="hidden" name="instanceId" value={v.inst.id} />
-              <input type="hidden" name="returnTo" value={base} />
-              <button type="submit" class="t danger">Remove</button>
-            </form>
-          </div>
-          {evidenceAdd && (
-            <form method="POST" action={actions.addQuote} class="textedit">
-              <input type="hidden" name="instanceId" value={v.inst.id} />
-              <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
-              <label for={`q-${v.inst.id}`} class="quiet" style="font-size: 15px">Quote</label>
-              <textarea id={`q-${v.inst.id}`} name="content" class="fld" rows="3"></textarea>
-              <label for={`c-${v.inst.id}`} class="quiet" style="font-size: 15px">Citation</label>
-              <input id={`c-${v.inst.id}`} name="locator" class="fld" placeholder="ch. 12, p. 203, S01E03 12:40" />
-              <p class="buttons"><button type="submit" class="t">Add quote</button><a href={withEdit(v.inst.id)} class="quiet">Cancel</a></p>
-            </form>
-          )}
-          {evidenceAdd && v.evidence.length > 0 && (
-            <div class="line-form" style="margin-top: 6px">
-              {v.evidence.map((e) => (
-                <form method="POST" action={actions.removeEvidence}>
-                  <input type="hidden" name="evidenceId" value={e.id} />
-                  <input type="hidden" name="returnTo" value={withEdit(v.inst.id, '&evidence=1')} />
-                  <button type="submit" class="t danger">Remove {e.kind} {e.locator || ''}</button>
-                </form>
-              ))}
-            </div>
-          )}
-        </div>
       )}
     </div>
     <aside class="mar">
@@ -144,10 +140,15 @@ const quotes = (ev: Evidence[]) => ev.filter((e) => e.kind === 'quote');
   .quote { margin: 0; font-style: italic; color: #3A3A36; max-width: 640px; }
   .panel { margin: 12px 0 8px; padding: 10px 0 10px 16px; border-left: 1px solid #C9C7C0; font-size: 16px; }
   .line-form { display: flex; flex-wrap: wrap; gap: 0 16px; align-items: baseline; }
-  .line-form a, .line-form .t, .line-form .on { padding: 10px 0; }
+  .line-form a, .line-form .t, .line-form .on { padding: 8px 0; }
   .line-form form { display: inline; }
   .on { font-weight: 700; }
+  .evlist { margin-top: 6px; display: flex; flex-direction: column; gap: 2px; font-size: 15px; }
+  .evrow { display: flex; gap: 12px; align-items: baseline; }
+  .evrow .t { padding: 4px 0; flex: none; }
+  .evtext { font-style: italic; color: #3A3A36; }
   .textedit { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
   .buttons { margin: 4px 0 0; font-size: 16px; display: flex; gap: 16px; }
   .buttons .t, .buttons a { padding: 8px 0; }
+  article[id]:target .body { outline: 0; }
 </style>

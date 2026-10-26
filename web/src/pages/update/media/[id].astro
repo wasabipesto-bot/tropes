@@ -131,7 +131,7 @@ const identityLine =
           </form>
         )}
         <div style="margin-top: 24px; max-width: 820px">
-          <ProposalList jobId={job.id} items={items} mode="subject" render={render} returnTo={returnTo} editing={state.editing} verb="Add" cancelHref={`/media/${m.id}`}>
+          <ProposalList jobId={job.id} items={items} mode="subject" render={render} returnTo={returnTo} verb="Add" cancelHref={`/media/${m.id}`}>
             <h3 slot="instances-heading" style="margin: 0 0 4px; font-size: 20px; font-weight: 700">New tropes</h3>
             <h3 slot="evidence-heading" style="margin: 0 0 4px; font-size: 20px; font-weight: 700">New evidence for existing tropes</h3>
           </ProposalList>

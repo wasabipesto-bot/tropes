@@ -48,7 +48,7 @@ const returnTo = Astro.url.pathname + Astro.url.search;
   </div>
 
   {items.length === 0 && <div class="row" style="margin-top: 48px"><div class="lab"></div><p class="quiet" style="margin: 0">No tropes attached to the series itself.</p><div></div></div>}
-  <InstanceList items={items} mode="subject" owner={owner} render={render} returnTo={returnTo} editing={editing} textEdit={p.get('text') === '1'} evidenceAdd={p.get('evidence') === '1'} />
+  <InstanceList items={items} mode="subject" owner={owner} render={render} returnTo={returnTo} editing={editing} />
 
   {owner && (
     <div class="row" style="margin-top: 56px">

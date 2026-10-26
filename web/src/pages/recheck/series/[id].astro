@@ -44,7 +44,7 @@ const render = { tropeHref: tropeHrefResolver(db) };
       {error && <p class="quiet" style="margin: 6px 0 0; font-size: 15px">{error}</p>}
       {items.length === 0 && <p style="margin: 28px 0 0">Nothing new to add.</p>}
       <div style="margin-top: 36px; max-width: 820px">
-        <ProposalList jobId={job.id} items={items} mode="subject" render={render} returnTo={returnTo} editing={editing} verb="Add" cancelHref={subject.href}>
+        <ProposalList jobId={job.id} items={items} mode="subject" render={render} returnTo={returnTo} verb="Add" cancelHref={subject.href}>
           <h2 slot="instances-heading" style="margin: 0 0 4px; font-size: 22px; font-weight: 700">New tropes</h2>
           <h2 slot="evidence-heading" style="margin: 0 0 4px; font-size: 22px; font-weight: 700">New evidence for existing tropes</h2>
         </ProposalList>

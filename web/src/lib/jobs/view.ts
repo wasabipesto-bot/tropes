@@ -40,7 +40,8 @@ export function calibrationLine(summary: any, uncheckedBelow: number): string {
     const found = seeds.filter((s) => s.found);
     const scores = found.map((s) => (s.score ?? 0).toFixed(2));
     const list = scores.length > 1 ? `${scores.slice(0, -1).join(', ')} and ${scores[scores.length - 1]}` : scores[0];
-    if (found.length === seeds.length) parts.push(`Found ${seeds.length === 1 ? 'your example' : `all ${n(seeds.length)} of your examples`}${scores.length ? `, scoring ${list}` : ''}`);
+    const all = seeds.length === 1 ? 'your example' : seeds.length === 2 ? 'both of your examples' : `all ${n(seeds.length)} of your examples`;
+    if (found.length === seeds.length) parts.push(`Found ${all}${scores.length ? `, scoring ${list}` : ''}`);
     else if (found.length === 0) parts.push(`Found none of your ${n(seeds.length)} examples`);
     else parts.push(`Found ${n(found.length)} of your ${n(seeds.length)} examples, scoring ${list}`);
     const missing = seeds.filter((s) => !s.resolved).map((s) => s.title);
