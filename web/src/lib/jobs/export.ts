@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import type { Db } from '../../db/open';
-import { dossier, instance, localSource, media, mediaNote, proposal, series, seriesMember, trope, tropeSeed } from '../../db/schema';
+import { dossier, instance, localSource, media, mediaLink, mediaNote, proposal, series, seriesMember, trope, tropeSeed } from '../../db/schema';
 import { typeLabel } from '../media';
 
 /** Everything the worker needs to scan: tropes, their seeds, and what is already attached or was rejected. */
@@ -24,6 +24,7 @@ export function exportTropes(db: Db) {
 export function exportSubjects(db: Db) {
   const sources = db.select().from(localSource).all();
   const notes = db.select().from(mediaNote).all();
+  const links = db.select({ mediaId: mediaLink.mediaId, site: mediaLink.site, url: mediaLink.url }).from(mediaLink).all();
   const built = db.select({ kind: dossier.subjectKind, id: dossier.subjectId, depth: dossier.depth, promptVersion: dossier.promptVersion, sourceHash: dossier.sourceHash, body: dossier.body }).from(dossier).all()
     .map(({ body, ...rest }) => ({ ...rest, known: (() => { try { return JSON.parse(body).known ?? null; } catch { return null; } })() as string | null }));
   const members = db.select().from(seriesMember).all();
@@ -37,6 +38,8 @@ export function exportSubjects(db: Db) {
     creator: m.creator,
     year: m.loggedDate ? Number(m.loggedDate.slice(0, 4)) : null,
     description: m.description,
+    aliases: m.aliases,
+    links: links.filter((l) => l.mediaId === m.id).map(({ site, url }) => ({ site, url })),
     // Phase 4: what the lookup needs and what it already pinned.
     mediaUrl: m.notionMediaUrl,
     imageUrl: m.notionImageUrl,

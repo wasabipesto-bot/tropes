@@ -12,7 +12,8 @@ export const scanTropePayload = z.object({
 });
 /** `auto` marks a job on the automatic path for Notion-synced entries (plan T14): its result is committed without review. */
 export const checkSubjectPayload = z.object({ mode: z.enum(['add', 'recheck']), subject: subjectRef, auto: z.boolean().default(false) });
-export const buildDossiersPayload = z.object({ onlyMissing: z.boolean().default(true), subjects: z.array(subjectRef).optional(), auto: z.boolean().default(false) });
+/** `refresh`: the disk chain rebuilt these after new files arrived; rebuilt works get a trope recheck, not the new-entry path. */
+export const buildDossiersPayload = z.object({ onlyMissing: z.boolean().default(true), subjects: z.array(subjectRef).optional(), auto: z.boolean().default(false), refresh: z.boolean().default(false) });
 export const pingPayload = z.object({});
 /** lookup_media: resolve and fetch metadata for these works. `refresh` re-fetches from the pinned identity and never re-matches. */
 export const lookupMediaPayload = z.object({
@@ -28,12 +29,12 @@ export const writeBlurbsPayload = z.object({ mediaIds: z.array(z.number().int().
 export const findEvidencePayload = z.object({ instanceId: z.number().int().positive(), prompt: z.string().min(1) });
 
 /** index_local: match these works (or every video and book) to files under the media root. */
-export const indexLocalPayload = z.object({ mediaIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
+export const indexLocalPayload = z.object({ mediaIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false), then: z.enum(['dossier']).optional() });
 /** extract_text: subtitles or book text for these local_source rows (or everything not yet indexed). */
-export const extractTextPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
+export const extractTextPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false), then: z.enum(['dossier']).optional(), mediaIds: z.array(z.number().int().positive()).optional() });
 /** make_sheets: contact sheets for these video sources (or every one without sheets); read_sheets: the model's visual notes from them (plan T11). */
-export const makeSheetsPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
-export const readSheetsPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
+export const makeSheetsPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false), then: z.enum(['dossier']).optional(), mediaIds: z.array(z.number().int().positive()).optional() });
+export const readSheetsPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false), then: z.enum(['dossier']).optional(), mediaIds: z.array(z.number().int().positive()).optional() });
 /** transcribe: Whisper for video sources that had no subtitle from any other source (plan D6). */
 export const transcribePayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false), model: z.string().optional(), threads: z.number().int().positive().max(48).optional() });
 /** look_frames: the model looks at the frames grabbed for a scan's proposals of visual tropes (plan D12). */
@@ -99,6 +100,7 @@ export const dossierIn = z.object({
   model: z.string(),
   promptVersion: z.number().int(),
   sourceHash: z.string().nullable().optional(),
+  inputs: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const noteIn = z.object({ mediaId: z.number().int().positive(), source: z.enum(['tumblr', 'review', 'manual', 'visual', 'wiki']), url: z.string().nullable().optional(), text: z.string().min(1), label: z.string().default('') });

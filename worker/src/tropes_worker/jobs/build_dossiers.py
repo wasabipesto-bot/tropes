@@ -6,7 +6,7 @@ import logging
 from typing import Any
 
 from ..llm import LLM, load_prompt
-from ..notes import relevant_notes, search_posts
+from ..notes import relevant_notes, search_posts, title_aliases
 from ..pipeline import build_dossier, build_series_dossier, dossier_needed, ensure_texts, entry_text, load_subject_text, run_async
 from ..runner import Context
 
@@ -45,7 +45,11 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     ctx.progress(0, total, "dossiers")
 
     async def one(subject: dict[str, Any], text) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # noqa: ANN001
-        posts = search_posts(settings, subject["title"]) if subject["kind"] == "media" else []
+        posts = (
+            search_posts(settings, subject["title"], title_aliases(subject["title"], subject.get("aliases")))
+            if subject["kind"] == "media"
+            else []
+        )
         notes = await relevant_notes(llm, entry_text(subject), posts) if posts else []
         stored = subject.get("notes") or []
         kept = [n for n in stored if n.get("source") in ("visual", "wiki")] if notes else stored

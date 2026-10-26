@@ -123,6 +123,20 @@ def dossier_needed(subject: dict[str, Any], prompt_version: int, has_text: bool,
     return False
 
 
+def text_input(text: Text | None) -> dict[str, Any] | None:
+    """What the dossier page says about the text that was read: size and the span of its headings."""
+    if text is None:
+        return None
+    heads = [t for t, _ in text.chapters if t != "Front matter"]
+    return {
+        "words": text.words,
+        "chapters": len(text.chapters),
+        "from": heads[0] if heads else None,
+        "to": heads[-1] if len(heads) > 1 else None,
+        "file": text.path.name,
+    }
+
+
 def visual_section(notes: list[dict[str, Any]], cap: int = 60_000) -> str:
     """The model's notes from the contact sheets (plan T11), one block per episode in order, within a character cap."""
     rows = sorted((n for n in notes if n.get("source") == "visual"), key=lambda n: n.get("label") or "")
@@ -173,6 +187,7 @@ async def build_dossier(
         merged = dict(parts[0])
         merged["body"] = out.model_dump()
         merged["sourceHash"] = text.source_hash
+        merged["inputs"] = {**parts[0]["inputs"], "text": text_input(text), "blocks": len(blocks)}
         return merged
     return await build_dossier_once(llm, settings, subject, text, notes)
 
@@ -204,6 +219,13 @@ async def build_dossier_once(
         "model": settings.model_dossier,
         "promptVersion": load_prompt("dossier").version,
         "sourceHash": text.source_hash if text else (extract_hash(subject) if use_extract else None),
+        "inputs": {
+            "text": text_input(text),
+            "posts": len(owner),
+            "visual": sum(1 for n in notes if n.get("source") == "visual"),
+            "wiki": next((n.get("url") or True for n in notes if n.get("source") == "wiki"), None),
+            "extract": use_extract,
+        },
     }
 
 

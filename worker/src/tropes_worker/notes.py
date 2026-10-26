@@ -15,30 +15,56 @@ from .settings import Settings
 log = logging.getLogger("tropes_worker.notes")
 
 
-def search_posts(settings: Settings, title: str, limit: int = 20) -> list[dict[str, Any]]:
-    """Posts from the owner's blog that mention the quoted title. Empty when no key is configured."""
+SMALL = {"a", "an", "and", "of", "the", "to", "in", "on", "at", "for", "&"}
+
+
+def title_aliases(title: str, extra: str | list[str] | None = None) -> list[str]:
+    """Names the owner's posts might use instead of the full title: the initialism of a title of three or more
+    words (DGHDA, TLT, GotG), the part after a colon (Edgerunners), and anything the owner typed as aliases."""
+    out: list[str] = []
+    words = re.findall(r"[A-Za-z0-9][A-Za-z0-9']*", title)
+    if len(words) >= 3:
+        initials = "".join(w[0] for w in words)
+        if len(initials) >= 3:
+            out.append(initials.upper())
+    if ":" in title:
+        tail = title.split(":", 1)[1].strip()
+        if len(tail) >= 4 and not re.fullmatch(r"[\d\s]+", tail):
+            out.append(tail)
+    typed = extra.split(",") if isinstance(extra, str) else list(extra or [])
+    out += [a.strip() for a in typed if a and a.strip()]
+    seen: set[str] = set()
+    return [a for a in out if a.lower() != title.lower() and not (a.lower() in seen or seen.add(a.lower()))]
+
+
+def search_posts(settings: Settings, title: str, aliases: list[str] | None = None, limit: int = 20) -> list[dict[str, Any]]:
+    """Posts from the owner's blog that quote the title or one of its aliases. Empty when no key is configured."""
     if not settings.midden_key:
         return []
-    q = f'"{title}" blog:{settings.midden_blog}'
-    try:
-        r = httpx.get(
-            settings.midden_url,
-            params={"q": q, "format": "text", "page_size": limit},
-            headers={"x-api-key": settings.midden_key, "User-Agent": "tropes-worker"},
-            timeout=30,
-        )
-        r.raise_for_status()
-        data = r.json()
-    except Exception as e:  # noqa: BLE001 - notes are optional; a search failure must not fail a dossier
-        log.warning("midden search for %r failed: %s", title, e)
-        return []
-    hits = data.get("hits") or []
-    out = []
-    for h in hits:
-        text = h.get("body") or h.get("text") or ""
-        if not text.strip():
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for name in [title, *(aliases or [])]:
+        q = f'"{name}" blog:{settings.midden_blog}'
+        try:
+            r = httpx.get(
+                settings.midden_url,
+                params={"q": q, "format": "text", "page_size": limit},
+                headers={"x-api-key": settings.midden_key, "User-Agent": "tropes-worker"},
+                timeout=30,
+            )
+            r.raise_for_status()
+            data = r.json()
+        except Exception as e:  # noqa: BLE001 - notes are optional; a search failure must not fail a dossier
+            log.warning("midden search for %r failed: %s", name, e)
             continue
-        out.append({"url": h.get("url") or h.get("post_url") or h.get("link"), "text": re.sub(r"\s+", " ", text).strip()[:4000]})
+        for h in data.get("hits") or []:
+            text = h.get("body") or h.get("text") or ""
+            url = h.get("url") or h.get("post_url") or h.get("link")
+            key = url or text[:200]
+            if not text.strip() or key in seen:
+                continue
+            seen.add(key)
+            out.append({"url": url, "text": re.sub(r"\s+", " ", text).strip()[:4000]})
     return out
 
 

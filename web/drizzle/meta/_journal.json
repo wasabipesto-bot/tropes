@@ -57,6 +57,13 @@
       "when": 1793049000219,
       "tag": "0007_visual-tropes",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1793052246083,
+      "tag": "0008_aliases-and-inputs",
+      "breakpoints": true
     }
   ]
 }

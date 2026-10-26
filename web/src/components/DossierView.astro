@@ -1,55 +1,101 @@
 ---
-import { and, eq } from 'drizzle-orm';
+import { and, asc, eq } from 'drizzle-orm';
 import { actions } from 'astro:actions';
 import { db } from '../db';
 import { dossier, localSource, mediaNote } from '../db/schema';
+import { parseJson } from '../lib/jobs/queue';
+import { tropeHrefResolver } from '../lib/queries';
+import { renderInline } from '../lib/text';
 
-interface Props { subjectKind: 'media' | 'series'; subjectId: number; title: string; backHref: string; editing: boolean }
-const { subjectKind, subjectId, title, backHref, editing } = Astro.props;
+/** The dossier is what the matcher reads about a work. It is public; the owner also gets the edit form and the diagnostics. */
+interface Props { subjectKind: 'media' | 'series'; subjectId: number; title: string; backHref: string; editing: boolean; owner: boolean }
+const { subjectKind, subjectId, title, backHref, editing, owner } = Astro.props;
 const d = db.select().from(dossier).where(and(eq(dossier.subjectKind, subjectKind), eq(dossier.subjectId, subjectId))).get();
 const body = d ? JSON.parse(d.body) : null;
+const inputs = d ? parseJson<any>(d.inputs, {}) : {};
 const here = `${backHref}/dossier`;
-const sources: string[] = [];
-if (d && subjectKind === 'media') {
-  const texts = db.select().from(localSource).where(and(eq(localSource.mediaId, subjectId), eq(localSource.kind, 'text'))).all();
-  const notes = db.select().from(mediaNote).where(eq(mediaNote.mediaId, subjectId)).all();
-  if (texts.length) sources.push(`the text (${texts.map((t) => t.path.split('/').pop()).join(', ')})`);
-  if (notes.length) sources.push(`${notes.length} of your posts`);
+const render = { tropeHref: tropeHrefResolver(db) };
+const r = (s: unknown) => renderInline(String(s ?? ''), render);
+
+// What it was built from, in one sentence.
+const parts: string[] = [];
+if (inputs.text) {
+  const t = inputs.text;
+  const span = t.from && t.to ? ` from ${t.from} to ${t.to}` : t.from ? ` (${t.from})` : '';
+  parts.push(`the text of the work (${Number(t.words).toLocaleString('en-GB')} words${t.chapters > 1 ? `, ${t.chapters} parts${span}` : ''}${inputs.blocks ? `, read in ${inputs.blocks} blocks` : ''})`);
 }
+if (inputs.visual) parts.push(`visual notes taken from the footage of ${inputs.visual} ${inputs.visual === 1 ? 'episode' : 'episodes'}`);
+if (inputs.wiki) parts.push(typeof inputs.wiki === 'string' ? `<a href="${inputs.wiki}">the Fandom article</a>` : 'the Fandom article');
+if (inputs.extract) parts.push('the Wikipedia summary');
+if (inputs.posts) parts.push(`${inputs.posts} of wasabipesto's Tumblr posts`);
+const builtFrom = parts.length > 0 ? parts.join(', ').replace(/, ([^,]*)$/, ' and $1') : d?.depth === 'text' ? 'the text of the work' : 'what the model knows';
+const known: Record<string, string> = { strong: 'the model knows the work well', partial: 'the model knows the work in part', none: 'the model does not know the work' };
+
+// Owner diagnostics: the visual notes per episode with the sheets they were read from, and the wiki text.
+const visualNotes = owner && d && subjectKind === 'media'
+  ? db.select().from(mediaNote).where(and(eq(mediaNote.mediaId, subjectId), eq(mediaNote.source, 'visual'))).orderBy(asc(mediaNote.label)).all()
+  : [];
+const sheetsByLabel = new Map<string, string[]>();
+if (visualNotes.length > 0) {
+  for (const s of db.select().from(localSource).where(and(eq(localSource.mediaId, subjectId), eq(localSource.kind, 'video'))).all()) {
+    const n = Number(parseJson<any>(s.meta, {}).sheets ?? 0);
+    if (n > 0) sheetsByLabel.set(s.label, Array.from({ length: n }, (_, i) => `/sheets/${s.id}-${i}.jpg`));
+  }
+}
+const wikiNote = owner && d && subjectKind === 'media' ? db.select().from(mediaNote).where(and(eq(mediaNote.mediaId, subjectId), eq(mediaNote.source, 'wiki'))).get() : undefined;
+
 const lines = (xs: unknown[] | undefined, f: (x: any) => string) => (xs ?? []).map(f).join('\n');
 const charLine = (c: any) => `${c.name}${c.role ? `: ${c.role}` : ''}`;
-const located = (x: any) => (x.locator ? `${x.summary} (${x.locator})` : x.summary);
-const known: Record<string, string> = { strong: 'knows the work well', partial: 'knows the work in part', none: 'does not know the work' };
+const located = (x: any) => (x.locator ? `${r(x.summary)} <span class="loc">${x.locator}</span>` : r(x.summary));
 ---
 
 <h1>Dossier <a href={backHref} style="color: #1B1B1B">{title}</a></h1>
-{!d && <p class="quiet" style="margin: 12px 0 0">No dossier yet. <a href="/jobs">Build it from the jobs page.</a></p>}
+{!d && <p class="quiet" style="margin: 12px 0 0">No dossier yet.{owner && <> <a href="/jobs">Build it from the jobs page.</a></>}</p>}
 {d && body && (
   <>
     <p class="quiet" style="margin: 4px 0 0; font-size: 15px">
-      Internal: the matcher reads this; it is never shown publicly. Built {d.builtAt.slice(0, 10)} with {d.model}, prompt v{d.promptVersion}, {d.depth === 'text' ? 'from the full text' : 'from what the model knows'}
-      {body.known && ` (${known[body.known] ?? body.known})`}{sources.length > 0 && `, plus ${sources.join(' and ')}`}.
-      A rebuild overwrites your edits.
+      What the matcher reads before deciding which tropes this work contains. Built {d.builtAt.slice(0, 10)} from <Fragment set:html={builtFrom} />{body.known && known[body.known] && `; ${known[body.known]}`}.
+      {owner && <span> Model {d.model}, prompt v{d.promptVersion}. A rebuild overwrites your edits.</span>}
     </p>
     {!editing ? (
       <>
-        <p style="margin: 8px 0 0; font-size: 15px; display: flex; gap: 16px"><a href={`${here}?edit=1`}>Edit</a>
-          <form method="POST" action={actions.startDossierBuild} style="display: inline">
-            <input type="hidden" name="subjectKind" value={subjectKind} />
-            <input type="hidden" name="subjectId" value={subjectId} />
-            <input type="hidden" name="returnTo" value={here} />
-            <button type="submit" class="t">Rebuild</button>
-          </form>
-        </p>
+        {owner && (
+          <p style="margin: 8px 0 0; font-size: 15px; display: flex; gap: 16px"><a href={`${here}?edit=1`}>Edit</a>
+            <form method="POST" action={actions.startDossierBuild} style="display: inline">
+              <input type="hidden" name="subjectKind" value={subjectKind} />
+              <input type="hidden" name="subjectId" value={subjectId} />
+              <input type="hidden" name="returnTo" value={here} />
+              <button type="submit" class="t">Rebuild</button>
+            </form>
+          </p>
+        )}
         <div class="dossier">
-          <h2>Summary</h2><p>{body.summary}</p>
-          <h2>Characters</h2><ul>{(body.characters ?? []).map((c: any) => <li><span style="font-weight: 600">{c.name}</span>{c.role && <span class="quiet"> · {c.role}</span>}{c.descriptors?.length > 0 && <span class="quiet"> · {c.descriptors.join(', ')}</span>}{c.relationships?.length > 0 && <div class="quiet" style="font-size: 15px">{c.relationships.join('; ')}</div>}</li>)}</ul>
-          <h2>Settings</h2><ul>{(body.settings ?? []).map((x: string) => <li>{x}</li>)}</ul>
-          <h2>Arcs</h2><ul>{(body.arcs ?? []).map((x: any) => <li>{located(x)}</li>)}</ul>
-          <h2>Motifs</h2><ul>{(body.motifs ?? []).map((x: string) => <li>{x}</li>)}</ul>
-          <h2>Themes</h2><ul>{(body.themes ?? []).map((x: string) => <li>{x}</li>)}</ul>
-          <h2>Notable scenes</h2><ul>{(body.notable_scenes ?? []).map((x: any) => <li>{located(x)}</li>)}</ul>
+          <h2>Summary</h2><p><Fragment set:html={r(body.summary)} /></p>
+          <h2>Characters</h2><ul>{(body.characters ?? []).map((c: any) => <li><span style="font-weight: 600">{c.name}</span>{c.role && <span class="quiet"> · {c.role}</span>}{c.descriptors?.length > 0 && <span class="quiet"> · {c.descriptors.join(', ')}</span>}{c.relationships?.length > 0 && <div class="quiet" style="font-size: 15px"><Fragment set:html={r(c.relationships.join('; '))} /></div>}</li>)}</ul>
+          <h2>Settings</h2><ul>{(body.settings ?? []).map((x: string) => <li><Fragment set:html={r(x)} /></li>)}</ul>
+          <h2>Arcs</h2><ul>{(body.arcs ?? []).map((x: any) => <li><Fragment set:html={located(x)} /></li>)}</ul>
+          <h2>Motifs</h2><ul>{(body.motifs ?? []).map((x: string) => <li><Fragment set:html={r(x)} /></li>)}</ul>
+          <h2>Themes</h2><ul>{(body.themes ?? []).map((x: string) => <li><Fragment set:html={r(x)} /></li>)}</ul>
+          <h2>Notable scenes</h2><ul>{(body.notable_scenes ?? []).map((x: any) => <li><Fragment set:html={located(x)} /></li>)}</ul>
         </div>
+        {visualNotes.length > 0 && (
+          <details class="diag">
+            <summary>Visual notes, {visualNotes.length} {visualNotes.length === 1 ? 'episode' : 'episodes'} (owner only)</summary>
+            {visualNotes.map((n) => (
+              <div style="margin-top: 12px">
+                <p style="margin: 0; font-weight: 600">{n.label || 'Whole work'} {(sheetsByLabel.get(n.label) ?? []).map((u, i) => <a href={u} style="font-weight: 400; font-size: 15px; margin-left: 8px">sheet {i + 1}</a>)}</p>
+                <pre class="notes">{n.text}</pre>
+              </div>
+            ))}
+          </details>
+        )}
+        {wikiNote && (
+          <details class="diag">
+            <summary>Fandom article as read (owner only)</summary>
+            {wikiNote.url && <p style="margin: 8px 0 0; font-size: 15px"><a href={wikiNote.url}>{wikiNote.url}</a></p>}
+            <pre class="notes">{wikiNote.text}</pre>
+          </details>
+        )}
       </>
     ) : (
       <form method="POST" action={actions.updateDossier} class="dossier edit">
@@ -75,5 +121,9 @@ const known: Record<string, string> = { strong: 'knows the work well', partial: 
   .dossier p { margin: 0; }
   .dossier ul { margin: 0; padding-left: 20px; }
   .dossier li { margin: 2px 0; }
+  .loc { color: #6B6B66; font-size: 14px; margin-left: 6px; }
   .edit textarea { font-size: 16px; }
+  .diag { max-width: 760px; margin-top: 28px; font-size: 15px; }
+  .diag summary { cursor: pointer; color: #6B6B66; }
+  .notes { white-space: pre-wrap; font: inherit; font-size: 15px; margin: 4px 0 0; color: #3A3A36; }
 </style>

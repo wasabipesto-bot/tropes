@@ -55,6 +55,8 @@ export const media = sqliteTable(
     notionMissingSince: text('notion_missing_since'),
     /** A short note for /review, set by the sync ("Media Link changed since the match was pinned"). */
     reviewNote: text('review_note'),
+    /** Other names the owner's posts use for it, comma-separated: initialisms, nicknames. The Tumblr search reads them. */
+    aliases: text('aliases').notNull().default(''),
     ratingMedium: real('rating_medium'),
     ratingStory: real('rating_story'),
     ratingTone: real('rating_tone'),
@@ -323,6 +325,8 @@ export const dossier = sqliteTable(
     model: text('model').notNull(),
     promptVersion: integer('prompt_version').notNull(),
     sourceHash: text('source_hash'),
+    /** What went into it (text size and span, visual notes, wiki, posts), shown on the public dossier page. */
+    inputs: text('inputs').notNull().default('{}'),
     builtAt: text('built_at').notNull().default(sql`(datetime('now'))`),
   },
   (t) => [primaryKey({ columns: [t.subjectKind, t.subjectId] })],

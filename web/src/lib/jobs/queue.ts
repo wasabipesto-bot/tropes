@@ -64,10 +64,10 @@ export function cancelJob(db: Db, id: number): void {
 export function storeDossiers(tx: Db, body: z.infer<typeof dossiersBody>): void {
   for (const d of body.dossiers) {
     tx.insert(dossier)
-      .values({ subjectKind: d.subject.kind, subjectId: d.subject.id, depth: d.depth, body: JSON.stringify(d.body), model: d.model, promptVersion: d.promptVersion, sourceHash: d.sourceHash ?? null })
+      .values({ subjectKind: d.subject.kind, subjectId: d.subject.id, depth: d.depth, body: JSON.stringify(d.body), model: d.model, promptVersion: d.promptVersion, sourceHash: d.sourceHash ?? null, inputs: JSON.stringify(d.inputs ?? {}) })
       .onConflictDoUpdate({
         target: [dossier.subjectKind, dossier.subjectId],
-        set: { depth: d.depth, body: JSON.stringify(d.body), model: d.model, promptVersion: d.promptVersion, sourceHash: d.sourceHash ?? null, builtAt: sql`(datetime('now'))` },
+        set: { depth: d.depth, body: JSON.stringify(d.body), model: d.model, promptVersion: d.promptVersion, sourceHash: d.sourceHash ?? null, inputs: JSON.stringify(d.inputs ?? {}), builtAt: sql`(datetime('now'))` },
       })
       .run();
   }

@@ -7,7 +7,7 @@
  */
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 import type { Db } from '../../db/open';
-import { dossier, job, localSource, media, proposal, trope, type Job, type Proposal } from '../../db/schema';
+import { dossier, job, localSource, media, mediaNote, proposal, trope, type Job, type Proposal } from '../../db/schema';
 import { commitMatch, recordUnresolved, syncNotionLink, type MatchPayload } from '../metadata';
 import type { ImportReport } from '../notion-import';
 import { commitProposals } from './commit';
@@ -75,20 +75,8 @@ export function afterJobDone(db: Db, j: Job): void {
     return;
   }
   if (!payload.auto) return;
-  // The disk side (plan T2, D11): what was indexed gets its text extracted and its contact sheets made, then read.
-  if (j.kind === 'index_local') {
-    const ids: number[] = payload.mediaIds ?? [];
-    const rows = ids.length > 0
-      ? db.select().from(localSource).where(and(inArray(localSource.mediaId, ids), inArray(localSource.kind, ['video', 'book']))).all()
-      : db.select().from(localSource).where(inArray(localSource.kind, ['video', 'book'])).all();
-    const texts = rows.filter((s) => !s.indexedAt).map((s) => s.id);
-    const sheets = rows.filter((s) => s.kind === 'video' && !parseJson<any>(s.meta, {}).sheets).map((s) => s.id);
-    if (texts.length > 0) createJob(db, 'extract_text', { sourceIds: texts, auto: true });
-    if (sheets.length > 0) createJob(db, 'make_sheets', { sourceIds: sheets, auto: true });
-    return;
-  }
-  if (j.kind === 'make_sheets') {
-    if ((payload.sourceIds ?? []).length > 0) createJob(db, 'read_sheets', { sourceIds: payload.sourceIds, auto: true });
+  if (CHAIN.includes(j.kind)) {
+    continueChain(db, j, payload);
     return;
   }
   if (j.kind === 'lookup_media') {
@@ -112,6 +100,12 @@ export function afterJobDone(db: Db, j: Job): void {
   } else if (j.kind === 'build_dossiers') {
     const ids: number[] = (payload.subjects ?? []).filter((s: any) => s.kind === 'media').map((s: any) => s.id);
     if (ids.length === 0) return;
+    if (payload.refresh) {
+      // New files on the disk: only the works whose dossier actually changed get a recheck.
+      const rebuilt = db.select({ id: dossier.subjectId }).from(dossier).where(and(eq(dossier.subjectKind, 'media'), inArray(dossier.subjectId, ids), sql`${dossier.builtAt} >= ${j.createdAt}`)).all();
+      for (const r of rebuilt) createJob(db, 'check_subject', { mode: 'recheck', subject: { kind: 'media', id: r.id }, auto: true });
+      return;
+    }
     const empty = db.select({ id: media.id }).from(media).where(and(inArray(media.id, ids), isNull(media.description))).all().map((r) => r.id);
     if (empty.length > 0) createJob(db, 'write_blurbs', { mediaIds: empty, auto: true });
     for (const id of ids.filter((x) => !empty.includes(x))) createJob(db, 'check_subject', { mode: 'add', subject: { kind: 'media', id }, auto: true });
@@ -121,6 +115,39 @@ export function afterJobDone(db: Db, j: Job): void {
     // Proposals for visual tropes with frames on the way wait for the look (plan D12); the rest go in now.
     const waiting = new Set(visualProposals(db, j).filter((p) => parseJson<any[]>(p.evidence, []).some((e) => typeof e.at === 'number')).map((p) => p.id));
     autoCommit(db, j, (p) => !waiting.has(p.id));
+  }
+}
+
+const CHAIN = ['index_local', 'extract_text', 'make_sheets', 'read_sheets'];
+
+/**
+ * The disk chain (plan T2, D11): index → text → contact sheets → visual notes, each stage only for what is new,
+ * stages with nothing to do skipped. With `then: 'dossier'` (the Refresh button, or the weekly index when
+ * TROPES_AUTO_DOSSIER is on) it goes on to rebuild the dossiers whose text changed and recheck their tropes.
+ */
+function continueChain(db: Db, j: Job, payload: any): void {
+  const ids: number[] | undefined = payload.mediaIds?.length ? payload.mediaIds : undefined;
+  const ctx = { auto: true, ...(payload.then ? { then: payload.then } : {}), ...(ids ? { mediaIds: ids } : {}) };
+  const rows = ids
+    ? db.select().from(localSource).where(and(inArray(localSource.mediaId, ids), inArray(localSource.kind, ['video', 'book']))).all()
+    : db.select().from(localSource).where(inArray(localSource.kind, ['video', 'book'])).all();
+  const noted = new Set(db.select({ mediaId: mediaNote.mediaId, label: mediaNote.label }).from(mediaNote).where(eq(mediaNote.source, 'visual')).all().map((n) => `${n.mediaId}:${n.label}`));
+  const todo: Record<string, () => number[]> = {
+    extract_text: () => rows.filter((s) => !s.indexedAt).map((s) => s.id),
+    make_sheets: () => rows.filter((s) => s.kind === 'video' && !parseJson<any>(s.meta, {}).sheets).map((s) => s.id),
+    read_sheets: () => rows.filter((s) => s.kind === 'video' && parseJson<any>(s.meta, {}).sheets && !noted.has(`${s.mediaId}:${s.label}`)).map((s) => s.id),
+  };
+  for (let stage = CHAIN.indexOf(j.kind) + 1; stage < CHAIN.length; stage++) {
+    const kind = CHAIN[stage] as 'extract_text' | 'make_sheets' | 'read_sheets';
+    const sourceIds = todo[kind]();
+    if (sourceIds.length > 0) {
+      createJob(db, kind, { sourceIds, ...ctx });
+      return;
+    }
+  }
+  if (payload.then === 'dossier') {
+    const subjects = [...new Set(rows.map((s) => s.mediaId))].map((id) => ({ kind: 'media' as const, id }));
+    if (subjects.length > 0) createJob(db, 'build_dossiers', { onlyMissing: true, subjects, auto: true, refresh: true });
   }
 }
 

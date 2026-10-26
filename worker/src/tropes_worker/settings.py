@@ -32,6 +32,10 @@ class Settings:
     # D6: Whisper on the media worker for files with no subtitle; medium.en is the owner's choice for celebrimbor.
     whisper_model: str
     whisper_threads: int
+    # The media worker re-indexes the disk every this many hours (0 disables); the chain goes on to
+    # dossiers and a trope recheck only when auto_dossier is on (the owner's call: it spends model money).
+    index_hours: float
+    auto_dossier: bool
     midden_key: str | None
     midden_url: str
     midden_blog: str
@@ -82,6 +86,8 @@ class Settings:
             text_cap_tokens=int(env("TROPES_TEXT_CAP_TOKENS", "600000")),
             whisper_model=env("TROPES_WHISPER_MODEL", "medium.en"),
             whisper_threads=int(env("TROPES_WHISPER_THREADS", "8")),
+            index_hours=float(env("TROPES_INDEX_HOURS", "168")),
+            auto_dossier=env("TROPES_AUTO_DOSSIER", "0").lower() in ("1", "true", "yes"),
             midden_key=env("TROPES_MIDDEN_KEY") or None,
             midden_url=env("TROPES_MIDDEN_URL", "https://beta.midden.net/api/search"),
             midden_blog=env("TROPES_MIDDEN_BLOG", "wasabipesto"),

@@ -67,3 +67,31 @@ def test_wiki_html_to_text_keeps_prose_and_drops_boxes():
     <h2>References</h2><p>Ref list</p></div>"""
     t = html_to_text(html)
     assert t == "Arcane is a show.\n\nPlot:\nTwo sisters.\nPoint one"
+
+
+def test_title_aliases():
+    from tropes_worker.notes import title_aliases
+
+    assert title_aliases("Dirk Gently's Holistic Detective Agency") == ["DGHDA"]
+    assert title_aliases("The Locked Tomb") == ["TLT"]
+    assert title_aliases("Cyberpunk: Edgerunners", "Edgerunners, edgies") == ["Edgerunners", "edgies"]
+    assert title_aliases("Control") == []
+    assert title_aliases("Mass Effect 3") == ["ME3"]
+
+
+def test_wiki_sections_put_the_plot_first_and_drop_reception():
+    html = """<div class="mw-parser-output"><p>Intro line.</p><h2>Gameplay</h2><p>Click things.</p>
+    <h2>Plot</h2><p>Two sisters.</p><h3>Act 1</h3><p>They fight.</p><h2>Reception</h2><p>Scores.</p></div>"""
+    t = html_to_text(html)
+    assert t.index("Intro") < t.index("Plot:") < t.index("Act 1:") < t.index("Gameplay:")
+    assert "Scores" not in t
+
+
+def test_fandom_link_ref():
+    from tropes_worker.jobs.fetch_wiki import link_ref
+
+    assert link_ref("https://heavenwillbemine.fandom.com/wiki/Heaven_Will_Be_Mine_Wiki?x=1") == (
+        "heavenwillbemine",
+        "Heaven_Will_Be_Mine_Wiki",
+    )
+    assert link_ref("https://store.steampowered.com/app/836450") is None

@@ -278,6 +278,17 @@ export const server = {
     },
   }),
 
+  /** New files on the disk for one work: index → text → sheets → notes → dossier → trope recheck, each stage only for what is new. */
+  refreshLocal: defineAction({
+    accept: 'form',
+    input: z.object({ mediaId: id }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      createJob(db, 'index_local', { mediaIds: [input.mediaId], auto: true, then: 'dossier' });
+      return { returnTo: `/update/media/${input.mediaId}` };
+    },
+  }),
+
   startDossierBuild: defineAction({
     accept: 'form',
     input: z.object({ onlyMissing: z.coerce.boolean().default(true), subjectKind: z.enum(['media', 'series']).optional(), subjectId: id.optional(), returnTo }),
@@ -350,11 +361,12 @@ export const server = {
    */
   updateMedia: defineAction({
     accept: 'form',
-    input: z.object({ mediaId: id, identity: z.string().nullable().optional().transform((v) => v ?? 'keep'), seedUrl: text, description: text, poster: text, posterUrl: text }),
+    input: z.object({ mediaId: id, identity: z.string().nullable().optional().transform((v) => v ?? 'keep'), seedUrl: text, description: text, aliases: text, poster: text, posterUrl: text }),
     handler: async (input, context) => {
       requireOwner(context);
       const m = db.select().from(media).where(eq(media.id, input.mediaId)).get();
       if (!m) throw new ActionError({ code: 'NOT_FOUND', message: 'No such entry.' });
+      if (input.aliases !== m.aliases) db.update(media).set({ aliases: input.aliases, updatedAt: now() }).where(eq(media.id, m.id)).run();
       const candidates: Candidate[] = JSON.parse(m.identityCandidates || '[]');
       let refresh = false;
       let posterWanted: string | null = null;

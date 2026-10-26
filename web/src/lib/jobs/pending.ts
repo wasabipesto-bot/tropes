@@ -46,6 +46,23 @@ export function pendingReviewFor(db: Db, kind: 'media' | 'series' | 'trope', id:
   return null;
 }
 
+const CHAIN_KINDS: Job['kind'][] = ['index_local', 'extract_text', 'make_sheets', 'read_sheets', 'build_dossiers', 'check_subject'];
+const STAGE_LABEL: Record<string, string> = { index_local: 'indexing the disk', extract_text: 'extracting text', make_sheets: 'making contact sheets', read_sheets: 'reading the pictures', build_dossiers: 'rebuilding the dossier', check_subject: 'rechecking the tropes' };
+
+/** Where a Refresh-from-disk chain for a work is, from its newest index job on: null when none was started. */
+export function refreshStatusFor(db: Db, mediaId: number): { startedAt: string; stage: string; status: string; live: boolean } | null {
+  const about = (j: Job) => {
+    const p = parseJson<any>(j.payload, {});
+    return (p.mediaIds ?? []).includes(mediaId) || (p.subjects ?? []).some((s: any) => s.kind === 'media' && s.id === mediaId) || (p.subject?.kind === 'media' && p.subject?.id === mediaId && p.auto);
+  };
+  const recent = db.select().from(job).where(inArray(job.kind, CHAIN_KINDS)).orderBy(desc(job.id)).limit(300).all().filter(about);
+  const start = recent.find((j) => j.kind === 'index_local' && parseJson<any>(j.payload, {}).then === 'dossier');
+  if (!start) return null;
+  const latest = recent.find((j) => j.id >= start.id)!;
+  const live = latest.status === 'queued' || latest.status === 'running';
+  return { startedAt: start.createdAt, stage: STAGE_LABEL[latest.kind] ?? latest.kind, status: latest.status, live };
+}
+
 /** The newest find_evidence job for an instance, for the edit panel's status line. */
 export function evidenceSearchFor(db: Db, instanceId: number): Job | undefined {
   return db.select().from(job).where(eq(job.kind, 'find_evidence')).orderBy(desc(job.id)).limit(50).all().find((j) => parseJson<any>(j.payload, {}).instanceId === instanceId);

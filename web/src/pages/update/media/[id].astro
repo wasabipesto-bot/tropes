@@ -5,12 +5,11 @@ import Base from '../../../layouts/Base.astro';
 import JobStatus from '../../../components/JobStatus.astro';
 import ProposalList from '../../../components/ProposalList.astro';
 import { db } from '../../../db';
-import { media } from '../../../db/schema';
+import { localSource, media } from '../../../db/schema';
 import { afterAction } from '../../../lib/after-action';
 import { candidateLine } from '../../../lib/jobs/matches';
 import { reviewState } from '../../../lib/jobs/page';
-import { framesJobFor } from '../../../lib/jobs/pending';
-import { pendingReviewFor } from '../../../lib/jobs/pending';
+import { framesJobFor, pendingReviewFor, refreshStatusFor } from '../../../lib/jobs/pending';
 import { latestJob } from '../../../lib/jobs/queue';
 import { UNCHECKED_BELOW, proposalsFor } from '../../../lib/jobs/view';
 import { SITE_LABELS, type Details } from '../../../lib/media';
@@ -38,6 +37,21 @@ const items = job?.status === 'done' ? proposalsFor(db, job, summary.uncheckedBe
 const render = { tropeHref: tropeHrefResolver(db) };
 
 const details = parseDetails(m) as Details;
+// What the media worker found on the disk for this work, and where a refresh of it stands.
+const files = db.select().from(localSource).where(eq(localSource.mediaId, m.id)).all();
+const meta = (s: { meta: string }) => JSON.parse(s.meta || '{}');
+const videos = files.filter((s) => s.kind === 'video');
+const withText = videos.filter((s) => s.indexedAt && meta(s).textSource && meta(s).textSource !== 'none');
+const withSheets = videos.filter((s) => meta(s).sheets);
+const books = files.filter((s) => s.kind === 'book');
+const texts = files.filter((s) => s.kind === 'text');
+const fileLine = [
+  videos.length > 0 && `${videos.length} ${videos.some((s) => s.label) ? 'episodes' : videos.length === 1 ? 'film file' : 'film files'} (subtitles for ${withText.length}${videos.some((s) => s.indexedAt) ? '' : ', not yet extracted'}; contact sheets for ${withSheets.length})`,
+  books.length > 0 && `${books.length} ${books.length === 1 ? 'book' : 'books'}`,
+  texts.length > 0 && `${texts.length} linked ${texts.length === 1 ? 'text' : 'texts'} (${texts.map((t) => t.label || t.path.split('/').pop()).join(', ')})`,
+].filter(Boolean).join('; ');
+const refresh = refreshStatusFor(db, m.id);
+const fmtWhen = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleString('en-GB', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
 const ids = parseIds(m);
 const candidates = parseCandidates(m);
 const posterOptions = (details.posters ?? []).slice(0, 12);
@@ -77,6 +91,9 @@ const identityLine =
       <label for="desc" class="visually-hidden">Description</label>
       <textarea id="desc" name="description" class="fld" rows="4">{m.description}</textarea>
       <p class="quiet" style="margin: 4px 0 0; font-size: 15px">{m.descriptionOrigin === 'model' ? 'A model draft; saving it as is makes it yours. ' : ''}[[Trope name]] links to a trope.</p>
+      <label for="aliases" style="display: block; margin-top: 14px; font-weight: 600">Also known as</label>
+      <input id="aliases" name="aliases" class="fld" value={m.aliases} placeholder="DGHDA, Dirk Gently" />
+      <p class="quiet" style="margin: 4px 0 0; font-size: 15px">Comma-separated. The Tumblr search for your posts tries these as well as the title, its initialism and the part after a colon.</p>
       {m.wikiExtract && <p class="quiet" style="margin: 10px 0 0; font-size: 15px"><span style="font-style: italic">Wikipedia:</span> {m.wikiExtract}</p>}
     </section>
 
@@ -105,6 +122,17 @@ const identityLine =
 
     <div class="commit"><button type="submit" class="go">Save</button><a href={`/media/${m.id}`} style="font-size: 16px">Cancel</a></div>
   </form>
+
+  <section style="margin-top: 48px">
+    <h2>Files on the disk</h2>
+    <p class="quiet" style="margin: 0 0 12px; font-size: 15px">{fileLine || 'Nothing matched on the media disk.'}</p>
+    {refresh && <p class="quiet" style="margin: 0 0 12px; font-size: 15px">Refresh started {fmtWhen(refresh.startedAt)}: {refresh.live ? `${refresh.stage} (${refresh.status})` : refresh.status === 'done' ? `finished after ${refresh.stage}` : `${refresh.stage} ${refresh.status}`}.</p>}
+    <form method="POST" action={actions.refreshLocal} style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+      <input type="hidden" name="mediaId" value={m.id} />
+      <button type="submit" class="t" style="padding: 8px 0">Refresh from the disk</button>
+      <span class="quiet" style="font-size: 15px">Finds new files (a new season), extracts their text and pictures, rebuilds the dossier if anything changed, then rechecks the tropes.</span>
+    </form>
+  </section>
 
   <section style="margin-top: 48px">
     <h2>Tropes</h2>

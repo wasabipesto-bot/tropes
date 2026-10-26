@@ -6,7 +6,6 @@ import { db } from '../../../db';
 import { media } from '../../../db/schema';
 import { afterAction } from '../../../lib/after-action';
 
-if (!Astro.locals.owner) return Astro.redirect('/login');
 const id = Number(Astro.params.id);
 const m = Number.isInteger(id) ? db.select().from(media).where(eq(media.id, id)).get() : undefined;
 if (!m) return new Response(null, { status: 404 });
@@ -16,5 +15,5 @@ if (redirect) return redirect;
 
 <Base title={`Dossier: ${m.title}`}>
   {error && <p class="quiet" style="margin: 0 0 8px; font-size: 15px">{error}</p>}
-  <DossierView subjectKind="media" subjectId={m.id} title={m.title} backHref={`/media/${m.id}`} editing={Astro.url.searchParams.get('edit') === '1'} />
+  <DossierView subjectKind="media" subjectId={m.id} title={m.title} backHref={`/media/${m.id}`} editing={Astro.locals.owner && Astro.url.searchParams.get('edit') === '1'} owner={Boolean(Astro.locals.owner)} />
 </Base>

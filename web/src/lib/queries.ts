@@ -147,10 +147,10 @@ export function instancesForSeries(db: Db, seriesId: number): InstanceView[] {
   return sortViews(forSubject(db, 'series', seriesId, null));
 }
 
-/** Prominence order, then title. */
+/** Prominence order, pinned examples first within it, then title. */
 export function sortViews(list: InstanceView[]): InstanceView[] {
   const rank = (p: Prominence) => PROMINENCE_ORDER.indexOf(p);
-  return list.slice().sort((a, b) => rank(a.inst.prominence) - rank(b.inst.prominence) || a.subject.title.localeCompare(b.subject.title) || a.trope.name.localeCompare(b.trope.name));
+  return list.slice().sort((a, b) => rank(a.inst.prominence) - rank(b.inst.prominence) || Number(b.notable) - Number(a.notable) || a.subject.title.localeCompare(b.subject.title) || a.trope.name.localeCompare(b.trope.name));
 }
 
 export interface Group { prominence: Prominence; label: string; items: InstanceView[] }

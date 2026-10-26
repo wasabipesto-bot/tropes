@@ -121,14 +121,28 @@ def sync_due(settings: Settings, last: float | None, now: float) -> bool:
     return last is None or now - last >= settings.notion_sync_minutes * 60
 
 
+def index_due(settings: Settings, started: float, last: float | None, now: float) -> bool:
+    """The media worker's re-index timer: every `index_hours`, the first one an hour after start."""
+    if not settings.media_root or settings.index_hours <= 0:
+        return False
+    if last is None:
+        return now - started >= 3600
+    return now - last >= settings.index_hours * 3600
+
+
 def run_forever(settings: Settings, client: SiteClient, kinds: list[str] | None = None) -> None:
     log.info("worker started against %s (model %s)", settings.site_url, settings.model)
     last_sync: float | None = None
+    last_index: float | None = None
+    started = time.monotonic()
     while True:
         try:
             if (kinds is None or "sync_notion" in kinds) and sync_due(settings, last_sync, time.monotonic()):
                 last_sync = time.monotonic()
                 client.create_job("sync_notion", {})
+            if (kinds is None or "index_local" in kinds) and index_due(settings, started, last_index, time.monotonic()):
+                last_index = time.monotonic()
+                client.create_job("index_local", {"auto": True, **({"then": "dossier"} if settings.auto_dossier else {})})
             if not run_one(settings, client, kinds):
                 time.sleep(settings.poll_seconds)
         except KeyboardInterrupt:

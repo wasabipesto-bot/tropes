@@ -122,6 +122,22 @@ that read what it produced:
   pages linked as text sources where a wiki keeps them. No model calls.
   Payload `{mediaIds?, auto}`.
 
+The media worker re-indexes the whole disk every `TROPES_INDEX_HOURS`
+(default a week, the first run an hour after start). The site chains the
+disk jobs: index → `extract_text` → `make_sheets` → `read_sheets`, each
+only for what is new, and with `then: dossier` (the Refresh button on a
+work's update page, or the timer when `TROPES_AUTO_DOSSIER=1`) goes on to
+rebuild the dossiers whose text changed and recheck their tropes. So a new
+season of a show is picked up by the weekly index, or at once with the
+button.
+
+`build_dossiers` searches the owner's Tumblr for the title, its initialism
+(DGHDA), the part after a colon (Edgerunners) and the work's "Also known
+as" aliases, and keeps the posts the model judges to be about the work.
+`fetch_wiki` reads a Fandom article the owner linked on the work's page
+before Wikidata's id, puts plot, story and character sections first and
+drops reception and development.
+
 On the model side, `ensure_texts` pulls the extracted texts into
 `data/text/site/` before a scan or dossier build, one file per work in
 episode order, so the rest of the pipeline reads them like a linked EPUB.

@@ -35,6 +35,7 @@ class OpenSubtitles:
             headers={"Api-Key": self.api_key, "User-Agent": self.user_agent, "Accept": "application/json"},
             timeout=60,
             transport=self.transport,
+            follow_redirects=True,
         )
 
     def _wait(self) -> None:
@@ -69,6 +70,8 @@ class OpenSubtitles:
         }
         if season is not None and episode is not None:
             params.update({"season_number": season, "episode_number": episode})
+        # The API answers 301 to any query that is not alphabetical and lowercase.
+        params = {k: (v.lower() if isinstance(v, str) else v) for k, v in sorted(params.items())}
         self._wait()
         r = self._http.get("/subtitles", params=params, headers=self._headers())
         if r.status_code != 200:

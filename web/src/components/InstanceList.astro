@@ -7,6 +7,7 @@ import { evidenceSearchFor } from '../lib/jobs/pending';
 import { parseJson } from '../lib/jobs/queue';
 import { PROMINENCE_LABEL, groupByProminence, type InstanceView } from '../lib/queries';
 import { formatLocator, renderInline, type RenderOptions } from '../lib/text';
+import NotableMark from './NotableMark.astro';
 import VerifyMark from './VerifyMark.astro';
 
 interface Props {
@@ -53,6 +54,7 @@ const searchLine = (() => {
     <div class="body">
       <div class="head">
         {owner && <VerifyMark instanceId={v.inst.id} verified={v.inst.verified} returnTo={`${returnTo}${at(v.inst.id)}`} />}
+        <NotableMark instanceId={v.inst.id} notable={v.notable} owner={owner} returnTo={`${returnTo}${at(v.inst.id)}`} />
         {mode === 'trope'
           ? <a href={v.subject.href} class="name">{v.subject.title}</a>
           : <a href={`/tropes/${v.trope.slug}`} class="name">{v.trope.name}</a>}
@@ -81,11 +83,6 @@ const searchLine = (() => {
               {PROMINENCES.map((p) => p === v.inst.prominence
                 ? <span class="on">{PROMINENCE_LABEL[p]}</span>
                 : <button type="submit" name="prominence" value={p} class="t">{PROMINENCE_LABEL[p]}</button>)}
-            </form>
-            <form method="POST" action={actions.toggleNotable} class="line-form">
-              <input type="hidden" name="instanceId" value={v.inst.id} />
-              <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
-              <button type="submit" class="t">{v.notable ? 'Unpin from notable' : 'Pin as notable'}</button>
             </form>
           </div>
 

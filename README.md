@@ -67,6 +67,21 @@ user table by design.
 `just seed` loads whatever is not already present; `just seed --replace`
 reloads tropes that exist, replacing their instances.
 
+## Read API
+
+Public, no key, JSON, CORS open, cached for five minutes; spoilers stay in
+`||bars||` as on the pages.
+
+- `GET /api/v1/tropes`: every trope with its instance count.
+- `GET /api/v1/tropes/<slug>`: a trope with every instance and its evidence
+  (quotes, frames and clips as URLs). Old slugs resolve.
+- `GET /api/v1/media`: the library.
+- `GET /api/v1/media/<id>`: a work with its links, genres, series, instances
+  and dossier.
+
+The `/api/export/*`, `/api/jobs/*` and `/api/sources/*` routes are the
+workers' and need an API key.
+
 ## Backups
 
 `just backup` snapshots the database with `VACUUM INTO` (safe while the site
