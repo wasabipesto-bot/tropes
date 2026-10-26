@@ -3,7 +3,7 @@ name = "tropes-worker"
 version = "0.0.0"
 description = "Trope Log pipeline worker: runs next to the media library and talks to the site over its job API."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.15"
 dependencies = [
     "httpx>=0.28",
     "openai>=1.60",
