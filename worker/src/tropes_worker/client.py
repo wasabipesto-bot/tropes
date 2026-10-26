@@ -144,7 +144,7 @@ class SiteClient:
         return r.text
 
     def upload_evidence(self, target: str, kind: str, at: float, data: bytes, ext: str) -> dict[str, Any]:
-        """A frame or clip for `proposal:<id>` (waits beside the quote on the review page) or `evidence:<id>` (onto the instance)."""
+        """A frame or clip for `proposal:<id>` (beside the quote on the review page) or `evidence:<id>` (onto the instance)."""
         r = self._http.post(
             "/api/evidence/file",
             data={"target": target, "kind": kind, "at": f"{at:.3f}"},
