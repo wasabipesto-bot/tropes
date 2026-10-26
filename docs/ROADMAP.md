@@ -545,9 +545,9 @@ without hand entry; library has a working genre filter.
 ### Phase 5: local media and evidence (XL)
 
 Plan for approval: [`plans/phase-5.md`](plans/phase-5.md) (2026-10-26),
-written against celebrimbor's `/data` (Plex layout plus a Calibre library,
-read-only over sshfs; ffmpeg runs there over ssh) and the owner's three
-extra sources (nostalgebraist.net EPUBs, Transcripts at the Table,
+written against celebrimbor's `/data` (Plex layout plus a Calibre library;
+a second worker runs there for the file jobs) and the owner's three extra
+sources (nostalgebraist.net EPUBs, Transcripts at the Table,
 OpenSubtitles as a fallback).
 
 - Library layout discovery with you: paths, naming, where subtitles live,

@@ -19,17 +19,23 @@ the recommendations rest on numbers.
 ## 0. Shape of the system after Phase 5
 
 ```
-site (Astro, SQLite)                      worker (Python, ivory)                 celebrimbor (your homelab)
-  local_source rows per file         <──  index_local: match log → files,   ──>  /data read-only over sshfs
-  evidence files under data/evidence      pick a text source, extract text  ──>  ffmpeg/ffprobe run there over ssh,
-  POST /api/evidence (frames, clips)      extract_evidence: frame or clip        only the output comes back
-  /evidence/… served with caps            at a timestamp, upload
+site (Astro, SQLite, ivory)          worker (ivory): model jobs             media worker (celebrimbor): file jobs
+  local_source rows per file    <──  dossiers, scans, checks, lookups,  ──>  index_local: match log → files under /data
+  evidence files under               blurbs, evidence search                subtitles, EPUB/MOBI text, transcripts
+    data/evidence                                                           extract_evidence: frame or clip at a
+  POST /api/evidence (frames, clips)                                          timestamp, uploaded to the site
+  /evidence/… served with caps
 ```
 
-Unchanged: the worker never opens the database; nothing is saved until the
-owner commits, except on the automatic path; the model reads text, never
-pixels. New: nothing from `/data` is ever copied to ivory except extracted
-text and the evidence files themselves.
+Two workers, one job API: the existing worker keeps every job that calls
+the model; a second copy of the same program runs on celebrimbor with
+`--kinds index_local,extract_text,extract_evidence` and reads `/data` as a
+local disk. The claim is already atomic and already filters by kind, so
+nothing in the queue changes. Unchanged: no worker opens the database;
+nothing is saved until the owner commits, except on the automatic path;
+the model reads text, never pixels. New: nothing from `/data` is copied
+anywhere except extracted text (posted to the site as job results) and
+the evidence files themselves.
 
 ---
 
@@ -62,9 +68,11 @@ Goodreads and ISBN ids, which closes most of that gap (T2).
 
 **Throughput.** ivory to celebrimbor is 116 ms away at about 10 MB/s over
 ssh and 2 MB/s over sshfs, so reading one 1.9 GB episode across the link
-takes three to fifteen minutes. Run on celebrimbor itself and streamed back,
-the same episode's subtitles take 8 s, a frame at a timestamp 1.9 s, and a
-10 s 640 px clip 4.2 s. That decides T1.
+takes three to fifteen minutes. On celebrimbor itself the same episode's
+subtitles take 8 s, a frame at a timestamp 1.9 s, and a 10 s 640 px clip
+4.2 s. That decides T1: the work that touches video runs where the video
+is. (An sshfs mount was used for today's measurements and has been
+removed.)
 
 **ivory**: 4 cores, 7 GB, 11 GB free. Whisper on it is out; it can hold
 extracted text (about 50 KB per episode, under 200 MB for everything) and
@@ -98,7 +106,7 @@ verbatim quote checking, dossiers at `text` depth for those 23, pass 2 and
 
 | # | Task | Size | Depends on |
 |---|---|---|---|
-| T1 | Media access: the read-only mount and running ffmpeg on celebrimbor | S | |
+| T1 | Media access: a second worker on celebrimbor for the file jobs | S | |
 | T2 | `index_local`: match the log to files, record what each work has | M | T1, Phase 4 identities |
 | T3 | Text from video: subtitles, with timestamps | M | T2 |
 | T4 | Text from books and transcripts: Calibre, nostalgebraist, FaTT | S | T2 |
@@ -111,42 +119,46 @@ verbatim quote checking, dossiers at `text` depth for those 23, pass 2 and
 
 ---
 
-## T1. Media access
+## T1. Media access: a second worker on celebrimbor
 
-**Scope.** The worker can list your media, read small files, and get
-subtitles, frames and clips out of video, without moving video.
+**Scope.** The jobs that touch files run next to the files.
 
-**Approach.** Two paths, both read-only:
+**Approach.** The worker package gains the three media job kinds (T2, T3,
+T6) and a `--kinds` list already exists on `tropes-worker run`. On
+celebrimbor: a checkout of the repo, `uv` (one script install into
+`~/.local/bin`, no root), a `.env` with `TROPES_SITE_URL` pointing at ivory
+over Tailscale, its own bearer token from `just api-key celebrimbor`, and
+`TROPES_MEDIA_ROOT=/data`. No OpenRouter key there: the media jobs make no
+model calls, so the key stays on ivory. It runs as `justin` under a systemd
+user unit like the one in `ops/`, reading `/data` and writing only to its
+own checkout (text cache) and to the site over HTTP. ffmpeg, ffprobe and
+mediainfo are already installed; the MOBI unpacker and the subtitle parser
+come with `uv sync`.
 
-1. `sshfs -o ro justin@celebrimbor:/data /home/claude/celebrimbor` on ivory
-   (mounted today for the measurements; `just mount-media` keeps it), used
-   for directory listings, `.srt`/`.ass` files, EPUB and MOBI files, Calibre's
-   `metadata.db` and `.opf` files. All small.
-2. ffmpeg and ffprobe run on celebrimbor over ssh, with only their output
-   streamed back: `ssh justin@celebrimbor ffmpeg -i <file> -map 0:s:0 -f srt -`
-   for subtitles, `-ss <t> -frames:v 1 -f image2 -` for a frame, a short
-   `-t` window encoded to fragmented mp4 on stdout for a clip. Nothing is
-   written on celebrimbor.
-
-Configuration: `TROPES_MEDIA_ROOT` (the mount, or a local path once the
-worker lives in the homelab) and `TROPES_MEDIA_SSH` (the host to run ffmpeg
-on; empty means locally). The code path is the same either way: a
-`MediaRunner` with `list`, `read`, `probe`, `subtitles`, `frame`, `clip`.
+The ivory worker is unchanged except that it stops claiming the media
+kinds. When the whole thing moves to the homelab later, the two workers
+become one process.
 
 **Decisions.**
 
-- **D1. ffmpeg on celebrimbor, over ssh, as `justin`.** The mount alone is
-  fifty times too slow for video. Recommendation: yes; the commands are
-  reads with output on stdout, and the mount is `ro`. If you would rather
-  not have the worker run anything on celebrimbor, the alternative is
-  copying each file across the link before extraction (hours per show,
-  and space ivory does not have).
-- **D2. Mount lifetime.** A `just mount-media` recipe and a line in the
-  worker's start-up that checks the mount is live, rather than fstab, so a
-  dead link fails loudly in the job instead of hanging the box.
+- **D1. A media worker on celebrimbor** rather than ivory reading `/data`
+  over the network. Recommendation: yes. Measured today, the link is fifty
+  times slower than the disk, and the alternative designs (an sshfs mount
+  plus ffmpeg over ssh) both end up running commands on celebrimbor anyway,
+  less cleanly. What it needs from you: the install on celebrimbor (uv,
+  the checkout, the unit), or your go-ahead for me to do it over ssh as
+  `justin`; it is a few commands and I would show them first.
+- **D2. The media worker never calls the model.** Text it extracts is
+  posted to the site; the ivory worker reads it from there as it reads
+  the EPUB texts today (the site serves text sources under
+  `/api/export/text/<id>`, bearer-protected, instead of the worker reading
+  `data/sources` from disk). Recommendation: yes; it keeps one key, one
+  spend ceiling, and lets either worker be restarted alone.
 
 **Acceptance.** `tropes-worker media probe "TV/Arcane (2021)/Season 01"`
-lists the episodes with their subtitle streams in under five seconds.
+on celebrimbor lists the episodes with their subtitle streams in under
+five seconds; `just worker` on ivory and the unit on celebrimbor both
+claim from the same queue.
 
 ---
 
@@ -166,7 +178,7 @@ later step reads `local_source` rows instead of guessing paths.
   `kind video`, the path relative to the media root, `label` (`S01E03`),
   and `meta` (duration, subtitle streams with language and SDH flag, an
   external `.srt` if present).
-- **Books.** Calibre's `metadata.db` (read through the mount) matched by
+- **Books.** Calibre's `metadata.db` (read on celebrimbor) matched by
   ISBN or Goodreads id from the pinned identity first, then title plus
   author. The EPUB is preferred; MOBI-only books (most of the library) are
   unpacked on the worker with the `mobi` package (KindleUnpack; tested
@@ -303,7 +315,7 @@ of a video quote.
   book) and the proposal's evidence item gains `at` (seconds) and `end`.
   Quotes are trimmed to 100 words at the source (spec caps).
 - **Frames.** For each committed video quote, one frame at the cue's
-  midpoint: ffmpeg on celebrimbor, scaled to 640 px wide, WebP, uploaded to
+  midpoint: ffmpeg on the media worker, scaled to 640 px wide, WebP, uploaded to
   `POST /api/evidence/<id>/file`. The evidence row gets `file_path`, width
   and height. The spec's 16:9 placeholder is what the margin already
   renders.
@@ -372,9 +384,9 @@ Albums stay without text.
 
 ## T10. Operations, tests, docs
 
-- Config: `TROPES_MEDIA_ROOT`, `TROPES_MEDIA_SSH`, `TROPES_OPENSUBTITLES_KEY`
-  (optional), `TROPES_TEXT_CAP_TOKENS` (D7). `just mount-media`,
-  `just index-media [--ids]`.
+- Config: `TROPES_MEDIA_ROOT`, `TROPES_OPENSUBTITLES_KEY` (optional),
+  `TROPES_TEXT_CAP_TOKENS` (D7); `tropes-worker run --kinds …` per host;
+  `just index-media [--ids]`; `ops/tropes-media-worker.service`.
 - Tests: the folder matcher against a table of hand-checked names
   (episode-numbered Star Wars, LOTR, remakes); SRT and ASS cleaning against
   saved cue files; MOBI unpacking against a small fixture; the FaTT doc
@@ -386,8 +398,9 @@ Albums stay without text.
 
 ## 3. Decisions needing your answer
 
-1. **D1.** The worker runs ffmpeg and ffprobe on celebrimbor over ssh as
-   `justin`, read-only by construction. Yes, or copy files across instead.
+1. **D1, D2.** A second worker on celebrimbor for the file jobs, without a
+   model key, installed by you or by me over ssh as `justin` (commands
+   shown first).
 2. **D5.** An OpenSubtitles account and API key for the fallback.
 3. **D6.** Whisper, decided after checkpoint 2: on celebrimbor (something
    to install there), on demoux, or not.
