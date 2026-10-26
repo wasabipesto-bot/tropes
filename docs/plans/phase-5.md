@@ -254,6 +254,7 @@ worker's unit so the 50 % cap applies to it and ffmpeg together. About real
 time per file on those cores, so a 45-minute episode is 20 to 40 minutes
 of background work. It runs only for files with no subtitle from the first
 three sources, and checkpoint 2 lists them before it runs.
+NOTE: Test this on a few files with known-good subtitles and check they are reasonably close and usable.
 - **D7. Long works.** The model's window is a million tokens. A series text
   over about 600k tokens is read in season blocks: the dossier is built per
   block and merged (the series-dossier path exists), and pass 2 reads the
@@ -453,6 +454,7 @@ timestamps fixes that for the one episode being clipped, at about the cost
 of transcribing it. Recommendation: build the clip path so it takes audio
 as well as video (the same `extract_evidence` job, an `<audio>` element in
 the margin), and do the alignment on request only, after T6 lands.
+APPROVED: No notes.
 
 **Acceptance.** The roadmap's line: a Gideon the Ninth quote with a chapter
 locator and a Pantheon frame with an episode timestamp appear on the live
@@ -514,15 +516,18 @@ model call per sheet on ivory ($0.0011, 24 s) returning a bulleted list of
 designs, props, settings, colour and on-screen text; stored as
 `media_note` rows with source `visual` and the episode label; a "Visual
 notes" block in the dossier prompt; searchable by `Find`.
+APPROVED: This is good, and it seems quite cheap in comparison. It would be nice to increase the number of shots to around one per 40-60s of video, as long as this won't decrease the model's ability to discern interesting things.
 
 - **D11. Visual notes for every video work during indexing.** About $3
   for the library and ten hours of celebrimbor time inside the cap.
   Recommendation: yes; checkpoint 2 includes five works' notes read by eye.
+APPROVED: Yes, at indexing time.
 - **D12. A look at the frame for visual tropes.** A trope gets an owner
   checkbox, "needs a look"; for those, pass 2's candidate moments have their
   frame grabbed and shown to the model with the trope description before the
   proposal is made ($0.001 per look, 2 s each). Recommendation: yes, as the
   precision step for the tropes that are about imagery.
+APPROVED: Rename to something more explanatory like "Visual trope, use screenshots."
 
 ## T12. Fandom summaries and transcripts
 
@@ -531,6 +536,7 @@ the article's plot or episode summaries through the wiki's MediaWiki API,
 once, as a dossier input labelled "wiki summary"; probe for a `/Transcript`
 page and link it as a text source when one exists. No model cost; polite,
 cached, one request a second per wiki.
+APPROVED: No notes.
 
 ## T10. Operations, tests, docs
 
