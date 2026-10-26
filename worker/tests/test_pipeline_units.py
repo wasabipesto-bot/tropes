@@ -61,3 +61,26 @@ def test_wikimedia_thumbnails_fetch_the_original():
     full = "https://upload.wikimedia.org/wikipedia/en/0/01/IainMBanksExcession.jpg"
     assert fetch_url(full) == full
     assert fetch_url("https://theposterdb.com/api/assets/263743") == "https://theposterdb.com/api/assets/263743"
+
+
+def test_quotes_from_subtitle_text_carry_timestamps(tmp_path):
+    from tropes_worker.pipeline import verify_quotes
+    from tropes_worker.schemas import QuoteOut
+    from tropes_worker.sources import load_text
+
+    src = tmp_path / "show.txt"
+    src.write_text(
+        "## S01E01 Welcome\n[0:01] We're almost there.\n[12:40] You think my head is thick?\n\n## S01E02 Next\n[3:05] Hello.\n"
+    )
+    text = load_text(src, tmp_path / "cache")
+    kept, dropped = verify_quotes(
+        text,
+        [
+            QuoteOut(content="You think my head is thick?"),
+            QuoteOut(content="Hello there, old friend."),
+            QuoteOut(content="Not in the text at all."),
+        ],
+    )
+    assert dropped == 1
+    assert kept[0] == {"kind": "quote", "content": "You think my head is thick?", "locator": "S01E01 12:40", "at": 760}
+    assert kept[1]["locator"] == "S01E02 3:05" and kept[1]["at"] == 185

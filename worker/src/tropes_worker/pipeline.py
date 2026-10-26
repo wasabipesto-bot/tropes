@@ -7,6 +7,7 @@ import asyncio
 import hashlib
 import json
 import logging
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -258,8 +259,34 @@ def choose_candidates(
     return seeds + rest
 
 
-def verify_quotes(text: Text | None, quotes: list[Any]) -> tuple[list[dict[str, str]], int]:
-    """Keep only quotes found verbatim; return (kept, dropped)."""
+STAMP_LINE_RX = re.compile(r"^\[(\d+:\d{2}(?::\d{2})?)\] ", re.M)
+
+
+def quote_stamp(text: Text, chapter: str, content: str) -> tuple[str, float] | None:
+    """For subtitle text, the `[12:40]` stamp of the line a quote starts on: ("12:40", 760.0)."""
+    body = next((b for t, b in text.chapters if t == chapter), None)
+    if body is None or "[" not in body[:40]:
+        return None
+    from .media.subtitles import parse_stamp
+
+    needle = _norm_quote(content)[:60]
+    for line in body.splitlines():
+        m = STAMP_LINE_RX.match(line)
+        if m and needle and needle in _norm_quote(line):
+            secs = parse_stamp(m.group(1))
+            if secs is not None:
+                return m.group(1), secs
+    return None
+
+
+def _norm_quote(s: str) -> str:
+    s = s.replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"').replace("—", "-").replace("–", "-")
+    return re.sub(r"\s+", " ", s).strip().lower()
+
+
+def verify_quotes(text: Text | None, quotes: list[Any]) -> tuple[list[dict[str, Any]], int]:
+    """Keep only quotes found verbatim; return (kept, dropped). Quotes from subtitle text carry the episode
+    label and timestamp in the locator ("S01E03 12:40") and the seconds in `at`, so a frame can be grabbed."""
     if text is None:
         return [], len(quotes)
     kept = []
@@ -268,6 +295,17 @@ def verify_quotes(text: Text | None, quotes: list[Any]) -> tuple[list[dict[str, 
         found, chapter = find_quote(text, q.content)
         if not found:
             dropped += 1
+            continue
+        stamped = quote_stamp(text, chapter, q.content) if chapter else None
+        if stamped:
+            label = (chapter or "").split(" ")[0] if re.match(r"^S\d+E\d+", chapter or "") else ""
+            item: dict[str, Any] = {
+                "kind": "quote",
+                "content": q.content.strip(),
+                "locator": f"{label} {stamped[0]}".strip(),
+                "at": stamped[1],
+            }
+            kept.append(item)
             continue
         locator = q.locator or chapter or ""
         if chapter and chapter.lower() not in locator.lower():

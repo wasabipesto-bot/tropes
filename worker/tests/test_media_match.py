@@ -92,7 +92,8 @@ def _calibre():
           (2, 'The Time Paradox', 'Eoin Colfer/The Time Paradox (5)'),
           (3, 'Good Omens: The Nice and Accurate Prophecies', 'Terry Pratchett/Good Omens (9)'),
           (4, 'Dune', 'Frank Herbert/Dune (2)');
-        insert into authors values (1, 'Tamsyn Muir'), (2, 'Eoin Colfer'), (3, 'Terry Pratchett'), (4, 'Neil Gaiman'), (5, 'Frank Herbert');
+        insert into authors values
+          (1, 'Tamsyn Muir'), (2, 'Eoin Colfer'), (3, 'Terry Pratchett'), (4, 'Neil Gaiman'), (5, 'Frank Herbert');
         insert into books_authors_link values (1, 1), (2, 2), (3, 3), (3, 4), (4, 5);
         insert into identifiers values (1, 'isbn', '9781250313195'), (4, 'goodreads', '234225');
         insert into data values
