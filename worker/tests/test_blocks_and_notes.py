@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from tropes_worker.jobs.fetch_wiki import fandom_ref
+from tropes_worker.jobs.fetch_wiki import fandom_ref, html_to_text
 from tropes_worker.pipeline import visual_section, wiki_section
 from tropes_worker.sources import Text, blocks_for, text_blocks
 
@@ -58,3 +58,12 @@ def test_fandom_ref_parsing():
     assert fandom_ref("arcane:Arcane (TV series)") == ("arcane", "Arcane_(TV_series)")
     assert fandom_ref("de.arcane:Arcane") is None and fandom_ref("pt-br.cyberpunk:Cyberpunk") is None
     assert fandom_ref("nonsense") is None
+
+
+def test_wiki_html_to_text_keeps_prose_and_drops_boxes():
+    html = """<div class="mw-parser-output"><aside class="portable-infobox"><p>Box text</p></aside>
+    <p>Arcane is a show.<sup class="reference">[1]</sup></p><h2>Plot</h2><p>Two sisters.</p>
+    <table><tr><td>Episode table</td></tr></table><ul><li>Point one</li></ul>
+    <h2>References</h2><p>Ref list</p></div>"""
+    t = html_to_text(html)
+    assert t == "Arcane is a show.\n\nPlot:\nTwo sisters.\nPoint one"

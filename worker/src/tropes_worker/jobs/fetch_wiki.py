@@ -33,26 +33,45 @@ def fandom_ref(value: str) -> tuple[str, str] | None:
     return wiki, title.replace(" ", "_")
 
 
+DROP = ", ".join(
+    ["script", "style", "table", ".navbox", ".portable-infobox", ".infobox", ".toc", ".reference", ".mw-editsection"]
+    + [".gallery", ".noprint", "figure", ".thumb", "sup"]
+)
+
+
+def html_to_text(html: str) -> str:
+    """A rendered wiki page as plain text: headings on their own lines, paragraphs and list items, no tables or boxes."""
+    from bs4 import BeautifulSoup
+
+    soup = BeautifulSoup(html, "html.parser")
+    root = soup.select_one(".mw-parser-output") or soup
+    for tag in root.select(DROP):
+        tag.decompose()
+    lines: list[str] = []
+    for el in root.find_all(["h2", "h3", "h4", "p", "li", "dd"]):
+        text = " ".join(el.get_text(" ").split())
+        if not text:
+            continue
+        if el.name in ("h2", "h3", "h4"):
+            if text.lower() in ("references", "external links", "navigation", "see also", "gallery", "videos", "trivia"):
+                break
+            lines.append(f"\n{text}:")
+        else:
+            lines.append(text)
+    return "\n".join(lines).strip()
+
+
 def page_text(f: Fetcher, wiki: str, title: str) -> str | None:
-    """The plain text of a page, or None when it does not exist."""
+    """The plain text of a page, or None when it does not exist. Fandom has no TextExtracts, so this renders the
+    page through action=parse and strips the HTML."""
     d = f.get_json(
         f"https://{wiki}.fandom.com/api.php",
-        {
-            "action": "query",
-            "prop": "extracts",
-            "explaintext": 1,
-            "exsectionformat": "plain",
-            "redirects": 1,
-            "titles": title,
-            "format": "json",
-        },
+        {"action": "parse", "page": title, "prop": "text", "redirects": 1, "disablelimitreport": 1, "format": "json"},
     )
-    pages = ((d or {}).get("query") or {}).get("pages") or {}
-    for p in pages.values():
-        if "missing" in p:
-            return None
-        return (p.get("extract") or "").strip()
-    return None
+    if not d or "error" in d:
+        return None
+    html = ((d.get("parse") or {}).get("text") or {}).get("*") or ""
+    return html_to_text(html)
 
 
 def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
