@@ -7,8 +7,24 @@ from typing import Any
 
 # Site keys, as stored in media_link.site and shown in the links line (web/src/lib/media.ts names them).
 SITES = (
-    "wikipedia", "imdb", "tmdb", "tvdb", "letterboxd", "rt", "metacritic", "mal", "anidb", "ann",
-    "steam", "goodreads", "openlibrary", "musicbrainz", "spotify", "bandcamp", "itunes", "official",
+    "wikipedia",
+    "imdb",
+    "tmdb",
+    "tvdb",
+    "letterboxd",
+    "rt",
+    "metacritic",
+    "mal",
+    "anidb",
+    "ann",
+    "steam",
+    "goodreads",
+    "openlibrary",
+    "musicbrainz",
+    "spotify",
+    "bandcamp",
+    "itunes",
+    "official",
 )
 
 
@@ -77,5 +93,23 @@ class Partial:
 #   Game:    start (release), developer, publisher, platforms
 #   Album:   start (release), artist, tracks, label
 #   Podcast: start (first episode), end, network, episodes
-DETAIL_KEYS = ("start", "end", "seasons", "episodes", "network", "studio", "source_material", "status", "runtime_min",
-               "director", "author", "pages", "developer", "publisher", "platforms", "artist", "tracks", "label")
+DETAIL_KEYS = (
+    "start",
+    "end",
+    "seasons",
+    "episodes",
+    "network",
+    "studio",
+    "source_material",
+    "status",
+    "runtime_min",
+    "director",
+    "author",
+    "pages",
+    "developer",
+    "publisher",
+    "platforms",
+    "artist",
+    "tracks",
+    "label",
+)

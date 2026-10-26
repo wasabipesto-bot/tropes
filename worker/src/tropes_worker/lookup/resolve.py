@@ -105,6 +105,15 @@ def seed_from_url(url: str | None) -> tuple[str, str] | None:
 
 
 def norm(s: str) -> str:
+    s = (
+        s.replace("Æ", "Ae")
+        .replace("æ", "ae")
+        .replace("Ø", "O")
+        .replace("ø", "o")
+        .replace("ß", "ss")
+        .replace("Œ", "Oe")
+        .replace("œ", "oe")
+    )
     s = unicodedata.normalize("NFKD", s)
     s = "".join(ch for ch in s if not unicodedata.combining(ch)).lower()
     s = s.replace("&", " and ")

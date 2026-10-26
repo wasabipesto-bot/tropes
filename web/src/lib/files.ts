@@ -12,3 +12,8 @@ export type PosterSize = (typeof POSTER_SIZES)[number];
 export function posterPath(mediaId: number, size: PosterSize, pending = false): string {
   return join(dataDir(), 'posters', pending ? 'pending' : '', `${mediaId}-${size}.webp`);
 }
+
+/** Text the media worker extracted for a local source (subtitles, a book), one file per source row. */
+export function textPath(sourceId: number): string {
+  return join(dataDir(), 'texts', `${sourceId}.txt`);
+}

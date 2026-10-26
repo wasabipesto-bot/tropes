@@ -1,6 +1,6 @@
 /** Wire shapes shared by the site and the worker. The worker mirrors these in pydantic. */
 import { z } from 'astro/zod';
-import { DOSSIER_DEPTHS, JOB_KINDS, PROMINENCES, PROPOSAL_KINDS, SUBJECT_KINDS } from '../../db/schema';
+import { DOSSIER_DEPTHS, JOB_KINDS, PROMINENCES, PROPOSAL_KINDS, SOURCE_KINDS, SUBJECT_KINDS } from '../../db/schema';
 
 export const subjectRef = z.object({ kind: z.enum(SUBJECT_KINDS), id: z.number().int().positive() });
 
@@ -27,6 +27,15 @@ export const writeBlurbsPayload = z.object({ mediaIds: z.array(z.number().int().
 /** find_evidence: the owner describes the moment they want quoted; the worker searches the work's text and attaches what it finds. */
 export const findEvidencePayload = z.object({ instanceId: z.number().int().positive(), prompt: z.string().min(1) });
 
+/** index_local: match these works (or every video and book) to files under the media root. */
+export const indexLocalPayload = z.object({ mediaIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
+/** extract_text: subtitles or book text for these local_source rows (or everything not yet indexed). */
+export const extractTextPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
+/** extract_evidence: a frame (or clip) at each timestamped quote; proposals before review, instances after commit. */
+export const extractEvidencePayload = z.object({
+  items: z.array(z.object({ proposalId: z.number().int().positive().optional(), evidenceId: z.number().int().positive().optional(), sourceId: z.number().int().positive(), at: z.number().min(0), end: z.number().min(0).optional(), clip: z.boolean().default(false) })).min(1),
+});
+
 export const payloadByKind = {
   ping: pingPayload,
   build_dossiers: buildDossiersPayload,
@@ -36,6 +45,9 @@ export const payloadByKind = {
   sync_notion: syncNotionPayload,
   write_blurbs: writeBlurbsPayload,
   find_evidence: findEvidencePayload,
+  index_local: indexLocalPayload,
+  extract_text: extractTextPayload,
+  extract_evidence: extractEvidencePayload,
 } as const;
 export type JobKind = (typeof JOB_KINDS)[number];
 
@@ -112,3 +124,14 @@ export const logRowIn = z.object({
 export const notionImportBody = z.object({ rows: z.array(logRowIn), complete: z.boolean().default(false) });
 
 export const createJobBody = z.object({ kind: z.enum(JOB_KINDS), payload: z.record(z.string(), z.unknown()).default({}) });
+
+/** What the media worker found on the disk for some works (plan T2). */
+export const sourceIn = z.object({
+  kind: z.enum(SOURCE_KINDS),
+  path: z.string().min(1),
+  label: z.string().default(''),
+  meta: z.record(z.string(), z.unknown()).default({}),
+});
+export const sourcesBody = z.object({ works: z.array(z.object({ mediaId: z.number().int().positive(), sources: z.array(sourceIn) })) });
+
+

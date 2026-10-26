@@ -23,6 +23,13 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--once", action="store_true", help="run at most one job, then exit")
     run.add_argument("--kinds", default=None, help="comma-separated job kinds to handle (default: all)")
     sub.add_parser("sync", parents=[common], help="read the Notion Media Log once and hand the rows to the site")
+    md = sub.add_parser("media", parents=[common], help="the media disk: match the log to it (writes nothing)")
+    md.add_argument("what", choices=["match"], help="match: report which works have files")
+    md.add_argument("--root", default=None, help="media root to walk (default TROPES_MEDIA_ROOT)")
+    md.add_argument(
+        "--listing", default=None, help="a `find -printf '%%y\\t%%s\\t%%TY-%%Tm-%%Td\\t%%p\\n'` dump to use instead of walking"
+    )
+    md.add_argument("--calibre", default=None, help="path to Calibre's metadata.db (default <root>/Books/metadata.db)")
     lk = sub.add_parser("lookup", parents=[common], help="resolve identities for a sample of the library; writes nothing")
     lk.add_argument("--sample", type=int, default=50, help="how many entries, spread across types (default 50)")
     lk.add_argument("--ids", default=None, help="comma-separated media ids instead of a sample")
@@ -68,6 +75,11 @@ def main(argv: list[str] | None = None) -> int:
                 f"{report['rows']} rows: inserted {report['inserted']}, updated {report['updated']}, "
                 f"unchanged {report['unchanged']}, skipped {len(report.get('skipped', []))}, missing {report.get('missing', 0)}"
             )
+            return 0
+        if args.command == "media":
+            from .media.report import match_report
+
+            print(match_report(settings, client, root=args.root, listing=args.listing, calibre=args.calibre))
             return 0
         if args.command == "lookup":
             from .lookup.report import run_sample

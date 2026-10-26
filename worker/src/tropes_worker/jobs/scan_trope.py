@@ -10,6 +10,7 @@ from ..pipeline import (
     Candidate,
     TropeSpec,
     choose_candidates,
+    ensure_texts,
     load_subject_text,
     new_evidence,
     pass1,
@@ -98,6 +99,7 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     exported = ctx.client.subjects()
     media, series = exported["media"], exported["series"]
     spec, unresolved = trope_spec_from(payload, tropes, media, series)
+    ensure_texts(ctx.client, settings, media)
     dossiers = {subject_key(d["subjectKind"], d["subjectId"]): d for d in ctx.client._get("/api/dossiers")["dossiers"]}
     llm = LLM(settings)
     warnings = [f"seed example not in the library: {t}" for t in unresolved]

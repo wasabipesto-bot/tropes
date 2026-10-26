@@ -29,7 +29,18 @@ class Context:
 
 
 def registry() -> dict[str, JobFn]:
-    from .jobs import build_dossiers, check_subject, find_evidence, lookup_media, ping, scan_trope, sync_notion, write_blurbs
+    from .jobs import (
+        build_dossiers,
+        check_subject,
+        extract_text,
+        find_evidence,
+        index_local,
+        lookup_media,
+        ping,
+        scan_trope,
+        sync_notion,
+        write_blurbs,
+    )
 
     return {
         "ping": ping.run,
@@ -40,6 +51,8 @@ def registry() -> dict[str, JobFn]:
         "lookup_media": lookup_media.run,
         "write_blurbs": write_blurbs.run,
         "find_evidence": find_evidence.run,
+        "index_local": index_local.run,
+        "extract_text": extract_text.run,
     }
 
 
@@ -56,10 +69,22 @@ def post_result(client: SiteClient, job_id: int, result: dict[str, Any], attempt
             time.sleep(3 * (i + 1))
 
 
+MEDIA_KINDS = ("index_local", "extract_text", "extract_evidence")
+
+
+def default_kinds(settings: Settings) -> list[str]:
+    """A worker with a media root is the media worker and takes only file jobs; without one it takes the rest."""
+    kinds = list(registry())
+    if settings.media_root:
+        return [k for k in kinds if k in MEDIA_KINDS]
+    return [k for k in kinds if k not in MEDIA_KINDS]
+
+
 def run_one(settings: Settings, client: SiteClient, kinds: list[str] | None = None) -> bool:
     """Claim and run a single job. Returns False when the queue was empty."""
     handlers = registry()
-    job = client.claim(kinds or list(handlers))
+    kinds = kinds or default_kinds(settings)
+    job = client.claim(kinds)
     if job is None:
         return False
     log.info("job %d %s claimed (attempt %d)", job.id, job.kind, job.attempts)

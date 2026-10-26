@@ -216,12 +216,24 @@ export type Trope = typeof trope.$inferSelect;
 export type Instance = typeof instance.$inferSelect;
 export type Evidence = typeof evidence.$inferSelect;
 
-/** A text, subtitle or media file on this host for a work. Phase 3 uses kind='text' only. */
+export const SOURCE_KINDS = ['text', 'video', 'subtitle', 'audio', 'book'] as const;
+
+/**
+ * A file for a work: a text the owner linked (Phase 3), or what the media worker found on the disk
+ * (Phase 5): one row per episode file or film file, one per Calibre book. `path` is relative to the
+ * media root for disk files and to the sources directory for linked texts.
+ */
 export const localSource = sqliteTable('local_source', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   mediaId: integer('media_id').notNull().references(() => media.id, { onDelete: 'cascade' }),
-  kind: text('kind', { enum: ['text', 'video', 'subtitle', 'audio'] }).notNull(),
+  kind: text('kind', { enum: SOURCE_KINDS }).notNull(),
   path: text('path').notNull(),
+  /** "S01E03" for an episode; empty for a film or a book. */
+  label: text('label').notNull().default(''),
+  /** JSON: duration, subtitle streams, sidecar subtitles, the text source chosen, the Calibre book id, formats. */
+  meta: text('meta').notNull().default('{}'),
+  /** Set once the media worker has extracted this file's text (or decided it has none). */
+  indexedAt: text('indexed_at'),
   createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
 });
 
@@ -229,13 +241,18 @@ export const localSource = sqliteTable('local_source', {
 export const mediaNote = sqliteTable('media_note', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   mediaId: integer('media_id').notNull().references(() => media.id, { onDelete: 'cascade' }),
-  source: text('source', { enum: ['tumblr', 'review', 'manual'] }).notNull(),
+  /** tumblr/review/manual: the owner's words; visual: what the model saw on a contact sheet of one episode (Phase 5 T11); wiki: a Fandom summary (T12). */
+  source: text('source', { enum: ['tumblr', 'review', 'manual', 'visual', 'wiki'] }).notNull(),
+  /** "S01E03" for a per-episode note. */
+  label: text('label').notNull().default(''),
   url: text('url'),
   text: text('text').notNull(),
   fetchedAt: text('fetched_at').notNull().default(sql`(datetime('now'))`),
 });
 
-export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs', 'find_evidence'] as const;
+export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs', 'find_evidence', 'index_local', 'extract_text', 'extract_evidence'] as const;
+/** Job kinds that read the media disk; the media worker on celebrimbor claims these and nothing else. */
+export const MEDIA_JOB_KINDS = ['index_local', 'extract_text', 'extract_evidence'] as const;
 export const JOB_STATUSES = ['queued', 'running', 'done', 'failed', 'cancelled'] as const;
 
 /** Work handed to the worker. Payload and result are JSON validated by zod on the site and pydantic in the worker. */

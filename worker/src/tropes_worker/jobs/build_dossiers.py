@@ -7,7 +7,7 @@ from typing import Any
 
 from ..llm import LLM, load_prompt
 from ..notes import relevant_notes, search_posts
-from ..pipeline import build_dossier, build_series_dossier, dossier_needed, entry_text, load_subject_text, run_async
+from ..pipeline import build_dossier, build_series_dossier, dossier_needed, ensure_texts, entry_text, load_subject_text, run_async
 from ..runner import Context
 
 log = logging.getLogger("tropes_worker.jobs.build_dossiers")
@@ -24,6 +24,7 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     exported = ctx.client.subjects()
     media = exported["media"]
     series = exported["series"]
+    ensure_texts(ctx.client, settings, media)
     llm = LLM(settings)
     version = load_prompt("dossier").version
     warnings: list[str] = []

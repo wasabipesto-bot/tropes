@@ -21,7 +21,7 @@ export function exportTropes(db: Db) {
 
 /** Every media item and series with the fields a dossier needs, plus what the worker already built. */
 export function exportSubjects(db: Db) {
-  const sources = db.select().from(localSource).where(eq(localSource.kind, 'text')).all();
+  const sources = db.select().from(localSource).all();
   const notes = db.select().from(mediaNote).all();
   const built = db.select({ kind: dossier.subjectKind, id: dossier.subjectId, depth: dossier.depth, promptVersion: dossier.promptVersion, sourceHash: dossier.sourceHash, body: dossier.body }).from(dossier).all()
     .map(({ body, ...rest }) => ({ ...rest, known: (() => { try { return JSON.parse(body).known ?? null; } catch { return null; } })() as string | null }));
@@ -42,11 +42,14 @@ export function exportSubjects(db: Db) {
     identity: m.identity,
     wikidataId: m.wikidataId,
     externalIds: JSON.parse(m.externalIds || '{}'),
+    details: JSON.parse(m.details || '{}'),
     posterSource: m.posterSource,
     posterPath: m.posterPath,
     wikiExtract: m.wikiExtract,
     genresEdited: m.genresEdited,
-    textSources: sources.filter((s) => s.mediaId === m.id).map((s) => s.path),
+    textSources: sources.filter((s) => s.mediaId === m.id && s.kind === 'text').map((s) => s.path),
+    // Phase 5: what the media worker found and indexed for this work.
+    localSources: sources.filter((s) => s.mediaId === m.id && s.kind !== 'text').map((s) => ({ id: s.id, kind: s.kind, path: s.path, label: s.label, meta: JSON.parse(s.meta || '{}'), indexedAt: s.indexedAt })),
     notes: notes.filter((n) => n.mediaId === m.id).map((n) => ({ source: n.source, url: n.url, text: n.text })),
     dossier: dossierFor('media', m.id),
   }));

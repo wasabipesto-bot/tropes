@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import Any
 
 from ..llm import LLM
-from ..pipeline import entry_text, load_subject_text, run_async, verify_quotes
+from ..pipeline import ensure_texts, entry_text, load_subject_text, run_async, verify_quotes
 from ..runner import Context
 from ..schemas import EvidenceOut
 
@@ -30,6 +30,7 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     trope, inst = hit
     exported = ctx.client.subjects()
     media, series = exported["media"], exported["series"]
+    ensure_texts(ctx.client, settings, media)
     subject = next((s for s in [*media, *series] if s["kind"] == inst["kind"] and s["id"] == inst["subjectId"]), None)
     if subject is None:
         return {"summary": {"found": 0}, "warnings": ["The work no longer exists."]}

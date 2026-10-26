@@ -38,6 +38,38 @@ def entry_text(subject: dict[str, Any]) -> str:
     return "\n".join(parts)
 
 
+def ensure_texts(client: Any, settings: Settings, subjects: list[dict[str, Any]]) -> int:
+    """Pull the texts the media worker extracted (Phase 5) into the local cache and list them as text sources,
+    one file per work in episode order, so the rest of the pipeline reads them like a linked EPUB. Returns fetched."""
+    fetched = 0
+    cache = settings.text_cache_dir / "site"
+    for m in subjects:
+        if m.get("kind") != "media":
+            continue
+        rows = [s for s in (m.get("localSources") or []) if s.get("indexedAt") and (s.get("meta") or {}).get("textHash")]
+        if not rows:
+            continue
+        rows.sort(key=lambda s: (s.get("label") or "", s["id"]))
+        combined = hashlib.sha1("|".join(f"{s['id']}:{s['meta']['textHash']}" for s in rows).encode()).hexdigest()[:16]
+        target = cache / f"{m['id']}-{combined}.txt"
+        if not target.is_file():
+            cache.mkdir(parents=True, exist_ok=True)
+            parts = []
+            for s in rows:
+                text = client.source_text(s["id"])
+                if text:
+                    parts.append(text.strip())
+                    fetched += 1
+            if parts:
+                target.write_text("\n\n".join(parts) + "\n", encoding="utf-8")
+                for old in cache.glob(f"{m['id']}-*.txt"):
+                    if old != target:
+                        old.unlink(missing_ok=True)
+        if target.is_file():
+            m["textSources"] = [str(target)] + [p for p in (m.get("textSources") or []) if p != str(target)]
+    return fetched
+
+
 def load_subject_text(settings: Settings, subject: dict[str, Any], texts_by_media: dict[int, Text] | None = None) -> Text | None:
     """The work's text when a source is linked; for a series, the members' texts concatenated."""
     if subject["kind"] == "media":

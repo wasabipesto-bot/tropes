@@ -5,7 +5,16 @@ from __future__ import annotations
 from typing import Any
 
 from ..llm import LLM
-from ..pipeline import TropeSpec, build_dossier, check_subject, load_subject_text, new_evidence, run_async, subject_key
+from ..pipeline import (
+    TropeSpec,
+    build_dossier,
+    check_subject,
+    ensure_texts,
+    load_subject_text,
+    new_evidence,
+    run_async,
+    subject_key,
+)
 from ..runner import Context
 
 
@@ -19,6 +28,7 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     tropes = ctx.client.tropes()
     exported = ctx.client.subjects()
     media, series = exported["media"], exported["series"]
+    ensure_texts(ctx.client, settings, media)
     subject = next(s for s in [*media, *series] if s["kind"] == ref["kind"] and s["id"] == ref["id"])
     llm = LLM(settings)
     warnings: list[str] = []

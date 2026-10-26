@@ -127,6 +127,22 @@ class SiteClient:
         r.raise_for_status()
         return r.json()
 
+    def post_sources(self, works: list[dict[str, Any]]) -> dict[str, Any]:
+        """What the media worker found on the disk for some works (one call per batch of works)."""
+        return self._post("/api/sources", {"works": works}).json()
+
+    def post_source_text(self, source_id: int, text: str, how: str, meta: dict[str, Any] | None = None) -> dict[str, Any]:
+        """The text extracted for one local source; an empty text with a reason marks it as tried."""
+        return self._post(f"/api/sources/{source_id}/text", {"text": text, "source": how, "meta": meta or {}}).json()
+
+    def source_text(self, source_id: int) -> str | None:
+        """The extracted text of a local source, or None when there is none."""
+        r = self._http.get(f"/api/export/text/{source_id}")
+        if r.status_code == 404:
+            return None
+        r.raise_for_status()
+        return r.text
+
     def dossier(self, kind: str, subject_id: int) -> dict[str, Any] | None:
         r = self._http.get(f"/api/dossiers/{kind}/{subject_id}")
         if r.status_code == 404:

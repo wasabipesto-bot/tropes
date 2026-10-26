@@ -52,6 +52,11 @@ class Settings:
     mal_client_id: str | None
     lookup_cache_dir: Path
     user_agent: str
+    # Phase 5: the media worker's view of the disk (empty on the model worker) and the subtitle fallback.
+    media_root: str | None
+    opensubtitles_key: str | None
+    opensubtitles_user: str | None
+    opensubtitles_password: str | None
 
     @classmethod
     def from_env(cls) -> Settings:
@@ -88,4 +93,8 @@ class Settings:
             mal_client_id=env("TROPES_MAL_CLIENT_ID") or None,
             lookup_cache_dir=Path(env("TROPES_LOOKUP_CACHE_DIR", str(root / "data" / "cache" / "lookup"))),
             user_agent=env("TROPES_USER_AGENT", "TropeLog/0.1 (+https://github.com/wasabipesto-bot/tropes)"),
+            media_root=env("TROPES_MEDIA_ROOT") or None,
+            opensubtitles_key=env("TROPES_OPENSUBTITLES_KEY") or None,
+            opensubtitles_user=env("TROPES_OPENSUBTITLES_USER") or None,
+            opensubtitles_password=env("TROPES_OPENSUBTITLES_PASSWORD") or None,
         )
