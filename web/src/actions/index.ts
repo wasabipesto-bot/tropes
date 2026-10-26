@@ -278,6 +278,18 @@ export const server = {
     },
   }),
 
+  /** From /review: which folder on the disk is this work (or none of them); the next index takes the pin as given. */
+  pinLocalRoot: defineAction({
+    accept: 'form',
+    input: z.object({ mediaId: id, root: text }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      db.update(media).set({ localRoot: input.root || null, updatedAt: now() }).where(eq(media.id, input.mediaId)).run();
+      if (input.root && input.root !== '-') createJob(db, 'index_local', { mediaIds: [input.mediaId], auto: true });
+      return { returnTo: '/review' };
+    },
+  }),
+
   /** New files on the disk for one work: index → text → sheets → notes → dossier → trope recheck, each stage only for what is new. */
   refreshLocal: defineAction({
     accept: 'form',

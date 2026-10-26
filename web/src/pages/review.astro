@@ -76,7 +76,15 @@ const empty = items.jobs.length + items.identity.length + items.missing.length +
   {items.files.at && (items.files.checks.length > 0 || items.files.missing.length > 0) && (
     <section>
       <h2>Files on the disk <span class="quiet" style="font-weight: 400; font-size: 16px">indexed {fmt(items.files.at)}</span></h2>
-      {items.files.checks.length > 0 && <ul>{items.files.checks.map((c) => <li>{c}</li>)}</ul>}
+      {items.files.checks.map((c) => (
+        <form method="POST" action={actions.pinLocalRoot} class="pin">
+          <input type="hidden" name="mediaId" value={c.mediaId ?? ''} />
+          <span style="font-weight: 600">{c.title}</span> <span class="quiet" style="font-size: 15px">{c.why === 'year' ? 'the year differs' : c.why === 'ambiguous' ? 'more than one folder' : c.why}</span>
+          {c.folders.map((f) => <label class="pk"><input type="radio" name="root" value={f} /> {f}</label>)}
+          <label class="pk"><input type="radio" name="root" value="-" /> Not these files</label>
+          <button type="submit" class="t" style="padding: 6px 0">Save</button>
+        </form>
+      ))}
       {items.files.missing.length > 0 && <p class="quiet" style="margin: 6px 0 0; font-size: 15px">Not on the disk: {items.files.missing.join(', ')}.</p>}
     </section>
   )}
@@ -101,4 +109,8 @@ const empty = items.jobs.length + items.identity.length + items.missing.length +
   ul { margin: 0; padding: 0; list-style: none; font-size: 17px; }
   li { padding: 5px 0; }
   li form { display: inline; }
+</style>
+<style>
+  .pin { display: flex; flex-direction: column; gap: 4px; margin: 10px 0 14px; font-size: 16px; }
+  .pk { display: flex; gap: 10px; align-items: baseline; }
 </style>

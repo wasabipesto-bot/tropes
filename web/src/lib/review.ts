@@ -15,8 +15,8 @@ export interface ReviewItems {
   flagged: Media[];
   /** Instances the automatic path added recently, still unverified. */
   auto: { id: number; createdAt: string; tropeName: string; tropeSlug: string; subjectId: number; title: string }[];
-  /** From the latest index of the media disk: works whose folder needs a look, and works not on the disk (plan T2). */
-  files: { checks: string[]; missing: string[]; at: string | null };
+  /** From the latest full index of the media disk: works whose folder needs a look, and works not on the disk (plan T2). */
+  files: { checks: { mediaId: number | null; title: string; why: string; folders: string[] }[]; missing: string[]; at: string | null };
 }
 
 export const AUTO_WINDOW_DAYS = 14;
@@ -39,11 +39,22 @@ export function reviewItems(db: Db): ReviewItems {
     .all();
   const titles = new Map(rows.length ? db.select({ id: media.id, title: media.title }).from(media).where(inArray(media.id, rows.map((r) => r.subjectId))).all().map((r) => [r.id, r.title]) : []);
   const auto = rows.filter((r) => r.subjectKind === 'media').map((r) => ({ ...r, title: titles.get(r.subjectId) ?? '' }));
-  const index = db.select().from(job).where(and(eq(job.kind, 'index_local'), eq(job.status, 'done'))).orderBy(desc(job.id)).limit(1).get();
-  const warnings: string[] = index ? (parseJson<any>(index.result, {})?.warnings ?? []) : [];
+  // The last index of the whole disk (a per-work refresh only knows about its work); pinned works drop out of the lists.
+  const index = db.select().from(job).where(and(eq(job.kind, 'index_local'), eq(job.status, 'done'))).orderBy(desc(job.id)).limit(30).all()
+    .find((j) => !(parseJson<any>(j.payload, {}).mediaIds ?? []).length);
+  const result = index ? parseJson<any>(index.result, {}) : {};
+  const warnings: string[] = result?.warnings ?? [];
+  const byTitle = (title: string) => media_rows.filter((m) => m.title === title).sort((a, b) => Number(a.type === 'Book') - Number(b.type === 'Book'))[0];
+  const media_rows = db.select({ id: media.id, title: media.title, type: media.type, localRoot: media.localRoot }).from(media).all();
+  const pinned = new Set(media_rows.filter((m) => m.localRoot).map((m) => m.id));
+  const checkList: { mediaId: number | null; title: string; why: string; folders: string[] }[] = result?.summary?.checkList
+    ?? warnings.filter((w) => w.startsWith('check: ')).map((w) => {
+      const m = /^check: (.*) \((year|ambiguous|pinned folder missing)\): (.*)$/.exec(w);
+      return m ? { mediaId: byTitle(m[1])?.id ?? null, title: m[1], why: m[2], folders: m[3].split(', ') } : { mediaId: null, title: w.slice(7), why: '', folders: [] };
+    });
   const files = {
-    checks: warnings.filter((w) => w.startsWith('check: ')).map((w) => w.slice(7)),
-    missing: warnings.filter((w) => w.startsWith('not on the disk: ')).flatMap((w) => w.slice(17).split(', ')),
+    checks: checkList.filter((c) => !(c.mediaId && pinned.has(c.mediaId))),
+    missing: warnings.filter((w) => w.startsWith('not on the disk: ')).flatMap((w) => w.slice(17).split(', ')).filter((t) => !pinned.has(byTitle(t)?.id ?? -1)),
     at: index?.finishedAt ?? null,
   };
   return { jobs, identity, missing, flagged, auto, files };

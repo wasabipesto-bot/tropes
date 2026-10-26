@@ -42,6 +42,7 @@ export function exportSubjects(db: Db) {
     links: links.filter((l) => l.mediaId === m.id).map(({ site, url }) => ({ site, url })),
     // Phase 4: what the lookup needs and what it already pinned.
     mediaUrl: m.notionMediaUrl,
+    localRoot: m.localRoot,
     imageUrl: m.notionImageUrl,
     identity: m.identity,
     wikidataId: m.wikidataId,

@@ -570,6 +570,8 @@ from the pipeline, not by hand.
 
 ### Phase 6: public hardening (M)
 
+Decisions and questions: [`plans/phase-6.md`](plans/phase-6.md) (2026-10-26).
+
 - Evidence caps, all configurable, defaults decided 2026-10-19: quotes up to
   100 words each; up to 10 frames per work per trope; clips public, up to 30 s
   each. Enforced by the `public` flag and clip trimming at extraction, never
@@ -591,9 +593,12 @@ Collections, review queue, drafts, related-tropes lists, "shares the most
 tropes with", confidence badges, the show-all-spoilers toggle. Spec 11 lists
 them as rejected; they do not come back without a new reason.
 
-Backlog (owner, 2026-10-24): a list of openings, endings and title
-sequences for works in the log; separately, a list of good edits. Scope to
-be discussed before planning.
+Backlog (owner, 2026-10-24, shape agreed 2026-10-26): openings, endings,
+title sequences, edits and trailers as a list of YouTube links per work,
+embedded on the media page when present (click-to-play, no third-party
+load until clicked). Later, automatic sources: TMDB's videos endpoint for
+trailers and opening credits, AnimeThemes.moe for anime OP/ED, and a
+YouTube search for title sequences (needs a key). Not planned yet.
 
 ---
 

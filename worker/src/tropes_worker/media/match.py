@@ -136,17 +136,29 @@ def match_video(entry: dict[str, Any], folders: list[Folder], index: dict[str, l
             # exact: the title matched outright; False: a near name with the year agreeing; None: a near name, no year, a check.
             ok = agree is not False and (exact is True or (exact is False and agree is True))
             m = VideoMatch(folder=f, year_ok=ok, exact_year=(fyear == year and fyear is not None))
-            if want_series:
-                for v in sorted(f.videos, key=lambda e: e.path):
-                    ep = episode_of(v.path)
-                    if ep:
-                        m.episodes.append((ep[0], ep[1], v))
-                m.episodes.sort(key=lambda t: (t[0], t[1]))
-            else:
-                m.films = sorted(f.videos, key=lambda e: -e.size)
+            fill_files(m, want_series)
             out.append(m)
     out.sort(key=lambda m: (not m.year_ok, not m.exact_year, -len(m.episodes) - len(m.films)))
     return out
+
+
+def fill_files(m: VideoMatch, want_series: bool) -> VideoMatch:
+    """The folder's files as episodes (season, episode, entry) or films (largest first)."""
+    if want_series:
+        for v in sorted(m.folder.videos, key=lambda e: e.path):
+            ep = episode_of(v.path)
+            if ep:
+                m.episodes.append((ep[0], ep[1], v))
+        m.episodes.sort(key=lambda t: (t[0], t[1]))
+    else:
+        m.films = sorted(m.folder.videos, key=lambda e: -e.size)
+    return m
+
+
+def pinned_video(root: str, folders: list[Folder], want_series: bool) -> VideoMatch | None:
+    """The folder the owner pinned for a work (media.localRoot), taken as is; None when it is not on the disk."""
+    f = next((x for x in folders if x.path == root), None)
+    return fill_files(VideoMatch(folder=f, year_ok=True, exact_year=True), want_series) if f else None
 
 
 def best_video(matches: list[VideoMatch]) -> tuple[VideoMatch | None, str]:

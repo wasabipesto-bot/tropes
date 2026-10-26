@@ -95,3 +95,15 @@ def test_fandom_link_ref():
         "Heaven_Will_Be_Mine_Wiki",
     )
     assert link_ref("https://store.steampowered.com/app/836450") is None
+
+
+def test_guessed_wiki_must_name_the_year_or_creator():
+    from tropes_worker.jobs.fetch_wiki import plausible
+
+    m = {"creator": "Pillow Fight Games", "details": {"start": "2018-07-25"}}
+    assert plausible("Heaven Will Be Mine is a 2018 visual novel.", m)
+    assert plausible("developed by Pillow Fight", {"creator": "Pillow Fight"})
+    assert not plausible(
+        "The Cosmos: the history of the world is shrouded in mystery.",
+        {"creator": "Dan Erickson", "details": {"start": "2022-02-18"}},
+    )

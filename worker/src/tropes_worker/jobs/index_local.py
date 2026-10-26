@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from ..media.listing import Listing, sidecar_subs
-from ..media.match import best_video, calibre_rows, folder_index, match_book, match_video
+from ..media.match import best_video, calibre_rows, folder_index, match_book, match_video, pinned_video
 from ..runner import Context
 
 log = logging.getLogger("tropes_worker.jobs.index_local")
@@ -73,8 +73,9 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     rows = calibre_rows(calibre) if calibre else []
 
     works: list[dict[str, Any]] = []
-    report = {"ok": 0, "none": 0, "ambiguous": 0, "year": 0, "books": 0, "episodes": 0, "films": 0}
+    report = {"ok": 0, "none": 0, "ambiguous": 0, "year": 0, "books": 0, "episodes": 0, "films": 0, "pinned": 0, "skipped": 0}
     unmatched: list[str] = []
+    unmatched_ids: list[dict[str, Any]] = []
     checks: list[dict[str, Any]] = []
     done = 0
     for m in media:
@@ -96,6 +97,7 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
             if not b or not file:
                 report["none"] += 1
                 unmatched.append(m["title"])
+                unmatched_ids.append({"mediaId": m["id"], "title": m["title"]})
                 continue
             report["books"] += 1
             works.append(
@@ -112,18 +114,31 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
                 }
             )
             continue
-        matches = match_video({"title": m["title"], "type": m["type"], "year": year}, folders, index)
-        best, why = best_video(matches)
-        if not best:
-            report[why if why in report else "none"] += 1
-            if why == "none":
-                unmatched.append(m["title"])
-            else:
-                checks.append(
-                    {"mediaId": m["id"], "title": m["title"], "why": why, "folders": [x.folder.path for x in matches[:3]]}
-                )
+        # The owner's pin wins: a folder path, or "-" for "none of these files".
+        pin = m.get("localRoot") or ""
+        if pin == "-":
+            report["skipped"] += 1
             continue
-        report["ok"] += 1
+        if pin:
+            best = pinned_video(pin, folders, m["type"] == "TV Series")
+            if not best:
+                checks.append({"mediaId": m["id"], "title": m["title"], "why": "pinned folder missing", "folders": [pin]})
+                continue
+            report["pinned"] += 1
+        else:
+            matches = match_video({"title": m["title"], "type": m["type"], "year": year}, folders, index)
+            best, why = best_video(matches)
+            if not best:
+                report[why if why in report else "none"] += 1
+                if why == "none":
+                    unmatched.append(m["title"])
+                    unmatched_ids.append({"mediaId": m["id"], "title": m["title"]})
+                else:
+                    checks.append(
+                        {"mediaId": m["id"], "title": m["title"], "why": why, "folders": [x.folder.path for x in matches[:3]]}
+                    )
+                continue
+            report["ok"] += 1
         sources = []
         if m["type"] == "TV Series":
             for season, episode, entry in best.episodes:
@@ -145,4 +160,7 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     ctx.progress(len(media) + 1, len(media) + 1, "done")
     warnings = [f"not on the disk: {', '.join(unmatched[:60])}"] if unmatched else []
     warnings += [f"check: {c['title']} ({c['why']}): {', '.join(c['folders'])}" for c in checks[:40]]
-    return {"summary": {**report, "checks": len(checks)}, "warnings": warnings}
+    return {
+        "summary": {**report, "checks": len(checks), "checkList": checks[:60], "unmatched": unmatched_ids[:200]},
+        "warnings": warnings,
+    }

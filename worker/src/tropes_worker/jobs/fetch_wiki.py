@@ -120,6 +120,54 @@ def link_ref(url: str) -> tuple[str, str] | None:
     return (m.group(1), m.group(2)) if m else None
 
 
+def plausible(text: str, m: dict[str, Any]) -> bool:
+    """A guessed wiki's article is about the logged work if it names the creator or the year; a one-word title
+    on an unrelated wiki ("severance" the game for Severance the show) fails this and is dropped."""
+    low = text.lower()
+    start = str((m.get("details") or {}).get("start") or "")
+    if start[:4].isdigit() and start[:4] in low:
+        return True
+    for part in re.split(r"[,&/]| and ", m.get("creator") or ""):
+        last = part.strip().split(" ")[-1].lower() if part.strip() else ""
+        if len(last) > 2 and last in low:
+            return True
+    return False
+
+
+def guess_wiki(f: Fetcher, title: str) -> tuple[str, str] | None:
+    """When Wikidata has no Fandom id: try the subdomains a wiki for this title would use (initialism, the title
+    run together, hyphenated), keep one whose site name shares a word with the title, and find the article
+    about the work on it (the page named like the work, else the top search hit). None when nothing answers."""
+    words = re.findall(r"[A-Za-z0-9]+", title)
+    if not words:
+        return None
+    guesses: list[str] = []
+    if len(words) >= 3:
+        guesses.append("".join(w[0] for w in words).lower())
+    guesses.append("".join(words).lower())
+    guesses.append("-".join(words).lower())
+    strong = {w.lower() for w in words if len(w) > 3}
+    for sub in dict.fromkeys(g for g in guesses if 3 <= len(g) <= 40):
+        info = f.get_json(
+            f"https://{sub}.fandom.com/api.php", {"action": "query", "meta": "siteinfo", "siprop": "general", "format": "json"}
+        )
+        general = ((info or {}).get("query") or {}).get("general") or {}
+        sitename = str(general.get("sitename") or "")
+        if not sitename or (strong and not any(w in sitename.lower() for w in strong) and sub != guesses[0]):
+            continue
+        hits = f.get_json(
+            f"https://{sub}.fandom.com/api.php",
+            {"action": "query", "list": "search", "srsearch": title, "srlimit": 5, "format": "json"},
+        )
+        titles = [h["title"] for h in ((hits or {}).get("query") or {}).get("search", [])]
+        norm = lambda x: re.sub(r"[^a-z0-9]+", "", x.lower())  # noqa: E731
+        exact = [t for t in titles if norm(t) == norm(title)]
+        article = exact[0] if exact else (titles[0] if titles else str(general.get("mainpage") or ""))
+        if article:
+            return sub, article.replace(" ", "_")
+    return None
+
+
 def page_text(f: Fetcher, wiki: str, title: str) -> str | None:
     """The plain text of a page, or None when it does not exist. Fandom has no TextExtracts, so this renders the
     page through action=parse and strips the HTML."""
@@ -140,7 +188,7 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     todo = []
     for m in media:
         linked = any(link_ref(x.get("url") or "") for x in (m.get("links") or []))
-        if not linked and (not m.get("wikidataId") or m.get("identity") != "pinned"):
+        if not linked and m.get("identity") != "pinned":
             continue
         if wanted and m["id"] not in wanted:
             continue
@@ -158,6 +206,10 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
             # A link the owner added on the work's page wins over Wikidata's id.
             refs = [r for r in (link_ref(x.get("url") or "") for x in (m.get("links") or [])) if r]
             refs += [r for r in map(fandom_ref, wikidata._strings(ents.get(m.get("wikidataId") or "", {}), "P6262")) if r]
+            if not refs:
+                guessed = guess_wiki(f, m["title"])
+                if guessed and plausible(page_text(f, *guessed) or "", m):
+                    refs.append(guessed)
             if not refs:
                 no_article += 1
                 continue
