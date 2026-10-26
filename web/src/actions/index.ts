@@ -4,6 +4,7 @@ import { z } from 'astro/zod';
 import { and, eq, sql } from 'drizzle-orm';
 import type { ActionAPIContext } from 'astro:actions';
 import { db } from '../db';
+import { applyCaps } from '../lib/caps';
 import { PROMINENCES, dossier, evidence, instance, job, localSource, media, mediaGenre, mediaLink, notable, proposal, series, trope, tropeAlias, tropeSeed } from '../db/schema';
 import { cancelJob, createJob, jobById, parseJson } from '../lib/jobs/queue';
 import { commitProposals } from '../lib/jobs/commit';
@@ -223,6 +224,7 @@ export const server = {
       if (!src) throw new ActionError({ code: 'NOT_FOUND', message: 'No file is known for this episode.' });
       const [{ n }] = db.select({ n: sql<number>`coalesce(max(${evidence.position}), -1) + 1` }).from(evidence).where(eq(evidence.instanceId, inst.id)).all();
       const row = db.insert(evidence).values({ instanceId: inst.id, kind: 'clip', locator: q.locator, position: n }).returning().get();
+      applyCaps(db, inst.id);
       createJob(db, 'extract_evidence', { items: [{ evidenceId: row.id, sourceId: src.id, at, end: at + 10, clip: true }] });
       return { returnTo: input.returnTo ?? `/media/${inst.subjectId}` };
     },
@@ -233,7 +235,9 @@ export const server = {
     input: z.object({ evidenceId: id, returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
+      const gone = db.select({ instanceId: evidence.instanceId }).from(evidence).where(eq(evidence.id, input.evidenceId)).get();
       db.delete(evidence).where(eq(evidence.id, input.evidenceId)).run();
+      if (gone) applyCaps(db, gone.instanceId);
       return { returnTo: input.returnTo ?? '/tropes' };
     },
   }),

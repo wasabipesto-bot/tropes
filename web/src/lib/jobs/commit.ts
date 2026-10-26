@@ -6,6 +6,7 @@ import { evidence, instance, job, proposal, trope, tropeSeed, type Prominence } 
 import { resolveSubject } from '../queries';
 import { slugify } from '../slug';
 import { parseJson } from './queue';
+import { applyCaps } from '../caps';
 import { evidencePath, pendingEvidencePath } from '../files';
 
 export interface CommitOptions {
@@ -103,6 +104,7 @@ function addEvidence(tx: Db, instanceId: number, items: { kind?: string; content
     }
   }
   if (proposalId !== undefined) discardPendingEvidence(proposalId);
+  applyCaps(tx, instanceId);
 }
 
 /** Pending frames of a proposal that was rejected, discarded or committed (the kept ones were moved already). */

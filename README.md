@@ -84,7 +84,13 @@ workers' and need an API key.
 
 ## Backups
 
-`just backup` snapshots the database with `VACUUM INTO` (safe while the site
-runs), tars the evidence directory, keeps the newest 14 of each in
-`backups/`, and rsyncs that directory to `TROPES_BACKUP_REMOTE` (default
-`braize:tropes-backups`). Set the variable empty to skip the copy.
+`just backup` (ops/backup.sh) snapshots the database with `VACUUM INTO`
+(safe while the site runs), gzips it, keeps 14 daily and 8 weekly copies in
+`backups/`, and rsyncs that directory plus the files that cannot be
+regenerated — `web/data/evidence`, `web/data/posters`, `data/sources` and the
+extracted texts in `data/text` — to `TROPES_BACKUP_REMOTE` (default
+`braize:tropes`, the Hetzner storage box over ssh port 23). Snapshots mirror
+the local retention remotely; files are only ever added. Contact sheets and
+the lookup cache are regenerable and are not copied. `ops/tropes-backup.timer`
+runs it nightly at 03:30 UTC; set the variable empty to skip the copy.
+

@@ -1,0 +1,12 @@
+# Nightly backup to the storage box (ops/backup.sh). Install with the timer:
+#   cp ops/tropes-backup.service ops/tropes-backup.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload && systemctl --user enable --now tropes-backup.timer
+#   systemctl --user list-timers; journalctl --user -u tropes-backup
+[Unit]
+Description=Trope Log nightly backup
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/projects/tropes
+ExecStart=%h/projects/tropes/ops/backup.sh

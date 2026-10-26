@@ -23,7 +23,7 @@ const describe = (j: typeof items.jobs[number]) => {
 const empty = items.jobs.length + items.identity.length + items.missing.length + items.flagged.length === 0;
 ---
 
-<Base title="Review" current="review">
+<Base title="Review" current="review" noindex>
   <h1>Review</h1>
   {error && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">{error}</p>}
   {empty && <p class="quiet" style="margin: 8px 0 0">Nothing is waiting for you.</p>}

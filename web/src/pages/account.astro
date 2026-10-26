@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import { db } from '../db';
+import { listPasskeys } from '../lib/passkeys';
+
+if (!Astro.locals.owner) return Astro.redirect('/login');
+const keys = listPasskeys(db);
+const fmt = (iso: string | null) => (iso ? new Date(iso.replace(' ', 'T') + (iso.endsWith('Z') ? '' : 'Z')).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : 'never');
+---
+
+<Base title="Account" noindex>
+  <h1>Account</h1>
+  <section style="max-width: 640px; margin-top: 28px">
+    <h2>Passkeys</h2>
+    <p class="quiet" style="margin: 0 0 12px; font-size: 15px">Sign in with a fingerprint, face or security key instead of the password. The password keeps working as the fallback.</p>
+    {keys.length === 0 && <p class="quiet" style="margin: 0 0 12px">No passkeys yet.</p>}
+    {keys.map((k) => (
+      <form method="POST" action="/api/auth/passkey/remove" style="display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; padding: 6px 0" onsubmit="return confirm('Remove this passkey?')">
+        <input type="hidden" name="id" value={k.id} />
+        <span style="font-weight: 600">{k.name || 'Passkey'}</span>
+        <span class="quiet" style="font-size: 15px">added {fmt(k.createdAt)}, last used {fmt(k.lastUsedAt)}</span>
+        <button type="submit" class="t danger">Remove</button>
+      </form>
+    ))}
+    <form id="add-passkey" style="display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; margin-top: 16px">
+      <label for="pk-name" class="quiet">Name</label>
+      <input id="pk-name" class="line" placeholder="phone, laptop…" style="width: 200px" />
+      <button type="submit" class="t">Add a passkey</button>
+      <span id="pk-status" class="quiet" style="font-size: 15px" aria-live="polite"></span>
+    </form>
+  </section>
+</Base>
+
+<script>
+  import { startRegistration } from '@simplewebauthn/browser';
+  const form = document.getElementById('add-passkey') as HTMLFormElement;
+  const status = document.getElementById('pk-status')!;
+  form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    status.textContent = 'Waiting for the authenticator…';
+    try {
+      const { options, challengeId } = await (await fetch('/api/auth/passkey/register-options', { method: 'POST' })).json();
+      const response = await startRegistration({ optionsJSON: options });
+      const name = (document.getElementById('pk-name') as HTMLInputElement).value;
+      const r = await fetch('/api/auth/passkey/register', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ challengeId, response, name }) });
+      const out = await r.json();
+      if (out.ok) location.reload();
+      else status.textContent = out.error ?? 'That did not work.';
+    } catch (e) {
+      status.textContent = (e as Error).message || 'That did not work.';
+    }
+  });
+</script>

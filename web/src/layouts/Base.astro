@@ -3,6 +3,7 @@ import { actions } from 'astro:actions';
 import '../styles/global.css';
 import Spoilers from '../components/Spoilers.astro';
 import { db } from '../db';
+import { absolute } from '../lib/config';
 import { reviewCount } from '../lib/review';
 
 interface Props {
@@ -10,9 +11,17 @@ interface Props {
   /** Trope, media and library pages use the 1440px frame; index and form pages use 980px. */
   wide?: boolean;
   current?: 'tropes' | 'library' | 'add-trope' | 'review' | 'jobs';
+  /** For the description meta and OG tags; the site's own line when a page has nothing better. */
+  description?: string;
+  /** A site-relative image for og:image (a work's poster). */
+  image?: string | null;
+  /** Owner-only pages are not for crawlers or shares. */
+  noindex?: boolean;
 }
 
-const { title, wide = false, current } = Astro.props;
+const { title, wide = false, current, description = 'A personal catalogue of tropes across the films, shows, books, games and podcasts in one media log.', image = null, noindex = false } = Astro.props;
+const fullTitle = title === 'Trope Log' ? title : `${title} · Trope Log`;
+const canonical = absolute(Astro.url.pathname, Astro.url.origin);
 const owner = Astro.locals.owner;
 const at = (page: Props['current']) => (current === page ? 'page' : undefined);
 const waiting = owner ? reviewCount(db) : 0;
@@ -23,7 +32,17 @@ const waiting = owner ? reviewCount(db) : 0;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title === 'Trope Log' ? title : `${title} · Trope Log`}</title>
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta property="og:site_name" content="Trope Log" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {image && <meta property="og:image" content={absolute(image, Astro.url.origin)} />}
+    <meta name="twitter:card" content="summary" />
   </head>
   <body>
     <div class:list={['page', { wide }]}>
@@ -52,6 +71,7 @@ const waiting = owner ? reviewCount(db) : 0;
           <a href="/tropes">Tropes</a>
           <a href="/library">Library</a>
           {owner ? (
+            <a href="/account">Account</a>
             <form method="POST" action={actions.logout} style="display: inline">
               <input type="hidden" name="returnTo" value={Astro.url.pathname} />
               <button type="submit" class="t" style="color: inherit">Log out</button>

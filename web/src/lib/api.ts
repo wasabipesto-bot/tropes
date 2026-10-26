@@ -13,7 +13,7 @@ export function instanceJson(v: InstanceView) {
     prominence: v.inst.prominence,
     verified: v.inst.verified,
     notable: v.notable,
-    evidence: v.evidence.map((e) => ({ kind: e.kind, content: e.content, locator: e.locator, url: e.filePath ? `/evidence/${e.filePath}` : null })),
+    evidence: v.evidence.filter((e) => e.public).map((e) => ({ kind: e.kind, content: e.content, locator: e.locator, url: e.filePath ? `/evidence/${e.filePath}` : null })),
   };
 }
 

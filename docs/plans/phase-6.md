@@ -1,8 +1,16 @@
 # Phase 6: public hardening
 
-Status 2026-10-26: the owner said "seems straightforward, go ahead"; this
-page records the decisions I am building to and the three questions that
-change details. Items are the ROADMAP's Phase 6 list.
+Status 2026-10-26, late: built as decided below, with the owner's answers
+(hostname tropes.wasabipesto.com, braize over rsync with the texts, the
+rate numbers as proposed). To go live: set `SITE_ORIGIN=https://tropes.wasabipesto.com`
+in the site's environment (OG links and the passkey rpID follow it),
+`TROPES_TRUSTED_PROXY=1` if the site sits behind Cloudflare or a reverse
+proxy, install `ops/tropes-backup.timer` on the host that holds the
+database, and register a passkey from `/account` once logged in with the
+password. The passkey ceremony was exercised end to end in headless
+Chromium with a virtual authenticator (`web/scripts/passkey-check.mjs`, run
+through the Docker Playwright image against `tropes.localhost`); the first
+backup landed on braize (`tropes/db`, `posters`, `sources`, `text`).
 
 ## Decisions
 
@@ -35,6 +43,8 @@ change details. Items are the ROADMAP's Phase 6 list.
    as the fallback. `rpID` is the public hostname (question 1). I cannot
    drive a browser here, so the ceremony is unit-tested against the
    library's vectors and tried by the owner on a phone.
+NOTE: You should have playwright etc from tumblr-search render-check testing, use that or propose alternative.
+DONE: the Docker Playwright harness from tumblr-search drives Chromium's virtual authenticator; registration and sign-in both pass.
 6. **Backups**: `just backup` makes a consistent SQLite snapshot (`VACUUM
    INTO`) and rsyncs it with `data/evidence`, `data/posters` and
    `data/sources` to the Hetzner storage box the owner already uses
@@ -46,6 +56,7 @@ change details. Items are the ROADMAP's Phase 6 list.
    tap targets. Checked by reasoning here, by eye on the owner's phone.
 8. **Tumblr mention count**: stays the link it already is ("wasabipesto's
    Tumblr posts mentioning …"); no count until relevance filtering exists.
+APPROVED: See above for notes, all else OK to proceed.
 
 ## Questions
 
@@ -53,10 +64,13 @@ change details. Items are the ROADMAP's Phase 6 list.
    behind Cloudflare or a reverse proxy on the host? This sets `SITE_ORIGIN`
    for OG and canonical links, the passkey `rpID`, and which header the rate
    limiter trusts.
+ANSWER: tropes.wasabipesto.com
 2. **Backup destination.** braize over rsync as above, or R2? And should the
    extracted texts go too (cheap, but regenerable in a day)?
+ANSWER: Braize over rsync, include extracted texts.
 3. **Rate numbers.** 30 searches, 120 pages and 60 API calls a minute per
    address: fine, or stricter?
+ANSWER: That's fine.
 
 ## Order
 

@@ -215,6 +215,26 @@ export const session = sqliteTable('session', {
   userAgent: text('user_agent'),
 });
 
+/** A passkey the owner registered (plan Phase 6): WebAuthn credential, public key as base64url. */
+export const passkey = sqliteTable('passkey', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  credentialId: text('credential_id').notNull().unique(),
+  publicKey: text('public_key').notNull(),
+  counter: integer('counter').notNull().default(0),
+  transports: text('transports').notNull().default('[]'),
+  name: text('name').notNull().default(''),
+  createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+  lastUsedAt: text('last_used_at'),
+});
+
+/** A WebAuthn challenge waiting for its answer; five minutes, one use. */
+export const webauthnChallenge = sqliteTable('webauthn_challenge', {
+  id: text('id').primaryKey(),
+  kind: text('kind', { enum: ['register', 'login'] }).notNull(),
+  challenge: text('challenge').notNull(),
+  expiresAt: text('expires_at').notNull(),
+});
+
 export type Series = typeof series.$inferSelect;
 export type Trope = typeof trope.$inferSelect;
 export type Instance = typeof instance.$inferSelect;

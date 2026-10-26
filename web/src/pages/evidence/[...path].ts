@@ -1,7 +1,9 @@
 import { createReadStream, statSync } from 'node:fs';
 import { Readable } from 'node:stream';
 import type { APIRoute } from 'astro';
+import { eq } from 'drizzle-orm';
 import { db } from '../../db';
+import { evidence } from '../../db/schema';
 import { evidencePath } from '../../lib/files';
 import { workerAuthorized } from '../../lib/worker-auth';
 
@@ -12,6 +14,11 @@ export const GET: APIRoute = ({ params, locals, request }) => {
   const rel = params.path ?? '';
   if (!/^(pending\/\d+\/)?\d+\/?[\w.-]+\.(webp|mp4|jpg)$/.test(rel) || rel.includes('..')) return new Response(null, { status: 404 });
   if (rel.startsWith('pending/') && !locals.owner && !workerAuthorized(db, request)) return new Response(null, { status: 404 });
+  if (!rel.startsWith('pending/') && !locals.owner) {
+    // Over-cap evidence (plan Phase 6) stays on disk for the owner only.
+    const row = db.select({ public: evidence.public }).from(evidence).where(eq(evidence.filePath, rel)).get();
+    if (!row || !row.public) return new Response(null, { status: 404 });
+  }
   const path = evidencePath(rel);
   let size: number;
   try { size = statSync(path).size; } catch { return new Response(null, { status: 404 }); }

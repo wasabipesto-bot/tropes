@@ -1,19 +1,47 @@
 ---
 import { actions } from 'astro:actions';
 import Base from '../layouts/Base.astro';
+import { db } from '../db';
 import { afterAction } from '../lib/after-action';
+import { listPasskeys } from '../lib/passkeys';
 
 if (Astro.locals.owner) return Astro.redirect('/tropes');
 const { redirect, error } = afterAction(Astro);
 if (redirect) return redirect;
+const passkeys = listPasskeys(db).length > 0;
 ---
 
-<Base title="Log in">
+<Base title="Log in" noindex>
   <h1>Log in</h1>
+  {passkeys && (
+    <p style="margin: 28px 0 0; display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap">
+      <button type="button" class="go" id="use-passkey">Use a passkey</button>
+      <span id="pk-status" class="quiet" style="font-size: 15px" aria-live="polite"></span>
+    </p>
+  )}
   <form method="POST" action={actions.login} style="max-width: 420px; margin-top: 28px; display: flex; flex-direction: column; gap: 12px">
     <label for="pw" style="font-weight: 600">Password</label>
-    <input id="pw" name="password" type="password" class="fld" autocomplete="current-password" autofocus />
+    <input id="pw" name="password" type="password" class="fld" autocomplete="current-password" autofocus={!passkeys} />
     {error && <p class="quiet" style="margin: 0; font-size: 15px">{error}</p>}
-    <div><button type="submit" class="go">Log in</button></div>
+    <div><button type="submit" class={passkeys ? 't' : 'go'} style={passkeys ? 'padding: 8px 0' : undefined}>Log in with the password</button></div>
   </form>
 </Base>
+
+<script>
+  import { startAuthentication } from '@simplewebauthn/browser';
+  const button = document.getElementById('use-passkey');
+  const status = document.getElementById('pk-status');
+  button?.addEventListener('click', async () => {
+    status!.textContent = 'Waiting for the authenticator…';
+    try {
+      const { options, challengeId } = await (await fetch('/api/auth/passkey/login-options', { method: 'POST' })).json();
+      const response = await startAuthentication({ optionsJSON: options });
+      const r = await fetch('/api/auth/passkey/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ challengeId, response }) });
+      const out = await r.json();
+      if (out.ok) location.href = out.returnTo ?? '/tropes';
+      else status!.textContent = out.error ?? 'That did not work.';
+    } catch (e) {
+      status!.textContent = (e as Error).message || 'That did not work.';
+    }
+  });
+</script>

@@ -5,9 +5,6 @@ set shell := ["bash", "-cu"]
 REPO_DIR := env("TROPES_REPO_DIR", "~/projects/tropes")
 SITE := env("TROPES_SITE_URL", "http://127.0.0.1:4321")
 DB := env("DATABASE_PATH", "web/data/tropes.db")
-# rsync destination for off-host copies of the backups; empty skips the copy.
-BACKUP_REMOTE := env("TROPES_BACKUP_REMOTE", "braize:tropes-backups")
-BACKUP_KEEP := env("TROPES_BACKUP_KEEP", "14")
 
 default:
     @just --list
@@ -118,21 +115,9 @@ setup-media:
 hash-password password:
     npx tsx scripts/hash-password.ts '{{password}}'
 
-# Snapshot the database and evidence files into backups/ and copy them off-host (VACUUM INTO, so the site keeps running).
+# Nightly backup: a SQLite snapshot (14 daily, 8 weekly) plus evidence, posters, sources and texts, rsynced to braize (ops/backup.sh).
 backup:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    stamp=$(date -u +%Y%m%d-%H%M%S)
-    mkdir -p backups
-    rm -f "backups/tropes-${stamp}.db"
-    sqlite3 "{{DB}}" "VACUUM INTO 'backups/tropes-${stamp}.db'"
-    if [ -d web/data/evidence ]; then tar -czf "backups/evidence-${stamp}.tar.gz" -C web/data evidence; fi
-    prune() { find backups -maxdepth 1 -name "$1" -printf '%T@ %p\n' | sort -rn | tail -n +$(( {{BACKUP_KEEP}} + 1 )) | cut -d' ' -f2- | xargs -r rm -f; }
-    prune 'tropes-*.db'; prune 'evidence-*.tar.gz'
-    echo "snapshot backups/tropes-${stamp}.db ($(du -h "backups/tropes-${stamp}.db" | cut -f1)), $(ls backups | wc -l) files kept locally"
-    if [ -n "{{BACKUP_REMOTE}}" ]; then
-        rsync -a --mkpath --delete backups/ "{{BACKUP_REMOTE}}/" && echo "copied to {{BACKUP_REMOTE}}"
-    fi
+    ops/backup.sh
 
 # Build and start the containers.
 up:

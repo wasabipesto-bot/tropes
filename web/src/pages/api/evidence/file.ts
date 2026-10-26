@@ -4,6 +4,7 @@ import type { APIRoute } from 'astro';
 import { eq } from 'drizzle-orm';
 import { db } from '../../../db';
 import { evidence, proposal } from '../../../db/schema';
+import { applyCaps } from '../../../lib/caps';
 import { evidencePath, pendingEvidencePath } from '../../../lib/files';
 import { parseJson } from '../../../lib/jobs/queue';
 import { badRequest, unauthorized, workerAuthorized } from '../../../lib/worker-auth';
@@ -51,5 +52,6 @@ export const POST: APIRoute = async ({ request }) => {
   mkdirSync(dirname(path), { recursive: true });
   writeFileSync(path, buf);
   db.update(evidence).set({ filePath: rel, kind: kind === 'frame' ? 'frame' : 'clip' }).where(eq(evidence.id, e.id)).run();
+  applyCaps(db, e.instanceId);
   return Response.json({ stored: 'evidence', evidenceId: e.id, path: rel });
 };

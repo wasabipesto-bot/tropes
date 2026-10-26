@@ -127,3 +127,24 @@ main.frame { flex: 1; padding-block: 48px 120px; }
 .site-footer .frame { padding-block: 20px 40px; display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 15px; color: var(--quiet); }
 .site-footer a { color: var(--quiet); }
 .site-footer .home { margin-left: auto; }
+
+/* Narrow screens (plan Phase 6): one column, tighter frame, tap-sized controls. */
+@media (max-width: 720px) {
+  .frame, .wide .frame { padding-inline: 16px; }
+  main.frame, .wide main.frame { padding-block: 24px 80px; }
+  h1, .wide h1 { font-size: 30px; line-height: 1.15; overflow-wrap: anywhere; }
+  .site-header .frame { gap: 6px 16px; }
+  .site-header nav { display: flex; flex-wrap: wrap; gap: 2px 16px; }
+  .site-header .search { flex-basis: 100%; }
+  .site-header .search .line { width: 100%; box-sizing: border-box; }
+  .row { column-gap: 0; }
+  .lab { padding-top: 0 !important; }
+  .fld, .line, select { font-size: 16px; max-width: 100%; box-sizing: border-box; }
+  button.go { width: 100%; }
+  button.t, a.edit { min-height: 44px; display: inline-flex; align-items: center; }
+  img, video, figure { max-width: 100%; }
+  /* The tropes index drops its examples column; the wide tables scroll inside their wrappers. */
+  .ex { display: none; }
+  .tropes-table { min-width: 0 !important; }
+}
+

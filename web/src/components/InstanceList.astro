@@ -3,6 +3,7 @@ import { actions } from 'astro:actions';
 import type { Evidence } from '../db/schema';
 import { PROMINENCES } from '../db/schema';
 import { db } from '../db';
+import { visibleEvidence } from '../lib/caps';
 import { evidenceSearchFor } from '../lib/jobs/pending';
 import { parseJson } from '../lib/jobs/queue';
 import { PROMINENCE_LABEL, groupByProminence, type InstanceView } from '../lib/queries';
@@ -29,8 +30,10 @@ const base = returnTo.split('?')[0];
 const at = (id: number) => `#i-${id}`;
 const plain = (id: number) => `${base}${at(id)}`;
 const withEdit = (id: number) => `${base}?edit=${id}${at(id)}`;
-const frames = (ev: Evidence[]) => ev.filter((e) => e.kind !== 'quote');
-const quotes = (ev: Evidence[]) => ev.filter((e) => e.kind === 'quote');
+const frames = (ev: Evidence[]) => visibleEvidence(ev, owner).filter((e) => e.kind !== 'quote');
+const quotes = (ev: Evidence[]) => visibleEvidence(ev, owner).filter((e) => e.kind === 'quote');
+// Over a fair-use cap (plan Phase 6): kept, shown to the owner with a tag, hidden from visitors.
+const ownerOnly = (e: Evidence) => owner && !e.public;
 const search = owner && editing ? evidenceSearchFor(db, editing) : undefined;
 const searchLine = (() => {
   if (!search) return null;
@@ -130,7 +133,7 @@ const searchLine = (() => {
     </div>
     <aside class="mar">
       {quotes(v.evidence).map((q) => (
-        <p class="quote"><Fragment set:html={renderInline(q.content ?? '', render)} />{q.locator && <span class="loc">{formatLocator(q.locator)}</span>}</p>
+        <p class="quote"><Fragment set:html={renderInline(q.content ?? '', render)} />{q.locator && <span class="loc">{formatLocator(q.locator)}</span>}{ownerOnly(q) && <span class="loc" title="Over the fair-use cap; visitors do not see it">owner only</span>}</p>
       ))}
       {frames(v.evidence).length > 0 && (
         <div class="gal">
@@ -141,7 +144,7 @@ const searchLine = (() => {
                 : f.filePath
                   ? <img src={`/evidence/${f.filePath}`} alt={f.locator} style="display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover" loading="lazy" />
                   : <div class="fr">{f.kind === 'clip' && <svg width="22" height="22" viewBox="0 0 22 22" aria-label="Clip on its way" role="img"><path d="M7 4l11 7-11 7z" fill="currentColor"></path></svg>}</div>}
-              <figcaption class="quiet" style="font-size: 14px; margin-top: 2px">{f.locator}</figcaption>
+              <figcaption class="quiet" style="font-size: 14px; margin-top: 2px">{f.locator}{ownerOnly(f) && <span class="loc" title="Over the fair-use cap; visitors do not see it">owner only</span>}</figcaption>
             </figure>
           ))}
         </div>

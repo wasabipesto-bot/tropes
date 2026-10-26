@@ -1,4 +1,5 @@
 ---
+import { plainText } from '../../lib/text';
 import { actions } from 'astro:actions';
 import Base from '../../layouts/Base.astro';
 import InstanceList from '../../components/InstanceList.astro';
@@ -33,7 +34,7 @@ const here = `/tropes/${t.slug}`;
 const returnTo = Astro.url.pathname + Astro.url.search;
 ---
 
-<Base title={t.name} wide>
+<Base title={t.name} wide description={plainText(t.description) || `Works in the log that use ${t.name}.`}>
   <div class="row">
     <div class="lab"></div>
     <div>

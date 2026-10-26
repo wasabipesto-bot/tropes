@@ -38,6 +38,12 @@ function spoilers(src: string, opts: RenderOptions): string {
     .join('');
 }
 
+/** The text with no markup, for OG descriptions and the API: spoilers become an ellipsis, [[links]] their name. */
+export function plainText(src: string, max = 200): string {
+  const t = src.replace(/\|\|[^|]*\|\|/g, '…').replace(/\[\[([^\]]+)\]\]/g, '$1').replace(/\s+/g, ' ').trim();
+  return t.length > max ? t.slice(0, max - 1).replace(/\s+\S*$/, '') + '…' : t;
+}
+
 export function renderInline(src: string, opts: RenderOptions): string {
   return spoilers(src.replace(/\s*\n\s*/g, ' ').trim(), opts);
 }

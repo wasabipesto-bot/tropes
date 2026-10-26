@@ -28,7 +28,7 @@ const chosenIndex = (v: MatchView) => v.payload.candidates.findIndex((c) => v.pa
 const when = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
 ---
 
-<Base title="Metadata" wide>
+<Base title="Metadata" wide noindex>
   <h1>Metadata</h1>
   <p class="quiet" style="margin: 4px 0 0; font-size: 15px">
     {counts.pinned} pinned · {counts.check} to check · {counts.not_found} not found · {counts.none} no public match · {counts.never} never looked up.

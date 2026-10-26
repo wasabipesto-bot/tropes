@@ -26,7 +26,7 @@ const [{ n: dossiers }] = db.select({ n: count() }).from(dossier).all();
 const cost = (j: typeof recent[number]) => { const u = parseJson<any>(j.usage, null); return u?.costUsd ? `$${u.costUsd.toFixed(3)}` : ''; };
 ---
 
-<Base title="Jobs">
+<Base title="Jobs" noindex>
   <h1>Jobs</h1>
   <p class="quiet" style="margin: 4px 0 0; font-size: 15px">{dossiers} dossiers built. The worker runs on ivory with `just worker`.{quiet > 0 && ` ${quiet} Notion syncs with nothing to do are not listed.`} <a href="/metadata">Metadata lookups</a></p>
   {error && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">{error}</p>}

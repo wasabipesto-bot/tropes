@@ -1,4 +1,5 @@
 ---
+import { plainText } from '../../lib/text';
 import { statSync } from 'node:fs';
 import { eq } from 'drizzle-orm';
 import { actions } from 'astro:actions';
@@ -56,7 +57,7 @@ const pending = owner ? pendingReviewFor(db, 'media', m.id) : null;
 const fmt = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
 ---
 
-<Base title={m.title} wide>
+<Base title={m.title} wide description={plainText(m.description ?? '') || metadataLine(m, details, genres)} image={m.posterPath ? `/posters/${m.id}-300.webp` : null}>
   <div class="row">
     <div class="lab">
       {poster && <img src={poster} alt={`${m.title} poster`} style="display: block; width: 150px; max-width: 100%; height: auto" loading="lazy" />}

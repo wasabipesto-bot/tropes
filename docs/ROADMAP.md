@@ -570,7 +570,9 @@ from the pipeline, not by hand.
 
 ### Phase 6: public hardening (M)
 
-Decisions and questions: [`plans/phase-6.md`](plans/phase-6.md) (2026-10-26).
+Built 2026-10-26: [`plans/phase-6.md`](plans/phase-6.md) has the decisions
+and what to set when the site goes public (SITE_ORIGIN, TROPES_TRUSTED_PROXY,
+the backup timer, a passkey).
 
 - Evidence caps, all configurable, defaults decided 2026-10-19: quotes up to
   100 words each; up to 10 frames per work per trope; clips public, up to 30 s
