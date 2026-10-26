@@ -190,15 +190,15 @@ export const server = {
     },
   }),
 
-  addQuote: defineAction({
+  /** "Find evidence": the owner types what they are looking for; a job searches the work's text and attaches the quotes it finds. */
+  findEvidence: defineAction({
     accept: 'form',
-    input: z.object({ instanceId: id, content: text, locator: text, returnTo }),
+    input: z.object({ instanceId: id, prompt: text, returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
-      if (input.content) {
-        const [{ n }] = db.select({ n: sql<number>`coalesce(max(${evidence.position}), -1) + 1` }).from(evidence).where(eq(evidence.instanceId, input.instanceId)).all();
-        db.insert(evidence).values({ instanceId: input.instanceId, kind: 'quote', content: input.content, locator: input.locator, position: n }).run();
-      }
+      if (!input.prompt) throw new ActionError({ code: 'BAD_REQUEST', message: 'Say what you are looking for.' });
+      if (!db.select().from(instance).where(eq(instance.id, input.instanceId)).get()) throw new ActionError({ code: 'NOT_FOUND', message: 'No such instance.' });
+      createJob(db, 'find_evidence', { instanceId: input.instanceId, prompt: input.prompt });
       return { returnTo: input.returnTo ?? '/tropes' };
     },
   }),

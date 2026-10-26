@@ -24,6 +24,8 @@ export const lookupMediaPayload = z.object({
 });
 export const syncNotionPayload = z.object({});
 export const writeBlurbsPayload = z.object({ mediaIds: z.array(z.number().int().positive()).min(1), auto: z.boolean().default(false) });
+/** find_evidence: the owner describes the moment they want quoted; the worker searches the work's text and attaches what it finds. */
+export const findEvidencePayload = z.object({ instanceId: z.number().int().positive(), prompt: z.string().min(1) });
 
 export const payloadByKind = {
   ping: pingPayload,
@@ -33,6 +35,7 @@ export const payloadByKind = {
   lookup_media: lookupMediaPayload,
   sync_notion: syncNotionPayload,
   write_blurbs: writeBlurbsPayload,
+  find_evidence: findEvidencePayload,
 } as const;
 export type JobKind = (typeof JOB_KINDS)[number];
 

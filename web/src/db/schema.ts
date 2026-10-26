@@ -235,7 +235,7 @@ export const mediaNote = sqliteTable('media_note', {
   fetchedAt: text('fetched_at').notNull().default(sql`(datetime('now'))`),
 });
 
-export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs'] as const;
+export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs', 'find_evidence'] as const;
 export const JOB_STATUSES = ['queued', 'running', 'done', 'failed', 'cancelled'] as const;
 
 /** Work handed to the worker. Payload and result are JSON validated by zod on the site and pydantic in the worker. */

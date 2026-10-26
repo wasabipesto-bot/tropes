@@ -2,6 +2,9 @@
 import { actions } from 'astro:actions';
 import type { Evidence } from '../db/schema';
 import { PROMINENCES } from '../db/schema';
+import { db } from '../db';
+import { evidenceSearchFor } from '../lib/jobs/pending';
+import { parseJson } from '../lib/jobs/queue';
 import { PROMINENCE_LABEL, groupByProminence, type InstanceView } from '../lib/queries';
 import { formatLocator, renderInline, type RenderOptions } from '../lib/text';
 import VerifyMark from './VerifyMark.astro';
@@ -14,7 +17,7 @@ interface Props {
   render: RenderOptions;
   /** The current page path with its query string, for post-action redirects. */
   returnTo: string;
-  /** The instance being edited (?edit=<id>): one level, with the text, prominence, evidence and the rest together. */
+  /** The instance being edited (?edit=<id>): one panel with everything routine editing needs. */
   editing?: number | null;
 }
 
@@ -27,6 +30,19 @@ const plain = (id: number) => `${base}${at(id)}`;
 const withEdit = (id: number) => `${base}?edit=${id}${at(id)}`;
 const frames = (ev: Evidence[]) => ev.filter((e) => e.kind !== 'quote');
 const quotes = (ev: Evidence[]) => ev.filter((e) => e.kind === 'quote');
+const search = owner && editing ? evidenceSearchFor(db, editing) : undefined;
+const searchLine = (() => {
+  if (!search) return null;
+  const r = parseJson<any>(search.result, {});
+  if (search.status === 'queued' || search.status === 'running') return { live: true, text: `Looking for “${parseJson<any>(search.payload, {}).prompt}”…` };
+  if (search.status === 'failed') return { live: false, text: 'The search failed.' };
+  if (search.status === 'done') {
+    const n = r.summary?.found ?? 0;
+    const w: string[] = r.warnings ?? [];
+    return { live: false, text: n > 0 ? `Found ${n} quote${n === 1 ? '' : 's'} for “${parseJson<any>(search.payload, {}).prompt}”.` : (w[0] ?? 'Nothing matched in the text.') };
+  }
+  return null;
+})();
 ---
 
 {groups.map((g) => g.items.map((v, i) => (
@@ -46,18 +62,18 @@ const quotes = (ev: Evidence[]) => ev.filter((e) => e.kind === 'quote');
       </div>
 
       {owner && editing === v.inst.id ? (
-        <>
-          <form method="POST" action={actions.updateInstanceText} class="textedit">
+        <div class="panel">
+          <form method="POST" action={actions.updateInstanceText} class="textedit" id={`f-${v.inst.id}`}>
             <input type="hidden" name="instanceId" value={v.inst.id} />
             <input type="hidden" name="returnTo" value={plain(v.inst.id)} />
-            <label for={`who-${v.inst.id}`} class="quiet" style="font-size: 15px">Who</label>
+            <label for={`who-${v.inst.id}`} class="quiet">Who</label>
             <input id={`who-${v.inst.id}`} name="who" class="fld" value={v.inst.who} placeholder="The character, pair or element" />
-            <label for={`text-${v.inst.id}`} class="quiet" style="font-size: 15px">Text</label>
+            <label for={`text-${v.inst.id}`} class="quiet">Text</label>
             <textarea id={`text-${v.inst.id}`} name="text" class="fld" rows="4">{v.inst.text}</textarea>
-            <p class="quiet" style="margin: 0; font-size: 15px">||double bars|| hide a spoiler. Either field may be left empty.</p>
-            <p class="buttons"><button type="submit" class="t">Save</button><a href={plain(v.inst.id)} class="quiet">Cancel</a></p>
+            <p class="quiet" style="margin: 0; font-size: 14px">||double bars|| hide a spoiler. Either field may be left empty.</p>
           </form>
-          <div class="panel">
+
+          <div class="rowline">
             <form method="POST" action={actions.setProminence} class="line-form">
               <input type="hidden" name="instanceId" value={v.inst.id} />
               <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
@@ -66,42 +82,46 @@ const quotes = (ev: Evidence[]) => ev.filter((e) => e.kind === 'quote');
                 ? <span class="on">{PROMINENCE_LABEL[p]}</span>
                 : <button type="submit" name="prominence" value={p} class="t">{PROMINENCE_LABEL[p]}</button>)}
             </form>
-            {v.evidence.length > 0 && (
-              <div class="evlist">
-                <span class="quiet">Evidence</span>
-                {v.evidence.map((e) => (
-                  <form method="POST" action={actions.removeEvidence} class="evrow">
-                    <input type="hidden" name="evidenceId" value={e.id} />
-                    <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
-                    <span class="evtext">{e.kind === 'quote' ? <Fragment set:html={renderInline(e.content ?? '', render)} /> : e.kind}{e.locator && <span class="loc">{formatLocator(e.locator)}</span>}</span>
-                    <button type="submit" class="t danger">Remove</button>
-                  </form>
-                ))}
-              </div>
-            )}
-            <form method="POST" action={actions.addQuote} class="textedit" style="margin-top: 8px">
+            <form method="POST" action={actions.toggleNotable} class="line-form">
               <input type="hidden" name="instanceId" value={v.inst.id} />
               <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
-              <label for={`q-${v.inst.id}`} class="quiet" style="font-size: 15px">Add a quote</label>
-              <textarea id={`q-${v.inst.id}`} name="content" class="fld" rows="2"></textarea>
-              <label for={`c-${v.inst.id}`} class="quiet" style="font-size: 15px">Citation</label>
-              <input id={`c-${v.inst.id}`} name="locator" class="fld" placeholder="ch. 12, p. 203, S01E03 12:40" />
-              <p class="buttons"><button type="submit" class="t">Add quote</button></p>
+              <button type="submit" class="t">{v.notable ? 'Unpin from notable' : 'Pin as notable'}</button>
             </form>
-            <div class="line-form" style="margin-top: 6px">
-              <form method="POST" action={actions.toggleNotable}>
-                <input type="hidden" name="instanceId" value={v.inst.id} />
-                <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
-                <button type="submit" class="t">{v.notable ? 'Unpin from notable' : 'Pin as notable'}</button>
-              </form>
-              <form method="POST" action={actions.removeInstance} onsubmit="return confirm('Remove this instance? There is no undo.')">
-                <input type="hidden" name="instanceId" value={v.inst.id} />
-                <input type="hidden" name="returnTo" value={base} />
-                <button type="submit" class="t danger">Remove instance</button>
-              </form>
-            </div>
           </div>
-        </>
+
+          <div class="evblock">
+            <span class="quiet">Evidence</span>
+            {v.evidence.length === 0 && <span class="quiet" style="font-size: 15px">none yet</span>}
+            {v.evidence.map((e) => (
+              <form method="POST" action={actions.removeEvidence} class="evrow">
+                <input type="hidden" name="evidenceId" value={e.id} />
+                <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
+                <span class="evtext">{e.kind === 'quote' ? <Fragment set:html={renderInline(e.content ?? '', render)} /> : e.kind}{e.locator && <span class="loc">{formatLocator(e.locator)}</span>}</span>
+                <button type="submit" class="t danger">Remove</button>
+              </form>
+            ))}
+            <form method="POST" action={actions.findEvidence} class="find">
+              <input type="hidden" name="instanceId" value={v.inst.id} />
+              <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
+              <label for={`fe-${v.inst.id}`} class="quiet">Find</label>
+              <input id={`fe-${v.inst.id}`} name="prompt" class="line" placeholder="the moment you want quoted" style="flex: 1 1 260px" />
+              <button type="submit" class="t">Search the text</button>
+            </form>
+            {searchLine && (
+              <p class:list={['quiet', 'status', { live: searchLine.live }]} style="margin: 2px 0 0; font-size: 14px" data-job={searchLine.live ? search!.id : undefined}>{searchLine.text}</p>
+            )}
+          </div>
+
+          <div class="actions">
+            <button type="submit" form={`f-${v.inst.id}`} class="go">Save</button>
+            <a href={plain(v.inst.id)} class="quiet">Cancel</a>
+            <form method="POST" action={actions.removeInstance} class="remove" onsubmit="return confirm('Remove this association? There is no undo.')">
+              <input type="hidden" name="instanceId" value={v.inst.id} />
+              <input type="hidden" name="returnTo" value={base} />
+              <button type="submit" class="t danger">Remove association</button>
+            </form>
+          </div>
+        </div>
       ) : (
         <p style="margin: 2px 0 0">
           {v.inst.who && <span style="font-style: italic">{v.inst.who}.</span>}
@@ -130,6 +150,26 @@ const quotes = (ev: Evidence[]) => ev.filter((e) => e.kind === 'quote');
   </article>
 )))}
 
+<script>
+  // While an evidence search runs, poll it and reload once it lands so the quotes appear.
+  const el = document.querySelector<HTMLElement>('.status.live[data-job]');
+  if (el) {
+    const id = el.dataset.job;
+    const tick = async () => {
+      try {
+        const r = await fetch(`/api/jobs/${id}`, { headers: { accept: 'application/json' } });
+        if (r.ok) {
+          const j = await r.json();
+          if (j.status !== 'running' && j.status !== 'queued') { location.reload(); return; }
+        }
+      } finally {
+        setTimeout(tick, 2000);
+      }
+    };
+    setTimeout(tick, 2000);
+  }
+</script>
+
 <style>
   .group { font-weight: 700; font-size: 19px; border-top: 2px solid #1B1B1B; padding-top: 6px; display: flex; justify-content: space-between; gap: 8px; }
   .body { border-top: 1px solid #E4E3DF; padding-top: 10px; min-width: 0; }
@@ -138,17 +178,23 @@ const quotes = (ev: Evidence[]) => ev.filter((e) => e.kind === 'quote');
   .edit { margin-left: auto; font-size: 15px; padding: 8px 0; }
   .mar { border-top: 1px solid #E4E3DF; padding-top: 12px; font-size: 15px; line-height: 1.5; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
   .quote { margin: 0; font-style: italic; color: #3A3A36; max-width: 640px; }
-  .panel { margin: 12px 0 8px; padding: 10px 0 10px 16px; border-left: 1px solid #C9C7C0; font-size: 16px; }
-  .line-form { display: flex; flex-wrap: wrap; gap: 0 16px; align-items: baseline; }
-  .line-form a, .line-form .t, .line-form .on { padding: 8px 0; }
-  .line-form form { display: inline; }
+  /* The edit panel: one bordered block, everything routine in it. */
+  .panel { margin: 10px 0 8px; padding: 12px 0 12px 16px; border-left: 2px solid #1B1B1B; font-size: 16px; display: flex; flex-direction: column; gap: 14px; }
+  .panel .quiet { font-size: 15px; }
+  .textedit { display: flex; flex-direction: column; gap: 6px; }
+  .rowline { display: flex; flex-wrap: wrap; gap: 4px 28px; align-items: baseline; }
+  .line-form { display: flex; flex-wrap: wrap; gap: 0 14px; align-items: baseline; }
+  .line-form .t, .line-form .on { padding: 6px 0; }
   .on { font-weight: 700; }
-  .evlist { margin-top: 6px; display: flex; flex-direction: column; gap: 2px; font-size: 15px; }
-  .evrow { display: flex; gap: 12px; align-items: baseline; }
+  .evblock { display: flex; flex-direction: column; gap: 4px; }
+  .evrow { display: flex; gap: 12px; align-items: baseline; font-size: 15px; }
   .evrow .t { padding: 4px 0; flex: none; }
   .evtext { font-style: italic; color: #3A3A36; }
-  .textedit { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-  .buttons { margin: 4px 0 0; font-size: 16px; display: flex; gap: 16px; }
-  .buttons .t, .buttons a { padding: 8px 0; }
-  article[id]:target .body { outline: 0; }
+  .find { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; margin-top: 4px; }
+  .find .t { padding: 6px 0; }
+  .status.live::after { content: ' ·'; animation: blink 1s steps(2, start) infinite; }
+  @keyframes blink { to { visibility: hidden; } }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; padding-top: 4px; border-top: 1px solid #ECEBE7; }
+  .actions .remove { margin-left: auto; }
+  .actions a { padding: 10px 0; }
 </style>

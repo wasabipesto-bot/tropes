@@ -67,6 +67,7 @@ export function tropeLinksIn(src: string): string[] {
 export function formatLocator(locator: string): string {
   const s = locator.trim();
   if (!s) return '';
+  if (/^\d{1,4}$/.test(s)) return `ch. ${s}`; // a bare number is a chapter heading copied from the text
   const ch = /^chapter\s+([0-9]+|[ivxlc]+)\b\.?:?\s*(.*)$/i.exec(s);
   if (ch) {
     const n = /^[0-9]+$/.test(ch[1]) ? ch[1] : String(roman(ch[1].toUpperCase()));

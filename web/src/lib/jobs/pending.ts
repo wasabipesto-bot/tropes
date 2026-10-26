@@ -45,3 +45,8 @@ export function pendingReviewFor(db: Db, kind: 'media' | 'series' | 'trope', id:
   }
   return null;
 }
+
+/** The newest find_evidence job for an instance, for the edit panel's status line. */
+export function evidenceSearchFor(db: Db, instanceId: number): Job | undefined {
+  return db.select().from(job).where(eq(job.kind, 'find_evidence')).orderBy(desc(job.id)).limit(50).all().find((j) => parseJson<any>(j.payload, {}).instanceId === instanceId);
+}

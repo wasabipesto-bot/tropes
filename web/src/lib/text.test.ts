@@ -66,6 +66,7 @@ import { formatLocator } from './text';
 describe('formatLocator', () => {
   it('shortens chapter headings and calms shouting ones', () => {
     expect(formatLocator('CHAPTER 17')).toBe('ch. 17');
+    expect(formatLocator('7')).toBe('ch. 7');
     expect(formatLocator('Chapter XII: The Fall')).toBe('ch. 12');
     expect(formatLocator('THE WARREN')).toBe('The Warren');
     expect(formatLocator('S01E03 12:40')).toBe('S01E03 12:40');
