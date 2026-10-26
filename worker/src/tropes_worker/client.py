@@ -143,6 +143,16 @@ class SiteClient:
         r.raise_for_status()
         return r.text
 
+    def upload_evidence(self, target: str, kind: str, at: float, data: bytes, ext: str) -> dict[str, Any]:
+        """A frame or clip for `proposal:<id>` (waits beside the quote on the review page) or `evidence:<id>` (onto the instance)."""
+        r = self._http.post(
+            "/api/evidence/file",
+            data={"target": target, "kind": kind, "at": f"{at:.3f}"},
+            files={"file": (f"{kind}.{ext}", data, "image/webp" if ext == "webp" else "video/mp4")},
+        )
+        r.raise_for_status()
+        return r.json()
+
     def dossier(self, kind: str, subject_id: int) -> dict[str, Any] | None:
         r = self._http.get(f"/api/dossiers/{kind}/{subject_id}")
         if r.status_code == 404:

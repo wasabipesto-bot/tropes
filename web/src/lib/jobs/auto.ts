@@ -7,7 +7,7 @@
  */
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 import type { Db } from '../../db/open';
-import { dossier, media, proposal, type Job } from '../../db/schema';
+import { dossier, localSource, media, proposal, type Job } from '../../db/schema';
 import { commitMatch, recordUnresolved, syncNotionLink, type MatchPayload } from '../metadata';
 import type { ImportReport } from '../notion-import';
 import { commitProposals } from './commit';
@@ -54,6 +54,7 @@ export function afterNotionSync(db: Db, report: ImportReport): { lookups: number
 export function afterJobDone(db: Db, j: Job): void {
   const payload = parseJson<any>(j.payload, {});
   if (j.kind === 'lookup_media') supersedeOlderMatches(db, j, payload.mediaIds ?? []);
+  if (j.kind === 'scan_trope' || j.kind === 'check_subject' || j.kind === 'find_evidence') queueFrames(db, j);
   if (j.kind === 'find_evidence') {
     // The owner asked for these by name, so they go straight onto the instance; Remove is one click away.
     const rows = db.select({ id: proposal.id }).from(proposal).where(and(eq(proposal.jobId, j.id), eq(proposal.kind, 'evidence'))).all();
@@ -104,4 +105,23 @@ function supersedeOlderMatches(db: Db, j: Job, mediaIds: number[]): void {
     .where(and(eq(proposal.kind, 'match'), eq(proposal.decision, 'pending'), inArray(proposal.subjectId, mediaIds), sql`${proposal.jobId} < ${j.id}`))
     .all();
   if (older.length > 0) db.update(proposal).set({ decision: 'rejected' }).where(inArray(proposal.id, older.map((o) => o.id))).run();
+}
+
+/** Quotes with a timestamp get a frame grabbed right after the scan, so the review page shows the picture with the quote (plan D9). */
+export function queueFrames(db: Db, j: Job): number {
+  const rows = db.select().from(proposal).where(eq(proposal.jobId, j.id)).all();
+  const items: { proposalId: number; sourceId: number; at: number; end?: number }[] = [];
+  for (const p of rows) {
+    if (p.subjectKind !== 'media') continue;
+    const quotes = parseJson<any[]>(p.evidence, []).filter((e) => typeof e.at === 'number' && !e.frame);
+    if (quotes.length === 0) continue;
+    const sources = db.select().from(localSource).where(and(eq(localSource.mediaId, p.subjectId), eq(localSource.kind, 'video'))).all();
+    for (const q of quotes) {
+      const label = String(q.locator ?? '').split(' ')[0];
+      const src = sources.find((s) => s.label === (/^S\d+E\d+$/.test(label) ? label : ''));
+      if (src) items.push({ proposalId: p.id, sourceId: src.id, at: q.at, ...(q.end ? { end: q.end } : {}) });
+    }
+  }
+  if (items.length > 0) createJob(db, 'extract_evidence', { items, forJob: j.id });
+  return items.length;
 }

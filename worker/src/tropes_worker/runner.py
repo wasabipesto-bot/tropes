@@ -32,6 +32,7 @@ def registry() -> dict[str, JobFn]:
     from .jobs import (
         build_dossiers,
         check_subject,
+        extract_evidence,
         extract_text,
         find_evidence,
         index_local,
@@ -53,6 +54,7 @@ def registry() -> dict[str, JobFn]:
         "find_evidence": find_evidence.run,
         "index_local": index_local.run,
         "extract_text": extract_text.run,
+        "extract_evidence": extract_evidence.run,
     }
 
 

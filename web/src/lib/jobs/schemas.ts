@@ -34,6 +34,8 @@ export const extractTextPayload = z.object({ sourceIds: z.array(z.number().int()
 /** extract_evidence: a frame (or clip) at each timestamped quote; proposals before review, instances after commit. */
 export const extractEvidencePayload = z.object({
   items: z.array(z.object({ proposalId: z.number().int().positive().optional(), evidenceId: z.number().int().positive().optional(), sourceId: z.number().int().positive(), at: z.number().min(0), end: z.number().min(0).optional(), clip: z.boolean().default(false) })).min(1),
+  /** The scan or check whose proposals these frames belong to, so its review page can wait for them. */
+  forJob: z.number().int().positive().optional(),
 });
 
 export const payloadByKind = {
@@ -53,7 +55,8 @@ export type JobKind = (typeof JOB_KINDS)[number];
 
 export const progressBody = z.object({ done: z.number().int().min(0), total: z.number().int().min(0), note: z.string().optional() });
 
-export const evidenceItem = z.object({ kind: z.literal('quote'), content: z.string().min(1), locator: z.string().default('') });
+/** A quote; from subtitle text it carries `at` (seconds) and, once the media worker has been by, a pending `frame` or `clip` file name. */
+export const evidenceItem = z.object({ kind: z.literal('quote'), content: z.string().min(1), locator: z.string().default(''), at: z.number().min(0).optional(), end: z.number().min(0).optional(), frame: z.string().optional(), clip: z.string().optional() });
 
 export const proposalIn = z.object({
   tropeId: z.number().int().positive().nullable().optional(),

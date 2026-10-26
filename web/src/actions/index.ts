@@ -4,7 +4,7 @@ import { z } from 'astro/zod';
 import { and, eq, sql } from 'drizzle-orm';
 import type { ActionAPIContext } from 'astro:actions';
 import { db } from '../db';
-import { PROMINENCES, dossier, evidence, instance, job, media, mediaGenre, mediaLink, notable, proposal, series, trope, tropeAlias, tropeSeed } from '../db/schema';
+import { PROMINENCES, dossier, evidence, instance, job, localSource, media, mediaGenre, mediaLink, notable, proposal, series, trope, tropeAlias, tropeSeed } from '../db/schema';
 import { cancelJob, createJob, jobById, parseJson } from '../lib/jobs/queue';
 import { commitProposals } from '../lib/jobs/commit';
 import { commitInput, commitMatchesInput } from '../lib/jobs/forms';
@@ -14,6 +14,7 @@ import { seedFromUrl } from '../lib/seeds';
 import { isGenre } from '../lib/genres';
 import { siteOf } from '../lib/media';
 import { renameTrope } from '../lib/rename';
+import { parseStamp } from '../lib/text';
 import { RateLimiter, SESSION_COOKIE, SESSION_DAYS, createSession, deleteSession } from '../lib/auth';
 import { verifyPassword } from '../lib/password';
 import { resolveSubject, resolveTrope } from '../lib/queries';
@@ -200,6 +201,28 @@ export const server = {
       if (!db.select().from(instance).where(eq(instance.id, input.instanceId)).get()) throw new ActionError({ code: 'NOT_FOUND', message: 'No such instance.' });
       createJob(db, 'find_evidence', { instanceId: input.instanceId, prompt: input.prompt });
       return { returnTo: input.returnTo ?? '/tropes' };
+    },
+  }),
+
+  /** A short clip around a timestamped quote (plan D10): a clip row now, the file from the media worker in a minute. */
+  makeClip: defineAction({
+    accept: 'form',
+    input: z.object({ evidenceId: id, quoteId: id.optional(), returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const q = db.select().from(evidence).where(eq(evidence.id, input.quoteId ?? input.evidenceId)).get();
+      if (!q || q.kind !== 'quote') throw new ActionError({ code: 'NOT_FOUND', message: 'No such quote.' });
+      const inst = db.select().from(instance).where(eq(instance.id, q.instanceId)).get();
+      const stampText = q.locator.split(' ').pop() ?? '';
+      const at = parseStamp(stampText);
+      if (!inst || inst.subjectKind !== 'media' || at === null) throw new ActionError({ code: 'BAD_REQUEST', message: 'Only quotes with a timestamp can be clipped.' });
+      const label = /^S\d+E\d+ /.test(q.locator) ? q.locator.split(' ')[0] : '';
+      const src = db.select().from(localSource).where(and(eq(localSource.mediaId, inst.subjectId), eq(localSource.kind, 'video'), eq(localSource.label, label))).get();
+      if (!src) throw new ActionError({ code: 'NOT_FOUND', message: 'No file is known for this episode.' });
+      const [{ n }] = db.select({ n: sql<number>`coalesce(max(${evidence.position}), -1) + 1` }).from(evidence).where(eq(evidence.instanceId, inst.id)).all();
+      const row = db.insert(evidence).values({ instanceId: inst.id, kind: 'clip', locator: q.locator, position: n }).returning().get();
+      createJob(db, 'extract_evidence', { items: [{ evidenceId: row.id, sourceId: src.id, at, end: at + 10, clip: true }] });
+      return { returnTo: input.returnTo ?? `/media/${inst.subjectId}` };
     },
   }),
 

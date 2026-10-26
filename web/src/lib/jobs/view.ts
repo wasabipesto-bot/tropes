@@ -8,7 +8,8 @@ export interface ProposalView {
   p: Proposal;
   subject: SubjectRef;
   trope: Trope | null;
-  evidence: { kind: string; content: string; locator: string }[];
+  /** Quotes; from subtitle text they carry `at` (seconds) and, once grabbed, a pending `frame` or `clip` file name. */
+  evidence: { kind: string; content: string; locator: string; at?: number; end?: number; frame?: string; clip?: string }[];
   flags: string[];
   checked: boolean;
 }

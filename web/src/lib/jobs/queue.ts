@@ -4,6 +4,7 @@ import { dossier, job, media, mediaNote, proposal, type Job } from '../../db/sch
 import type { z } from 'astro/zod';
 import type { dossiersBody } from './schemas';
 import { payloadByKind, type JobKind, type ResultBody } from './schemas';
+import { discardPendingEvidence } from './commit';
 
 export const STALE_MINUTES = 10;
 export const MAX_ATTEMPTS = 2;
@@ -53,6 +54,7 @@ export function failJob(db: Db, id: number, error: string): void {
 
 export function cancelJob(db: Db, id: number): void {
   db.transaction((tx) => {
+    for (const p of tx.select({ id: proposal.id }).from(proposal).where(eq(proposal.jobId, id)).all()) discardPendingEvidence(p.id);
     tx.delete(proposal).where(eq(proposal.jobId, id)).run();
     tx.update(job).set({ status: 'cancelled', finishedAt: sql`(datetime('now'))` }).where(eq(job.id, id)).run();
   });

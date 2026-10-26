@@ -6,6 +6,7 @@ import ProposalList from '../../../components/ProposalList.astro';
 import { db } from '../../../db';
 import { afterAction } from '../../../lib/after-action';
 import { reviewState } from '../../../lib/jobs/page';
+import { framesJobFor } from '../../../lib/jobs/pending';
 import { UNCHECKED_BELOW, proposalsFor } from '../../../lib/jobs/view';
 import { tropeBySlug, tropeHrefResolver } from '../../../lib/queries';
 import { count } from 'drizzle-orm';
@@ -46,7 +47,7 @@ const here = `/recheck/trope/${t.slug}`;
       {error && <p class="quiet" style="margin: 6px 0 0; font-size: 15px">{error}</p>}
       {items.length === 0 && <p style="margin: 28px 0 0">Nothing new to add.</p>}
       <div style="margin-top: 36px; max-width: 820px">
-        <ProposalList jobId={job.id} items={items} mode="trope" render={render} returnTo={returnTo} verb="Add" cancelHref={`/tropes/${t.slug}`}>
+        <ProposalList jobId={job.id} items={items} framesJob={framesJobFor(db, job)} mode="trope" render={render} returnTo={returnTo} verb="Add" cancelHref={`/tropes/${t.slug}`}>
           <h2 slot="instances-heading" style="margin: 0 0 4px; font-size: 22px; font-weight: 700">New instances</h2>
           <h2 slot="evidence-heading" style="margin: 0 0 4px; font-size: 22px; font-weight: 700">New evidence for existing instances</h2>
         </ProposalList>

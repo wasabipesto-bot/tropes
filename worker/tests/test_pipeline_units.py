@@ -70,7 +70,8 @@ def test_quotes_from_subtitle_text_carry_timestamps(tmp_path):
 
     src = tmp_path / "show.txt"
     src.write_text(
-        "## S01E01 Welcome\n[0:01] We're almost there.\n[12:40] You think my head is thick?\n\n## S01E02 Next\n[3:05] Hello.\n"
+        "## S01E01 Welcome\n[0:01] We're almost there.\n[12:40] You think my head is thick?\n\n"
+        "## S01E02 Next\n[3:05] Hello there, old friend.\n"
     )
     text = load_text(src, tmp_path / "cache")
     kept, dropped = verify_quotes(

@@ -98,6 +98,7 @@ const searchLine = (() => {
                 <input type="hidden" name="returnTo" value={withEdit(v.inst.id)} />
                 <span class="evtext">{e.kind === 'quote' ? <Fragment set:html={renderInline(e.content ?? '', render)} /> : e.kind}{e.locator && <span class="loc">{formatLocator(e.locator)}</span>}</span>
                 <button type="submit" class="t danger">Remove</button>
+                {e.kind === 'quote' && /\d+:\d{2}$/.test(e.locator) && <button type="submit" class="t" formaction={actions.makeClip} name="quoteId" value={e.id}>Clip</button>}
               </form>
             ))}
             <form method="POST" action={actions.findEvidence} class="find">
@@ -138,9 +139,11 @@ const searchLine = (() => {
         <div class="gal">
           {frames(v.evidence).map((f) => (
             <figure style="margin: 0">
-              {f.filePath
-                ? <img src={`/evidence/${f.filePath}`} alt={f.locator} style="display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover" loading="lazy" />
-                : <div class="fr">{f.kind === 'clip' && <svg width="22" height="22" viewBox="0 0 22 22" aria-label="Play clip" role="img"><path d="M7 4l11 7-11 7z" fill="currentColor"></path></svg>}</div>}
+              {f.filePath && f.kind === 'clip'
+                ? <video controls preload="none" src={`/evidence/${f.filePath}`} style="display: block; width: 100%; aspect-ratio: 16 / 9; background: #000"></video>
+                : f.filePath
+                  ? <img src={`/evidence/${f.filePath}`} alt={f.locator} style="display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover" loading="lazy" />
+                  : <div class="fr">{f.kind === 'clip' && <svg width="22" height="22" viewBox="0 0 22 22" aria-label="Clip on its way" role="img"><path d="M7 4l11 7-11 7z" fill="currentColor"></path></svg>}</div>}
               <figcaption class="quiet" style="font-size: 14px; margin-top: 2px">{f.locator}</figcaption>
             </figure>
           ))}

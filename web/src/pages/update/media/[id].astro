@@ -9,6 +9,7 @@ import { media } from '../../../db/schema';
 import { afterAction } from '../../../lib/after-action';
 import { candidateLine } from '../../../lib/jobs/matches';
 import { reviewState } from '../../../lib/jobs/page';
+import { framesJobFor } from '../../../lib/jobs/pending';
 import { pendingReviewFor } from '../../../lib/jobs/pending';
 import { latestJob } from '../../../lib/jobs/queue';
 import { UNCHECKED_BELOW, proposalsFor } from '../../../lib/jobs/view';
@@ -131,7 +132,7 @@ const identityLine =
           </form>
         )}
         <div style="margin-top: 24px; max-width: 820px">
-          <ProposalList jobId={job.id} items={items} mode="subject" render={render} returnTo={returnTo} verb="Add" cancelHref={`/media/${m.id}`}>
+          <ProposalList jobId={job.id} items={items} framesJob={framesJobFor(db, job)} mode="subject" render={render} returnTo={returnTo} verb="Add" cancelHref={`/media/${m.id}`}>
             <h3 slot="instances-heading" style="margin: 0 0 4px; font-size: 20px; font-weight: 700">New tropes</h3>
             <h3 slot="evidence-heading" style="margin: 0 0 4px; font-size: 20px; font-weight: 700">New evidence for existing tropes</h3>
           </ProposalList>

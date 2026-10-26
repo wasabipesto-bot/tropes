@@ -6,6 +6,7 @@ import ProposalList from '../../components/ProposalList.astro';
 import { db } from '../../db';
 import { afterAction } from '../../lib/after-action';
 import { reviewState } from '../../lib/jobs/page';
+import { framesJobFor } from '../../lib/jobs/pending';
 import { UNCHECKED_BELOW, calibrationLine, proposalsFor } from '../../lib/jobs/view';
 import { count } from 'drizzle-orm';
 import { media } from '../../db/schema';
@@ -64,7 +65,7 @@ const q = Astro.url.searchParams;
         {error && <p class="quiet" style="margin: 6px 0 0; font-size: 15px">{error}</p>}
       </div>
       <div style="margin-top: 32px; max-width: 820px">
-        <ProposalList jobId={job.id} items={items} mode="trope" render={render} returnTo={returnTo} verb="Commit" cancelHref={`/add/trope?discard=${job.id}`} cancelLabel="Discard" rescan={{ href: describeHref, label: 'Change description and rescan' }} />
+        <ProposalList jobId={job.id} items={items} framesJob={framesJobFor(db, job)} mode="trope" render={render} returnTo={returnTo} verb="Commit" cancelHref={`/add/trope?discard=${job.id}`} cancelLabel="Discard" rescan={{ href: describeHref, label: 'Change description and rescan' }} />
       </div>
       {q.get('discard') === String(job.id) && (
         <form method="POST" action={actions.discardJob} style="margin-top: 20px">

@@ -17,3 +17,11 @@ export function posterPath(mediaId: number, size: PosterSize, pending = false): 
 export function textPath(sourceId: number): string {
   return join(dataDir(), 'texts', `${sourceId}.txt`);
 }
+
+/** Evidence files (frames, clips) live under data/evidence/<instance>/<evidence>.ext; uploads for proposals wait under pending/<proposal>/. */
+export function evidencePath(rel: string): string {
+  return join(dataDir(), 'evidence', rel);
+}
+export function pendingEvidencePath(proposalId: number, name: string): string {
+  return evidencePath(join('pending', String(proposalId), name));
+}

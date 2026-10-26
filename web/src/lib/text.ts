@@ -88,3 +88,10 @@ function roman(s: string): number {
   }
   return total;
 }
+
+/** Seconds from a "12:40" or "1:02:05" stamp, as the subtitle text writes them; null for anything else. */
+export function parseStamp(s: string): number | null {
+  const m = /^(?:(\d+):)?(\d{1,2}):(\d{2})$/.exec(s.trim());
+  if (!m) return null;
+  return Number(m[1] ?? 0) * 3600 + Number(m[2]) * 60 + Number(m[3]);
+}

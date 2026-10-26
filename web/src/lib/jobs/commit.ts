@@ -1,9 +1,12 @@
+import { existsSync, mkdirSync, renameSync, rmSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { and, eq, sql } from 'drizzle-orm';
 import type { Db } from '../../db/open';
 import { evidence, instance, job, proposal, trope, tropeSeed, type Prominence } from '../../db/schema';
 import { resolveSubject } from '../queries';
 import { slugify } from '../slug';
 import { parseJson } from './queue';
+import { evidencePath, pendingEvidencePath } from '../files';
 
 export interface CommitOptions {
   /** The owner reviewed these, so they are verified (plan T16). The automatic path passes false. */
@@ -62,14 +65,15 @@ export function commitProposals(db: Db, jobId: number, accepted: Set<number>, pr
             .values({ tropeId: tId, subjectKind: p.subjectKind, subjectId: p.subjectId, who: p.who, text: p.text, prominence: prominence[String(p.id)] ?? p.prominence, verified, score: p.score, origin })
             .returning()
             .get();
-          addEvidence(tx as unknown as Db, inst.id, parseJson<any[]>(p.evidence, []));
+          addEvidence(tx as unknown as Db, inst.id, parseJson<any[]>(p.evidence, []), p.id);
           if (!already) created++;
         } else if (p.kind === 'evidence' && p.targetInstanceId) {
-          addEvidence(tx as unknown as Db, p.targetInstanceId, parseJson<any[]>(p.evidence, []));
+          addEvidence(tx as unknown as Db, p.targetInstanceId, parseJson<any[]>(p.evidence, []), p.id);
           created++;
         }
       }
       if (take || rejectRest) tx.update(proposal).set({ decision: take ? 'accepted' : 'rejected', tropeId: tId ?? null }).where(eq(proposal.id, p.id)).run();
+      if (!take && rejectRest) discardPendingEvidence(p.id);
       else if (tId && !p.tropeId) tx.update(proposal).set({ tropeId: tId }).where(eq(proposal.id, p.id)).run();
     }
     tx.update(job).set({ result: JSON.stringify({ ...parseJson<any>(j.result, {}), committed: created, committedAt: new Date().toISOString() }) }).where(eq(job.id, jobId)).run();
@@ -77,12 +81,31 @@ export function commitProposals(db: Db, jobId: number, accepted: Set<number>, pr
   });
 }
 
-function addEvidence(tx: Db, instanceId: number, items: { kind?: string; content: string; locator?: string }[]): void {
+/** Quotes become evidence rows; a frame or clip the media worker left beside a quote becomes its own row, with the file moved into place. */
+function addEvidence(tx: Db, instanceId: number, items: { kind?: string; content: string; locator?: string; at?: number; frame?: string; clip?: string }[], proposalId?: number): void {
   if (items.length === 0) return;
-  const [{ n }] = tx.select({ n: sql<number>`coalesce(max(${evidence.position}), -1) + 1` }).from(evidence).where(eq(evidence.instanceId, instanceId)).all();
-  items.forEach((e, i) => {
+  let [{ n }] = tx.select({ n: sql<number>`coalesce(max(${evidence.position}), -1) + 1` }).from(evidence).where(eq(evidence.instanceId, instanceId)).all();
+  for (const e of items) {
     const dup = tx.select().from(evidence).where(and(eq(evidence.instanceId, instanceId), eq(evidence.content, e.content))).get();
-    if (dup) return;
-    tx.insert(evidence).values({ instanceId, kind: 'quote', content: e.content, locator: e.locator ?? '', position: n + i }).run();
-  });
+    if (dup) continue;
+    tx.insert(evidence).values({ instanceId, kind: 'quote', content: e.content, locator: e.locator ?? '', position: n++ }).run();
+    for (const kind of ['frame', 'clip'] as const) {
+      const name = e[kind];
+      if (!name || proposalId === undefined) continue;
+      const from = pendingEvidencePath(proposalId, name);
+      if (!existsSync(from)) continue;
+      const row = tx.insert(evidence).values({ instanceId, kind, locator: e.locator ?? '', position: n++ }).returning().get();
+      const rel = `${instanceId}/${row.id}.${name.split('.').pop()}`;
+      const to = evidencePath(rel);
+      mkdirSync(dirname(to), { recursive: true });
+      renameSync(from, to);
+      tx.update(evidence).set({ filePath: rel }).where(eq(evidence.id, row.id)).run();
+    }
+  }
+  if (proposalId !== undefined) discardPendingEvidence(proposalId);
+}
+
+/** Pending frames of a proposal that was rejected, discarded or committed (the kept ones were moved already). */
+export function discardPendingEvidence(proposalId: number): void {
+  rmSync(dirname(pendingEvidencePath(proposalId, 'x')), { recursive: true, force: true });
 }

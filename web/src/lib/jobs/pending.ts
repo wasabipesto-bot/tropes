@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, sql } from 'drizzle-orm';
 import type { Db } from '../../db/open';
 import { job, proposal, type Job } from '../../db/schema';
 import { parseJson } from './queue';
@@ -49,4 +49,10 @@ export function pendingReviewFor(db: Db, kind: 'media' | 'series' | 'trope', id:
 /** The newest find_evidence job for an instance, for the edit panel's status line. */
 export function evidenceSearchFor(db: Db, instanceId: number): Job | undefined {
   return db.select().from(job).where(eq(job.kind, 'find_evidence')).orderBy(desc(job.id)).limit(50).all().find((j) => parseJson<any>(j.payload, {}).instanceId === instanceId);
+}
+
+/** The id of an extract_evidence job still grabbing frames for a scan's proposals, if any. */
+export function framesJobFor(db: Db, j: Job): number | null {
+  const rows = db.select().from(job).where(and(eq(job.kind, 'extract_evidence'), inArray(job.status, ['queued', 'running']))).orderBy(desc(job.id)).limit(20).all();
+  return rows.find((x) => parseJson<any>(x.payload, {}).forJob === j.id)?.id ?? null;
 }
