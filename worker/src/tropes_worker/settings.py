@@ -29,6 +29,9 @@ class Settings:
     text_cache_dir: Path
     # D7: a text over this many tokens (about 4 characters each) is read in season blocks.
     text_cap_tokens: int
+    # D6: Whisper on the media worker for files with no subtitle; medium.en is the owner's choice for celebrimbor.
+    whisper_model: str
+    whisper_threads: int
     midden_key: str | None
     midden_url: str
     midden_blog: str
@@ -77,6 +80,8 @@ class Settings:
             sources_dir=Path(env("TROPES_SOURCES_DIR", str(root / "data" / "sources"))),
             text_cache_dir=Path(env("TROPES_TEXT_CACHE_DIR", str(root / "data" / "text"))),
             text_cap_tokens=int(env("TROPES_TEXT_CAP_TOKENS", "600000")),
+            whisper_model=env("TROPES_WHISPER_MODEL", "medium.en"),
+            whisper_threads=int(env("TROPES_WHISPER_THREADS", "8")),
             midden_key=env("TROPES_MIDDEN_KEY") or None,
             midden_url=env("TROPES_MIDDEN_URL", "https://beta.midden.net/api/search"),
             midden_blog=env("TROPES_MIDDEN_BLOG", "wasabipesto"),

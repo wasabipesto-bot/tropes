@@ -16,6 +16,10 @@ dependencies = [
     "mobi>=0.4.1",
 ]
 
+[project.optional-dependencies]
+# The media worker's Whisper fallback (plan D6): uv sync --extra whisper
+whisper = ["faster-whisper>=1.1", "numpy>=1.26"]
+
 [project.scripts]
 tropes-worker = "tropes_worker.cli:main"
 

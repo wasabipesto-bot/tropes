@@ -111,6 +111,11 @@ def audio_clip(path: Path, start: float, end: float) -> bytes | None:
     )
 
 
+def audio_f32(path: Path) -> bytes | None:
+    """The whole soundtrack as 16 kHz mono float32 samples, what Whisper takes. A feature film is about 400 MB."""
+    return _run(["-i", str(path), "-vn", "-ac", "1", "-ar", "16000", "-f", "f32le", "-"], timeout=1800)
+
+
 def sheets(path: Path, duration: float | None) -> list[bytes]:
     """Contact sheets of keyframes every SHEET_EVERY seconds, SHEET_COLS×SHEET_ROWS tiles each; one per 45 minutes."""
     per_sheet = SHEET_COLS * SHEET_ROWS

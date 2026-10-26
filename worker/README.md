@@ -102,6 +102,12 @@ that read what it produced:
 - `make_sheets` (media): contact sheets per video source, keyframes every
   45 s tiled 10×6 at 288 px, one JPEG per 45 minutes, uploaded to
   `PUT /api/sources/:id/sheet/:n`. Payload `{sourceIds?, auto}`.
+- `transcribe` (media): Whisper (faster-whisper, `TROPES_WHISPER_MODEL`,
+  default `medium.en`, int8, `TROPES_WHISPER_THREADS` threads) for video
+  sources extract_text found no subtitle for; the segments are rendered like
+  a subtitle file and posted as source `whisper`. Needs
+  `uv sync --extra whisper` on the media worker. Payload
+  `{sourceIds?, auto, model?, threads?}`.
 - `read_sheets`: the model looks at each sheet and writes down what is shown
   but never said (looks, props, settings, on-screen text), stored as
   `media_note` rows with source `visual` and the episode label; the dossier

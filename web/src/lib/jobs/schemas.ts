@@ -34,6 +34,8 @@ export const extractTextPayload = z.object({ sourceIds: z.array(z.number().int()
 /** make_sheets: contact sheets for these video sources (or every one without sheets); read_sheets: the model's visual notes from them (plan T11). */
 export const makeSheetsPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
 export const readSheetsPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
+/** transcribe: Whisper for video sources that had no subtitle from any other source (plan D6). */
+export const transcribePayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false), model: z.string().optional(), threads: z.number().int().positive().max(48).optional() });
 /** look_frames: the model looks at the frames grabbed for a scan's proposals of visual tropes (plan D12). */
 export const lookFramesPayload = z.object({ forJob: z.number().int().positive(), auto: z.boolean().default(false) });
 /** fetch_wiki: Fandom summaries (and transcripts, when a wiki has them) for pinned works (plan T12). */
@@ -61,6 +63,7 @@ export const payloadByKind = {
   read_sheets: readSheetsPayload,
   look_frames: lookFramesPayload,
   fetch_wiki: fetchWikiPayload,
+  transcribe: transcribePayload,
 } as const;
 export type JobKind = (typeof JOB_KINDS)[number];
 
