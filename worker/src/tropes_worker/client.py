@@ -143,6 +143,34 @@ class SiteClient:
         r.raise_for_status()
         return r.text
 
+    def frames_for(self, job_id: int) -> list[dict[str, Any]]:
+        """A scan's proposals for visual tropes with their pending frames (plan D12)."""
+        return list(self._get(f"/api/export/frames/{job_id}")["items"])
+
+    def pending_frame(self, proposal_id: int, name: str) -> bytes | None:
+        r = self._http.get(f"/evidence/pending/{proposal_id}/{name}")
+        if r.status_code == 404:
+            return None
+        r.raise_for_status()
+        return r.content
+
+    def link_text(self, media_id: int, path: str, label: str = "") -> dict[str, Any]:
+        """Register a text the worker fetched itself (a Fandom transcript) as a source for a work."""
+        return self._post("/api/sources/text", {"mediaId": media_id, "path": path, "label": label}).json()
+
+    def upload_sheet(self, source_id: int, n: int, data: bytes) -> dict[str, Any]:
+        """Contact sheet n (JPEG) for a video source; the site counts them in the source's meta."""
+        r = self._http.put(f"/api/sources/{source_id}/sheet/{n}", content=data, headers={"content-type": "image/jpeg"})
+        r.raise_for_status()
+        return r.json()
+
+    def sheet(self, source_id: int, n: int) -> bytes | None:
+        r = self._http.get(f"/api/export/sheet/{source_id}/{n}")
+        if r.status_code == 404:
+            return None
+        r.raise_for_status()
+        return r.content
+
     def upload_evidence(self, target: str, kind: str, at: float, data: bytes, ext: str) -> dict[str, Any]:
         """A frame or clip for `proposal:<id>` (beside the quote on the review page) or `evidence:<id>` (onto the instance)."""
         r = self._http.post(

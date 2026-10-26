@@ -103,7 +103,7 @@ const titleHref = (v: ProposalView) => (mode === 'trope' ? v.subject.href : v.tr
     </section>
   )}
 
-  {framesJob && <p class="quiet frames-wait" data-job={framesJob} style="margin: 16px 0 0; font-size: 15px">Pictures for the quotes are on their way from the media worker; the page refreshes when they land.</p>}
+  {framesJob && <p class="quiet frames-wait" data-job={framesJob} style="margin: 16px 0 0; font-size: 15px">Pictures for the quotes are on their way from the media worker (and, for a visual trope, the model's look at them); the page refreshes when they land.</p>}
   <div class="commit">
     <button type="submit" class="go" id="commit-button" data-verb={verb}>{verb} {checkedCount} selected</button>
     {rescan && <a href={rescan.href} style="font-size: 16px">{rescan.label}</a>}

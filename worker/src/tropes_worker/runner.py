@@ -34,10 +34,14 @@ def registry() -> dict[str, JobFn]:
         check_subject,
         extract_evidence,
         extract_text,
+        fetch_wiki,
         find_evidence,
         index_local,
+        look_frames,
         lookup_media,
+        make_sheets,
         ping,
+        read_sheets,
         scan_trope,
         sync_notion,
         write_blurbs,
@@ -55,6 +59,10 @@ def registry() -> dict[str, JobFn]:
         "index_local": index_local.run,
         "extract_text": extract_text.run,
         "extract_evidence": extract_evidence.run,
+        "make_sheets": make_sheets.run,
+        "read_sheets": read_sheets.run,
+        "look_frames": look_frames.run,
+        "fetch_wiki": fetch_wiki.run,
     }
 
 
@@ -71,7 +79,7 @@ def post_result(client: SiteClient, job_id: int, result: dict[str, Any], attempt
             time.sleep(3 * (i + 1))
 
 
-MEDIA_KINDS = ("index_local", "extract_text", "extract_evidence")
+MEDIA_KINDS = ("index_local", "extract_text", "extract_evidence", "make_sheets")
 
 
 def default_kinds(settings: Settings) -> list[str]:

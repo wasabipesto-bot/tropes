@@ -27,6 +27,8 @@ class Settings:
     temperature: float
     sources_dir: Path
     text_cache_dir: Path
+    # D7: a text over this many tokens (about 4 characters each) is read in season blocks.
+    text_cap_tokens: int
     midden_key: str | None
     midden_url: str
     midden_blog: str
@@ -74,6 +76,7 @@ class Settings:
             temperature=float(env("TROPES_TEMPERATURE", "0.3")),
             sources_dir=Path(env("TROPES_SOURCES_DIR", str(root / "data" / "sources"))),
             text_cache_dir=Path(env("TROPES_TEXT_CACHE_DIR", str(root / "data" / "text"))),
+            text_cap_tokens=int(env("TROPES_TEXT_CAP_TOKENS", "600000")),
             midden_key=env("TROPES_MIDDEN_KEY") or None,
             midden_url=env("TROPES_MIDDEN_URL", "https://beta.midden.net/api/search"),
             midden_blog=env("TROPES_MIDDEN_BLOG", "wasabipesto"),

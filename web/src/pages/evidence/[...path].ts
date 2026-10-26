@@ -1,7 +1,9 @@
 import { createReadStream, statSync } from 'node:fs';
 import { Readable } from 'node:stream';
 import type { APIRoute } from 'astro';
+import { db } from '../../db';
 import { evidencePath } from '../../lib/files';
+import { workerAuthorized } from '../../lib/worker-auth';
 
 const TYPES: Record<string, string> = { webp: 'image/webp', mp4: 'video/mp4', jpg: 'image/jpeg' };
 
@@ -9,7 +11,7 @@ const TYPES: Record<string, string> = { webp: 'image/webp', mp4: 'video/mp4', jp
 export const GET: APIRoute = ({ params, locals, request }) => {
   const rel = params.path ?? '';
   if (!/^(pending\/\d+\/)?\d+\/?[\w.-]+\.(webp|mp4|jpg)$/.test(rel) || rel.includes('..')) return new Response(null, { status: 404 });
-  if (rel.startsWith('pending/') && !locals.owner) return new Response(null, { status: 404 });
+  if (rel.startsWith('pending/') && !locals.owner && !workerAuthorized(db, request)) return new Response(null, { status: 404 });
   const path = evidencePath(rel);
   let size: number;
   try { size = statSync(path).size; } catch { return new Response(null, { status: 404 }); }

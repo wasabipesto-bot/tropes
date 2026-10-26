@@ -550,16 +550,19 @@ a second worker runs there for the file jobs) and the owner's three extra
 sources (nostalgebraist.net EPUBs, Transcripts at the Table,
 OpenSubtitles as a fallback).
 
-- Library layout discovery with you: paths, naming, where subtitles live,
-  Plex metadata if useful.
-- `index_local`: EPUB to text with chapter and CFI map; video subtitle
-  extraction with ffmpeg, Whisper fallback; store indexes on the worker side,
-  report locations to the site.
-- Full-depth dossiers for indexed works.
-- Pass 2 reads indexed text; evidence locators become real.
-- `extract_evidence`: quotes with locators, frames at timestamps, clips with
-  ranges, upload to the site, render in the margin column.
-- Recheck flows propose new evidence for existing instances.
+Status 2026-10-26: built and running. The media worker is installed on
+celebrimbor at `/opt/tropes` (the owner redeploys it); the first full index
+matched 397 works (241 films, 5,931 episodes, 142 books), 21 works are not on
+the disk and 6 folders are listed on `/review` to check.
+
+- `index_local`, `extract_text`, `extract_evidence`, `make_sheets` on the
+  media worker; `read_sheets`, `look_frames`, `fetch_wiki` on the model side
+  (see the worker README). Frames at review time, clips on request from the
+  edit panel, visual notes from contact sheets, the "Visual trope, use
+  screenshots" flag, Fandom summaries, season blocks for long texts.
+- Still to do: Whisper for files with no subtitles (after checkpoint 2 lists
+  them), the 20-work text-depth test and retrieval experiment (checkpoint 3),
+  the full text-depth rebuild (needs approval), podcast audio clips (deferred).
 
 Acceptance: a Gideon the Ninth quote with a chapter locator and a Pantheon
 frame with an episode timestamp appear on the live Dog Duo and Pantheon pages

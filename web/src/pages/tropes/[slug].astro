@@ -55,6 +55,7 @@ const returnTo = Astro.url.pathname + Astro.url.search;
           <label for="desc" class="visually-hidden">Description</label>
           <textarea id="desc" name="description" class="fld" rows="5">{t.description}</textarea>
           <p class="quiet" style="margin: 4px 0 0; font-size: 15px">[[Trope name]] links to another trope.</p>
+          <label style="display: flex; gap: 10px; align-items: baseline; font-size: 16px; margin-top: 10px"><input type="checkbox" name="visual" checked={t.visual} /> Visual trope, use screenshots <span class="quiet" style="font-size: 15px">(the model checks the frame at each quoted moment before proposing)</span></label>
           <p style="margin: 8px 0 0; font-size: 16px; display: flex; gap: 16px"><button type="submit" class="t" style="padding: 8px 0">Save</button><a href={here} class="quiet" style="padding: 8px 0">Cancel</a></p>
         </form>
       ) : (

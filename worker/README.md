@@ -81,6 +81,49 @@ repo root. Values in parentheses are defaults.
 - `write_blurbs`: a two- or three-sentence description draft per work from
   its dossier and Wikipedia extract; non-answers are dropped. Payload `{mediaIds}`.
 
+Phase 5 adds the file jobs, which only the media worker takes (the one with
+`TROPES_MEDIA_ROOT` set; it takes nothing else), and three model-side jobs
+that read what it produced:
+
+- `index_local` (media): walk the media root (Plex-style `Movies/`, `TV/`,
+  `Anime/` folders and a Calibre `Books/` library), match folders and books to
+  the library by title, year and ids, probe each file's streams with ffprobe,
+  and post one row per episode, film or book to `POST /api/sources`. Payload
+  `{mediaIds?, auto}`. The summary counts matches by outcome; the warnings
+  list works not on the disk and folders to check (shown on `/review`).
+- `extract_text` (media): the subtitle text of each video source (an English
+  sidecar file, else an embedded track, else OpenSubtitles while the day's
+  quota lasts) and the text of each book (EPUB, MOBI, TXT), rendered with
+  `## S01E01 Title` headings and `[12:40]` stamps, posted to
+  `POST /api/sources/:id/text`. Payload `{sourceIds?, auto}`.
+- `extract_evidence` (media): a frame (WebP) or clip (mp4) at each timestamped
+  quote, uploaded to `POST /api/evidence/file`. Queued by the site after a
+  scan (`{items, forJob}`) and by the Clip button.
+- `make_sheets` (media): contact sheets per video source, keyframes every
+  45 s tiled 10×6 at 288 px, one JPEG per 45 minutes, uploaded to
+  `PUT /api/sources/:id/sheet/:n`. Payload `{sourceIds?, auto}`.
+- `read_sheets`: the model looks at each sheet and writes down what is shown
+  but never said (looks, props, settings, on-screen text), stored as
+  `media_note` rows with source `visual` and the episode label; the dossier
+  prompt reads them as a "Visual notes" block. Payload `{sourceIds?, auto}`.
+- `look_frames`: for a scan's proposals of tropes marked "Visual trope, use
+  screenshots", the model looks at the frames grabbed at the quoted moments
+  and says whether the trope is in the picture; the site flags the proposal
+  and halves its score when it is not. Payload `{forJob, auto}`; queued by the
+  site when the frames land.
+- `fetch_wiki`: Fandom article text for pinned works with a Wikidata Fandom
+  id (P6262), stored as a `wiki` note the dossier reads, plus `/Transcript`
+  pages linked as text sources where a wiki keeps them. No model calls.
+  Payload `{mediaIds?, auto}`.
+
+On the model side, `ensure_texts` pulls the extracted texts into
+`data/text/site/` before a scan or dossier build, one file per work in
+episode order, so the rest of the pipeline reads them like a linked EPUB.
+Texts over `TROPES_TEXT_CAP_TOKENS` (default 600k) are read in blocks that
+break between seasons: the dossier is built per block and merged through the
+series-dossier prompt, and pass 2 reads the block the pass-1 reason names (an
+episode label or title) plus the next one.
+
 Results carry `usage` (calls, tokens, cost in USD as OpenRouter reports it)
 and `warnings`; the review pages show both.
 

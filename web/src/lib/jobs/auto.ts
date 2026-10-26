@@ -7,7 +7,7 @@
  */
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 import type { Db } from '../../db/open';
-import { dossier, localSource, media, proposal, type Job } from '../../db/schema';
+import { dossier, job, localSource, media, proposal, trope, type Job, type Proposal } from '../../db/schema';
 import { commitMatch, recordUnresolved, syncNotionLink, type MatchPayload } from '../metadata';
 import type { ImportReport } from '../notion-import';
 import { commitProposals } from './commit';
@@ -24,6 +24,7 @@ export function afterNotionSync(db: Db, report: ImportReport): { lookups: number
   const out = { lookups: 0, refreshes: 0, flagged: 0 };
   if (report.insertedIds.length > 0) {
     createJob(db, 'lookup_media', { mediaIds: report.insertedIds, auto: true });
+    createJob(db, 'index_local', { mediaIds: report.insertedIds, auto: true });
     out.lookups = report.insertedIds.length;
   }
   const changed = report.changes.filter((c) => c.fields.includes('notionImageUrl') || c.fields.includes('notionMediaUrl'));
@@ -61,7 +62,35 @@ export function afterJobDone(db: Db, j: Job): void {
     if (rows.length > 0) commitProposals(db, j.id, new Set(rows.map((r) => r.id)), {});
     return;
   }
+  if (j.kind === 'extract_evidence' && payload.forJob) {
+    // Frames for a scan: visual tropes get the model's look before the proposals are shown or committed (plan D12).
+    const scan = db.select().from(job).where(eq(job.id, payload.forJob)).get();
+    if (scan && visualProposals(db, scan).length > 0) createJob(db, 'look_frames', { forJob: scan.id, auto: Boolean(parseJson<any>(scan.payload, {}).auto) });
+    return;
+  }
+  if (j.kind === 'look_frames' && payload.auto) {
+    // The automatic path held these back until the look landed.
+    const scan = db.select().from(job).where(eq(job.id, payload.forJob)).get();
+    if (scan?.kind === 'check_subject') autoCommit(db, scan, (p) => parseJson<any>(p.payload, {}).look?.seen !== false);
+    return;
+  }
   if (!payload.auto) return;
+  // The disk side (plan T2, D11): what was indexed gets its text extracted and its contact sheets made, then read.
+  if (j.kind === 'index_local') {
+    const ids: number[] = payload.mediaIds ?? [];
+    const rows = ids.length > 0
+      ? db.select().from(localSource).where(and(inArray(localSource.mediaId, ids), inArray(localSource.kind, ['video', 'book']))).all()
+      : db.select().from(localSource).where(inArray(localSource.kind, ['video', 'book'])).all();
+    const texts = rows.filter((s) => !s.indexedAt).map((s) => s.id);
+    const sheets = rows.filter((s) => s.kind === 'video' && !parseJson<any>(s.meta, {}).sheets).map((s) => s.id);
+    if (texts.length > 0) createJob(db, 'extract_text', { sourceIds: texts, auto: true });
+    if (sheets.length > 0) createJob(db, 'make_sheets', { sourceIds: sheets, auto: true });
+    return;
+  }
+  if (j.kind === 'make_sheets') {
+    if ((payload.sourceIds ?? []).length > 0) createJob(db, 'read_sheets', { sourceIds: payload.sourceIds, auto: true });
+    return;
+  }
   if (j.kind === 'lookup_media') {
     const rows = db.select().from(proposal).where(and(eq(proposal.jobId, j.id), eq(proposal.kind, 'match'))).all();
     for (const p of rows) {
@@ -89,11 +118,27 @@ export function afterJobDone(db: Db, j: Job): void {
   } else if (j.kind === 'write_blurbs') {
     for (const id of payload.mediaIds ?? []) createJob(db, 'check_subject', { mode: 'add', subject: { kind: 'media', id }, auto: true });
   } else if (j.kind === 'check_subject') {
-    const min = autoCommitMin();
-    const rows = db.select().from(proposal).where(and(eq(proposal.jobId, j.id), eq(proposal.kind, 'instance'))).all();
-    const accepted = new Set(rows.filter((p) => p.score >= min).map((p) => p.id));
-    commitProposals(db, j.id, accepted, {}, { verified: false, rejectRest: false });
+    // Proposals for visual tropes with frames on the way wait for the look (plan D12); the rest go in now.
+    const waiting = new Set(visualProposals(db, j).filter((p) => parseJson<any[]>(p.evidence, []).some((e) => typeof e.at === 'number')).map((p) => p.id));
+    autoCommit(db, j, (p) => !waiting.has(p.id));
   }
+}
+
+/** Commit the scan's instance proposals at or over the cut that pass `keep`, unverified, leaving the rest pending. */
+function autoCommit(db: Db, j: Job, keep: (p: Proposal) => boolean): void {
+  const min = autoCommitMin();
+  const rows = db.select().from(proposal).where(and(eq(proposal.jobId, j.id), eq(proposal.kind, 'instance'), eq(proposal.decision, 'pending'))).all();
+  const accepted = new Set(rows.filter((p) => p.score >= min && keep(p)).map((p) => p.id));
+  if (accepted.size > 0) commitProposals(db, j.id, accepted, {}, { verified: false, rejectRest: false });
+}
+
+/** A scan's proposals whose trope is marked "Visual trope, use screenshots" (a draft carries the flag in the payload). */
+function visualProposals(db: Db, scan: Job): Proposal[] {
+  const payload = parseJson<any>(scan.payload, {});
+  const rows = db.select().from(proposal).where(and(eq(proposal.jobId, scan.id), eq(proposal.kind, 'instance'))).all();
+  if (rows.length === 0) return [];
+  const visual = new Set(db.select({ id: trope.id }).from(trope).where(eq(trope.visual, true)).all().map((t) => t.id));
+  return rows.filter((p) => (p.tropeId ? visual.has(p.tropeId) : Boolean(payload.draft?.visual)));
 }
 
 /** A newer lookup of the same entries replaces older matches still waiting for a decision (Phase 3's discard rule). */

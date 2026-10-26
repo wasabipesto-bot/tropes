@@ -125,6 +125,8 @@ export const trope = sqliteTable('trope', {
   slug: text('slug').notNull().unique(),
   /** Also the prompt the matcher reads. Supports [[links]] and ||spoilers||. */
   description: text('description').notNull().default(''),
+  /** "Visual trope, use screenshots": the model checks the frame at each candidate moment before proposing (plan D12). */
+  visual: integer('visual', { mode: 'boolean' }).notNull().default(false),
   ...timestamps,
 });
 
@@ -250,9 +252,9 @@ export const mediaNote = sqliteTable('media_note', {
   fetchedAt: text('fetched_at').notNull().default(sql`(datetime('now'))`),
 });
 
-export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs', 'find_evidence', 'index_local', 'extract_text', 'extract_evidence'] as const;
+export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs', 'find_evidence', 'index_local', 'extract_text', 'extract_evidence', 'make_sheets', 'read_sheets', 'look_frames', 'fetch_wiki'] as const;
 /** Job kinds that read the media disk; the media worker on celebrimbor claims these and nothing else. */
-export const MEDIA_JOB_KINDS = ['index_local', 'extract_text', 'extract_evidence'] as const;
+export const MEDIA_JOB_KINDS = ['index_local', 'extract_text', 'extract_evidence', 'make_sheets'] as const;
 export const JOB_STATUSES = ['queued', 'running', 'done', 'failed', 'cancelled'] as const;
 
 /** Work handed to the worker. Payload and result are JSON validated by zod on the site and pydantic in the worker. */

@@ -13,6 +13,7 @@ export function exportTropes(db: Db) {
     name: t.name,
     slug: t.slug,
     description: t.description,
+    visual: t.visual,
     seeds: seeds.filter((s) => s.tropeId === t.id).map((s) => ({ title: s.title, mediaId: s.mediaId })),
     instances: insts.filter((i) => i.tropeId === t.id).map(({ tropeId: _t, ...rest }) => rest),
     rejected: rejected.filter((r) => r.tropeId === t.id).map((r) => ({ kind: r.kind, id: r.subjectId })),
@@ -50,7 +51,7 @@ export function exportSubjects(db: Db) {
     textSources: sources.filter((s) => s.mediaId === m.id && s.kind === 'text').map((s) => s.path),
     // Phase 5: what the media worker found and indexed for this work.
     localSources: sources.filter((s) => s.mediaId === m.id && s.kind !== 'text').map((s) => ({ id: s.id, kind: s.kind, path: s.path, label: s.label, meta: JSON.parse(s.meta || '{}'), indexedAt: s.indexedAt })),
-    notes: notes.filter((n) => n.mediaId === m.id).map((n) => ({ source: n.source, url: n.url, text: n.text })),
+    notes: notes.filter((n) => n.mediaId === m.id).map((n) => ({ source: n.source, url: n.url, text: n.text, label: n.label })),
     dossier: dossierFor('media', m.id),
   }));
   const seriesRows = db.select().from(series).all().map((s) => ({

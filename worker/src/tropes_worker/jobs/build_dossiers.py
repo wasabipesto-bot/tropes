@@ -47,7 +47,9 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     async def one(subject: dict[str, Any], text) -> tuple[dict[str, Any], list[dict[str, Any]]]:  # noqa: ANN001
         posts = search_posts(settings, subject["title"]) if subject["kind"] == "media" else []
         notes = await relevant_notes(llm, entry_text(subject), posts) if posts else []
-        dossier = await build_dossier(llm, settings, subject, text, notes or subject.get("notes") or [])
+        stored = subject.get("notes") or []
+        kept = [n for n in stored if n.get("source") in ("visual", "wiki")] if notes else stored
+        dossier = await build_dossier(llm, settings, subject, text, [*notes, *kept])
         return dossier, [{"mediaId": subject["id"], "source": "tumblr", "url": n.get("url"), "text": n["text"]} for n in notes]
 
     async def batch(items: list[tuple[dict[str, Any], Any]]) -> None:

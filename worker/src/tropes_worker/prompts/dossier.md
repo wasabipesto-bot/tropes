@@ -13,6 +13,10 @@ The owner's own notes about it (may be empty; may include reblogs or passing men
 
 {{extract}}
 
+{{wiki}}
+
+{{visual}}
+
 {{text_section}}
 
 Reply with JSON of this shape, and fill every list when you know the work:

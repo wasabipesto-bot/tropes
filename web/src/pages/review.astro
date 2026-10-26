@@ -73,6 +73,14 @@ const empty = items.jobs.length + items.identity.length + items.missing.length +
     </section>
   )}
 
+  {items.files.at && (items.files.checks.length > 0 || items.files.missing.length > 0) && (
+    <section>
+      <h2>Files on the disk <span class="quiet" style="font-weight: 400; font-size: 16px">indexed {fmt(items.files.at)}</span></h2>
+      {items.files.checks.length > 0 && <ul>{items.files.checks.map((c) => <li>{c}</li>)}</ul>}
+      {items.files.missing.length > 0 && <p class="quiet" style="margin: 6px 0 0; font-size: 15px">Not on the disk: {items.files.missing.join(', ')}.</p>}
+    </section>
+  )}
+
   <section>
     <h2>Added without review <span class="quiet" style="font-weight: 400; font-size: 16px">last {AUTO_WINDOW_DAYS} days</span></h2>
     {items.auto.length === 0 ? (

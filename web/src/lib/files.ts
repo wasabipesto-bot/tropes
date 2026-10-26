@@ -25,3 +25,8 @@ export function evidencePath(rel: string): string {
 export function pendingEvidencePath(proposalId: number, name: string): string {
   return evidencePath(join('pending', String(proposalId), name));
 }
+
+/** Contact sheets the media worker made for a video source (plan T11): data/sheets/<source>-<n>.jpg. */
+export function sheetPath(sourceId: number, n: number): string {
+  return join(dataDir(), 'sheets', `${sourceId}-${n}.jpg`);
+}

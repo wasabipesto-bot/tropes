@@ -95,6 +95,11 @@ sync-notion:
 lookup *flags:
     uv run tropes-worker lookup {{flags}}
 
+# Queue a job for the workers from here: just queue index_local '{}' / extract_text '{}' / make_sheets '{}' / read_sheets '{}' / fetch_wiki '{}'
+[working-directory('web')]
+queue kind payload='{}':
+    npx tsx -e "import { db } from './src/db'; import { createJob } from './src/lib/jobs/queue'; console.log('queued', createJob(db, '{{kind}}', JSON.parse(process.argv[1])).id)" '{{payload}}'
+
 # Report which works have files on the media disk; writes nothing: just media-match --root /data
 [working-directory('worker')]
 media-match *flags:

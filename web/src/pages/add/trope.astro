@@ -46,6 +46,7 @@ const q = Astro.url.searchParams;
         <p class="quiet" style="margin: 0 0 6px; font-size: 15px">One per line. Used to check the scan, so pick clear ones.</p>
         <textarea id="e" name="examples" class="fld" rows="3">{q.get('examples') ?? ''}</textarea>
       </div>
+      <label style="display: flex; gap: 10px; align-items: baseline; font-size: 16px"><input type="checkbox" name="visual" /> Visual trope, use screenshots <span class="quiet" style="font-size: 15px">(the model checks the frame at each quoted moment before proposing)</span></label>
       {error && <p class="quiet" style="margin: 0; font-size: 15px">{error}</p>}
       <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
         <button type="submit" class="go">Scan {total} entries</button>

@@ -34,7 +34,7 @@ export function commitProposals(db: Db, jobId: number, accepted: Set<number>, pr
       const d = payload.draft;
       const slug = slugify(d.name);
       const existing = tx.select().from(trope).where(eq(trope.slug, slug)).get();
-      const row = existing ?? tx.insert(trope).values({ name: d.name, slug, description: d.description }).returning().get();
+      const row = existing ?? tx.insert(trope).values({ name: d.name, slug, description: d.description, visual: Boolean(d.visual) }).returning().get();
       tropeId = row.id;
       if (!existing) {
         for (const title of d.seeds ?? []) {

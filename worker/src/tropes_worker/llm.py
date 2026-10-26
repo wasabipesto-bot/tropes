@@ -136,12 +136,26 @@ class LLM:
         for llm in list(_live):
             await llm.aclose()
 
-    async def complete(self, prompt: str, variables: dict[str, Any], schema: type[T], *, model: str | None = None) -> T:
-        """Render `prompt` with `variables`, get JSON back, validate as `schema`."""
+    async def complete(
+        self,
+        prompt: str,
+        variables: dict[str, Any],
+        schema: type[T],
+        *,
+        model: str | None = None,
+        images: list[str] | None = None,
+    ) -> T:
+        """Render `prompt` with `variables`, get JSON back, validate as `schema`.
+        `images` are base64 JPEGs shown with the prompt (contact sheets, frames)."""
         user = render(prompt, variables)
         system = load_prompt("system").body
         model = model or self.settings.model
-        messages: list[dict[str, str]] = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+        content: Any = user
+        if images:
+            content = [{"type": "text", "text": user}] + [
+                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b}"}} for b in images
+            ]
+        messages: list[dict[str, Any]] = [{"role": "system", "content": system}, {"role": "user", "content": content}]
         last_error = ""
         for attempt in range(2):
             raw = await self._call(messages, schema, model)
@@ -159,7 +173,7 @@ class LLM:
                 ]
         raise ValueError(f"prompt {prompt}: model output failed validation twice: {last_error}")
 
-    async def _call(self, messages: list[dict[str, str]], schema: type[BaseModel], model: str) -> str:
+    async def _call(self, messages: list[dict[str, Any]], schema: type[BaseModel], model: str) -> str:
         use_schema = self.settings.json_schema and self._schema_ok.get(model, True)
         kwargs: dict[str, Any] = {"model": model, "messages": messages, "temperature": self.settings.temperature}
         extra: dict[str, Any] = {"usage": {"include": True}}

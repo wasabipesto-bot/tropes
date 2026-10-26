@@ -15,7 +15,7 @@ from typing import Any
 from .llm import LLM, load_prompt
 from .schemas import CheckOut, DossierOut, EvidenceOut, Pass1Out, Pass2Out, RewriteOut
 from .settings import Settings
-from .sources import Text, find_quote, load_text, text_section
+from .sources import CHARS_PER_TOKEN, Text, blocks_for, find_quote, from_chapters, load_text, text_blocks, text_section
 from .writing_check import complaints
 
 log = logging.getLogger("tropes_worker.pipeline")
@@ -123,15 +123,77 @@ def dossier_needed(subject: dict[str, Any], prompt_version: int, has_text: bool,
     return False
 
 
+def visual_section(notes: list[dict[str, Any]], cap: int = 60_000) -> str:
+    """The model's notes from the contact sheets (plan T11), one block per episode in order, within a character cap."""
+    rows = sorted((n for n in notes if n.get("source") == "visual"), key=lambda n: n.get("label") or "")
+    if not rows:
+        return ""
+    parts = []
+    used = 0
+    for n in rows:
+        block = f"{n.get('label') or 'Whole work'}:\n{n['text']}"
+        if used + len(block) > cap:
+            parts.append("(further episodes omitted)")
+            break
+        parts.append(block)
+        used += len(block)
+    return "Visual notes, taken from frames of the actual footage (what is shown, not said):\n" + "\n\n".join(parts)
+
+
+def wiki_section(notes: list[dict[str, Any]], cap: int = 40_000) -> str:
+    """Fandom article summaries fetched for the work (plan T12)."""
+    rows = [n for n in notes if n.get("source") == "wiki"]
+    if not rows:
+        return ""
+    body = "\n\n".join(f"{n.get('label') or 'Summary'}:\n{n['text']}" for n in rows)
+    return "Fan wiki summary (may contain errors; prefer the text when they disagree):\n" + body[:cap]
+
+
+def cap_chars(settings: Settings) -> int:
+    return settings.text_cap_tokens * CHARS_PER_TOKEN
+
+
 async def build_dossier(
     llm: LLM, settings: Settings, subject: dict[str, Any], text: Text | None, notes: list[dict[str, Any]]
 ) -> dict[str, Any]:
-    notes_block = "\n\n".join(f"- {n['text'][:2000]}" for n in notes) or "(none)"
+    """One dossier for a work; a text over the cap (plan D7) gets one per block, merged like a series."""
+    if text is not None and len(text.full) > cap_chars(settings):
+        blocks = text_blocks(text, cap_chars(settings) // 2)
+        parts = await llm.gather([build_dossier_once(llm, settings, subject, b, notes) for b in blocks])
+        out = await llm.complete(
+            "series_dossier",
+            {
+                "name": subject.get("title") or subject.get("name") or "",
+                "description": f"One long work read in {len(blocks)} consecutive blocks of episodes; the parts below are those blocks in order.",  # noqa: E501
+                "members": [p["body"] for p in parts],
+            },
+            DossierOut,
+            model=settings.model_dossier,
+        )
+        merged = dict(parts[0])
+        merged["body"] = out.model_dump()
+        merged["sourceHash"] = text.source_hash
+        return merged
+    return await build_dossier_once(llm, settings, subject, text, notes)
+
+
+async def build_dossier_once(
+    llm: LLM, settings: Settings, subject: dict[str, Any], text: Text | None, notes: list[dict[str, Any]]
+) -> dict[str, Any]:
+    owner = [n for n in notes if n.get("source") not in ("visual", "wiki")]
+    notes_block = "\n\n".join(f"- {n['text'][:2000]}" for n in owner) or "(none)"
     use_extract = text is None and wants_extract(subject)
     extract = f"Encyclopaedia summary:\n{subject['wikiExtract']}" if use_extract else ""
     out = await llm.complete(
         "dossier",
-        {"entry": entry_text(subject), "notes": notes_block, "extract": extract, "text_section": text_section(text)},
+        {
+            "entry": entry_text(subject),
+            "notes": notes_block,
+            "extract": extract,
+            "visual": visual_section(notes),
+            "wiki": wiki_section(notes),
+            "text_section": text_section(text),
+        },
         DossierOut,
         model=settings.model_dossier,
     )
@@ -324,11 +386,26 @@ async def polish(llm: LLM, text: str) -> tuple[str, list[str]]:
     return out.text, ([f"writing check: {', '.join(again)}"] if again else [])
 
 
+def text_for_pass2(settings: Settings, text: Text | None, reason: str, dossier: dict[str, Any] | None) -> Text | None:
+    """Plan D7: a text over the cap is read in the block the pass-1 reason names (S01E03 labels or chapter
+    headings) plus the next one; failing that, the blocks the dossier's scene locators point at."""
+    if text is None or len(text.full) <= cap_chars(settings):
+        return text
+    blocks = text_blocks(text, cap_chars(settings) // 2)
+    chosen = blocks_for(blocks, reason)
+    if chosen == blocks[:1] and dossier:
+        locs = " ".join(str(x.get("locator") or "") for x in (dossier.get("body") or {}).get("notable_scenes", []))
+        chosen = blocks_for(blocks, locs)
+    chapters = [c for b in chosen for c in b.chapters]
+    return from_chapters(text, chapters, ", ".join(b.path.stem for b in chosen))
+
+
 async def pass2(
     llm: LLM, settings: Settings, trope: TropeSpec, cand: Candidate, dossiers: dict[str, dict[str, Any]], text: Text | None
 ) -> dict[str, Any] | None:
     s = cand.subject
     key = subject_key(s["kind"], s["id"])
+    text = text_for_pass2(settings, text, cand.reason, dossiers.get(key))
     out = await llm.complete(
         "pass2",
         {
@@ -405,6 +482,8 @@ async def check_subject(
     if not listing:
         return []
     key = subject_key(subject["kind"], subject["id"])
+    if text is not None and len(text.full) > cap_chars(settings):
+        text = text_blocks(text, cap_chars(settings))[0]
     out = await llm.complete(
         "check_subject",
         {

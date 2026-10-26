@@ -32,6 +32,8 @@ const returnTo = z.string().regex(/^\/[^/\\]?[^\\]*$/).optional();
 const id = z.coerce.number().int().positive();
 /** A free-text field. A blank input arrives as null from the form parser; it is an empty string here, never an error. */
 const text = z.string().nullable().optional().transform((v) => (v ?? '').trim());
+/** A checkbox: absent (null) when unticked, 'on' when ticked. */
+const checkbox = z.string().nullable().optional().transform((v) => v === 'on' || v === 'true');
 
 export const server = {
   login: defineAction({
@@ -59,10 +61,10 @@ export const server = {
 
   updateTropeDescription: defineAction({
     accept: 'form',
-    input: z.object({ tropeId: id, description: text, returnTo }),
+    input: z.object({ tropeId: id, description: text, visual: checkbox, returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
-      db.update(trope).set({ description: input.description, updatedAt: now() }).where(eq(trope.id, input.tropeId)).run();
+      db.update(trope).set({ description: input.description, visual: input.visual, updatedAt: now() }).where(eq(trope.id, input.tropeId)).run();
       return { returnTo: input.returnTo ?? '/tropes' };
     },
   }),
@@ -89,13 +91,13 @@ export const server = {
 
   createTrope: defineAction({
     accept: 'form',
-    input: z.object({ name: z.string().trim().min(1), description: text, examples: text }),
+    input: z.object({ name: z.string().trim().min(1), description: text, examples: text, visual: checkbox }),
     handler: async (input, context) => {
       requireOwner(context);
       const slug = slugify(input.name);
       if (!slug) throw new ActionError({ code: 'BAD_REQUEST', message: 'The name needs at least one letter or digit.' });
       if (db.select().from(trope).where(eq(trope.slug, slug)).get()) throw new ActionError({ code: 'CONFLICT', message: 'A trope with that name already exists.' });
-      const created = db.insert(trope).values({ name: input.name, slug, description: input.description }).returning().get();
+      const created = db.insert(trope).values({ name: input.name, slug, description: input.description, visual: input.visual }).returning().get();
       for (const line of input.examples.split('\n').map((l) => l.trim()).filter(Boolean)) {
         const subject = resolveSubject(db, line);
         db.insert(tropeSeed).values({ tropeId: created.id, title: line, mediaId: subject?.kind === 'media' ? subject.id : null }).run();
@@ -239,13 +241,13 @@ export const server = {
   /** Add-trope step 1: nothing is saved; the draft travels in the job. */
   startTropeScan: defineAction({
     accept: 'form',
-    input: z.object({ name: z.string().trim().min(1), description: text, examples: text }),
+    input: z.object({ name: z.string().trim().min(1), description: text, examples: text, visual: checkbox }),
     handler: async (input, context) => {
       requireOwner(context);
       if (!slugify(input.name)) throw new ActionError({ code: 'BAD_REQUEST', message: 'The name needs at least one letter or digit.' });
       if (db.select().from(trope).where(eq(trope.slug, slugify(input.name))).get()) throw new ActionError({ code: 'CONFLICT', message: 'A trope with that name already exists. Recheck it from its page instead.' });
       const seeds = input.examples.split('\n').map((l) => l.trim()).filter(Boolean);
-      const j = createJob(db, 'scan_trope', { mode: 'add', draft: { name: input.name, description: input.description, seeds } });
+      const j = createJob(db, 'scan_trope', { mode: 'add', draft: { name: input.name, description: input.description, seeds, visual: input.visual } });
       return { returnTo: `/add/trope?job=${j.id}` };
     },
   }),

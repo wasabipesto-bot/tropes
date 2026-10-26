@@ -136,9 +136,90 @@ def find_quote(text: Text, quote: str) -> tuple[bool, str | None]:
     return False, None
 
 
+CHARS_PER_TOKEN = 4
+SEASON_RX = re.compile(r"^S(\d{1,2})E\d{1,3}\b", re.I)
+
+
 def text_section(text: Text | None, *, max_chars: int = 3_600_000) -> str:
     """The block a prompt gets when a source exists: the whole work, or nothing."""
     if text is None:
         return "No text of the work is available; rely on the dossier and your own knowledge, and return no evidence."
     body = text.full if len(text.full) <= max_chars else text.full[:max_chars] + "\n\n[text truncated]"
+    if text.path.name.endswith("#block"):
+        return f"Part of the work's text follows ({text.path.stem}), with `## ` chapter headings:\n\n{body}"
     return f"The full text of the work follows, with `## ` chapter headings:\n\n{body}"
+
+
+def from_chapters(text: Text, chapters: list[tuple[str, str]], label: str) -> Text:
+    """A Text made of some of another's chapters, so quotes verify against it the same way."""
+    full = "\n\n".join(f"## {t}\n{b}" for t, b in chapters)
+    return Text(path=Path(f"{label}#block"), source_hash=text.source_hash, full=full, chapters=chapters)
+
+
+def text_blocks(text: Text, cap_chars: int) -> list[Text]:
+    """Plan D7: a text over the cap split into consecutive blocks under it, breaking between seasons when the
+    chapter headings carry S01E01 labels and between chapters otherwise. A text under the cap is one block."""
+    if len(text.full) <= cap_chars or not text.chapters:
+        return [text]
+    groups: list[list[tuple[str, str]]] = []
+    season: str | None = None
+    for ch in text.chapters:
+        m = SEASON_RX.match(ch[0])
+        key = m.group(1) if m else None
+        if groups and key is not None and key == season:
+            groups[-1].append(ch)
+        elif groups and key is None and season is None and sum(len(b) for _, b in groups[-1]) < cap_chars:
+            groups[-1].append(ch)
+        else:
+            groups.append([ch])
+            season = key
+    # A season over the cap on its own is cut into runs of chapters.
+    units: list[list[tuple[str, str]]] = []
+    for g in groups:
+        run: list[tuple[str, str]] = []
+        size = 0
+        for ch in g:
+            if run and size + len(ch[1]) > cap_chars:
+                units.append(run)
+                run, size = [], 0
+            run.append(ch)
+            size += len(ch[1])
+        if run:
+            units.append(run)
+    # Then consecutive units are packed while they fit.
+    blocks: list[list[tuple[str, str]]] = []
+    for u in units:
+        if blocks and sum(len(b) for _, b in blocks[-1]) + sum(len(b) for _, b in u) <= cap_chars:
+            blocks[-1].extend(u)
+        else:
+            blocks.append(list(u))
+    out = []
+    for i, chapters in enumerate(blocks, 1):
+        label = f"block {i} of {len(blocks)}: {chapters[0][0]} to {chapters[-1][0]}"
+        out.append(from_chapters(text, chapters, label))
+    return out
+
+
+def blocks_for(blocks: list[Text], mentions: str, limit: int = 2) -> list[Text]:
+    """The blocks whose chapter headings (or S01E03 labels) appear in `mentions`, each with the next block, in
+    order and up to `limit`; the first blocks when nothing is named. One block is returned unchanged."""
+    if len(blocks) <= 1:
+        return blocks
+    low = mentions.lower()
+    hit: set[int] = set()
+    for i, b in enumerate(blocks):
+        for title, _ in b.chapters:
+            m = SEASON_RX.match(title)
+            # "S01E03" or the episode's name after it; a bare chapter heading otherwise.
+            labels = [m.group(0), title[m.end() :].strip(" :-")] if m else [title]
+            if any(len(x) >= 6 and x.lower() in low for x in labels):
+                hit.add(i)
+                break
+    if not hit:
+        hit = {0}
+    chosen: list[int] = []
+    for i in sorted(hit):
+        for j in (i, i + 1):
+            if j < len(blocks) and j not in chosen:
+                chosen.append(j)
+    return [blocks[i] for i in sorted(chosen)[:limit]]

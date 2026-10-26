@@ -71,14 +71,16 @@ export function storeDossiers(tx: Db, body: z.infer<typeof dossiersBody>): void 
       })
       .run();
   }
+  // Notes replace per work, source and label, so one episode's visual notes never wipe another's.
   const cleared = new Set<string>();
   for (const n of body.notes) {
-    const key = `${n.mediaId}:${n.source}`;
+    const label = n.label ?? '';
+    const key = `${n.mediaId}:${n.source}:${label}`;
     if (!cleared.has(key)) {
-      tx.delete(mediaNote).where(and(eq(mediaNote.mediaId, n.mediaId), eq(mediaNote.source, n.source))).run();
+      tx.delete(mediaNote).where(and(eq(mediaNote.mediaId, n.mediaId), eq(mediaNote.source, n.source), eq(mediaNote.label, label))).run();
       cleared.add(key);
     }
-    tx.insert(mediaNote).values({ mediaId: n.mediaId, source: n.source, url: n.url ?? null, text: n.text }).run();
+    tx.insert(mediaNote).values({ mediaId: n.mediaId, source: n.source, url: n.url ?? null, text: n.text, label }).run();
   }
 }
 
@@ -108,6 +110,16 @@ export function completeJob(db: Db, id: number, body: ResultBody): void {
         .run();
     }
     storeDossiers(tx as unknown as Db, { dossiers: body.dossiers, notes: body.notes });
+    // A look at the frames (plan D12): a flag either way, and a lower score when nothing in the pictures showed the trope.
+    for (const v of body.verdicts ?? []) {
+      const p = tx.select().from(proposal).where(eq(proposal.id, v.proposalId)).get();
+      if (!p) continue;
+      const flags = parseJson<string[]>(p.flags, []).filter((f) => !f.startsWith('screenshots: '));
+      flags.push(v.seen ? `screenshots: ${v.note || 'the trope is visible'}` : `screenshots: not seen${v.note ? ` (${v.note})` : ''}`);
+      const pl = parseJson<any>(p.payload, {});
+      pl.look = { seen: v.seen, note: v.note };
+      tx.update(proposal).set({ flags: JSON.stringify(flags), payload: JSON.stringify(pl), score: v.seen ? p.score : Math.round(p.score * 50) / 100 }).where(eq(proposal.id, p.id)).run();
+    }
     // Model-written description drafts never replace the owner's words.
     for (const d of body.descriptions ?? []) {
       tx.update(media)

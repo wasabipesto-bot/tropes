@@ -87,6 +87,15 @@ class NotesFilterOut(BaseModel):
     items: list[NoteVerdict]
 
 
+class VisualNotesOut(BaseModel):
+    notes: list[str] = []
+
+
+class LookOut(BaseModel):
+    seen: bool
+    note: str = ""
+
+
 class ResolveOut(BaseModel):
     choice: str | None = None
     confidence: float = Field(ge=0, le=1, default=0)

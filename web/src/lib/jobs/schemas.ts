@@ -8,7 +8,7 @@ export const subjectRef = z.object({ kind: z.enum(SUBJECT_KINDS), id: z.number()
 export const scanTropePayload = z.object({
   mode: z.enum(['add', 'recheck']),
   tropeId: z.number().int().positive().optional(),
-  draft: z.object({ name: z.string().min(1), description: z.string(), seeds: z.array(z.string()) }).optional(),
+  draft: z.object({ name: z.string().min(1), description: z.string(), seeds: z.array(z.string()), visual: z.boolean().default(false) }).optional(),
 });
 /** `auto` marks a job on the automatic path for Notion-synced entries (plan T14): its result is committed without review. */
 export const checkSubjectPayload = z.object({ mode: z.enum(['add', 'recheck']), subject: subjectRef, auto: z.boolean().default(false) });
@@ -31,6 +31,13 @@ export const findEvidencePayload = z.object({ instanceId: z.number().int().posit
 export const indexLocalPayload = z.object({ mediaIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
 /** extract_text: subtitles or book text for these local_source rows (or everything not yet indexed). */
 export const extractTextPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
+/** make_sheets: contact sheets for these video sources (or every one without sheets); read_sheets: the model's visual notes from them (plan T11). */
+export const makeSheetsPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
+export const readSheetsPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
+/** look_frames: the model looks at the frames grabbed for a scan's proposals of visual tropes (plan D12). */
+export const lookFramesPayload = z.object({ forJob: z.number().int().positive(), auto: z.boolean().default(false) });
+/** fetch_wiki: Fandom summaries (and transcripts, when a wiki has them) for pinned works (plan T12). */
+export const fetchWikiPayload = z.object({ mediaIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
 /** extract_evidence: a frame (or clip) at each timestamped quote; proposals before review, instances after commit. */
 export const extractEvidencePayload = z.object({
   items: z.array(z.object({ proposalId: z.number().int().positive().optional(), evidenceId: z.number().int().positive().optional(), sourceId: z.number().int().positive(), at: z.number().min(0), end: z.number().min(0).optional(), clip: z.boolean().default(false) })).min(1),
@@ -50,6 +57,10 @@ export const payloadByKind = {
   index_local: indexLocalPayload,
   extract_text: extractTextPayload,
   extract_evidence: extractEvidencePayload,
+  make_sheets: makeSheetsPayload,
+  read_sheets: readSheetsPayload,
+  look_frames: lookFramesPayload,
+  fetch_wiki: fetchWikiPayload,
 } as const;
 export type JobKind = (typeof JOB_KINDS)[number];
 
@@ -87,7 +98,7 @@ export const dossierIn = z.object({
   sourceHash: z.string().nullable().optional(),
 });
 
-export const noteIn = z.object({ mediaId: z.number().int().positive(), source: z.enum(['tumblr', 'review', 'manual']), url: z.string().nullable().optional(), text: z.string().min(1) });
+export const noteIn = z.object({ mediaId: z.number().int().positive(), source: z.enum(['tumblr', 'review', 'manual', 'visual', 'wiki']), url: z.string().nullable().optional(), text: z.string().min(1), label: z.string().default('') });
 
 export const usageIn = z.object({
   model: z.string().optional(),
@@ -98,9 +109,13 @@ export const usageIn = z.object({
   costUsd: z.number().min(0).optional(),
 });
 
+/** look_frames: what the model saw in a proposal's frames. */
+export const verdictIn = z.object({ proposalId: z.number().int().positive(), seen: z.boolean(), note: z.string().default('') });
+
 export const resultBody = z.object({
   summary: z.record(z.string(), z.unknown()).default({}),
   proposals: z.array(proposalIn).default([]),
+  verdicts: z.array(verdictIn).default([]),
   dossiers: z.array(dossierIn).default([]),
   notes: z.array(noteIn).default([]),
   descriptions: z.array(descriptionIn).default([]),
@@ -112,6 +127,9 @@ export type ResultBody = z.infer<typeof resultBody>;
 export type ProposalIn = z.infer<typeof proposalIn>;
 
 export const dossiersBody = z.object({ dossiers: z.array(dossierIn).default([]), notes: z.array(noteIn).default([]) });
+
+/** A text source the model worker fetched itself (a Fandom transcript), stored under its sources dir. */
+export const textLinkBody = z.object({ mediaId: z.number().int().positive(), path: z.string().min(1), label: z.string().default('') });
 
 /** A Media Log row as the worker reads it from Notion; the same shape the CSV importer builds. */
 export const logRowIn = z.object({

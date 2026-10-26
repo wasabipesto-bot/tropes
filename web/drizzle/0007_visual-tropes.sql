@@ -1,0 +1,1 @@
+ALTER TABLE `trope` ADD `visual` integer DEFAULT false NOT NULL;

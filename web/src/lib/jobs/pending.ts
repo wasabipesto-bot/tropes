@@ -53,6 +53,6 @@ export function evidenceSearchFor(db: Db, instanceId: number): Job | undefined {
 
 /** The id of an extract_evidence job still grabbing frames for a scan's proposals, if any. */
 export function framesJobFor(db: Db, j: Job): number | null {
-  const rows = db.select().from(job).where(and(eq(job.kind, 'extract_evidence'), inArray(job.status, ['queued', 'running']))).orderBy(desc(job.id)).limit(20).all();
+  const rows = db.select().from(job).where(and(inArray(job.kind, ['extract_evidence', 'look_frames']), inArray(job.status, ['queued', 'running']))).orderBy(desc(job.id)).limit(20).all();
   return rows.find((x) => parseJson<any>(x.payload, {}).forJob === j.id)?.id ?? null;
 }
