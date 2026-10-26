@@ -76,7 +76,8 @@ const filtered = type !== 'All' || tropeQ !== '' || coreOnly || MINS[min] >= 0 |
 const inType = everything.filter((x) => type === 'All' || (type === 'TV' ? x.m.type === 'TV Series' : x.m.type === type));
 const usedTop = [...new Set(inType.flatMap((x) => (genreOf.get(x.m.id) ?? []).map((g) => parents.get(g) ?? g)))].sort();
 const chosenParent = genreQ ? parents.get(genreQ) ?? genreQ : null;
-const usedSub = chosenParent ? [...new Set(inType.flatMap((x) => (genreOf.get(x.m.id) ?? []).filter((g) => g !== chosenParent && parents.get(g) === chosenParent)))].sort() : [];
+const subsOf = (parent: string) => [...new Set(inType.flatMap((x) => (genreOf.get(x.m.id) ?? []).filter((g) => g !== parent && parents.get(g) === parent)))].sort();
+void chosenParent;
 const matching = list.length;
 const truncated = !all && matching > 100;
 const shown = truncated ? list.slice(0, 100) : list;
@@ -126,18 +127,24 @@ const fmt = (v: number | null) => (v === null ? '–' : String(v));
         : <button type="submit" class="t" name="core" value="1">Core theme only</button>}
     </form>
     {usedTop.length > 0 && (
-      <div class="filter">
-        <span class="quiet">Genre</span>
-        {!genreQ ? <span class="on">All</span> : <a href={link({ genre: null, all: null })}>All</a>}
-        {usedTop.map((g) => g === chosenParent ? <span class="on">{g}</span> : <a href={link({ genre: g, all: null })}>{g}</a>)}
-      </div>
-    )}
-    {usedSub.length > 0 && (
-      <div class="filter">
-        <span class="quiet" style="font-size: 15px">{chosenParent}</span>
-        {genreQ === chosenParent ? <span class="on">All</span> : <a href={link({ genre: chosenParent, all: null })}>All</a>}
-        {usedSub.map((g) => g === genreQ ? <span class="on">{g}</span> : <a href={link({ genre: g, all: null })}>{g}</a>)}
-      </div>
+      <form class="filter" method="get" action="/library" id="genre-form">
+        {type !== 'All' && <input type="hidden" name="type" value={type} />}
+        {min !== 'Any' && <input type="hidden" name="min" value={min} />}
+        {detail && <input type="hidden" name="detail" value="1" />}
+        {tropeQ && <input type="hidden" name="trope" value={tropeQ} />}
+        {coreOnly && <input type="hidden" name="core" value="1" />}
+        <label for="gf" class="quiet">Genre</label>
+        <select id="gf" name="genre" class="line" style="width: 260px">
+          <option value="" selected={!genreQ}>Any</option>
+          {usedTop.map((g) => (
+            <optgroup label={g}>
+              <option value={g} selected={genreQ === g}>{g}{subsOf(g).length > 0 ? ', any' : ''}</option>
+              {subsOf(g).map((sub) => <option value={sub} selected={genreQ === sub}>{sub}</option>)}
+            </optgroup>
+          ))}
+        </select>
+        <button type="submit" class="t">Apply</button>
+      </form>
     )}
     <div class="filter">
       <span class="quiet">Rating</span>
@@ -178,6 +185,12 @@ const fmt = (v: number | null) => (v === null ? '–' : String(v));
   </div>
   {truncated && <p style="margin: 20px 0 0; font-size: 16px"><a href={link({ all: '1' })}>Show all {matching}</a></p>}
 </Base>
+
+<script>
+  // The genre select applies itself; the Apply button stays for keyboards and no-script visitors.
+  const sel = document.getElementById('gf') as HTMLSelectElement | null;
+  sel?.addEventListener('change', () => (sel.form as HTMLFormElement).submit());
+</script>
 
 <style>
   :global(main.frame) { padding-top: 48px; }

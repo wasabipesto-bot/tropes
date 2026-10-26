@@ -8,7 +8,7 @@
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 import type { Db } from '../../db/open';
 import { dossier, media, proposal, type Job } from '../../db/schema';
-import { commitMatch, recordUnresolved, type MatchPayload } from '../metadata';
+import { commitMatch, recordUnresolved, syncNotionLink, type MatchPayload } from '../metadata';
 import type { ImportReport } from '../notion-import';
 import { commitProposals } from './commit';
 import { createJob, parseJson } from './queue';
@@ -33,6 +33,7 @@ export function afterNotionSync(db: Db, report: ImportReport): { lookups: number
   for (const c of changed) {
     const m = rows.find((r) => r.id === c.id);
     if (!m) continue;
+    if (c.fields.includes('notionMediaUrl')) syncNotionLink(db, m.id);
     if (c.fields.includes('notionImageUrl') && m.identity === 'pinned') refresh.push(m.id);
     if (c.fields.includes('notionMediaUrl') && m.identity === 'pinned') {
       db.update(media).set({ reviewNote: 'The Media Link in Notion changed after this match was pinned.' }).where(eq(media.id, m.id)).run();

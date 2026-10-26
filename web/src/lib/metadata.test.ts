@@ -8,7 +8,7 @@ import { job, media, mediaGenre, mediaLink, proposal } from '../db/schema';
 import { afterJobDone } from './jobs/auto';
 import { claimJob, completeJob, createJob } from './jobs/queue';
 import { posterPath } from './files';
-import { commitMatch, markNoMatch, pinCandidate, type MatchPayload } from './metadata';
+import { commitMatch, markNoMatch, pinCandidate, syncNotionLink, type MatchPayload } from './metadata';
 
 const chosen = { qid: 'Q109639866', label: 'Pantheon', description: 'animated television series', year: 2022, creator: null, kinds: ['animated television series'], ids: { imdb: 'tt11680642' }, wikipedia: 'Pantheon (TV series)', score: 1, reasons: ['seed'], source: 'seed' };
 const other = { ...chosen, qid: 'Q188856', label: 'Panthéon', description: 'mausoleum in Paris', year: null, kinds: ['mausoleum'], ids: {}, score: 0.3 };
@@ -99,5 +99,28 @@ describe('metadata commit', () => {
     claimJob(db, ['write_blurbs']);
     completeJob(db, j2.id, { summary: {}, proposals: [], dossiers: [], notes: [], descriptions: [{ mediaId: a.id, text: 'Another draft.' }], warnings: [] });
     expect(db.select().from(media).where(eq(media.id, a.id)).get()!.description).toBe('Mine.');
+  });
+});
+
+describe('notion media link', () => {
+  it('fills its site slot only when the lookup has nothing there, and follows the link', () => {
+    const db = openDb(':memory:');
+    const m = db.insert(media).values({ title: 'Foreach', type: 'Other', notionMediaUrl: 'https://foreach.neocities.org/' }).returning().get();
+    syncNotionLink(db, m.id);
+    expect(db.select().from(mediaLink).where(eq(mediaLink.mediaId, m.id)).all()).toMatchObject([{ site: 'official', origin: 'notion' }]);
+    // The same link again is not duplicated; a changed link replaces it.
+    syncNotionLink(db, m.id);
+    expect(db.select().from(mediaLink).where(eq(mediaLink.mediaId, m.id)).all()).toHaveLength(1);
+    db.update(media).set({ notionMediaUrl: 'https://www.imdb.com/title/tt1/' }).where(eq(media.id, m.id)).run();
+    syncNotionLink(db, m.id);
+    expect(db.select().from(mediaLink).where(eq(mediaLink.mediaId, m.id)).all()).toMatchObject([{ site: 'imdb', origin: 'notion' }]);
+    // A lookup link for that site wins; the Notion link does not go to "official" when it is the same site.
+    db.delete(mediaLink).run();
+    db.insert(mediaLink).values({ mediaId: m.id, site: 'imdb', url: 'https://www.imdb.com/title/tt1/', origin: 'lookup' }).run();
+    syncNotionLink(db, m.id);
+    expect(db.select().from(mediaLink).where(eq(mediaLink.mediaId, m.id)).all()).toHaveLength(1);
+    db.update(media).set({ notionMediaUrl: null }).where(eq(media.id, m.id)).run();
+    syncNotionLink(db, m.id);
+    expect(db.select().from(mediaLink).where(eq(mediaLink.mediaId, m.id)).all().map((l) => l.origin)).toEqual(['lookup']);
   });
 });

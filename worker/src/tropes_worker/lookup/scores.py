@@ -28,7 +28,7 @@ def rotten_tomatoes(f: Fetcher, path: str) -> Link | None:
     if clean is None:
         return None
     url = f"https://www.rottentomatoes.com/{clean}"
-    html = f.get_text(url, headers=HTML)
+    html = f.get_text(url, cache=False, headers=HTML)
     if html is None:
         return None
     card = _block(html, "media-scorecard-json")
@@ -48,7 +48,7 @@ def metacritic(f: Fetcher, path: str) -> Link | None:
         return None
     # The site's canonical URLs end in a slash; asking for that saves a redirect hop.
     url = f"https://www.metacritic.com/{clean}/"
-    html = f.get_text(url, headers=HTML)
+    html = f.get_text(url, cache=False, headers=HTML)
     if html is None:
         return None
     value = _num(_ld_rating(html, "Metascore").get("ratingValue"))
@@ -63,7 +63,7 @@ def goodreads(f: Fetcher, book_id: str) -> Link | None:
     if clean is None or "/" in clean:
         return None
     url = f"https://www.goodreads.com/book/show/{clean}"
-    html = f.get_text(url, headers=HTML)
+    html = f.get_text(url, cache=False, headers=HTML)
     if html is None:
         return None
     value = _num(_ld_rating(html).get("ratingValue"))

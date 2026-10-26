@@ -9,7 +9,7 @@ import { cancelJob, createJob, jobById, parseJson } from '../lib/jobs/queue';
 import { commitProposals } from '../lib/jobs/commit';
 import { commitInput, commitMatchesInput } from '../lib/jobs/forms';
 import { BACKFILL_BATCH, matchesFor, pinnedMediaIds, unresolvedMediaIds } from '../lib/jobs/matches';
-import { commitMatch, markNoMatch, pinCandidate, type Candidate } from '../lib/metadata';
+import { commitMatch, markNoMatch, pinCandidate, settleMatchProposals, syncNotionLink, type Candidate } from '../lib/metadata';
 import { seedFromUrl } from '../lib/seeds';
 import { isGenre } from '../lib/genres';
 import { siteOf } from '../lib/media';
@@ -473,20 +473,51 @@ export const server = {
     },
   }),
 
-  /** The owner pastes an IMDb, Steam, Goodreads, Wikipedia or Wikidata URL for an entry the lookup could not place. */
+  /**
+   * The owner pastes a link for an entry the lookup could not place. An IMDb, Steam, Goodreads, TMDB,
+   * MyAnimeList, Open Library, MusicBrainz, Wikipedia or Wikidata link pins the identity and a refresh
+   * fetches the rest; any other link (a web serial's own site) is kept as the official link and the
+   * entry is marked as having no public match.
+   */
   seedMedia: defineAction({
     accept: 'form',
     input: z.object({ mediaId: id, url: z.url().trim(), returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
-      const seed = seedFromUrl(input.url);
-      if (!seed) throw new ActionError({ code: 'BAD_REQUEST', message: 'That link is not one the lookup understands (IMDb, Steam, Goodreads, Wikipedia or Wikidata).' });
       const m = db.select().from(media).where(eq(media.id, input.mediaId)).get();
       if (!m) throw new ActionError({ code: 'NOT_FOUND', message: 'No such entry.' });
-      const ids = { ...seed.ids, ...(seed.wikipedia ? { wikipedia: seed.wikipedia } : {}) };
-      const c: Candidate = { qid: seed.qid ?? null, label: m.title, description: '', year: null, creator: m.creator, kinds: [], ids, wikipedia: seed.wikipedia ?? null, score: 1, reasons: ['link from the owner'], source: 'owner' };
-      pinCandidate(db, m.id, c, []);
-      createJob(db, 'lookup_media', { mediaIds: [m.id], refresh: true, auto: true });
+      const seed = seedFromUrl(input.url);
+      if (seed) {
+        const ids = { ...seed.ids, ...(seed.wikipedia ? { wikipedia: seed.wikipedia } : {}) };
+        const c: Candidate = { qid: seed.qid ?? null, label: m.title, description: '', year: null, creator: m.creator, kinds: [], ids, wikipedia: seed.wikipedia ?? null, score: 1, reasons: ['link from the owner'], source: 'owner' };
+        pinCandidate(db, m.id, c, []);
+        settleMatchProposals(db, m.id, 'accepted');
+        createJob(db, 'lookup_media', { mediaIds: [m.id], refresh: true, auto: true });
+      } else {
+        const site = siteOf(input.url) ?? 'official';
+        db.transaction((tx) => {
+          tx.delete(mediaLink).where(and(eq(mediaLink.mediaId, m.id), eq(mediaLink.site, site))).run();
+          tx.insert(mediaLink).values({ mediaId: m.id, site, url: input.url, origin: 'owner' }).run();
+        });
+        if (m.identity !== 'pinned') {
+          markNoMatch(db, m.id, JSON.parse(m.identityCandidates || '[]'));
+          settleMatchProposals(db, m.id, 'rejected');
+        }
+      }
+      return { returnTo: input.returnTo ?? `/media/${m.id}` };
+    },
+  }),
+
+  /** The owner says an unresolved entry has no public match; it leaves the review list. */
+  markNoMatchMedia: defineAction({
+    accept: 'form',
+    input: z.object({ mediaId: id, returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const m = db.select().from(media).where(eq(media.id, input.mediaId)).get();
+      if (!m) throw new ActionError({ code: 'NOT_FOUND', message: 'No such entry.' });
+      markNoMatch(db, m.id, JSON.parse(m.identityCandidates || '[]'));
+      settleMatchProposals(db, m.id, 'rejected');
       return { returnTo: input.returnTo ?? `/media/${m.id}` };
     },
   }),

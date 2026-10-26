@@ -7,8 +7,9 @@ import { existsSync, mkdirSync, renameSync, unlinkSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { and, eq, sql } from 'drizzle-orm';
 import type { Db } from '../db/open';
-import { media, mediaGenre, mediaLink, type Media } from '../db/schema';
+import { media, mediaGenre, mediaLink, proposal, type Media } from '../db/schema';
 import { POSTER_SIZES, posterPath } from './files';
+import { siteOf } from './media';
 
 export interface Candidate {
   qid: string | null;
@@ -65,6 +66,7 @@ export function commitMatch(db: Db, mediaId: number, p: MatchPayload): void {
       .where(eq(media.id, mediaId))
       .run();
     replaceLinks(tx as unknown as Db, mediaId, p.links);
+    syncNotionLink(tx as unknown as Db, mediaId);
     if (!m.genresEdited) {
       tx.delete(mediaGenre).where(eq(mediaGenre.mediaId, mediaId)).run();
       for (const g of new Set(p.genres ?? [])) tx.insert(mediaGenre).values({ mediaId, genre: g }).run();
@@ -82,6 +84,28 @@ function replaceLinks(tx: Db, mediaId: number, links: Record<string, LinkIn>): v
     const hidden = old.find((o) => o.site === site)?.hidden ?? false;
     tx.insert(mediaLink).values({ mediaId, site, url: l.url, score: l.score ?? null, scoreValue: l.score_value ?? null, origin: 'lookup', hidden, fetchedAt: now() }).run();
   }
+}
+
+/**
+ * The Notion Media Link is a link like any other (origin notion): it fills the slot for its site
+ * when the lookup has nothing there, and goes to "official" (or the bare host) otherwise.
+ */
+export function syncNotionLink(tx: Db, mediaId: number): void {
+  const m = tx.select().from(media).where(eq(media.id, mediaId)).get();
+  if (!m) return;
+  tx.delete(mediaLink).where(and(eq(mediaLink.mediaId, mediaId), eq(mediaLink.origin, 'notion'))).run();
+  const url = m.notionMediaUrl;
+  if (!url) return;
+  let site = siteOf(url) ?? 'official';
+  const taken = (s: string) => tx.select({ id: mediaLink.id }).from(mediaLink).where(and(eq(mediaLink.mediaId, mediaId), eq(mediaLink.site, s))).get();
+  if (taken(site)) {
+    if (site === 'official') return;
+    const sameUrl = tx.select().from(mediaLink).where(and(eq(mediaLink.mediaId, mediaId), eq(mediaLink.site, site))).get();
+    if (sameUrl && sameUrl.url.replace(/\/$/, '') === url.replace(/\/$/, '')) return;
+    site = 'official';
+    if (taken(site)) return;
+  }
+  tx.insert(mediaLink).values({ mediaId, site, url, origin: 'notion' }).run();
 }
 
 /** Move the pending poster files into place and record where they came from. */
@@ -113,6 +137,7 @@ export function markNoMatch(db: Db, mediaId: number, candidates: Candidate[] = [
       .where(eq(media.id, mediaId))
       .run();
     tx.delete(mediaLink).where(and(eq(mediaLink.mediaId, mediaId), eq(mediaLink.origin, 'lookup'))).run();
+    syncNotionLink(tx as unknown as Db, mediaId);
     const m = tx.select().from(media).where(eq(media.id, mediaId)).get();
     if (m && !m.genresEdited) tx.delete(mediaGenre).where(eq(mediaGenre.mediaId, mediaId)).run();
   });
@@ -131,10 +156,18 @@ export function pinCandidate(db: Db, mediaId: number, c: Candidate, others: Cand
 
 /** Mark an unsure or failed lookup on the row itself so /review can list it. */
 export function recordUnresolved(db: Db, mediaId: number, p: MatchPayload): void {
-  db.update(media)
-    .set({ identity: p.status === 'check' ? 'check' : 'not_found', identityCandidates: JSON.stringify(p.candidates.slice(0, 5)), wikiExtract: p.extract ?? undefined, updatedAt: now() })
-    .where(eq(media.id, mediaId))
-    .run();
+  db.transaction((tx) => {
+    tx.update(media)
+      .set({ identity: p.status === 'check' ? 'check' : 'not_found', identityCandidates: JSON.stringify(p.candidates.slice(0, 5)), wikiExtract: p.extract ?? undefined, updatedAt: now() })
+      .where(eq(media.id, mediaId))
+      .run();
+    syncNotionLink(tx as unknown as Db, mediaId);
+  });
+}
+
+/** Close a pending match for an entry: the owner pinned it by link, or said there is none. */
+export function settleMatchProposals(db: Db, mediaId: number, decision: 'accepted' | 'rejected'): void {
+  db.update(proposal).set({ decision }).where(and(eq(proposal.kind, 'match'), eq(proposal.subjectId, mediaId), eq(proposal.decision, 'pending'))).run();
 }
 
 export function parseDetails(m: Pick<Media, 'details'>): Record<string, unknown> {

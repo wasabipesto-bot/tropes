@@ -10,6 +10,7 @@ import { afterAction } from '../../../lib/after-action';
 import { candidateLine } from '../../../lib/jobs/matches';
 import { reviewState } from '../../../lib/jobs/page';
 import { pendingReviewFor } from '../../../lib/jobs/pending';
+import { latestJob } from '../../../lib/jobs/queue';
 import { UNCHECKED_BELOW, proposalsFor } from '../../../lib/jobs/view';
 import { SITE_LABELS, type Details } from '../../../lib/media';
 import { parseCandidates, parseDetails, parseIds } from '../../../lib/metadata';
@@ -24,6 +25,10 @@ if (redirect) return redirect;
 
 const state = reviewState(Astro, db);
 const job = state.job ?? (state.jobId ? undefined : pendingReviewFor(db, 'media', m.id)?.job);
+// With nothing waiting, the last finished check is still worth a line: "nothing new" is an answer.
+const lastCheck = !job ? latestJob(db, 'check_subject', (pl) => pl.subject?.kind === 'media' && pl.subject?.id === m.id) : undefined;
+const lastSummary = lastCheck?.status === 'done' ? (JSON.parse(lastCheck.result ?? '{}')?.summary ?? {}) : null;
+const fmtDate = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
 const summary = job ? (JSON.parse(job.result ?? '{}')?.summary ?? {}) : {};
 const warnings: string[] = job ? (JSON.parse(job.result ?? '{}')?.warnings ?? []) : [];
 const returnTo = job ? `${Astro.url.pathname}?job=${job.id}` : Astro.url.pathname;
@@ -103,11 +108,14 @@ const identityLine =
   <section style="margin-top: 48px">
     <h2>Tropes</h2>
     {!job && (
-      <form method="POST" action={actions.startSubjectCheck} style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
-        <input type="hidden" name="subjectKind" value="media" />
-        <input type="hidden" name="subjectId" value={m.id} />
-        <button type="submit" class="go">Check against {tropeCount} tropes</button>
-      </form>
+      <>
+        {lastSummary && <p class="quiet" style="margin: 0 0 12px; font-size: 15px">Checked on {fmtDate(lastCheck!.createdAt)} against {lastSummary.checked ?? '?'} tropes: {lastSummary.matched ? `${lastSummary.matched} proposed, all decided` : 'nothing new'}.{lastSummary.hasText === false ? ' No text of the work was available.' : ''}</p>}
+        <form method="POST" action={actions.startSubjectCheck} style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+          <input type="hidden" name="subjectKind" value="media" />
+          <input type="hidden" name="subjectId" value={m.id} />
+          <button type="submit" class="go">Check against {tropeCount} tropes</button>
+        </form>
+      </>
     )}
     {job && job.status !== 'done' && <JobStatus job={job} total={tropeCount} returnTo={`/update/media/${m.id}`} what={`Checking against ${tropeCount} tropes.`} />}
     {job && job.status === 'done' && (

@@ -6,7 +6,7 @@ import { db } from '../db';
 import { afterAction } from '../lib/after-action';
 import { candidateLine, identityCounts, matchesFor, pendingLookupJobs, unresolvedMediaIds, type MatchView } from '../lib/jobs/matches';
 import { reviewState } from '../lib/jobs/page';
-import { typeLabel } from '../lib/media';
+import { linkLabel, typeLabel } from '../lib/media';
 
 if (!Astro.locals.owner) return Astro.redirect('/login');
 const { redirect, error } = afterAction(Astro);
@@ -113,18 +113,29 @@ const when = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDate
       {notFound.length > 0 && (
         <section>
           <h2>Not found <span class="quiet" style="font-weight: 400">{notFound.length}</span></h2>
-          <p class="quiet" style="margin: 0 0 8px; font-size: 15px">Nothing on Wikidata or the per-site searches matched. Paste a link (IMDb, Steam, Goodreads, TMDB, MyAnimeList, Open Library, MusicBrainz, Wikipedia or Wikidata) and the lookup runs again from it.</p>
+          <p class="quiet" style="margin: 0 0 8px; font-size: 15px">Nothing on Wikidata or the per-site searches matched. Paste an IMDb, Steam, Goodreads, TMDB, MyAnimeList, Open Library, MusicBrainz, Wikipedia or Wikidata link and the lookup runs again from it; any other link is kept as the work's own site and the entry is marked as having no public match.</p>
+          {error && <p class="quiet" style="margin: 0 0 8px; font-size: 15px">{error}</p>}
           {notFound.map((v) => (
             <article class="match small">
               <div class="thumb"></div>
               <div>
-                <div class="head"><a href={`/media/${v.m.id}`} class="title">{v.m.title}</a><span class="quiet" style="font-size: 15px">{who(v)}</span></div>
-                <form method="POST" action={actions.seedMedia} class="seed">
-                  <input type="hidden" name="mediaId" value={v.m.id} />
-                  <input type="hidden" name="returnTo" value={returnTo} />
-                  <input name="url" type="url" class="line" placeholder="https://" style="width: 360px" />
-                  <button type="submit" class="t">Add link</button>
-                </form>
+                <div class="head">
+                  <a href={`/media/${v.m.id}`} class="title">{v.m.title}</a><span class="quiet" style="font-size: 15px">{who(v)}</span>
+                  {v.m.notionMediaUrl && <span class="quiet" style="font-size: 15px">Notion link: <a href={v.m.notionMediaUrl}>{linkLabel(v.m.notionMediaUrl)}</a></span>}
+                </div>
+                <div class="seedrow">
+                  <form method="POST" action={actions.seedMedia} class="seed">
+                    <input type="hidden" name="mediaId" value={v.m.id} />
+                    <input type="hidden" name="returnTo" value={returnTo} />
+                    <input name="url" type="url" class="line" placeholder="https://" style="width: 320px" />
+                    <button type="submit" class="t">Add link</button>
+                  </form>
+                  <form method="POST" action={actions.markNoMatchMedia} class="seed">
+                    <input type="hidden" name="mediaId" value={v.m.id} />
+                    <input type="hidden" name="returnTo" value={returnTo} />
+                    <button type="submit" class="t">No public match</button>
+                  </form>
+                </div>
               </div>
             </article>
           ))}
@@ -147,6 +158,7 @@ const when = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDate
   .cand { font-weight: 600; }
   .choices { display: flex; flex-direction: column; margin-top: 4px; font-size: 16px; }
   .choices .ck { padding: 3px 0; }
-  .seed { display: flex; gap: 12px; align-items: baseline; margin-top: 4px; font-size: 16px; }
+  .seedrow { display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: baseline; margin-top: 4px; }
+  .seed { display: flex; gap: 12px; align-items: baseline; font-size: 16px; }
   .commit { margin-top: 32px; padding-top: 20px; border-top: 1px solid #1B1B1B; display: flex; gap: 20px; align-items: center; }
 </style>

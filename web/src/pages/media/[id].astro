@@ -11,7 +11,7 @@ import { afterAction } from '../../lib/after-action';
 import { posterPath } from '../../lib/files';
 import { genreVocabulary, kindsFor } from '../../lib/genres';
 import { pendingReviewFor } from '../../lib/jobs/pending';
-import { linkLabel, metadataLine, orderedLinks, type Details } from '../../lib/media';
+import { metadataLine, orderedLinks, type Details } from '../../lib/media';
 import { parseDetails } from '../../lib/metadata';
 import { allTropes, instancesForMedia, seriesForMedia, tropeHrefResolver } from '../../lib/queries';
 import { ratingsOf } from '../../lib/rating';
@@ -40,8 +40,7 @@ const details = parseDetails(m) as Details;
 const genres = db.select({ g: mediaGenre.genre }).from(mediaGenre).where(eq(mediaGenre.mediaId, m.id)).all().map((r) => r.g);
 const links = orderedLinks(m.type, db.select().from(mediaLink).where(eq(mediaLink.mediaId, m.id)).all());
 const shown = links.filter((l) => !l.hidden);
-// The Notion Media Link stays in the margin unless the lookup already carries that site.
-const notionLink = m.notionMediaUrl && !shown.some((l) => l.label === linkLabel(m.notionMediaUrl!)) ? m.notionMediaUrl : null;
+// The Notion Media Link is one of the rows (origin notion), so nothing is added here.
 const reviews = details.reviews ?? [];
 
 let poster: string | null = null;
@@ -96,10 +95,9 @@ const fmt = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateS
     </div>
     <aside class="mar" style="font-size: 16px; line-height: 1.6; padding-top: 6px">
       <RatingMark ratings={ratingsOf(m)} size="page" />
-      {(shown.length > 0 || notionLink || reviews.length > 0) && (
+      {(shown.length > 0 || reviews.length > 0) && (
         <p style="margin: 10px 0 0" class="links">
           {shown.map((l, i) => <>{i > 0 && <span class="quiet"> · </span>}<a href={l.url}>{l.label}</a>{l.score && <span class="num"> {l.score}</span>}</>)}
-          {notionLink && <>{shown.length > 0 && <span class="quiet"> · </span>}<a href={notionLink}>{linkLabel(notionLink)}</a></>}
           {reviews.map((r) => <><span class="quiet"> · </span><span class="quiet">{r.by} <span class="num">{r.score}</span></span></>)}
         </p>
       )}

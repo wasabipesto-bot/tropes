@@ -43,7 +43,7 @@ const quotes = (ev: Evidence[]) => ev.filter((e) => e.kind === 'quote');
         {mode !== 'trope' && v.viaSeries && <span class="quiet" style="font-size: 15px">as part of <a href={`/series/${v.viaSeries.slug}`} style="color: inherit">{v.viaSeries.name}</a></span>}
         {owner && (editing === v.inst.id
           ? <a href={base} class="edit">Done</a>
-          : <a href={withEdit(v.inst.id)} class="edit">Edit</a>)}
+          : <a href={withEdit(v.inst.id, '&text=1')} class="edit">Edit</a>)}
       </div>
 
       {owner && editing === v.inst.id && textEdit ? (
@@ -76,7 +76,7 @@ const quotes = (ev: Evidence[]) => ev.filter((e) => e.kind === 'quote');
               : <button type="submit" name="prominence" value={p} class="t">{PROMINENCE_LABEL[p]}</button>)}
           </form>
           <div class="line-form">
-            <a href={withEdit(v.inst.id, '&text=1')}>Edit text</a>
+            {!textEdit && <a href={withEdit(v.inst.id, '&text=1')}>Edit text</a>}
             <a href={withEdit(v.inst.id, '&evidence=1')}>Add evidence</a>
             <form method="POST" action={actions.toggleNotable}>
               <input type="hidden" name="instanceId" value={v.inst.id} />

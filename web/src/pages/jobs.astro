@@ -14,14 +14,21 @@ if (!Astro.locals.owner) return Astro.redirect('/login');
 const { redirect, error } = afterAction(Astro);
 if (redirect) return redirect;
 const { job: current } = reviewState(Astro, db);
-const recent = db.select().from(job).orderBy(desc(job.id)).limit(30).all();
+const quietSync = (j: typeof job.$inferSelect) => {
+  if (j.kind !== 'sync_notion' || j.status !== 'done') return false;
+  const s = parseJson<any>(j.result, {})?.summary ?? {};
+  return !(s.inserted || s.updated || s.missing);
+};
+const all = db.select().from(job).orderBy(desc(job.id)).limit(400).all();
+const quiet = all.filter(quietSync).length;
+const recent = all.filter((j) => !quietSync(j)).slice(0, 30);
 const [{ n: dossiers }] = db.select({ n: count() }).from(dossier).all();
 const cost = (j: typeof recent[number]) => { const u = parseJson<any>(j.usage, null); return u?.costUsd ? `$${u.costUsd.toFixed(3)}` : ''; };
 ---
 
 <Base title="Jobs">
   <h1>Jobs</h1>
-  <p class="quiet" style="margin: 4px 0 0; font-size: 15px">{dossiers} dossiers built. The worker runs on ivory with `just worker`.</p>
+  <p class="quiet" style="margin: 4px 0 0; font-size: 15px">{dossiers} dossiers built. The worker runs on ivory with `just worker`.{quiet > 0 && ` ${quiet} Notion syncs with nothing to do are not listed.`} <a href="/metadata">Metadata lookups</a></p>
   {error && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">{error}</p>}
   <form method="POST" action={actions.startDossierBuild} style="margin-top: 24px; display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap">
     <button type="submit" class="t" name="onlyMissing" value="true">Build missing dossiers</button>
