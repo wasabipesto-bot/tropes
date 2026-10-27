@@ -27,13 +27,27 @@ const KIND_ORDER: MediaVideo['kind'][] = ['titles', 'opening', 'ending', 'edit',
 /** "OP1", "ED2": the theme an opening or ending row is about, from its label. */
 const themeToken = (v: Pick<MediaVideo, 'label'>) => /^(OP|ED)\s?\d+/i.exec(v.label)?.[0].replace(/\s/g, '').toUpperCase() ?? null;
 
-/** The work's videos in display order. An owner's pick of a theme (OP1 from YouTube) stands in for the automatic row of the same theme. */
+/**
+ * The work's videos in display order, one card per sequence: the owner's pick of a theme (OP1 from YouTube) stands
+ * in for the automatic row of the same theme; an owner's title sequence stands in for the automatic ones; Art of the
+ * Title's copy stands in for TMDB's. Hidden rows show only to the owner.
+ */
 export function videosFor(db: Db, mediaId: number, owner: boolean): MediaVideo[] {
   const rows = db.select().from(mediaVideo).where(eq(mediaVideo.mediaId, mediaId)).orderBy(asc(mediaVideo.position), asc(mediaVideo.id)).all();
-  const ownerThemes = new Set(rows.filter((v) => v.origin === 'owner' && !v.hidden).map(themeToken).filter(Boolean));
+  const live = rows.filter((v) => !v.hidden);
+  const ownerThemes = new Set(live.filter((v) => v.origin === 'owner').map(themeToken).filter(Boolean));
+  const ownerTitles = live.some((v) => v.origin === 'owner' && v.kind === 'titles');
+  const curatedTitles = live.some((v) => v.origin === 'artofthetitle' && v.kind === 'titles');
+  const standsIn = (v: MediaVideo) => {
+    if (v.origin === 'owner') return true;
+    if (ownerThemes.has(themeToken(v))) return false;
+    if (v.kind === 'titles' && ownerTitles) return false;
+    if (v.kind === 'titles' && v.origin === 'tmdb' && curatedTitles) return false;
+    return true;
+  };
   return rows
     .filter((v) => owner || !v.hidden)
-    .filter((v) => v.origin === 'owner' || !ownerThemes.has(themeToken(v)))
+    .filter(standsIn)
     .sort((a, b) => KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind) || a.position - b.position || a.id - b.id);
 }
 
