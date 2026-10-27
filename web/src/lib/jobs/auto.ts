@@ -139,6 +139,9 @@ function continueChain(db: Db, j: Job, payload: any): void {
   };
   for (let stage = CHAIN.indexOf(j.kind) + 1; stage < CHAIN.length; stage++) {
     const kind = CHAIN[stage] as 'extract_text' | 'make_sheets' | 'read_sheets';
+    // Reading sheets costs model money per sheet: the chain does it for named works (a refresh, new entries),
+    // never for the whole disk from the timer; the library-wide read is queued by hand.
+    if (kind === 'read_sheets' && !ids) continue;
     const sourceIds = todo[kind]();
     if (sourceIds.length > 0) {
       createJob(db, kind, { sourceIds, ...ctx });
