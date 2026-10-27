@@ -24,9 +24,17 @@ export function embedFor(v: Pick<MediaVideo, 'provider' | 'url'>): { kind: 'ifra
 export const VIDEO_KIND_LABEL: Record<MediaVideo['kind'], string> = { opening: 'Opening', ending: 'Ending', titles: 'Title sequence', trailer: 'Trailer', edit: 'Edit', other: 'Video' };
 const KIND_ORDER: MediaVideo['kind'][] = ['titles', 'opening', 'ending', 'edit', 'trailer', 'other'];
 
+/** "OP1", "ED2": the theme an opening or ending row is about, from its label. */
+const themeToken = (v: Pick<MediaVideo, 'label'>) => /^(OP|ED)\s?\d+/i.exec(v.label)?.[0].replace(/\s/g, '').toUpperCase() ?? null;
+
+/** The work's videos in display order. An owner's pick of a theme (OP1 from YouTube) stands in for the automatic row of the same theme. */
 export function videosFor(db: Db, mediaId: number, owner: boolean): MediaVideo[] {
   const rows = db.select().from(mediaVideo).where(eq(mediaVideo.mediaId, mediaId)).orderBy(asc(mediaVideo.position), asc(mediaVideo.id)).all();
-  return rows.filter((v) => owner || !v.hidden).sort((a, b) => KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind) || a.position - b.position || a.id - b.id);
+  const ownerThemes = new Set(rows.filter((v) => v.origin === 'owner' && !v.hidden).map(themeToken).filter(Boolean));
+  return rows
+    .filter((v) => owner || !v.hidden)
+    .filter((v) => v.origin === 'owner' || !ownerThemes.has(themeToken(v)))
+    .sort((a, b) => KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind) || a.position - b.position || a.id - b.id);
 }
 
 /** Worker and owner rows land here: one row per work and URL; an owner's row is never rewritten by a worker, hidden stays hidden. */

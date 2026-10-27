@@ -69,6 +69,8 @@ def test_aott_slugs_and_tmdb_filter():
         {"site": "YouTube", "key": "b", "type": "Trailer", "name": "Official Trailer"},
         {"site": "YouTube", "key": "c", "type": "Clip", "name": "Title Sequence"},
         {"site": "YouTube", "key": "d", "type": "Clip", "name": "Opening Trailer"},
+        {"site": "YouTube", "key": "f", "type": "Clip", "name": "Ceres Opening Scene"},
+        {"site": "YouTube", "key": "g", "type": "Clip", "name": "Opening Title (Season 1)"},
         {"site": "Vimeo", "key": "e", "type": "Opening Credits", "name": "x"},
     ]
-    assert tmdb_titles(vids) == [("a", "Opening credits"), ("c", "Title Sequence")]
+    assert tmdb_titles(vids) == [("a", "Opening credits"), ("c", "Title Sequence"), ("g", "Opening Title (Season 1)")]

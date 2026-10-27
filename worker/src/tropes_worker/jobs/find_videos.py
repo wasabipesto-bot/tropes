@@ -21,8 +21,8 @@ ANIMETHEMES = "https://api.animethemes.moe"
 THEME_INCLUDE = "animethemes.animethemeentries.videos,animethemes.song.artists,resources"
 AOTT = "https://www.artofthetitle.com"
 TMDB = "https://api.themoviedb.org/3"
-OPENING_RX = re.compile(r"\b(opening|title sequence|main titles?|title credits|intro)\b", re.I)
-NOT_OPENING_RX = re.compile(r"trailer|teaser|promo", re.I)
+OPENING_RX = re.compile(r"\b(opening (credits|titles?|sequence)|title sequence|main titles?|title credits|intro)\b", re.I)
+NOT_OPENING_RX = re.compile(r"trailer|teaser|promo|scene|recap", re.I)
 
 
 def norm(s: str) -> str:
@@ -153,7 +153,8 @@ def aott_page(f: Fetcher, title: str, year: int | None) -> tuple[str, str] | Non
             continue
         if year and abs(int(m.group(2)) - year) > 1:
             continue
-        vimeo = re.findall(r"player\.vimeo\.com/video/(\d+)", html)
+        # The first embed on the article is the title sequence itself; later ones are related sequences and trailers.
+        vimeo = re.findall(r'data-vimeoid="(\d+)"', html) or re.findall(r"player\.vimeo\.com/video/(\d+)", html)
         if vimeo:
             return url, vimeo[0]
     return None
@@ -192,10 +193,11 @@ def tmdb_rows(f: Fetcher, token: str, m: dict[str, Any]) -> list[dict[str, Any]]
             if key in seen:
                 continue
             seen.add(key)
+            kind = "ending" if re.search(r"\bend(ing)? (credits|titles?)\b", label, re.I) else "titles"
             rows.append(
                 {
                     "mediaId": m["id"],
-                    "kind": "titles",
+                    "kind": kind,
                     "url": f"https://www.youtube.com/watch?v={key}",
                     "label": label,
                     "origin": "tmdb",

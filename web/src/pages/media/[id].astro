@@ -151,7 +151,7 @@ const fmt = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateS
   {items.length === 0 && <div class="row" style="margin-top: 48px"><div class="lab"></div><p class="quiet" style="margin: 0">No tropes yet.</p><div></div></div>}
   {(videos.length > 0 || owner) && (
     <div class="row" style="margin-top: 36px">
-      <div class="lab"><div class="sc">Openings</div></div>
+      <div class="lab"><div class="sc">Titles &amp; openings</div></div>
       <div><VideoStrip mediaId={m.id} videos={videos} owner={owner} returnTo={returnTo} /></div>
       <div></div>
     </div>
