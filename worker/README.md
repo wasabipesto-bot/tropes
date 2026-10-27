@@ -138,6 +138,16 @@ as" aliases, and keeps the posts the model judges to be about the work.
 before Wikidata's id, puts plot, story and character sections first and
 drops reception and development.
 
+- `find_videos`: openings, endings and title sequences for the works, with
+  no model: every OP and ED of an anime from AnimeThemes (by MyAnimeList or
+  AniDB id, else by name and year; the aired version with credits is
+  preferred, creditless otherwise), title sequences from Art of the Title
+  (the article's slug, checked against the title and year), and TMDB
+  videos typed "Opening Credits" or clips named like one (trailers are left
+  alone). Rows land in `media_video` through `POST /api/videos`; the owner's
+  own rows are never overwritten, hidden rows stay hidden. Payload
+  `{mediaIds?, auto, sources?}`.
+
 On the model side, `ensure_texts` pulls the extracted texts into
 `data/text/site/` before a scan or dossier build, one file per work in
 episode order, so the rest of the pipeline reads them like a linked EPUB.

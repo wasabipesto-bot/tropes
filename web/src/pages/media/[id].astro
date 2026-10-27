@@ -1,10 +1,12 @@
 ---
 import { plainText } from '../../lib/text';
+import { videosFor } from '../../lib/videos';
 import { statSync } from 'node:fs';
 import { eq } from 'drizzle-orm';
 import { actions } from 'astro:actions';
 import Base from '../../layouts/Base.astro';
 import InstanceList from '../../components/InstanceList.astro';
+import VideoStrip from '../../components/VideoStrip.astro';
 import RatingMark from '../../components/RatingMark.astro';
 import { db } from '../../db';
 import { media, mediaGenre, mediaLink } from '../../db/schema';
@@ -32,6 +34,7 @@ const editGenres = owner && p.get('edit') === 'genres';
 const editing = owner && /^\d+$/.test(p.get('edit') ?? '') ? Number(p.get('edit')) : null;
 const render = { tropeHref: tropeHrefResolver(db) };
 const items = instancesForMedia(db, m.id);
+const videos = videosFor(db, m.id, owner);
 const partOf = seriesForMedia(db, m.id);
 const here = `/media/${m.id}`;
 const returnTo = Astro.url.pathname + Astro.url.search;
@@ -146,6 +149,14 @@ const fmt = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateS
   </div>
 
   {items.length === 0 && <div class="row" style="margin-top: 48px"><div class="lab"></div><p class="quiet" style="margin: 0">No tropes yet.</p><div></div></div>}
+  {(videos.length > 0 || owner) && (
+    <div class="row" style="margin-top: 36px">
+      <div class="lab"><div class="sc">Openings</div></div>
+      <div><VideoStrip mediaId={m.id} videos={videos} owner={owner} returnTo={returnTo} /></div>
+      <div></div>
+    </div>
+  )}
+
   <InstanceList items={items} mode="subject" owner={owner} render={render} returnTo={returnTo} editing={editing} />
 
   {owner && (

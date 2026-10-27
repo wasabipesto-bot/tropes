@@ -1,0 +1,93 @@
+---
+import { actions } from 'astro:actions';
+import { VIDEO_KINDS, type MediaVideo } from '../db/schema';
+import { VIDEO_KIND_LABEL, embedFor } from '../lib/videos';
+
+/** Openings, endings, title sequences and edits for a work: click-to-play, nothing loads from a third party until then. */
+interface Props { mediaId: number; videos: MediaVideo[]; owner: boolean; returnTo: string }
+const { mediaId, videos, owner, returnTo } = Astro.props;
+const shown = videos.filter((v) => owner || !v.hidden);
+const title = (v: MediaVideo) => v.label || VIDEO_KIND_LABEL[v.kind];
+---
+
+{(shown.length > 0 || owner) && (
+  <section class="vids">
+    {shown.length > 0 && (
+      <div class="strip">
+        {shown.map((v) => {
+          const e = embedFor(v);
+          return (
+            <figure class:list={['vid', { hidden: v.hidden }]} data-embed={e.kind === 'iframe' ? e.src : undefined}>
+              {e.kind === 'iframe' ? (
+                <button type="button" class="play" aria-label={`Play ${title(v)}`} style={e.poster ? `background-image: url(${e.poster})` : undefined}>
+                  <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="rgba(0,0,0,.55)" stroke="#fff" stroke-width="1.5"></circle><path d="M17 13l14 9-14 9z" fill="#fff"></path></svg>
+                </button>
+              ) : e.kind === 'video' ? (
+                <video controls preload="none" src={e.src} class="play"></video>
+              ) : (
+                <a href={v.url} class="play linkonly">Open</a>
+              )}
+              <figcaption>
+                <span class="quiet sc">{VIDEO_KIND_LABEL[v.kind]}</span> {title(v) !== VIDEO_KIND_LABEL[v.kind] && <span>{title(v)}</span>}
+                {v.sourceUrl && <a href={v.sourceUrl} class="quiet" style="font-size: 14px; margin-left: 6px">source</a>}
+                {owner && (
+                  <span class="own">
+                    <form method="POST" action={actions.setVideoHidden} style="display: inline">
+                      <input type="hidden" name="videoId" value={v.id} /><input type="hidden" name="returnTo" value={returnTo} />
+                      {!v.hidden && <input type="hidden" name="hidden" value="on" />}
+                      <button type="submit" class="t">{v.hidden ? 'Show' : 'Hide'}</button>
+                    </form>
+                    <form method="POST" action={actions.removeVideo} style="display: inline" onsubmit="return confirm('Remove this video?')">
+                      <input type="hidden" name="videoId" value={v.id} /><input type="hidden" name="returnTo" value={returnTo} />
+                      <button type="submit" class="t danger">Remove</button>
+                    </form>
+                  </span>
+                )}
+              </figcaption>
+            </figure>
+          );
+        })}
+      </div>
+    )}
+    {owner && (
+      <form method="POST" action={actions.addVideo} class="addvid">
+        <input type="hidden" name="mediaId" value={mediaId} /><input type="hidden" name="returnTo" value={returnTo} />
+        <label for="vid-url" class="quiet">Video</label>
+        <input id="vid-url" name="url" type="url" class="line" placeholder="https://www.youtube.com/watch?v=…" style="flex: 1 1 260px" />
+        <select name="kind" class="line">{VIDEO_KINDS.map((k) => <option value={k}>{VIDEO_KIND_LABEL[k]}</option>)}</select>
+        <input name="label" class="line" placeholder="label (OP1 · song — artist)" style="flex: 1 1 200px" />
+        <button type="submit" class="t">Add</button>
+      </form>
+    )}
+  </section>
+)}
+
+<script>
+  // The iframe only exists after a click, so nothing is fetched from YouTube or Vimeo until the visitor asks.
+  document.querySelectorAll<HTMLElement>('figure.vid[data-embed]').forEach((fig) => {
+    fig.querySelector('button.play')?.addEventListener('click', () => {
+      const frame = document.createElement('iframe');
+      frame.src = fig.dataset.embed!;
+      frame.allow = 'autoplay; fullscreen; picture-in-picture';
+      frame.setAttribute('allowfullscreen', '');
+      frame.className = 'play';
+      fig.querySelector('.play')!.replaceWith(frame);
+    });
+  });
+</script>
+
+<style>
+  .vids { margin: 18px 0 0; }
+  .strip { display: flex; flex-wrap: wrap; gap: 16px 20px; }
+  .vid { margin: 0; width: 300px; max-width: 100%; }
+  .vid.hidden { opacity: .5; }
+  .play { display: block; width: 100%; aspect-ratio: 16 / 9; background: #1B1B1B center / cover no-repeat; border: 0; padding: 0; cursor: pointer; color: #fff; display: grid; place-items: center; }
+  iframe.play { cursor: default; }
+  .linkonly { color: #fff; text-decoration: none; }
+  figcaption { font-size: 15px; margin-top: 4px; line-height: 1.4; }
+  .sc { font-variant: small-caps; letter-spacing: .04em; }
+  .own { margin-left: 8px; display: inline-flex; gap: 10px; }
+  .own .t { padding: 2px 0; font-size: 14px; }
+  .addvid { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; margin-top: 14px; font-size: 15px; }
+  .addvid select.line { width: auto; }
+</style>

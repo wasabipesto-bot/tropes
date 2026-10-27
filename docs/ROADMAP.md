@@ -595,12 +595,15 @@ Collections, review queue, drafts, related-tropes lists, "shares the most
 tropes with", confidence badges, the show-all-spoilers toggle. Spec 11 lists
 them as rejected; they do not come back without a new reason.
 
-Backlog (owner, 2026-10-24, shape agreed 2026-10-26): openings, endings,
-title sequences, edits and trailers as a list of YouTube links per work,
-embedded on the media page when present (click-to-play, no third-party
-load until clicked). Later, automatic sources: TMDB's videos endpoint for
-trailers and opening credits, AnimeThemes.moe for anime OP/ED, and a
-YouTube search for title sequences (needs a key). Not planned yet.
+Openings and title sequences (owner, 2026-10-24; built 2026-10-27): a
+`media_video` row per opening, ending, title sequence, edit or trailer,
+embedded click-to-play on the media page (nothing loads from YouTube or
+Vimeo until the visitor asks). The owner pastes links by hand; the
+`find_videos` job fills in AnimeThemes OP/EDs, Art of the Title sequences
+and TMDB opening credits (no trailers, no model). The owner's "Best Title
+Sequences/OPs" Notion page was imported as owner rows. Still open: a
+YouTube search for live-action title sequences neither source has (needs
+an API key), and the "list of good edits".
 
 ---
 

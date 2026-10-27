@@ -132,6 +132,33 @@ export const trope = sqliteTable('trope', {
   ...timestamps,
 });
 
+export const VIDEO_KINDS = ['opening', 'ending', 'titles', 'trailer', 'edit', 'other'] as const;
+export const VIDEO_PROVIDERS = ['youtube', 'vimeo', 'animethemes', 'file', 'other'] as const;
+export const VIDEO_ORIGINS = ['owner', 'animethemes', 'tmdb', 'artofthetitle'] as const;
+
+/** An opening, ending, title sequence, trailer or edit for a work, embedded click-to-play on its page (ROADMAP backlog, 2026-10-27). */
+export const mediaVideo = sqliteTable(
+  'media_video',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    mediaId: integer('media_id').notNull().references(() => media.id, { onDelete: 'cascade' }),
+    kind: text('kind', { enum: VIDEO_KINDS }).notNull(),
+    provider: text('provider', { enum: VIDEO_PROVIDERS }).notNull(),
+    /** The watch URL (youtube.com/watch?v=…, vimeo.com/…, a direct webm). */
+    url: text('url').notNull(),
+    /** "OP1 · This Fffire — Franz Ferdinand", "Title sequence". */
+    label: text('label').notNull().default(''),
+    origin: text('origin', { enum: VIDEO_ORIGINS }).notNull().default('owner'),
+    /** Where it came from, when that is a page worth linking (the Art of the Title article). */
+    sourceUrl: text('source_url'),
+    position: integer('position').notNull().default(0),
+    hidden: integer('hidden', { mode: 'boolean' }).notNull().default(false),
+    createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+  },
+  (t) => [uniqueIndex('media_video_media_url').on(t.mediaId, t.url)],
+);
+export type MediaVideo = typeof mediaVideo.$inferSelect;
+
 /** Example titles given when the trope was created, kept as typed, resolved to a media row when one matches. */
 export const tropeSeed = sqliteTable('trope_seed', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -274,7 +301,7 @@ export const mediaNote = sqliteTable('media_note', {
   fetchedAt: text('fetched_at').notNull().default(sql`(datetime('now'))`),
 });
 
-export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs', 'find_evidence', 'index_local', 'extract_text', 'extract_evidence', 'make_sheets', 'read_sheets', 'look_frames', 'fetch_wiki', 'transcribe'] as const;
+export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs', 'find_evidence', 'index_local', 'extract_text', 'extract_evidence', 'make_sheets', 'read_sheets', 'look_frames', 'fetch_wiki', 'transcribe', 'find_videos'] as const;
 /** Job kinds that read the media disk; the media worker on celebrimbor claims these and nothing else. */
 export const MEDIA_JOB_KINDS = ['index_local', 'extract_text', 'extract_evidence', 'make_sheets', 'transcribe'] as const;
 export const JOB_STATUSES = ['queued', 'running', 'done', 'failed', 'cancelled'] as const;

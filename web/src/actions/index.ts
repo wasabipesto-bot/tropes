@@ -5,7 +5,8 @@ import { and, eq, sql } from 'drizzle-orm';
 import type { ActionAPIContext } from 'astro:actions';
 import { db } from '../db';
 import { applyCaps } from '../lib/caps';
-import { PROMINENCES, dossier, evidence, instance, job, localSource, media, mediaGenre, mediaLink, notable, proposal, series, trope, tropeAlias, tropeSeed } from '../db/schema';
+import { upsertVideo } from '../lib/videos';
+import { PROMINENCES, VIDEO_KINDS, dossier, evidence, instance, job, localSource, media, mediaGenre, mediaLink, mediaVideo, notable, proposal, series, trope, tropeAlias, tropeSeed } from '../db/schema';
 import { cancelJob, createJob, jobById, parseJson } from '../lib/jobs/queue';
 import { commitProposals } from '../lib/jobs/commit';
 import { commitInput, commitMatchesInput } from '../lib/jobs/forms';
@@ -279,6 +280,35 @@ export const server = {
       const j = createJob(db, 'check_subject', { mode: 'recheck', subject });
       const back = subject.kind === 'media' ? `/update/media/${subject.id}` : `/recheck/series/${subject.id}`;
       return { returnTo: `${back}?job=${j.id}` };
+    },
+  }),
+
+  /** A video link for a work: an opening, ending, title sequence, trailer or edit, embedded on its page. */
+  addVideo: defineAction({
+    accept: 'form',
+    input: z.object({ mediaId: id, url: z.string().trim().url(), kind: z.enum(VIDEO_KINDS).default('opening'), label: text, returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      upsertVideo(db, { mediaId: input.mediaId, kind: input.kind, url: input.url, label: input.label, origin: 'owner' });
+      return { returnTo: input.returnTo ?? `/media/${input.mediaId}` };
+    },
+  }),
+  setVideoHidden: defineAction({
+    accept: 'form',
+    input: z.object({ videoId: id, hidden: checkbox, returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      db.update(mediaVideo).set({ hidden: input.hidden }).where(eq(mediaVideo.id, input.videoId)).run();
+      return { returnTo: input.returnTo ?? '/library' };
+    },
+  }),
+  removeVideo: defineAction({
+    accept: 'form',
+    input: z.object({ videoId: id, returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      db.delete(mediaVideo).where(eq(mediaVideo.id, input.videoId)).run();
+      return { returnTo: input.returnTo ?? '/library' };
     },
   }),
 

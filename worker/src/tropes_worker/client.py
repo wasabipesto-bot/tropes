@@ -158,6 +158,10 @@ class SiteClient:
         """Register a text the worker fetched itself (a Fandom transcript) as a source for a work."""
         return self._post("/api/sources/text", {"mediaId": media_id, "path": path, "label": label}).json()
 
+    def post_videos(self, videos: list[dict[str, Any]]) -> dict[str, Any]:
+        """Openings, endings and title sequences found for some works (find_videos)."""
+        return self._post("/api/videos", {"videos": videos}).json()
+
     def upload_sheet(self, source_id: int, n: int, data: bytes) -> dict[str, Any]:
         """Contact sheet n (JPEG) for a video source; the site counts them in the source's meta."""
         r = self._http.put(f"/api/sources/{source_id}/sheet/{n}", content=data, headers={"content-type": "image/jpeg"})

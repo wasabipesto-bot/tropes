@@ -36,6 +36,7 @@ def registry() -> dict[str, JobFn]:
         extract_text,
         fetch_wiki,
         find_evidence,
+        find_videos,
         index_local,
         look_frames,
         lookup_media,
@@ -64,6 +65,7 @@ def registry() -> dict[str, JobFn]:
         "read_sheets": read_sheets.run,
         "look_frames": look_frames.run,
         "fetch_wiki": fetch_wiki.run,
+        "find_videos": find_videos.run,
         "transcribe": transcribe.run,
     }
 

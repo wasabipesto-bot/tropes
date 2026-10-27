@@ -37,6 +37,8 @@ export const makeSheetsPayload = z.object({ sourceIds: z.array(z.number().int().
 export const readSheetsPayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false), then: z.enum(['dossier']).optional(), mediaIds: z.array(z.number().int().positive()).optional() });
 /** transcribe: Whisper for video sources that had no subtitle from any other source (plan D6). */
 export const transcribePayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false), model: z.string().optional(), threads: z.number().int().positive().max(48).optional() });
+/** find_videos: openings, endings and title sequences from AnimeThemes, Art of the Title and TMDB; no model. */
+export const findVideosPayload = z.object({ mediaIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false), sources: z.array(z.enum(['animethemes', 'artofthetitle', 'tmdb'])).optional() });
 /** look_frames: the model looks at the frames grabbed for a scan's proposals of visual tropes (plan D12). */
 export const lookFramesPayload = z.object({ forJob: z.number().int().positive(), auto: z.boolean().default(false) });
 /** fetch_wiki: Fandom summaries (and transcripts, when a wiki has them) for pinned works (plan T12). */
@@ -65,6 +67,7 @@ export const payloadByKind = {
   look_frames: lookFramesPayload,
   fetch_wiki: fetchWikiPayload,
   transcribe: transcribePayload,
+  find_videos: findVideosPayload,
 } as const;
 export type JobKind = (typeof JOB_KINDS)[number];
 
