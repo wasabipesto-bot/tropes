@@ -1,0 +1,306 @@
+{
+  "id": 205,
+  "title": "Scott Pilgrim Takes Off",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 17558,
+      "chapters": 8,
+      "from": "S01E01 720p",
+      "to": "S01E08 720p",
+      "file": "205-3f52b91e8f199c5d.txt"
+    },
+    "posts": 0,
+    "visual": 0,
+    "wiki": "https://scottpilgrim.fandom.com/wiki/Scott_Pilgrim_Takes_Off",
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "An animated reworking of Scott Pilgrim in which Matthew Patel apparently kills Scott at the first Evil Ex fight, so Ramona Flowers spends the season investigating his disappearance. Her search runs through each ex in turn and through a film production of Scott's 'Precious Little Life' that Young Neil supposedly wrote, before revealing that a time-travelling Older Scott staged the kidnapping to stop the relationship from starting. ||The finale has even-older Scotts attack, Ramona chooses Scott, and the exes reform into running a theater.||",
+    "characters": [
+      {
+        "name": "Scott Pilgrim",
+        "role": "protagonist, bassist of Sex Bob-omb",
+        "descriptors": [
+          "23-year-old Canadian slacker",
+          "bassist",
+          "dreams of Ramona before meeting her",
+          "X-marked parka"
+        ],
+        "relationships": [
+          "Ramona Flowers: the girl from his dreams, one date before his 'death'",
+          "Wallace Wells: roommate who lets him use his credit card",
+          "Knives Chau: high schooler he is vaguely dating and never kissed",
+          "Older Scott: future self who kidnaps him"
+        ]
+      },
+      {
+        "name": "Ramona Flowers",
+        "role": "protagonist, investigator",
+        "descriptors": [
+          "American delivery girl for Netflix DVDs",
+          "changing hair colours",
+          "rollerblades",
+          "subspace highways through people's heads"
+        ],
+        "relationships": [
+          "Scott: one date, then a season of searching for him",
+          "The League of Evil Exes: seven former partners",
+          "Roxie Richter: college roommate and fourth ex, reconciled after a fight"
+        ]
+      },
+      {
+        "name": "Wallace Wells",
+        "role": "Scott's roommate and comic voice",
+        "descriptors": [
+          "cool gay roommate",
+          "sugar-daddy arrangement with Scott's spending",
+          "in the future married to a man who works at Nintendo"
+        ],
+        "relationships": [
+          "Scott: best friend and landlord of sorts",
+          "Todd Ingram: on-set affair during the movie shoot"
+        ]
+      },
+      {
+        "name": "Knives Chau",
+        "role": "Scott's high school almost-girlfriend",
+        "descriptors": [
+          "16 years old",
+          "piano player",
+          "later joins Sex Bob-omb"
+        ],
+        "relationships": [
+          "Scott: never kissed, held hands once",
+          "Matthew Patel: pitches him a Broadway musical"
+        ]
+      },
+      {
+        "name": "Kim Pine",
+        "role": "Sex Bob-omb drummer, Scott's first girlfriend",
+        "descriptors": [
+          "deadpan",
+          "rage outlet through drumming"
+        ],
+        "relationships": [
+          "Scott: first boyfriend, rescued by him from Simon Lee's gang",
+          "Ramona: reluctant source on Scott's past"
+        ]
+      },
+      {
+        "name": "Matthew Patel",
+        "role": "first Evil Ex, later league boss",
+        "descriptors": [
+          "mystical powers",
+          "Broadway ambitions",
+          "demon hipster girls"
+        ],
+        "relationships": [
+          "Ramona: middle-school boyfriend of about a week",
+          "Gideon Graves: defeats him for the league"
+        ]
+      },
+      {
+        "name": "Gideon Graves / Gordon Goose",
+        "role": "league founder, later fallen",
+        "descriptors": [
+          "owner of record labels, a studio, animal shelters",
+          "former 'Fearless' kid from North Bay, Ontario",
+          "No Fear shirts"
+        ],
+        "relationships": [
+          "Ramona: controlling ex",
+          "Julie Powers: moves in with her as Gordon",
+          "Matthew Patel: loses empire to him"
+        ]
+      },
+      {
+        "name": "Lucas Lee",
+        "role": "film-star Evil Ex",
+        "descriptors": [
+          "skater turned actor",
+          "best chest in the business",
+          "says 'whatever'"
+        ],
+        "relationships": [
+          "Ramona: high school freshman-year ex who broke his board",
+          "the paparazzi: brawls with them on set",
+          "Julie: crashes at her house"
+        ]
+      },
+      {
+        "name": "Todd Ingram",
+        "role": "vegan Evil Ex",
+        "descriptors": [
+          "vegan powers and portals",
+          "rock-star partner of Envy Adams"
+        ],
+        "relationships": [
+          "Envy Adams: long-term partner",
+          "Wallace: falls hard for him on set, then breaks vegan"
+        ]
+      },
+      {
+        "name": "Envy Adams",
+        "role": "Scott's famous ex",
+        "descriptors": [
+          "lead singer of The Clash at Demonhead",
+          "global sex symbol",
+          "patent leather combat boots"
+        ],
+        "relationships": [
+          "Scott: ex who stomped his heart",
+          "Todd: boyfriend she loses to Wallace"
+        ]
+      },
+      {
+        "name": "Roxie Richter",
+        "role": "fourth Evil Ex",
+        "descriptors": [
+          "claims emotional intelligence",
+          "ninja-like fighting"
+        ],
+        "relationships": [
+          "Ramona: college roommate and ex, left without a word",
+          "Ramona: closure and friendship after a fight"
+        ]
+      },
+      {
+        "name": "Young Neil",
+        "role": "bandmate and accidental screenwriter",
+        "descriptors": [
+          "19",
+          "sleep paralysis demon",
+          "glasses"
+        ],
+        "relationships": [
+          "Scott: bandmate",
+          "Ramona: set tour guide at the movie"
+        ]
+      },
+      {
+        "name": "Older Scott",
+        "role": "time-travelling antagonist",
+        "descriptors": [
+          "bearded future Scott",
+          "DeLorean-parts time machine",
+          "Anti-Kiss nanomachines"
+        ],
+        "relationships": [
+          "Ramona: future wife he is separated from",
+          "Young Scott: kidnaps him to stop the relationship"
+        ]
+      },
+      {
+        "name": "Julie Powers",
+        "role": "party host and Gideon's host",
+        "descriptors": [
+          "curated parties",
+          "swears constantly",
+          "coffee-shop manager"
+        ],
+        "relationships": [
+          "Ramona: forbids Scott from dating her",
+          "Gordon Goose: takes him in"
+        ]
+      }
+    ],
+    "settings": [
+      "Toronto, Canada",
+      "The Rockit music venue",
+      "No-Account Video",
+      "Glendale, California film set",
+      "New York City, Gideon's lair",
+      "the future, Old Scott's VR house",
+      "subspace highways"
+    ],
+    "arcs": [
+      {
+        "summary": "Scott is apparently killed by Matthew Patel, and Ramona starts investigating.",
+        "locator": "S01E01 720p to S01E02 720p"
+      },
+      {
+        "summary": "Matthew Patel topples Gideon and takes the League and empire.",
+        "locator": "S01E02 720p"
+      },
+      {
+        "summary": "Ramona works through each ex as suspect, clearing Roxie, Lucas, Todd and Gideon.",
+        "locator": "S01E03 720p to S01E06 720p"
+      },
+      {
+        "summary": "Young Neil's movie becomes a Broadway musical bankrolled by Patel.",
+        "locator": "S01E04 720p to S01E06 720p"
+      },
+      {
+        "summary": "Scott is found in the future; Older Scott admits he staged the kidnapping to stop the romance.",
+        "locator": "S01E06 720p to S01E07 720p"
+      },
+      {
+        "summary": "Even-older Scotts attack the theater; ||Ramona chooses Scott and sends the rampaging Scotts home.||",
+        "locator": "S01E08 720p"
+      }
+    ],
+    "motifs": [
+      "sparks as the sign of attraction",
+      "subspace highways and star-shaped doors",
+      "vegan portals and vegan powers",
+      "the 'X' on Scott's parka",
+      "rollerblades and skateboards",
+      "DVD delivery and video stores",
+      "Sonic the Hedgehog",
+      "Columbo reruns and detective imagery",
+      "'emotional business'",
+      "time machines built from DeLorean parts",
+      "Anti-Kiss nanomachine fields"
+    ],
+    "themes": [
+      "fate versus free will in romance",
+      "letting go of a grudge",
+      "rebooting a familiar story",
+      "chasing fame versus friendship",
+      "growing up and staying together",
+      "the artist's ownership of their own story"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Matthew Patel crashes Sex Bob-omb's set and Scott vanishes in a portal mid-fight.",
+        "locator": "S01E01 720p"
+      },
+      {
+        "summary": "At the funeral, Envy Adams performs while the exes receive invitations to the lair.",
+        "locator": "S01E02 720p"
+      },
+      {
+        "summary": "Matthew Patel fights Gideon for the league and wins everything by signed contract.",
+        "locator": "S01E02 720p"
+      },
+      {
+        "summary": "Ramona and Roxie fight in the video store, then reconcile.",
+        "locator": "S01E03 720p"
+      },
+      {
+        "summary": "On Lucas Lee's set, Wallace is cast as himself after heckling, and Lucas fights the paparazzi.",
+        "locator": "S01E04 720p"
+      },
+      {
+        "summary": "Todd falls for Wallace and gives up veganism; Envy fires Ramona.",
+        "locator": "S01E05 720p"
+      },
+      {
+        "summary": "Ramona lays out the who, why and how, then learns the script was written 14 years from now.",
+        "locator": "S01E06 720p"
+      },
+      {
+        "summary": "Older Scott gives the future tour and admits he brought Scott forward on purpose.",
+        "locator": "S01E07 720p"
+      },
+      {
+        "summary": "Even Older Scott unleashes the Anti-Kiss fields and fights everyone at the musical.",
+        "locator": "S01E08 720p"
+      }
+    ]
+  }
+}

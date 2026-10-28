@@ -1,0 +1,73 @@
+{
+  "id": 31,
+  "title": "To Be Hero X",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 14:47:48",
+  "inputs": {},
+  "body": {
+    "known": "partial",
+    "summary": "An animated Chinese series in which people called Heroes gain powers from the public's belief in them, and their standing is tracked by a ranking system. The premise turns on the idea that faith and reputation literally fuel superhuman ability, so Heroes compete for attention and can be unmade by losing it. The story follows a young man, X, who enters this world and has to work out what kind of Hero he wants to be while the machinery of ranking and sponsorship shapes everyone around him. ||The series builds toward a confrontation over who controls the belief that powers the Heroes.||",
+    "characters": [
+      {
+        "name": "X",
+        "role": "protagonist",
+        "descriptors": [
+          "young Hero",
+          "central figure of the title",
+          "white suit and sunglasses imagery in promotional art"
+        ],
+        "relationships": [
+          "the public: his power depends on their belief in him"
+        ]
+      },
+      {
+        "name": "Li Haoling",
+        "role": "creator (behind the camera)",
+        "descriptors": [
+          "director and writer"
+        ],
+        "relationships": []
+      }
+    ],
+    "settings": [
+      "a contemporary city where Heroes are public celebrities",
+      "the Hero ranking and sponsorship system",
+      "broadcast and social media arenas where belief is measured"
+    ],
+    "arcs": [
+      {
+        "summary": "X enters the Hero world and learns that ability is tied to public belief and ranking.",
+        "locator": null
+      },
+      {
+        "summary": "Heroes compete for visibility and sponsorship as their powers rise and fall with popularity.",
+        "locator": null
+      }
+    ],
+    "motifs": [
+      "white suits and sunglasses",
+      "ranking numbers and leaderboards",
+      "abstract, colorful energy effects during fights",
+      "geometric, stylized character design",
+      "crowds and cameras as the source of power",
+      "belief itself as a measurable resource"
+    ],
+    "themes": [
+      "faith and belief as fuel",
+      "celebrity and the manipulation of public opinion",
+      "identity shaped by how others see you",
+      "the cost of chasing attention"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Stylized action sequences in the early episodes that mix abstract backgrounds with energetic fight choreography.",
+        "locator": null
+      },
+      {
+        "summary": "A Hero's power visibly responding to the state of public belief in them.",
+        "locator": null
+      }
+    ]
+  }
+}

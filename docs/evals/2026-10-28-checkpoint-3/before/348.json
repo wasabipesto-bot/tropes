@@ -1,0 +1,251 @@
+{
+  "id": 348,
+  "title": "Dark",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 15:08:51",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "A German Netflix series set in the small town of Winden, where the disappearance of two children exposes a time-travel conspiracy spanning generations. Four families (the Kahnwalds, Nielsens, Dopplers and Tiedemanns) are bound by an accident at the town's nuclear plant and by a cave system that lets people travel between 1953, 1986 and 2019, and later 1921 and 2052. The plot follows Jonas Kahnwald as he learns his own place in the loop, tries to prevent the deaths and disappearances, and discovers that many of the people he loves are the same person at different ages. The series ends with ||Jonas and Martha, having stepped outside the knot of two interlocking worlds, arriving in a third origin world where the time machine was never built and most of the cast never existed||.",
+    "characters": [
+      {
+        "name": "Jonas Kahnwald",
+        "role": "protagonist",
+        "descriptors": [
+          "teenager who becomes a time traveller",
+          "called Adam in old age",
+          "yellow raincoat in the rain, later a scarred and burned face"
+        ],
+        "relationships": [
+          "with Martha Nielsen: first love, complicated by her being tied to the loop's other world",
+          "with Mikkel: his father, whom he meets as a boy in 1986",
+          "with Adam: himself, an antagonist he must confront"
+        ]
+      },
+      {
+        "name": "Martha Nielsen",
+        "role": "protagonist's love interest and counterpart",
+        "descriptors": [
+          "teenager, daughter of the police chief",
+          "appears in two versions across the twin worlds"
+        ],
+        "relationships": [
+          "with Jonas: love that recurs across worlds",
+          "with Bartosz: her boyfriend at the start",
+          "with her brother Magnus and sister Elisabeth"
+        ]
+      },
+      {
+        "name": "Mikkel Nielsen",
+        "role": "the missing child",
+        "descriptors": [
+          "boy in a striped shirt who vanishes in the woods",
+          "becomes Michael Kahnwald, Jonas's father"
+        ],
+        "relationships": [
+          "with Jonas: father and son, though the same age when they meet",
+          "with Ulrich: his father, who searches for him across decades"
+        ]
+      },
+      {
+        "name": "Ulrich Nielsen",
+        "role": "police officer and father",
+        "descriptors": [
+          "hot-tempered detective",
+          "travels to 1953 and is imprisoned"
+        ],
+        "relationships": [
+          "with Katharina: marriage under strain",
+          "with Mikkel: father who cannot save him",
+          "with Helge Doppler: he attacks the boy he blames"
+        ]
+      },
+      {
+        "name": "Hannah Kahnwald",
+        "role": "mother figure with a secret",
+        "descriptors": [
+          "Jonas's mother, a massage therapist",
+          "carries an old affair and resentment"
+        ],
+        "relationships": [
+          "with Ulrich: former lover she still wants",
+          "with Jonas: protective mother",
+          "with Katharina: rival"
+        ]
+      },
+      {
+        "name": "Charlotte Doppler",
+        "role": "police chief",
+        "descriptors": [
+          "investigator of the disappearances",
+          "adopted, with an unknown origin"
+        ],
+        "relationships": [
+          "with Elisabeth: her deaf daughter",
+          "with Peter: her husband",
+          "with Noah: her biological father"
+        ]
+      },
+      {
+        "name": "Elisabeth Doppler",
+        "role": "deaf daughter who becomes a leader",
+        "descriptors": [
+          "signs rather than speaks",
+          "grows into a scarred commander in the future"
+        ],
+        "relationships": [
+          "with Charlotte: mother and daughter in a loop",
+          "with Noah: her husband in the future",
+          "with Franziska: her sister"
+        ]
+      },
+      {
+        "name": "Noah",
+        "role": "antagonist, cult priest",
+        "descriptors": [
+          "priest in a black coat",
+          "recruits children for experiments"
+        ],
+        "relationships": [
+          "with Charlotte: father",
+          "with Elisabeth: future wife",
+          "with Adam: servant of his plan"
+        ]
+      },
+      {
+        "name": "Helge Doppler",
+        "role": "tragic accomplice",
+        "descriptors": [
+          "boy with a burned face, later an old man",
+          "operates the chair in the bunker"
+        ],
+        "relationships": [
+          "with Noah: manipulated by him",
+          "with Ulrich: victim of his attack",
+          "with Peter: estranged son"
+        ]
+      },
+      {
+        "name": "Bartosz Tiedemann",
+        "role": "friend turned initiate",
+        "descriptors": [
+          "teenager, Martha's boyfriend",
+          "later a follower of Noah"
+        ],
+        "relationships": [
+          "with Jonas: friend who becomes wary",
+          "with Martha: early romance",
+          "with Noah: recruited by him"
+        ]
+      },
+      {
+        "name": "Claudia Tiedemann",
+        "role": "the plant's director and loop's strategist",
+        "descriptors": [
+          "scientist, white-haired in old age",
+          "keeps a notebook of the cycles"
+        ],
+        "relationships": [
+          "with Regina: her daughter",
+          "with Adam and Eva: rival manipulator of the loop",
+          "with her younger self: mentor across time"
+        ]
+      },
+      {
+        "name": "Adam",
+        "role": "antagonist",
+        "descriptors": [
+          "old, disfigured Jonas",
+          "leader of Sic Mundus"
+        ],
+        "relationships": [
+          "with Jonas: his younger self",
+          "with Eva: counterpart in the other world",
+          "with Noah: his enforcer"
+        ]
+      },
+      {
+        "name": "Eva",
+        "role": "antagonist in the other world",
+        "descriptors": [
+          "older Martha, scarred",
+          "leader of a rival faction"
+        ],
+        "relationships": [
+          "with Jonas: her lost love",
+          "with Adam: opposite number",
+          "with the Unknown: her son"
+        ]
+      }
+    ],
+    "settings": [
+      "Winden, a small German town",
+      "the caves beneath the nuclear plant",
+      "the years 1921, 1953, 1986, 2019 and 2052",
+      "the Kahnwald house and the Nielsen house",
+      "the Winden nuclear power plant",
+      "the bunker with the time chair",
+      "Sic Mundus headquarters",
+      "the post-apocalyptic future Winden"
+    ],
+    "arcs": [
+      {
+        "summary": "Children vanish near the caves, and the town's families discover the disappearances repeat across decades.",
+        "locator": "season 1"
+      },
+      {
+        "summary": "Jonas learns he is part of the loop and tries to break it, while factions in 1921 and the future pull him in different directions.",
+        "locator": "season 2"
+      },
+      {
+        "summary": "Two interlocking worlds are revealed, and Jonas and Martha seek the origin that created both.",
+        "locator": "season 3"
+      }
+    ],
+    "motifs": [
+      "the yellow raincoat",
+      "the cave entrance and the bunker door",
+      "clocks and the 33-year cycle",
+      "the triquetra symbol",
+      "the time machine and the chair",
+      "the family trees drawn on walls and in notebooks",
+      "the song playing on the car radio",
+      "the scarred faces of older travellers"
+    ],
+    "themes": [
+      "determinism and free will",
+      "family inheritance and repetition",
+      "grief and the refusal to let go",
+      "the cost of knowledge",
+      "identity across time",
+      "small-town secrecy"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Mikkel follows the others into the cave and emerges in 1986.",
+        "locator": "season 1"
+      },
+      {
+        "summary": "Old Helge is confronted in the bunker about the children.",
+        "locator": "season 1"
+      },
+      {
+        "summary": "Jonas meets his father as a boy and realises the family loop.",
+        "locator": "season 1"
+      },
+      {
+        "summary": "Adam reveals his face and his identity to Jonas.",
+        "locator": "season 2"
+      },
+      {
+        "summary": "The apocalypse at the plant destroys Winden.",
+        "locator": "season 2 finale"
+      },
+      {
+        "summary": "Jonas and Martha step between worlds and reach the origin.",
+        "locator": "season 3 finale"
+      }
+    ]
+  }
+}

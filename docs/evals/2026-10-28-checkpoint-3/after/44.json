@@ -1,0 +1,256 @@
+{
+  "id": 44,
+  "title": "Cyberpunk: Edgerunners",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 45100,
+      "chapters": 20,
+      "from": "S01E01 720p",
+      "to": "S02E10 TBA - WEBDL",
+      "file": "44-728a4d09314671f2.txt"
+    },
+    "posts": 0,
+    "visual": 0,
+    "wiki": "https://cyberpunk.fandom.com/wiki/Cyberpunk:_Edgerunners",
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "In Night City, street kid David Martinez loses his mother to a gang crossfire and a Trauma Team that only saves paying clients, then has the military Sandevistan implant she was smuggling grafted onto his spine. He joins Maine's crew of edgerunners, rises as their leader after Maine burns out from cyberpsychosis, and takes a Militech fixer's job that turns out to be an Arasaka trap built around the cyberskeleton prototype. ||He dies fighting Adam Smasher in the prototype while Lucy escapes to the Moon, and the crew's survivors split his payout.||",
+    "characters": [
+      {
+        "name": "David Martinez",
+        "role": "protagonist",
+        "descriptors": [
+          "street kid turned mercenary",
+          "Arasaka Academy dropout",
+          "Sandevistan implant",
+          "wears his mother's jacket"
+        ],
+        "relationships": [
+          "with Lucy: romance built on a shared moon dream and a promised trip",
+          "with Maine: mentor bond, then inherits his role and his fate",
+          "with Gloria: driven by her dream of him reaching Arasaka's top floor"
+        ]
+      },
+      {
+        "name": "Lucy",
+        "role": "deuteragonist, netrunner",
+        "descriptors": [
+          "pale, white-haired",
+          "deep-dive netrunner",
+          "former Arasaka child operative"
+        ],
+        "relationships": [
+          "with David: partner and lover, hides her hunt for the cyberskeleton data to protect him",
+          "with Kiwi: mentor who recruited her into the crew"
+        ]
+      },
+      {
+        "name": "Maine",
+        "role": "mentor, crew leader",
+        "descriptors": [
+          "heavily chromed",
+          "huge build",
+          "shaking hands as he degrades"
+        ],
+        "relationships": [
+          "with Dorio: lovers and partners",
+          "with David: takes him on, warns him no one is a crutch"
+        ]
+      },
+      {
+        "name": "Dorio",
+        "role": "crew muscle",
+        "descriptors": [
+          "tall, strong",
+          "Maine's partner"
+        ],
+        "relationships": [
+          "with Maine: devoted, dies covering him"
+        ]
+      },
+      {
+        "name": "Kiwi",
+        "role": "crew netrunner, later betrayer",
+        "descriptors": [
+          "masked face",
+          "cold, calculating"
+        ],
+        "relationships": [
+          "with Lucy: brought her in, later sells her to Faraday",
+          "with Faraday: cuts a deal for immunity"
+        ]
+      },
+      {
+        "name": "Rebecca",
+        "role": "crew gunner",
+        "descriptors": [
+          "small, pink-haired",
+          "oversized cyberarms",
+          "loyal and foul-mouthed"
+        ],
+        "relationships": [
+          "with David: protective affection, watches him for signs of psychosis"
+        ]
+      },
+      {
+        "name": "Pilar",
+        "role": "crew tech",
+        "descriptors": [
+          "Rebecca's brother",
+          "crude"
+        ],
+        "relationships": [
+          "with Rebecca: sibling"
+        ]
+      },
+      {
+        "name": "Falco",
+        "role": "crew wheelman",
+        "descriptors": [
+          "cowboy manner",
+          "mustache"
+        ],
+        "relationships": [
+          "with David: carries out his final request"
+        ]
+      },
+      {
+        "name": "Faraday",
+        "role": "antagonist, fixer",
+        "descriptors": [
+          "suited middleman",
+          "serves Militech then Arasaka"
+        ],
+        "relationships": [
+          "with Maine: former employer",
+          "with Kiwi: co-conspirator"
+        ]
+      },
+      {
+        "name": "Gloria Martinez",
+        "role": "David's mother",
+        "descriptors": [
+          "EMT",
+          "overworked",
+          "smuggles chrome"
+        ],
+        "relationships": [
+          "with David: sacrifices everything for his schooling"
+        ]
+      },
+      {
+        "name": "Doc",
+        "role": "ripperdoc",
+        "descriptors": [
+          "back-alley clinic",
+          "greedy but blunt"
+        ],
+        "relationships": [
+          "with David: installs the Sandevistan, warns him about the dose"
+        ]
+      },
+      {
+        "name": "Adam Smasher",
+        "role": "antagonist, enforcer",
+        "descriptors": [
+          "full-borg",
+          "Arasaka boogeyman"
+        ],
+        "relationships": [
+          "with David: kills him in the cyberskeleton"
+        ]
+      },
+      {
+        "name": "Katsuo Tanaka",
+        "role": "antagonist, rival student",
+        "descriptors": [
+          "corpo heir",
+          "bullies David at the Academy"
+        ],
+        "relationships": [
+          "with David: humiliated in a school fight"
+        ]
+      }
+    ],
+    "settings": [
+      "Night City",
+      "Arasaka Academy",
+      "Doc's clinic in Arroyo",
+      "Megabuilding H4",
+      "the Afterlife bar",
+      "Arasaka Tower",
+      "the Badlands",
+      "the Moon (via braindance and later for real)"
+    ],
+    "arcs": [
+      {
+        "summary": "David loses his mother, takes the Sandevistan, and is drawn into the crew through a botched car heist with Lucy.",
+        "locator": "S01E01 720p to S01E03 720p"
+      },
+      {
+        "summary": "David earns his place in Maine's crew, learns to shoot, and grows close to Lucy.",
+        "locator": "S01E03 720p to S01E04 720p"
+      },
+      {
+        "summary": "The Tanaka data job goes wrong, Maine's cyberpsychosis worsens, and he and Dorio die fighting MaxTac.",
+        "locator": "S01E05 720p to S01E06 720p"
+      },
+      {
+        "summary": "David leads the crew, takes Faraday's Militech job, and the convoy turns out to be an Arasaka cyberskeleton trap.",
+        "locator": "S01E07 720p to S01E09 720p"
+      },
+      {
+        "summary": "David dons the cyberskeleton to save Lucy, fights Adam Smasher, and dies; Lucy reaches the Moon.",
+        "locator": "S01E10 720p"
+      }
+    ],
+    "motifs": [
+      "the Sandevistan and its count of uses per day",
+      "immunoblockers and vials of medication",
+      "the moon and the moon braindance",
+      "Gloria's jacket",
+      "the phrase 'you're special'",
+      "the 'don't walk' crossing signal",
+      "Arasaka Tower as the unreachable top",
+      "the Edgerunners XBD series"
+    ],
+    "themes": [
+      "cyberware as both power and slow death",
+      "class and corpo hierarchy in Night City",
+      "chasing someone else's dream",
+      "loyalty and betrayal among mercenaries",
+      "the body as a disposable vessel"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Gloria is caught in a gang crossfire; Trauma Team saves only the policyholder and leaves her to die.",
+        "locator": "S01E01 720p"
+      },
+      {
+        "summary": "David beats Katsuo with the Sandevistan at the Academy.",
+        "locator": "S01E02 720p"
+      },
+      {
+        "summary": "Lucy shows David the moon braindance in her apartment.",
+        "locator": "S01E02 720p"
+      },
+      {
+        "summary": "Maine, deep in cyberpsychosis, dies fighting MaxTac after Dorio is killed.",
+        "locator": "S01E06 720p"
+      },
+      {
+        "summary": "David installs the cyberskeleton in the truck and mows down Militech forces.",
+        "locator": "S01E09 720p"
+      },
+      {
+        "summary": "David fights Adam Smasher and dies; Lucy reaches the lunar surface.",
+        "locator": "S01E10 720p"
+      }
+    ]
+  }
+}

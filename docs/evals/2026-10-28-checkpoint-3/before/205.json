@@ -1,0 +1,239 @@
+{
+  "id": 205,
+  "title": "Scott Pilgrim Takes Off",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 15:01:17",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "An animated series that reworks Scott Pilgrim vs. the World by derailing its premise early: Scott is apparently killed by Matthew Patel in the first fight, and Ramona Flowers spends the rest of the season investigating what happened while a resurrected-but-altered Scott hides out. The plot becomes a mystery about a time-travelling older Scott and the League of Evil Exes, and it ends with ||the younger Scott and Ramona reconciling and choosing each other, with the older Scott's scheme undone||.",
+    "characters": [
+      {
+        "name": "Scott Pilgrim",
+        "role": "protagonist",
+        "descriptors": [
+          "human bassist",
+          "slacker",
+          "red-and-black wardrobe",
+          "plays in Sex Bob-omb"
+        ],
+        "relationships": [
+          "Ramona Flowers: love interest, pursued through the exes",
+          "Wallace Wells: roommate and best friend",
+          "Knives Chau: brief high-school girlfriend"
+        ]
+      },
+      {
+        "name": "Ramona Flowers",
+        "role": "co-protagonist",
+        "descriptors": [
+          "American delivery girl in Toronto",
+          "changing hair colours",
+          "rollerblades",
+          "subspace-travelling bag"
+        ],
+        "relationships": [
+          "Scott: the relationship the story orbits",
+          "the seven evil exes: past partners she must confront"
+        ]
+      },
+      {
+        "name": "Wallace Wells",
+        "role": "supporting, comic relief and confidant",
+        "descriptors": [
+          "gay roommate",
+          "sharp-tongued",
+          "cooking and dating subplots"
+        ],
+        "relationships": [
+          "Scott: roommate who nudges him along"
+        ]
+      },
+      {
+        "name": "Knives Chau",
+        "role": "supporting",
+        "descriptors": [
+          "high-school student",
+          "obsessive fan of Sex Bob-omb"
+        ],
+        "relationships": [
+          "Scott: ex he dated while on the rebound"
+        ]
+      },
+      {
+        "name": "Kim Pine",
+        "role": "supporting",
+        "descriptors": [
+          "drummer of Sex Bob-omb",
+          "deadpan",
+          "childhood friend of Scott"
+        ],
+        "relationships": [
+          "Scott: old bandmate with history"
+        ]
+      },
+      {
+        "name": "Stephen Stills",
+        "role": "supporting",
+        "descriptors": [
+          "singer-guitarist of Sex Bob-omb",
+          "anxious about the band"
+        ],
+        "relationships": [
+          "Scott and Kim: bandmates"
+        ]
+      },
+      {
+        "name": "Matthew Patel",
+        "role": "antagonist (first ex)",
+        "descriptors": [
+          "demon hipster chick summoner",
+          "bollywood-style musical number"
+        ],
+        "relationships": [
+          "Ramona: first evil ex",
+          "Scott: kills him in the opening fight"
+        ]
+      },
+      {
+        "name": "Lucas Lee",
+        "role": "antagonist (ex)",
+        "descriptors": [
+          "action-movie star",
+          "skateboard",
+          "douchey celebrity"
+        ],
+        "relationships": [
+          "Ramona: ex",
+          "Scott: fights him"
+        ]
+      },
+      {
+        "name": "Todd Ingram",
+        "role": "antagonist (ex)",
+        "descriptors": [
+          "vegan with psychic powers",
+          "band member"
+        ],
+        "relationships": [
+          "Ramona: ex",
+          "Envy Adams: bandmate and partner"
+        ]
+      },
+      {
+        "name": "Roxie Richter",
+        "role": "antagonist (ex)",
+        "descriptors": [
+          "ninja",
+          "half-ninja"
+        ],
+        "relationships": [
+          "Ramona: ex-girlfriend"
+        ]
+      },
+      {
+        "name": "The Katayanagi twins",
+        "role": "antagonists (exes)",
+        "descriptors": [
+          "twin musicians",
+          "synth battle"
+        ],
+        "relationships": [
+          "Ramona: exes"
+        ]
+      },
+      {
+        "name": "Gideon Graves",
+        "role": "antagonist (final ex)",
+        "descriptors": [
+          "music mogul",
+          "manipulator",
+          "cathedral-like club"
+        ],
+        "relationships": [
+          "Ramona: final ex",
+          "controls the League"
+        ]
+      },
+      {
+        "name": "Envy Adams",
+        "role": "supporting antagonist",
+        "descriptors": [
+          "pop star",
+          "Scott's ex"
+        ],
+        "relationships": [
+          "Scott: former girlfriend",
+          "Todd: bandmate"
+        ]
+      },
+      {
+        "name": "Older Scott / Future Scott",
+        "role": "mystery figure and antagonist",
+        "descriptors": [
+          "time-travelling older version of Scott"
+        ],
+        "relationships": [
+          "Younger Scott: himself, trying to rewrite the past",
+          "Ramona: fixated on her"
+        ]
+      }
+    ],
+    "settings": [
+      "Toronto, Canada",
+      "subspace highways and doors",
+      "Sex Bob-omb's practice spaces and gig venues",
+      "the Chaos Theatre-like club",
+      "the League of Evil Exes' arenas"
+    ],
+    "arcs": [
+      {
+        "summary": "Scott's apparent death at Matthew Patel's hands sets Ramona investigating instead of Scott fighting through the exes.",
+        "locator": "early episodes"
+      },
+      {
+        "summary": "Ramona tracks the League and the mystery of the missing Scott, uncovering a time-travel scheme.",
+        "locator": null
+      },
+      {
+        "summary": "The older Scott's plan is exposed and the younger Scott and Ramona reconcile.",
+        "locator": "final episodes"
+      }
+    ],
+    "motifs": [
+      "subspace doors and rollerblade travel",
+      "hair colour changes",
+      "band performances and songs",
+      "the seven evil exes as a numbered gauntlet",
+      "video-game fight framing",
+      "time travel and doubles",
+      "the bag of holding"
+    ],
+    "themes": [
+      "rewriting the past",
+      "romantic baggage and exes",
+      "self-improvement versus self-obsession",
+      "friendship and band loyalty",
+      "fame and manipulation"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Matthew Patel's musical-number fight ends with Scott apparently killed.",
+        "locator": "episode 1"
+      },
+      {
+        "summary": "Ramona begins her own investigation into Scott's disappearance.",
+        "locator": null
+      },
+      {
+        "summary": "The older Scott is revealed as the force behind events.",
+        "locator": null
+      },
+      {
+        "summary": "Scott and Ramona reconcile in the finale.",
+        "locator": "final episode"
+      }
+    ]
+  }
+}

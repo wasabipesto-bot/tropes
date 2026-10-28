@@ -1,0 +1,287 @@
+{
+  "id": 40,
+  "title": "Friends at the Table: Marielda",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 266365,
+      "chapters": 17,
+      "from": "Marielda",
+      "to": "16 A Message From Ali",
+      "file": "marielda.txt"
+    },
+    "posts": 0,
+    "visual": 0,
+    "wiki": null,
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "Friends at the Table's Marielda arc is a two-stage actual-play mini-season: a game of The Quiet Year builds the island city of Marielda in the year after Samothes tears it from the continent, then Blades in the Dark follows a crew of information-brokers, the Six, through heists in the reconfigured city fifteen years later. Their jobs escalate from stealing a train's route-plate to breaking into Memoriam College, and finally to helping Maelgwyn kill the god Samothes in the belief that his death will birth something to hold back the Heat and the Dark. ||The killing works but goes wrong: the wrong blade is used, Samothes's divinity is torn four ways, Maelgwyn becomes a bound replacement Samothes, and the city is pinned in place as the City of First Light.||",
+    "characters": [
+      {
+        "name": "Castille / Charter Castille",
+        "role": "protagonist, pala-din blacksmith and former mage",
+        "descriptors": [
+          "marble pala-din body housing an elf mage's consciousness",
+          "floppy hat, turtleneck dress, obsidian scarring",
+          "cat figurine she can inhabit",
+          "later given flesh by Primo"
+        ],
+        "relationships": [
+          "Maelgwyn: wary friendship and flirtation, drinks and crossed fingers",
+          "Sige: crewmate she shocks with ghost-light when he attacks Maelgwyn",
+          "the mages of the University: former colleagues who knew her as Charter"
+        ]
+      },
+      {
+        "name": "Sige Coleburn",
+        "role": "protagonist, Cutter and saboteur",
+        "descriptors": [
+          "huge man, undercut, bare-knuckle-boxer dress",
+          "missing fingers from a factory accident",
+          "sawed-off holy gun and a trench knife",
+          "rebuilding a magic boat he never finishes"
+        ],
+        "relationships": [
+          "Samol: bargains with the earth-god to leave Marielda",
+          "Aubrey: gives her his modified gun, initials HKC scratched on it",
+          "Lance Noble Orchid: steals his gun twice"
+        ]
+      },
+      {
+        "name": "Aubrey Zosim",
+        "role": "protagonist, cobbin alchemist (Leech)",
+        "descriptors": [
+          "small bookish cobbin, twine-mended glasses, burn-scarred leathers",
+          "fire oil, smoke bombs, dream essence",
+          "haunted by visions of the mansion"
+        ],
+        "relationships": [
+          "Samot: dream-visitant who recruits her to do violence",
+          "Peg and Zaktrak: cobbin cohort who fuss over her",
+          "Sige: friendship sealed by the gifted gun"
+        ]
+      },
+      {
+        "name": "Edmund Hitchcock",
+        "role": "protagonist, one of identical twin brothers (Slide)",
+        "descriptors": [
+          "dashing ex-cavalry officer, blue jacket, gold braid",
+          "goes 'soft' after trauma",
+          "carries half a map to a mansion"
+        ],
+        "relationships": [
+          "Ethan Hitchcock: twin, lies to him about the plan",
+          "Samothes: prayed to him, shown the Heat and the Dark",
+          "Caroline and Carolyn Fair-Play: confused by the twin students"
+        ]
+      },
+      {
+        "name": "Ethan Hitchcock",
+        "role": "protagonist, the other twin, duelist",
+        "descriptors": [
+          "same face as Edmund, cavalry boots that clank",
+          "believes they are recovering treasure",
+          "leaves with a candlestick"
+        ],
+        "relationships": [
+          "Edmund: twin he is kept in the dark by",
+          "Thackeray: rival whose nose he cut off"
+        ]
+      },
+      {
+        "name": "Maelgwyn",
+        "role": "deuteragonist and eventual god-killer",
+        "descriptors": [
+          "blond, masked, gauntleted hand",
+          "wears a mask of Samot's face and a crown",
+          "the blade in the dark grows with each kill"
+        ],
+        "relationships": [
+          "Samothes and Samot: their son, though he has forgotten",
+          "Castille: weekly drinks, awkward tenderness",
+          "the mages: his patrons and co-conspirators"
+        ]
+      },
+      {
+        "name": "Samothes",
+        "role": "god, the Artificer Divine",
+        "descriptors": [
+          "dark-skinned bearded god, humble robes, forge and anvil",
+          "reconfigures the city at will",
+          "makes a sword meant to save the world"
+        ],
+        "relationships": [
+          "Samot: estranged beloved, 'you're a fool and you're going to get us all killed'",
+          "Maelgwyn: son who kills him",
+          "Primo: his cobbin partner, the Artificer Mundane"
+        ]
+      },
+      {
+        "name": "Samot",
+        "role": "god, the Boy-Traitor, god of books and wine",
+        "descriptors": [
+          "blond, pale, shit-eating grin",
+          "goblet and book sigil",
+          "speaks to Aubrey in dreams"
+        ],
+        "relationships": [
+          "Samothes: lover and rival",
+          "Maelgwyn: son he urges toward regret",
+          "Aubrey: recruits her as 'my very own Primo'"
+        ]
+      },
+      {
+        "name": "Samol",
+        "role": "narrator and earth-god",
+        "descriptors": [
+          "slow drawl, 'ain't a thing I don't know'",
+          "tree-like, then a vast scaled sea-beast",
+          "dying of a sickness"
+        ],
+        "relationships": [
+          "Samothes and Samot: his sons",
+          "Sige: offers escape in exchange for stopping the Gardeners"
+        ]
+      },
+      {
+        "name": "Primo",
+        "role": "the Artificer Mundane, Samothes's cobbin partner",
+        "descriptors": [
+          "old cobbin, cloudy eyes, soot-blackened apron",
+          "tailor and inventor, big bed, corkboard of designs",
+          "invents a no-pee ray"
+        ],
+        "relationships": [
+          "Samothes: devoted working partner",
+          "Aubrey: recognizes 'good blood', gives her an apple"
+        ]
+      },
+      {
+        "name": "Claret Holiday / Tamsyn",
+        "role": "leader of the Red Rank Irregulars",
+        "descriptors": [
+          "dyed red hair, military jacket, saber",
+          "clean teeth",
+          "drains those near her"
+        ],
+        "relationships": [
+          "the Six: hires them for the Memoriam job, later allies in the Fontmen war"
+        ]
+      },
+      {
+        "name": "Lance Sovereign Thackeray",
+        "role": "antagonist, Golden Lance leader",
+        "descriptors": [
+          "no nose, shimmering purple coat, cavalry boots",
+          "long-barreled pistol"
+        ],
+        "relationships": [
+          "Hitchcock: old rival who cut off his nose",
+          "Maelgwyn: killed by him on the train"
+        ]
+      },
+      {
+        "name": "Hedy Braum / Other Hedy",
+        "role": "weaver, uncanny ally",
+        "descriptors": [
+          "stretched taffy limbs, balloon-escape voice, toothy smile",
+          "found inside a tree"
+        ],
+        "relationships": [
+          "Sige: leads him to Samol in the woods",
+          "the Weaver Union: its advocate"
+        ]
+      },
+      {
+        "name": "Rebecca, Lance Noble Orchid",
+        "role": "antagonist turned uneasy ally",
+        "descriptors": [
+          "Fontman turned Lance Noble, scarred, mismatched new hand",
+          "cane that burns"
+        ],
+        "relationships": [
+          "Hitchcock: hand cut off by him",
+          "Castille: repeatedly propositioned at brunch"
+        ]
+      }
+    ],
+    "settings": [
+      "Marielda / the City of First Light, an island torn from Hieron by Samothes",
+      "the parishes: Canopy Row/Orchid, the Gold Zone/Chrysanthemum, Helianthus, Iris, Quince, Violet, Emberboro",
+      "the volcano palace of Samothes and the Divine Forge",
+      "Memoriam College and the Winsley Cartwright Living Library",
+      "the Crosstown Express train",
+      "the Hanging Gardens of Maelgwyn",
+      "the mansion in the woods"
+    ],
+    "arcs": [
+      {
+        "summary": "The Quiet Year builds Marielda week by week: Tamsyn kills a rich boy, Hedy is found in a tree, the pala-din arrive, and the frost shepherds end the year.",
+        "locator": "01 The City of Light Pt. 1 through 02 The City of Light Pt. 2"
+      },
+      {
+        "summary": "The Six rob the Crosstown Express for its route-plate, fighting the Golden Lance and losing Thackeray to Maelgwyn.",
+        "locator": "03 The Crosstown Job Pt. 1 through 04 The Crosstown Job Pt. 2"
+      },
+      {
+        "summary": "Claret Holiday hires the crew to steal a book from Memoriam College; they find Bolster Valentine's ghost, the Yellow House, and Maelgwyn in a vault.",
+        "locator": "06 The Valentine Affair Pt. 1 through 09 The Valentine Affair Pt. 4"
+      },
+      {
+        "summary": "The Six plan and carry out the killing of Samothes, which births a bound new god and pins Marielda in place.",
+        "locator": "11 The Killing of the King-God Samothes By The Traitor Prince Maelgwyn Pt. 1 through 14 The Killing of the King-God Samothes By The Traitor Prince Maelgwyn Pt. 4"
+      }
+    ],
+    "motifs": [
+      "the Heat and the Dark, and arguments over which comes first",
+      "the glowing lava-water ringing the island",
+      "maps and route-plates that steer reconfiguration",
+      "twins and doubled selves (the Hitchcocks, Caroline and Carolyn, Castille and Charter)",
+      "the blade in the dark that lengthens with each kill",
+      "apples from Nacre, gone from the city",
+      "ghosts in bottles and prisms that project memory",
+      "the cool S"
+    ],
+    "themes": [
+      "knowledge as a controlled substance",
+      "gods as embodied emotions (confidence, regret, ingenuity)",
+      "gentrification and class across the parishes",
+      "found family and the cost of loyalty",
+      "irreversible mistakes in a world that can no longer rewrite history"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Tamsyn beats a rich boy to death with a fire poker, and the city learns there is no law.",
+        "locator": "01 The City of Light Pt. 1"
+      },
+      {
+        "summary": "The pala-din walk out of the sea and the Quiet Year ends.",
+        "locator": "01 The City of Light Pt. 1"
+      },
+      {
+        "summary": "Hitchcock hangs from Thackeray's boots out the back of the train.",
+        "locator": "04 The Crosstown Job Pt. 2"
+      },
+      {
+        "summary": "Bolster Valentine's ghost force-chokes Castille in the Hanging Gardens.",
+        "locator": "06 The Valentine Affair Pt. 1"
+      },
+      {
+        "summary": "Sabinia shows Edmund the observatory view of Marielda burning at the edges.",
+        "locator": "07 The Valentine Affair Pt. 2"
+      },
+      {
+        "summary": "Maelgwyn kills Samothes with the wrong blade, and the volcano shudders.",
+        "locator": "14 The Killing of the King-God Samothes By The Traitor Prince Maelgwyn Pt. 4"
+      },
+      {
+        "summary": "Samol explains that the tomb was the artifact, and that he has seen the stars.",
+        "locator": "14 The Killing of the King-God Samothes By The Traitor Prince Maelgwyn Pt. 4"
+      }
+    ]
+  }
+}

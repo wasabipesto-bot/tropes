@@ -1,0 +1,163 @@
+{
+  "id": 181,
+  "title": "Mushi-Shi",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 14:59:30",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "An episodic supernatural series following Ginko, a wandering mushishi who travels a pre-modern Japan-like countryside diagnosing and settling troubles caused by mushi, primordial life-forms that exist between matter and spirit and are usually invisible to ordinary people. Each episode is largely self-contained: a villager, child or craftsman is afflicted by a mushi, Ginko investigates, and the resolution often requires the human to change their life rather than simply destroy the creature. Ginko is himself marked by mushi, having lost an eye and his memory of childhood to one, and he refuses to stay anywhere long because his presence attracts them. The series ends without a grand finale, closing on his continued wandering.",
+    "characters": [
+      {
+        "name": "Ginko",
+        "role": "protagonist",
+        "descriptors": [
+          "human, a mushishi",
+          "white hair, one green eye, smokes a cigarette that repels mushi",
+          "carries a wooden medicine box"
+        ],
+        "relationships": [
+          "mentor to Adashino and to various children he helps: teaches by leaving them to choose",
+          "haunted by Nui, the mushi-woman who raised him in his lost childhood"
+        ]
+      },
+      {
+        "name": "Adashino",
+        "role": "recurring ally",
+        "descriptors": [
+          "human doctor and collector of mushi curiosities",
+          "cheerful, acquisitive"
+        ],
+        "relationships": [
+          "friend and sometime client of Ginko: trades mushi specimens for stories"
+        ]
+      },
+      {
+        "name": "Nui",
+        "role": "surrogate mother figure",
+        "descriptors": [
+          "mushi-being resembling a woman",
+          "lives in a mountain pool of memory"
+        ],
+        "relationships": [
+          "raised Ginko as a child: the source of his lost memory and white hair"
+        ]
+      },
+      {
+        "name": "Tanyu",
+        "role": "recurring character",
+        "descriptors": [
+          "human woman, a mushishi's daughter",
+          "writes down mushi lore"
+        ],
+        "relationships": [
+          "daughter of a mushishi who passed knowledge to her"
+        ]
+      },
+      {
+        "name": "Kisuke",
+        "role": "episode protagonist",
+        "descriptors": [
+          "human boy",
+          "hears mushi as sound"
+        ],
+        "relationships": [
+          "helped by Ginko when a mushi sound afflicts his village"
+        ]
+      },
+      {
+        "name": "Amane",
+        "role": "episode character",
+        "descriptors": [
+          "human girl",
+          "kept apart from others by a mushi"
+        ],
+        "relationships": [
+          "isolated by her condition, tended by Ginko"
+        ]
+      },
+      {
+        "name": "Sayo",
+        "role": "episode character",
+        "descriptors": [
+          "human girl",
+          "associated with a mushi that mimics a twin"
+        ],
+        "relationships": [
+          "twin sister whose identity is entangled with a mushi"
+        ]
+      },
+      {
+        "name": "Iokawa",
+        "role": "episode character",
+        "descriptors": [
+          "human",
+          "affected by a mushi of the eyes"
+        ],
+        "relationships": []
+      }
+    ],
+    "settings": [
+      "a pre-modern, rural Japan-like land of villages, mountains, forests and coastlines",
+      "mushishi as a wandering trade, distrusted by settled people",
+      "mountain pools, misty valleys, snowbound inns, coastal towns"
+    ],
+    "arcs": [
+      {
+        "summary": "Ginko's own origin: a boy raised by the mushi-woman Nui in a mountain pool, who loses his eye and memory and becomes a wanderer.",
+        "locator": "episodes touching his past, including the two-part origin story"
+      },
+      {
+        "summary": "Ginko meets Adashino and gains a recurring friend and trading partner for mushi curiosities.",
+        "locator": null
+      },
+      {
+        "summary": "A string of standalone cases in which a mushi affliction forces a human to accept a changed life, often ending in separation or quiet compromise.",
+        "locator": "across the series"
+      }
+    ],
+    "motifs": [
+      "cigarette smoke that drives mushi away",
+      "Ginko's wooden medicine box",
+      "the single green eye and white hair",
+      "mushi as light, mist, threads or sound",
+      "mountain pools and water as memory",
+      "the road and the refusal to stay",
+      "written records of mushi lore"
+    ],
+    "themes": [
+      "coexistence rather than conquest of nature",
+      "memory and loss of identity",
+      "solitude and transient human bonds",
+      "the boundary between life and spirit",
+      "acceptance of what cannot be cured"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Ginko explains to a villager what a mushi is, framing them as neither plant nor animal.",
+        "locator": null
+      },
+      {
+        "summary": "The origin story in which the boy Ginko is raised by Nui and loses his eye and memory.",
+        "locator": null
+      },
+      {
+        "summary": "Ginko trades a mushi specimen with Adashino for a story.",
+        "locator": null
+      },
+      {
+        "summary": "A mushi that mimics sound afflicts a village and a boy who hears it.",
+        "locator": null
+      },
+      {
+        "summary": "A girl isolated by a mushi is helped to a quiet compromise rather than a cure.",
+        "locator": null
+      },
+      {
+        "summary": "Ginko walks on down the road at the close of an episode, leaving the settled village behind.",
+        "locator": null
+      }
+    ]
+  }
+}

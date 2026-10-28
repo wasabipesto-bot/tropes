@@ -1,0 +1,298 @@
+{
+  "id": 296,
+  "title": "Arcane",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 42092,
+      "chapters": 18,
+      "from": "S01E01 Welcome to the Playground",
+      "to": "S02E09 The Dirt Under Your Nails",
+      "file": "296-615ec24dcdcb3422.txt"
+    },
+    "posts": 3,
+    "visual": 0,
+    "wiki": "https://leagueoflegends.fandom.com/wiki/Arcane_(TV_Series)",
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "Animated series set in the twin cities of Piltover, the wealthy surface city, and Zaun, the poisoned undercity beneath it. Two orphaned sisters, Vi and Powder, are separated when a rescue attempt goes wrong and Powder is taken in by the crime lord Silco, who raises her into the explosives-obsessed Jinx. Meanwhile inventors Jayce and Viktor harness a magical crystal into Hextech, and Jayce rises to the Council while Viktor turns to Shimmer and a self-evolving Hexcore to survive his illness. The second season follows the war between the cities, Jinx's bond with a mute child named Isha, Ambessa Medarda's Noxian takeover of Piltover, and Viktor's Glorious Evolution, ending with ||Jayce and Viktor vanishing together, Jinx apparently sacrificing herself to save Vi, and Vi settling into life with Caitlyn||.",
+    "characters": [
+      {
+        "name": "Vi",
+        "role": "protagonist",
+        "descriptors": [
+          "human, Zaunite",
+          "pink hair, later a pair of massive Atlas Gauntlets",
+          "called 'cupcake' by Caitlyn"
+        ],
+        "relationships": [
+          "sister to Jinx: the bond she keeps trying to rebuild",
+          "with Caitlyn: slow-burn romance across the class divide",
+          "with Vander: adopted daughter and heir to his role as protector"
+        ]
+      },
+      {
+        "name": "Jinx",
+        "role": "protagonist and antagonist",
+        "descriptors": [
+          "human, born Powder",
+          "blue braids, chalk-drawn faces, hallucinated voices of Mylo and Claggor",
+          "monkey bombs and a shark-shaped rocket launcher"
+        ],
+        "relationships": [
+          "sister to Vi: the relationship the whole story turns on",
+          "with Silco: adopted daughter, he calls her perfect",
+          "with Isha: a child who idolises her"
+        ]
+      },
+      {
+        "name": "Silco",
+        "role": "antagonist",
+        "descriptors": [
+          "human, Zaunite crime lord",
+          "one scarred eye, a glowing Shimmer eye",
+          "runs The Last Drop"
+        ],
+        "relationships": [
+          "with Vander: former brother-in-arms who tried to drown him",
+          "with Jinx: father figure who chose her over his dream of Zaun",
+          "with Sevika: his enforcer"
+        ]
+      },
+      {
+        "name": "Vander",
+        "role": "mentor",
+        "descriptors": [
+          "human, barman of The Last Drop",
+          "the 'Hound of the Underground'",
+          "cast-iron gauntlets kept behind the bar"
+        ],
+        "relationships": [
+          "adoptive father to Vi, Powder, Mylo and Claggor",
+          "with Silco: estranged brother",
+          "later transformed into the beast Warwick"
+        ]
+      },
+      {
+        "name": "Jayce Talis",
+        "role": "protagonist",
+        "descriptors": [
+          "human, Piltovan inventor",
+          "a hammer, the Hexgates, a Mercury-hammer weapon"
+        ],
+        "relationships": [
+          "with Viktor: partner and 'brother'",
+          "with Mel Medarda: patron turned lover",
+          "with Heimerdinger: student who later has him removed from the Council"
+        ]
+      },
+      {
+        "name": "Viktor",
+        "role": "protagonist and eventual antagonist",
+        "descriptors": [
+          "human, Zaunite, disabled leg with a brace",
+          "the Machine Herald",
+          "the Hexcore, later a metal body"
+        ],
+        "relationships": [
+          "with Jayce: the partnership that fractures",
+          "with Singed: the doctor who supplies Shimmer",
+          "with Sky: an assistant who dies in the Hexcore"
+        ]
+      },
+      {
+        "name": "Caitlyn Kiramman",
+        "role": "protagonist",
+        "descriptors": [
+          "human, Piltovan enforcer",
+          "a rifle, the Kiramman Key",
+          "later Commander under martial law"
+        ],
+        "relationships": [
+          "with Vi: partner and love interest",
+          "with her mother Cassandra: legacy and grief",
+          "with Ambessa: mentor she later turns against"
+        ]
+      },
+      {
+        "name": "Mel Medarda",
+        "role": "supporting protagonist",
+        "descriptors": [
+          "human, Piltovan councilor",
+          "gold paint, a golden prosthetic-looking arm",
+          "revealed as an empath mage"
+        ],
+        "relationships": [
+          "with Jayce: patron and lover",
+          "with Ambessa: exiled daughter",
+          "with Kino: brother lost to the Black Rose"
+        ]
+      },
+      {
+        "name": "Ambessa Medarda",
+        "role": "antagonist",
+        "descriptors": [
+          "human, Noxian general",
+          "scarred, armoured, a wolf motif"
+        ],
+        "relationships": [
+          "with Mel: mother who cast her out",
+          "with Caitlyn: manipulates her into command",
+          "with Singed: buys his weapons"
+        ]
+      },
+      {
+        "name": "Ekko",
+        "role": "supporting protagonist",
+        "descriptors": [
+          "human, Zaunite, the 'Boy Savior'",
+          "leads the Firelights, a hoverboard, a four-second time device"
+        ],
+        "relationships": [
+          "with Powder: childhood friend",
+          "with Heimerdinger: pupil",
+          "with Vi: old ally"
+        ]
+      },
+      {
+        "name": "Sevika",
+        "role": "supporting antagonist",
+        "descriptors": [
+          "human, Zaunite",
+          "a mechanical arm, cigar, card games"
+        ],
+        "relationships": [
+          "with Silco: loyal lieutenant",
+          "with Jinx: resentful rival",
+          "with Finn: tempted to betray Silco"
+        ]
+      },
+      {
+        "name": "Heimerdinger",
+        "role": "mentor",
+        "descriptors": [
+          "Yordle, centuries old",
+          "fur, goggles, a small stature"
+        ],
+        "relationships": [
+          "with Jayce and Viktor: their professor",
+          "with Ekko: later teacher in the undercity"
+        ]
+      },
+      {
+        "name": "Singed",
+        "role": "antagonist",
+        "descriptors": [
+          "human, alchemist",
+          "the inventor of Shimmer",
+          "keeps a dying creature named Rio"
+        ],
+        "relationships": [
+          "with Viktor: offers Shimmer as a cure",
+          "with Silco: supplies his drug",
+          "with Ambessa: arms her army"
+        ]
+      },
+      {
+        "name": "Isha",
+        "role": "supporting",
+        "descriptors": [
+          "human child, mute",
+          "blue hair, mimics Jinx"
+        ],
+        "relationships": [
+          "with Jinx: adopts her as a big sister",
+          "with Vi: wary"
+        ]
+      }
+    ],
+    "settings": [
+      "Piltover, the City of Progress, with its Hexgates and Academy",
+      "Zaun, the undercity of fissures and the Lanes",
+      "The Last Drop tavern",
+      "Stillwater prison",
+      "The Firelights' tree commune",
+      "Viktor's commune in the fissures",
+      "The Hexgate core"
+    ],
+    "arcs": [
+      {
+        "summary": "Vi leads a rooftop heist that ends in an explosion; Vander takes the blame, Silco captures him, and Powder's rescue attempt kills Mylo and Claggor and Vander, after which Vi abandons her and Silco takes her in.",
+        "locator": "S01E01 Welcome to the Playground to S01E03 The Base Violence Necessary for Change"
+      },
+      {
+        "summary": "Jayce and Viktor develop Hextech, Jayce is tried and elevated to the Council, and Viktor's illness drives him to the Hexcore and Shimmer.",
+        "locator": "S01E02 Some Mysteries Are Better Left Unsolved to S01E09 The Monster You Created"
+      },
+      {
+        "summary": "Vi and Caitlyn travel the undercity, confront Silco, and Jinx stages a dinner where she must choose between Vi and Silco, killing Silco and firing on the Council.",
+        "locator": "S01E05 Everybody Wants to Be My Enemy to S01E09 The Monster You Created"
+      },
+      {
+        "summary": "After the Council bombing, Caitlyn leads a strike team into Zaun under Ambessa's influence, and Jinx bonds with Isha while Sevika tries to rally the undercity.",
+        "locator": "S02E01 Heavy Is the Crown to S02E06 The Message Hidden Within the Pattern"
+      },
+      {
+        "summary": "Ekko is thrown into an alternate timeline where Vi is dead and Powder is alive and happy, and builds a device to return home.",
+        "locator": "S02E07 Pretend Like Its the First Time"
+      },
+      {
+        "summary": "Ambessa and Viktor besiege the Hexgates; Jayce talks Viktor down, Jinx sacrifices herself to save Vi, and the cities begin to rebuild.",
+        "locator": "S02E08 Killing Is a Cycle to S02E09 The Dirt Under Your Nails"
+      }
+    ],
+    "motifs": [
+      "Monkey bombs and chalk-drawn monkey faces",
+      "The blue crystal and the Hextech Gemstone",
+      "Shimmer as a glowing purple drug",
+      "The phrase 'blisters and bedrock'",
+      "Caitlyn calling Vi 'cupcake'",
+      "The song 'Everybody Wants to Be My Enemy'",
+      "Vander's statue",
+      "The number four (Ekko's time limit)",
+      "Crows and the wolf imagery around Ambessa"
+    ],
+    "themes": [
+      "Sisters and chosen family versus blood",
+      "Class division between topside and undercity",
+      "Progress and its cost",
+      "Grief and the cycle of violence",
+      "Identity and renaming (Powder to Jinx)",
+      "Forgiveness and second chances"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Powder's monkey bomb detonates in the cannery, killing Mylo and Claggor, and Vi calls her a jinx before walking away.",
+        "locator": "S01E03 The Base Violence Necessary for Change"
+      },
+      {
+        "summary": "Jinx sets off explosions at the Progress Day fair and steals the Gemstone.",
+        "locator": "S01E04 Happy Progress Day"
+      },
+      {
+        "summary": "Jinx ties up Vi, Caitlyn and Silco at a dinner table and forces Vi to choose, then shoots Silco.",
+        "locator": "S01E09 The Monster You Created"
+      },
+      {
+        "summary": "Jinx fights Vi and Caitlyn in the ventilation shafts and releases the Grey.",
+        "locator": "S02E03 Finally Got the Name Right"
+      },
+      {
+        "summary": "Ekko dances with Powder at the party in the alternate timeline before returning home.",
+        "locator": "S02E07 Pretend Like Its the First Time"
+      },
+      {
+        "summary": "Isha sacrifices herself with Jinx's pistol against the Noxian forces.",
+        "locator": "S02E06 The Message Hidden Within the Pattern"
+      },
+      {
+        "summary": "Jayce and Viktor reconcile and vanish together in the Hexgate core.",
+        "locator": "S02E09 The Dirt Under Your Nails"
+      }
+    ]
+  }
+}

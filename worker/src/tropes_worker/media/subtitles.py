@@ -17,6 +17,10 @@ BRACKET_RX = re.compile(r"\[[^\]]*\]|\([^)]*\)")  # [door slams], (sighs)
 MUSIC_RX = re.compile(r"[♪♫]+")
 SPEAKER_RX = re.compile(r"^[A-Z][A-Z .'-]{1,24}:\s+")  # SDH speaker label "JAYCE: Hello"
 DASH_RX = re.compile(r"(?m)^\s*-\s*")
+# ASS drawing commands ("m -437.5 42.33 b -437.67 42.5 …") that pysubs2 leaves in the plain text of typesetting lines.
+DRAWING_RX = re.compile(r"\b[mnlbspc](?:\s+-?\d+(?:\.\d+)?){2,}")
+# Styles fansubs use for signs, songs and karaoke rather than dialogue.
+SIGN_STYLE_RX = re.compile(r"sign|song|kara|lyric|\bop\b|\bed\b|title|typeset|\bts\b|logo|credit", re.I)
 
 
 @dataclass
@@ -36,16 +40,28 @@ def parse(text: str, fmt: str | None = None) -> list[Cue]:
     for ev in subs.events:
         if getattr(ev, "is_comment", False) or ev.type != "Dialogue":
             continue
-        line = clean(ev.plaintext if hasattr(ev, "plaintext") else ev.text)
+        raw = ev.text or ""
+        # Typesetting: drawing mode, or a style named for signs and songs. Dialogue never draws.
+        if "\\p1" in raw or "\\p2" in raw or "\\p4" in raw or SIGN_STYLE_RX.search(getattr(ev, "style", "") or ""):
+            continue
+        line = clean(ev.plaintext if hasattr(ev, "plaintext") else raw)
         if line:
             cues.append(Cue(ev.start / 1000, ev.end / 1000, line))
     cues.sort(key=lambda c: c.start)
-    return cues
+    # Layered or per-frame repeats of the same line (signs re-rendered every frame) collapse into one cue.
+    out: list[Cue] = []
+    for c in cues:
+        if out and out[-1].text == c.text and c.start - out[-1].start < 2.0:
+            out[-1].end = max(out[-1].end, c.end)
+            continue
+        out.append(c)
+    return out
 
 
 def clean(raw: str) -> str:
     s = raw.replace("\\N", "\n").replace("\\n", "\n")
     s = TAG_RX.sub("", s)
+    s = DRAWING_RX.sub("", s)
     s = MUSIC_RX.sub("", s)
     s = BRACKET_RX.sub("", s)
     lines = []

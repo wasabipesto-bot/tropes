@@ -1,0 +1,175 @@
+{
+  "id": 297,
+  "title": "Foundation",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 15:06:02",
+  "inputs": {},
+  "body": {
+    "known": "partial",
+    "summary": "A streaming adaptation of Isaac Asimov's Foundation stories, centred on mathematician Hari Seldon's prediction that the Galactic Empire will collapse and his plan to shorten the coming dark age by founding a Foundation of scholars at the edge of the galaxy. The series splits its time between the Foundation's early survival struggles and the Empire's ruling dynasty of cloned emperors, whose decline mirrors the predicted fall. ||The first season ends with the Foundation settling on Terminus and the Empire's genetic dynasty facing a succession crisis after one Brother Day is replaced.||",
+    "characters": [
+      {
+        "name": "Hari Seldon",
+        "role": "mentor figure, mathematician and prophet of the plan",
+        "descriptors": [
+          "human",
+          "psychohistorian",
+          "calculates the fall of the Empire"
+        ],
+        "relationships": [
+          "founder and guiding figure to Gaal Dornick: teacher and recruiter",
+          "rival to the Empire's court: a threat to imperial stability"
+        ]
+      },
+      {
+        "name": "Gaal Dornick",
+        "role": "protagonist, mathematician",
+        "descriptors": [
+          "human",
+          "young scholar from Synnax",
+          "narrator of early events"
+        ],
+        "relationships": [
+          "student of Hari Seldon: recruited to the Foundation project",
+          "bond with Raych: complicated, ||he is her lover and later her attacker||"
+        ]
+      },
+      {
+        "name": "Salvor Hardin",
+        "role": "protagonist on Terminus, warden and later leader",
+        "descriptors": [
+          "human",
+          "frontier-born",
+          "skilled with a gun"
+        ],
+        "relationships": [
+          "protector of the Foundation colony: uneasy leader",
+          "connection to Gaal: ||implied ancestral or genetic link||"
+        ]
+      },
+      {
+        "name": "Brother Day",
+        "role": "antagonist, reigning emperor",
+        "descriptors": [
+          "human clone",
+          "current Emperor of the Galactic Empire",
+          "one of three cloned Brothers"
+        ],
+        "relationships": [
+          "clone-brother to Brother Dusk and Brother Dawn: a dynasty of identical rulers",
+          "opposed to Seldon's Foundation: sees it as a threat"
+        ]
+      },
+      {
+        "name": "Brother Dusk",
+        "role": "imperial elder, former emperor",
+        "descriptors": [
+          "human clone",
+          "middle of the three Brothers",
+          "aging ruler"
+        ],
+        "relationships": [
+          "clone-brother to Day and Dawn: succession hierarchy"
+        ]
+      },
+      {
+        "name": "Brother Dawn",
+        "role": "imperial heir",
+        "descriptors": [
+          "human clone",
+          "youngest of the three Brothers",
+          "heir apparent"
+        ],
+        "relationships": [
+          "clone-brother to Day and Dusk: groomed to become the next Day"
+        ]
+      },
+      {
+        "name": "Demerzel",
+        "role": "imperial aide and enforcer",
+        "descriptors": [
+          "android or robot",
+          "servant of the dynasty",
+          "ancient and secretive"
+        ],
+        "relationships": [
+          "loyal servant to the Brothers: bound by programming and history"
+        ]
+      },
+      {
+        "name": "Raych",
+        "role": "Seldon's adopted son and assistant",
+        "descriptors": [
+          "human",
+          "raised by Seldon",
+          "devoted to the plan"
+        ],
+        "relationships": [
+          "adopted son of Hari Seldon: filial loyalty",
+          "lover of Gaal Dornick: ||turns violent under the plan's pressure||"
+        ]
+      },
+      {
+        "name": "Eto Demerzel",
+        "role": "see Demerzel",
+        "descriptors": [
+          "same character"
+        ],
+        "relationships": []
+      }
+    ],
+    "settings": [
+      "The Galactic Empire and its capital Trantor, a planet-spanning city",
+      "Terminus, the Foundation's frontier world",
+      "Synnax, Gaal's watery homeworld",
+      "The imperial palace and its cloning chambers"
+    ],
+    "arcs": [
+      {
+        "summary": "Hari Seldon's psychohistory predicts imperial collapse; he is tried and exiled, and the Foundation is founded at Terminus.",
+        "locator": "Season 1, early episodes"
+      },
+      {
+        "summary": "The cloned emperors confront signs of decline and a succession crisis within their own dynasty.",
+        "locator": "Season 1"
+      },
+      {
+        "summary": "Salvor Hardin defends the Terminus colony against external threats and internal doubt.",
+        "locator": "Season 1, later episodes"
+      }
+    ],
+    "motifs": [
+      "Psychohistory and mathematical prediction of history",
+      "Cloned rulers repeating the same face",
+      "The Galactic Empire's decline as a slow decay",
+      "The Foundation as a seed or archive of knowledge",
+      "Trantor's layered cityscape",
+      "Religious or symbolic authority used to control populations"
+    ],
+    "themes": [
+      "Historical determinism versus individual agency",
+      "The fall and preservation of civilisation",
+      "Dynastic power and its corruption",
+      "Knowledge as a weapon and a refuge"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Hari Seldon's trial before the Empire, where he lays out his prediction of collapse.",
+        "locator": null
+      },
+      {
+        "summary": "Gaal Dornick arrives on Trantor and witnesses the scale of the imperial capital.",
+        "locator": null
+      },
+      {
+        "summary": "The Foundation's settlers reach Terminus and begin building their colony.",
+        "locator": null
+      },
+      {
+        "summary": "The imperial Brothers debate the threat posed by Seldon's followers.",
+        "locator": null
+      }
+    ]
+  }
+}

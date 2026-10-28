@@ -1,0 +1,264 @@
+{
+  "id": 778,
+  "title": "Castlevania",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 60707,
+      "chapters": 32,
+      "from": "S01E01 720p webrip",
+      "to": "S04E10 Its Been a Strange Ride",
+      "file": "778-fe8419cdae6e1284.txt"
+    },
+    "posts": 1,
+    "visual": 0,
+    "wiki": "https://castlevania.fandom.com/wiki/Castlevania_(animated_series)",
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "A gothic animated series adapting Castlevania III. Lisa Tepes, a would-be doctor, talks her way into Dracula's castle and becomes his wife; the Church burns her as a witch, and Dracula gives Wallachia one year before unleashing an army of night creatures. Trevor Belmont, disgraced last son of the monster-hunting family, pairs with Speaker magician Sypha Belnades and Dracula's half-vampire son Alucard to storm the castle and kill him. Later seasons scatter the survivors into power struggles: Carmilla's Styrian sisters scheme to build a livestock empire from Hector the Forgemaster, Isaac travels to take revenge and becomes a builder, and Saint Germain tries to open the Infinite Corridor. ||Trevor dies defeating Death but is spat back out of the Corridor alive; the survivors found a village called Belmont.||",
+    "characters": [
+      {
+        "name": "Trevor Belmont",
+        "role": "protagonist",
+        "descriptors": [
+          "human",
+          "last son of the Belmont house",
+          "he/him",
+          "whip, family crest tunic, drink and self-loathing"
+        ],
+        "relationships": [
+          "with Sypha: partner-in-arms becoming romance, needled by constant teasing",
+          "with Alucard: bickering alliance that hardens into loyalty",
+          "with the family Morningstar whip: inherited purpose he claims not to want"
+        ]
+      },
+      {
+        "name": "Sypha Belnades",
+        "role": "protagonist",
+        "descriptors": [
+          "human Speaker magician",
+          "she/her",
+          "short hair, boys' clothes, ice and fire from her hands"
+        ],
+        "relationships": [
+          "with Trevor: the friend and lover who pushes him to grow",
+          "with her caravan: the family she left and eventually rejoins",
+          "with Alucard: the one who calls out his coldness"
+        ]
+      },
+      {
+        "name": "Alucard (Adrian Tepes)",
+        "role": "protagonist",
+        "descriptors": [
+          "half-vampire",
+          "son of Dracula and Lisa",
+          "he/him",
+          "long pale hair, sword, coffin under Gresit"
+        ],
+        "relationships": [
+          "with Dracula: son who must kill his father",
+          "with Lisa: devotion that defines him",
+          "with Sumi and Taka: teachers and students who turn on him"
+        ]
+      },
+      {
+        "name": "Vlad Dracula Tepes",
+        "role": "antagonist",
+        "descriptors": [
+          "vampire king",
+          "scholar of science",
+          "he/him",
+          "grieving, starving himself on pig blood"
+        ],
+        "relationships": [
+          "with Lisa: the only reason he tolerated humanity",
+          "with Alucard: mutual grief and the killing stroke",
+          "with his war council: a suicide by war they follow"
+        ]
+      },
+      {
+        "name": "Lisa Tepes",
+        "role": "catalyst and love",
+        "descriptors": [
+          "human doctor",
+          "science-minded",
+          "she/her",
+          "wears practical clothes, traded her old life for knowledge"
+        ],
+        "relationships": [
+          "with Dracula: she teaches him to travel like a man",
+          "with Alucard: the mother whose approval he seeks"
+        ]
+      },
+      {
+        "name": "Carmilla",
+        "role": "antagonist",
+        "descriptors": [
+          "vampire queen of Styria",
+          "she/her",
+          "red-and-black rings, scheming, temper"
+        ],
+        "relationships": [
+          "with her sisters (Lenore, Striga, Morana): a quartet of rulers bound by twin rings",
+          "with Hector: captive pet forgemaster",
+          "with Godbrand: contempt and manipulation"
+        ]
+      },
+      {
+        "name": "Hector",
+        "role": "Forge Master, captive",
+        "descriptors": [
+          "human devil forgemaster",
+          "he/him",
+          "hammer as instrument, stinks and broken shoes"
+        ],
+        "relationships": [
+          "with Dracula: disappointed follower",
+          "with Carmilla's sisters: coerced into servitude",
+          "with Lenore: affection turned into a slave ring"
+        ]
+      },
+      {
+        "name": "Isaac",
+        "role": "Forge Master, avenger turned builder",
+        "descriptors": [
+          "human devil forgemaster",
+          "Sufi",
+          "he/him",
+          "shaved head, self-flagellation, knife"
+        ],
+        "relationships": [
+          "with Dracula: loyal friend who chooses death for him",
+          "with Hector: grudging peer toward forgiveness",
+          "with the Captain: ship-board teacher"
+        ]
+      },
+      {
+        "name": "Lenore",
+        "role": "diplomat of the Styrian council",
+        "descriptors": [
+          "vampire",
+          "she/her",
+          "black-and-red ring, sweet manner"
+        ],
+        "relationships": [
+          "with Carmilla: sister and loyalist",
+          "with Hector: seducer who makes him her pet"
+        ]
+      },
+      {
+        "name": "Godbrand",
+        "role": "vampire general",
+        "descriptors": [
+          "vampire",
+          "Viking",
+          "boat-obsessed, loud"
+        ],
+        "relationships": [
+          "with Dracula: questioning junkie whose questions are silenced",
+          "with Carmilla: warned and used"
+        ]
+      },
+      {
+        "name": "Saint Germain",
+        "role": "alchemist trickster",
+        "descriptors": [
+          "human",
+          "scholar-conman",
+          "he/him",
+          "jewel, coin-counting, pursuit of the Infinite Corridor"
+        ],
+        "relationships": [
+          "with the woman lost in the Corridor: motive for everything",
+          "with Death: an old friendship that turns to possessing him"
+        ]
+      }
+    ],
+    "settings": [
+      "Wallachia, 1476 onward",
+      "Targoviste, the capital and its Underground Court",
+      "Gresit, the walled city over Alucard's keep",
+      "Dracula's traveling castle and the Belmont Hold beneath",
+      "Styria and the four sisters' castle",
+      "Lindenfeld and its priory",
+      "the Infinite Corridor"
+    ],
+    "arcs": [
+      {
+        "summary": "Lisa is burned; Dracula gives Wallachia a year, then unleashes the night hordes; Trevor, Sypha and Alucard unite to kill him.",
+        "locator": "S01E01 to S02E07"
+      },
+      {
+        "summary": "Dracula's war council splinters as Carmilla engineers a Styrian coup and betrayals pile up.",
+        "locator": "S02E01 to S02E08"
+      },
+      {
+        "summary": "Hector is dragged to Styria and bound by slave rings; Carmilla's expansion plan strains her sisters.",
+        "locator": "S03E01 to S04E06"
+      },
+      {
+        "summary": "Isaac sails for revenge, buries and rebuilds a desert city, and reaches Styria to kill Carmilla.",
+        "locator": "S03E02 to S04E06"
+      },
+      {
+        "summary": "Saint Germain manipulates the Lindenfeld monks and Targoviste vampires to open the Corridor and forge the Rebis; Death reveals itself; Trevor dies and returns.",
+        "locator": "S03E01 to S04E10"
+      }
+    ],
+    "motifs": [
+      "rings of black and red binding the Styrian sisters",
+      "leashes, collars and caged pets (Hector, Lenore's 'good boy')",
+      "whips, hammers and knives as instruments of forging and killing",
+      "salt, holy water and running water as vampire lore debated",
+      "the Belmont Hold as archive and inheritance",
+      "the Rebis and alchemical signs (sulphur, Saturn, scythe)",
+      "as above, so below",
+      "sunrise and daylight as death to vampires"
+    ],
+    "themes": [
+      "grief turned to genocide",
+      "vampires given free will and redemption arcs",
+      "loyalty, betrayal and the cost of power",
+      "found family versus blood family",
+      "knowledge as inheritence torn between science, church and magic"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Lisa demands Dracula teach her medicine; she wins him over by wanting to make the world better.",
+        "locator": "S01E01 720p webrip"
+      },
+      {
+        "summary": "Trevor, Sypha and Alucard meet under Gresit and nearly fight before Alucard names himself.",
+        "locator": "S01E04 720p webrip"
+      },
+      {
+        "summary": "Alucard and Dracula fight in a flooded room; Dracula lets the killing stroke land.",
+        "locator": "S02E07 proper"
+      },
+      {
+        "summary": "Lenore makes Hector swear loyalty with the slave rings while he is inside her.",
+        "locator": "S03E09 The Harvest"
+      },
+      {
+        "summary": "Isaac preaches a future to his night creatures over berries instead of blood.",
+        "locator": "S04E03 Walk Away"
+      },
+      {
+        "summary": "Saint Germain is revealed as the vessel of Death in Alucard's childhood room.",
+        "locator": "S04E09 the Endings"
+      },
+      {
+        "summary": "Trevor kills Death with his dagger; Sypha finds the corridor and Trevor comes back alive.",
+        "locator": "S04E09 the Endings"
+      },
+      {
+        "summary": "The survivors plan a village called Belmont.",
+        "locator": "S04E10 Its Been a Strange Ride"
+      }
+    ]
+  }
+}

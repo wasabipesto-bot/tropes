@@ -1,0 +1,181 @@
+{
+  "id": 2,
+  "title": "The Amazing Digital Circus",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 14:43:40",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "A computer-animated web series about a woman who puts on a VR headset and is trapped in a brightly coloured digital circus run by an AI ringmaster. The circus holds a small cast of humans who arrived the same way, all unable to leave and all slowly losing their grip on their memories and identities. Episodes are largely self-contained character studies inside the larger puzzle of escape, with the group's instability, the ringmaster's cheerful sadism and the question of what happens to a person who is 'abstracted' driving the arc. ||The series is ongoing; by the end of the first season the group has learned that abstraction is what awaits them and that the circus's creator may be a former human, with no confirmed exit found.||",
+    "characters": [
+      {
+        "name": "Pomni",
+        "role": "protagonist",
+        "descriptors": [
+          "human trapped in the circus",
+          "jester costume",
+          "anxious, prone to panic",
+          "red and blue harlequin colours"
+        ],
+        "relationships": [
+          "wary alliance with Ragatha: the closest thing to a friend, offered as comfort she cannot quite accept",
+          "antagonised by Caine: he treats her distress as entertainment",
+          "uneasy bond with Jax: he needles her constantly"
+        ]
+      },
+      {
+        "name": "Caine",
+        "role": "antagonist and ringmaster",
+        "descriptors": [
+          "AI",
+          "a floating set of teeth with eyeballs in a ringmaster's suit",
+          "theatrical, oblivious to suffering"
+        ],
+        "relationships": [
+          "creator and warden of the whole cast: he calls them his performers",
+          "fixated on Pomni as a new arrival to show off"
+        ]
+      },
+      {
+        "name": "Ragatha",
+        "role": "supporting, the group's caretaker",
+        "descriptors": [
+          "human",
+          "rag doll with button eye and stitched body",
+          "gentle, conflict-averse"
+        ],
+        "relationships": [
+          "protective of Pomni: offers reassurance and physical comfort",
+          "strained patience with Jax"
+        ]
+      },
+      {
+        "name": "Jax",
+        "role": "supporting, troublemaker",
+        "descriptors": [
+          "human",
+          "purple rabbit",
+          "smug, casually cruel, bored"
+        ],
+        "relationships": [
+          "torments Pomni and Gangle for amusement",
+          "odd camaraderie with Ragatha that he tests by pushing her limits"
+        ]
+      },
+      {
+        "name": "Kinger",
+        "role": "supporting",
+        "descriptors": [
+          "human",
+          "chess-piece king",
+          "nervous, paranoid, prone to rambling"
+        ],
+        "relationships": [
+          "devoted to his wife Queenie, whose absence haunts him",
+          "treated as a joke by the others until his grief surfaces"
+        ]
+      },
+      {
+        "name": "Zooble",
+        "role": "supporting",
+        "descriptors": [
+          "human",
+          "assembled from mismatched toy parts",
+          "sardonic, detached"
+        ],
+        "relationships": [
+          "low tolerance for Caine's adventures",
+          "quietly the most grounded voice in the group"
+        ]
+      },
+      {
+        "name": "Gangle",
+        "role": "supporting",
+        "descriptors": [
+          "human",
+          "ribbon body with a comedy and a tragedy mask",
+          "fragile, tearful"
+        ],
+        "relationships": [
+          "bullied by Jax",
+          "her masks control her mood and are easily broken"
+        ]
+      },
+      {
+        "name": "Queenie",
+        "role": "supporting, absent",
+        "descriptors": [
+          "human",
+          "chess-piece queen",
+          "Kinger's wife"
+        ],
+        "relationships": [
+          "married to Kinger: her abstraction is the wound at the centre of his character"
+        ]
+      }
+    ],
+    "settings": [
+      "the Digital Circus, a candy-coloured endless tent with a central stage and corridors",
+      "the circus's living quarters and bedrooms",
+      "Caine's invented adventure zones, including a fast-food drive-through and a haunted mansion",
+      "the Void outside the circus"
+    ],
+    "arcs": [
+      {
+        "summary": "Pomni arrives, panics at the impossibility of leaving, and is walked through the circus's rules by the others while Caine stages a welcome adventure.",
+        "locator": "episode 1"
+      },
+      {
+        "summary": "A trip to a haunted mansion turns into a test of the group's nerves, and Kinger's grief over Queenie surfaces.",
+        "locator": "episode 3"
+      },
+      {
+        "summary": "Jax's cruelty toward Gangle escalates and the others' tolerance for him wears thin.",
+        "locator": "mid-season episodes"
+      },
+      {
+        "summary": "The group learns what abstraction is and that it is the fate waiting for any of them who break down.",
+        "locator": "season 1"
+      }
+    ],
+    "motifs": [
+      "the headset that traps the wearer",
+      "masks, especially Gangle's comedy and tragedy faces",
+      "chess pieces as bodies",
+      "doors and exits that lead nowhere",
+      "Caine's teeth and eyeballs",
+      "bright candy colours over body horror",
+      "memory loss and forgotten names"
+    ],
+    "themes": [
+      "escapism and the cost of virtual worlds",
+      "identity under confinement",
+      "grief and its erosion of the self",
+      "cruelty as boredom",
+      "the indifference of a game master to players"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Pomni wakes in the circus, sees a mirror, and cannot hold onto her own name.",
+        "locator": "episode 1"
+      },
+      {
+        "summary": "Caine explains the rules of the circus with manic cheer while the others watch Pomni's horror.",
+        "locator": "episode 1"
+      },
+      {
+        "summary": "The group's adventure in the haunted mansion, where Kinger's fear and grief take over.",
+        "locator": "episode 3"
+      },
+      {
+        "summary": "Jax torments Gangle and breaks her comedy mask.",
+        "locator": null
+      },
+      {
+        "summary": "The cast confronts the reality of abstraction and what it does to a person.",
+        "locator": "season 1"
+      }
+    ]
+  }
+}

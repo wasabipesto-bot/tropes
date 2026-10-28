@@ -1,0 +1,252 @@
+{
+  "id": 26,
+  "title": "Station Eleven",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 34906,
+      "chapters": 10,
+      "from": "S01E01 Wheel of Fire",
+      "to": "S01E10 720p",
+      "file": "26-708f4fc110fc57cf.txt"
+    },
+    "posts": 0,
+    "visual": 0,
+    "wiki": null,
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "A ten-episode adaptation of Emily St. John Mandel's novel. On the night Arthur Leander dies of a heart attack playing King Lear in Chicago, a flu pandemic begins that kills most of humanity within days. The series cuts between the collapse (Jeevan Chaudhary sheltering with his brother Frank and the child actor Kirsten; Miranda Carroll stranded in Malaysia; Clark Thompson quarantined at a Michigan airport) and twenty years later, when Kirsten performs Shakespeare with the Traveling Symphony and a cult leader called the Prophet threatens it. ||The threads converge at the Severn City Airport, where the Symphony performs Hamlet, Tyler (the Prophet) is revealed as Clark's estranged godson, and Kirsten and Jeevan reunite before the Symphony moves on.||",
+    "characters": [
+      {
+        "name": "Kirsten Raymonde",
+        "role": "protagonist",
+        "descriptors": [
+          "child actor in Lear who grows into the Symphony's lead",
+          "called Kiki as a child",
+          "carries knives sewn into her clothes",
+          "keeps the comic Station Eleven in a Ziploc bag"
+        ],
+        "relationships": [
+          "bond with Jeevan: the stranger who walks her home on Day Zero and whom she searches for across twenty years",
+          "bond with Alex: protective, near-parental, and strained",
+          "bond with Arthur: her first acting teacher, who gave her the comic"
+        ]
+      },
+      {
+        "name": "Jeevan Chaudhary",
+        "role": "protagonist",
+        "descriptors": [
+          "former culture blogger turned EMT by improvisation",
+          "nicknamed Leavin' Jeevan by his brother",
+          "later a self-taught doctor"
+        ],
+        "relationships": [
+          "bond with Frank: younger brother who shelters him",
+          "bond with Kirsten: guardian for a night who becomes her lifelong anchor",
+          "bond with Siya: sister who warns him by phone"
+        ]
+      },
+      {
+        "name": "Frank Chaudhary",
+        "role": "mentor figure",
+        "descriptors": [
+          "reclusive ghostwriter, former war reporter with a bad hip",
+          "keeps a broken compass that always points east"
+        ],
+        "relationships": [
+          "bond with Jeevan: brother he takes in and pushes to leave",
+          "bond with Kirsten: reads her the comic and encourages her play"
+        ]
+      },
+      {
+        "name": "Miranda Carroll",
+        "role": "artist and connective thread",
+        "descriptors": [
+          "logistics professional and graphic novelist",
+          "creator of Dr. Eleven and the Station Eleven comic",
+          "from the Virgin Islands, named after Hurricane Hugo"
+        ],
+        "relationships": [
+          "bond with Arthur: first wife who never got over him",
+          "bond with Clark: old friend she calls from Malaysia"
+        ]
+      },
+      {
+        "name": "Arthur Leander",
+        "role": "absent centre",
+        "descriptors": [
+          "movie star attempting Lear",
+          "called the Orion Soldier from an old film"
+        ],
+        "relationships": [
+          "bond with Kirsten: mentor who gave her the comic",
+          "bond with Miranda: first wife he never understood",
+          "bond with Tyler: son he barely knew"
+        ]
+      },
+      {
+        "name": "Clark Thompson",
+        "role": "community leader",
+        "descriptors": [
+          "former actor, now a 'CEO whisperer'",
+          "curator of the Museum of Civilization",
+          "once Rosencrantz to Arthur's Guildenstern"
+        ],
+        "relationships": [
+          "bond with Arthur: old friend and rival",
+          "bond with Tyler: godson he quarantines and later tries to reach",
+          "bond with Elizabeth: uneasy co-guardian"
+        ]
+      },
+      {
+        "name": "Tyler Leander",
+        "role": "antagonist",
+        "descriptors": [
+          "Arthur's son, becomes the Prophet",
+          "leads the cult of children called the Undersea",
+          "speaks the comic's lines as prophecy"
+        ],
+        "relationships": [
+          "bond with Elizabeth: mother he returns to",
+          "bond with Clark: godfather who locked him in quarantine",
+          "bond with Kirsten: fellow reader of Station Eleven"
+        ]
+      },
+      {
+        "name": "Elizabeth Colton",
+        "role": "supporting",
+        "descriptors": [
+          "Arthur's second wife, a former movie star",
+          "directs the Symphony's Hamlet"
+        ],
+        "relationships": [
+          "bond with Tyler: mother who believed him dead",
+          "bond with Clark: dependent, resentful alliance"
+        ]
+      },
+      {
+        "name": "Alex",
+        "role": "supporting",
+        "descriptors": [
+          "Post-Pan born after the flu",
+          "plays Hamlet in the Symphony's production"
+        ],
+        "relationships": [
+          "bond with Kirsten: daughter-figure who resents her control",
+          "bond with the Prophet: drawn to his promise"
+        ]
+      },
+      {
+        "name": "Sarah",
+        "role": "supporting",
+        "descriptors": [
+          "the Symphony's Conductor and composer",
+          "blind without special glasses"
+        ],
+        "relationships": [
+          "bond with Gil: former director she once shot",
+          "bond with Kirsten: leader she trusts"
+        ]
+      },
+      {
+        "name": "The Prophet's children / the Undersea",
+        "role": "antagonistic faction",
+        "descriptors": [
+          "children who wear beacons and mines",
+          "named after the comic's rebel faction"
+        ],
+        "relationships": [
+          "bond with Tyler: followers who call him the Prophet"
+        ]
+      }
+    ],
+    "settings": [
+      "Chicago on the night of the flu and in the First Hundred days",
+      "Frank's high-rise apartment",
+      "a Malaysian hotel and the tanker Robespierre",
+      "the Severn City Airport, later the Museum of Civilization",
+      "the Traveling Symphony's wagon wheel route around Lake Michigan",
+      "Pingtree golf course",
+      "St. Deborah-by-the-Water"
+    ],
+    "arcs": [
+      {
+        "summary": "Jeevan walks the stranded Kirsten home, shelters with Frank, and the three survive the first months until Frank is killed and Jeevan and Kirsten part.",
+        "locator": "S01E01 Wheel of Fire"
+      },
+      {
+        "summary": "Miranda's life with Arthur, her comic, and her escape from Malaysia by sea.",
+        "locator": "S01E03 Hurricane"
+      },
+      {
+        "summary": "Clark, Elizabeth and Tyler are diverted to Severn City, where a fake Homeland agent's departure leaves Clark in charge and Tyler radicalised.",
+        "locator": "S01E05 The Severn City Airport"
+      },
+      {
+        "summary": "The Symphony reaches the Museum of Civilization, is quarantined, and performs Hamlet while Tyler's Undersea gathers.",
+        "locator": "S01E08 720p"
+      },
+      {
+        "summary": "Kirsten and Tyler travel together toward the airport; Kirsten learns the comic's origin and the two recognise each other as readers.",
+        "locator": "S01E06 Survival is Insufficient"
+      },
+      {
+        "summary": "Jeevan becomes a doctor at a birth centre and delivers a wave of post-pandemic babies.",
+        "locator": "S01E09 720p"
+      }
+    ],
+    "motifs": [
+      "the Station Eleven comic and its litany 'I remember damage, then escape'",
+      "Dr. Eleven's spacesuit and the Undersea",
+      "Shakespeare performed after the end, especially King Lear and Hamlet",
+      "the wheel the Symphony never leaves",
+      "the paperweight/compass that always points east",
+      "phones and batteries running into the red",
+      "beacons and mines as signals",
+      "the phrase 'survival is insufficient'",
+      "the Museum of Civilization's collected objects"
+    ],
+    "themes": [
+      "art and performance as survival",
+      "chance encounters and the paths between strangers",
+      "grief and the refusal to let go",
+      "community versus quarantine and control",
+      "storytelling as prophecy and manipulation",
+      "the Before and the After"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Arthur collapses mid-Lear and Jeevan runs onstage to attempt CPR while Kirsten watches.",
+        "locator": "S01E01 Wheel of Fire"
+      },
+      {
+        "summary": "Miranda delivers her drunken pitch-room speech about the man she loved dying and going to work anyway.",
+        "locator": "S01E03 Hurricane"
+      },
+      {
+        "summary": "Clark exposes Jerry Mercer as a janitor and turns the airport crowd against him.",
+        "locator": "S01E05 The Severn City Airport"
+      },
+      {
+        "summary": "Kirsten and Tyler trade lines from the comic in the tent, each recognising the other's source.",
+        "locator": "S01E06 Survival is Insufficient"
+      },
+      {
+        "summary": "The Symphony performs the deconstructed Hamlet with Alex as the lead and Elizabeth as Gertrude.",
+        "locator": "S01E04 Rosencrantz and Guildenstern Arent Dead"
+      },
+      {
+        "summary": "Jeevan helps deliver Rose's baby and watches her die, then takes the orphan in.",
+        "locator": "S01E09 720p"
+      },
+      {
+        "summary": "Kirsten and Jeevan reunite at the birth centre and he tells her he walked her home.",
+        "locator": "S01E10 720p"
+      }
+    ]
+  }
+}

@@ -1,0 +1,323 @@
+{
+  "id": 370,
+  "title": "The Good Place",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 195777,
+      "chapters": 48,
+      "from": "S01E01 Pilot EXTENDED",
+      "to": "S04E13 720p",
+      "file": "370-7450f2f5c172ef9e.txt"
+    },
+    "posts": 21,
+    "visual": 0,
+    "wiki": "https://thegoodplace.fandom.com/wiki/The_Good_Place",
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "Four recently deceased humans wake in a pastel afterlife neighborhood and are told they are in the Good Place. Eleanor Shellstrop, a selfish saleswoman, is sure she was sent by mistake and persuades her assigned soulmate, ethics professor Chidi Anagonye, to teach her to be good. The neighborhood is actually a Bad Place torture experiment run by the demon Michael, and Eleanor figures this out in the season one finale. Over subsequent seasons the group escapes, goes to Earth to prove they can improve, and eventually confronts the flawed points system that condemns nearly everyone. They persuade the Judge to replace eternal punishment with a test-and-rehabilitation system, enter the real Good Place, and discover that even paradise becomes unbearable without an end. ||They institute a door out of existence, and each main character eventually walks through it after long, varied afterlives.||",
+    "characters": [
+      {
+        "name": "Eleanor Shellstrop",
+        "role": "protagonist",
+        "descriptors": [
+          "human",
+          "Arizona trash bag",
+          "saleswoman",
+          "selfish",
+          "shrimp-obsessed"
+        ],
+        "relationships": [
+          "Chidi Anagonye: assigned soulmate and ethics teacher, later romantic partner",
+          "Michael: initially her architect, later close friend and co-leader",
+          "Tahani Al-Jamil: neighbor and eventual best friend",
+          "Jason Mendoza: fellow mistaken resident and friend"
+        ]
+      },
+      {
+        "name": "Chidi Anagonye",
+        "role": "deuteragonist, ethics professor",
+        "descriptors": [
+          "human",
+          "Nigerian-Senegalese",
+          "professor of ethics and moral philosophy",
+          "indecisive",
+          "stomachaches"
+        ],
+        "relationships": [
+          "Eleanor Shellstrop: soulmate and student, later girlfriend",
+          "Simone Garnett: ex-girlfriend from Earth",
+          "Michael: friend and fellow student of ethics"
+        ]
+      },
+      {
+        "name": "Michael",
+        "role": "architect, later ally",
+        "descriptors": [
+          "demon",
+          "Bad Place architect",
+          "bow ties",
+          "fascinated by humans",
+          "fire squid"
+        ],
+        "relationships": [
+          "Eleanor: friend and co-conspirator",
+          "Janet: oldest friend",
+          "Shawn: former boss and antagonist",
+          "Vicky: subordinate and rival"
+        ]
+      },
+      {
+        "name": "Janet",
+        "role": "informational assistant",
+        "descriptors": [
+          "not a girl",
+          "not a robot",
+          "walking database",
+          "can summon anything",
+          "evolves with reboots"
+        ],
+        "relationships": [
+          "Jason Mendoza: husband and boyfriend",
+          "Michael: close friend",
+          "Eleanor: friend and confidante",
+          "Derek: rebound boyfriend she created"
+        ]
+      },
+      {
+        "name": "Tahani Al-Jamil",
+        "role": "neighbor, philanthropist",
+        "descriptors": [
+          "human",
+          "British-Pakistani",
+          "wealthy socialite",
+          "tall",
+          "name-dropper"
+        ],
+        "relationships": [
+          "Kamilah Al-Jamil: sister and rival",
+          "Jason Mendoza: assigned soulmate, later friend",
+          "Eleanor: best friend",
+          "Larry Hemsworth: ex-boyfriend"
+        ]
+      },
+      {
+        "name": "Jason Mendoza",
+        "role": "neighbor, amateur DJ",
+        "descriptors": [
+          "human",
+          "Filipino-Floridian",
+          "DJ",
+          "impulsive",
+          "Jacksonville Jaguars fan"
+        ],
+        "relationships": [
+          "Janet: wife and girlfriend",
+          "Pillboi: best friend",
+          "Donkey Doug: father",
+          "Tahani: assigned soulmate"
+        ]
+      },
+      {
+        "name": "Vicky",
+        "role": "demon, antagonist",
+        "descriptors": [
+          "demon",
+          "Bad Place actor",
+          "ambitious",
+          "saboteur"
+        ],
+        "relationships": [
+          "Michael: rival and former boss",
+          "Shawn: ally",
+          "Eleanor: antagonist"
+        ]
+      },
+      {
+        "name": "Shawn",
+        "role": "Bad Place boss, judge",
+        "descriptors": [
+          "demon",
+          "Shawn the Judge",
+          "cocoon enthusiast",
+          "bureaucrat"
+        ],
+        "relationships": [
+          "Michael: former subordinate and rival",
+          "Vicky: ally",
+          "The Judge: counterpart"
+        ]
+      },
+      {
+        "name": "Simone Garnett",
+        "role": "neuroscientist, Chidi's ex",
+        "descriptors": [
+          "human",
+          "Australian",
+          "neuroscientist",
+          "perceptive",
+          "skeptical"
+        ],
+        "relationships": [
+          "Chidi Anagonye: ex-boyfriend",
+          "Eleanor: friend and rival for Chidi's attention"
+        ]
+      },
+      {
+        "name": "Mindy St. Claire",
+        "role": "Medium Place resident",
+        "descriptors": [
+          "human",
+          "cocaine enthusiast",
+          "lawyer",
+          "lives alone"
+        ],
+        "relationships": [
+          "Eleanor and friends: host and informant",
+          "Derek: rebooted companion"
+        ]
+      },
+      {
+        "name": "Derek",
+        "role": "Janet's rebound boyfriend",
+        "descriptors": [
+          "Janet-made being",
+          "wind chimes",
+          "evolves with reboots",
+          "buffoon"
+        ],
+        "relationships": [
+          "Janet: creator and ex-girlfriend",
+          "Mindy St. Claire: companion and rebooter",
+          "Jason: rival"
+        ]
+      },
+      {
+        "name": "The Judge (Gen)",
+        "role": "cosmic judge",
+        "descriptors": [
+          "eternal being",
+          "binge-watcher",
+          "Timothy Olyphant fan",
+          "impartial"
+        ],
+        "relationships": [
+          "Michael: petitioner",
+          "Shawn: counterpart",
+          "Janet: ally"
+        ]
+      },
+      {
+        "name": "John Wheaton",
+        "role": "gossip columnist",
+        "descriptors": [
+          "human",
+          "gossip blogger",
+          "The Gossip Toilet",
+          "status-obsessed"
+        ],
+        "relationships": [
+          "Tahani: former target and friend",
+          "Brent: fellow resident"
+        ]
+      },
+      {
+        "name": "Brent Norwalk",
+        "role": "materials businessman",
+        "descriptors": [
+          "human",
+          "wealthy",
+          "oblivious",
+          "Princeton graduate",
+          "author"
+        ],
+        "relationships": [
+          "Chidi: reluctant student",
+          "Simone: antagonist",
+          "Eleanor: subject"
+        ]
+      }
+    ],
+    "settings": [
+      "The Good Place neighborhood (actually a Bad Place experiment)",
+      "The Bad Place",
+      "The Medium Place (Mindy St. Claire's house)",
+      "Earth (Australia, Arizona, Jacksonville, Canada, Paris, Greece)",
+      "The Judge's chambers",
+      "The Accounting Office",
+      "The Interdimensional Hole of Pancakes (IHOP)",
+      "The real Good Place"
+    ],
+    "arcs": [
+      {
+        "summary": "Eleanor believes she was sent to the Good Place by mistake and secretly takes ethics lessons from Chidi to earn her place.",
+        "locator": "S01E01–S01E12"
+      },
+      {
+        "summary": "Michael repeatedly reboots the neighborhood to torture the four humans, but they keep figuring it out and eventually team up with him.",
+        "locator": "S02E01–S02E12"
+      },
+      {
+        "summary": "The group goes to Earth to prove they can become better people, then confronts the flaws in the points system.",
+        "locator": "S03E01–S03E12"
+      },
+      {
+        "summary": "The group designs a new afterlife system with tests and rehabilitation, enters the real Good Place, and discovers its flaw.",
+        "locator": "S04E01–S04E13"
+      }
+    ],
+    "motifs": [
+      "Frozen yogurt",
+      "Shrimp",
+      "Clowns",
+      "The phrase 'Take it sleazy'",
+      "Curses replaced by 'fork', 'shirt', 'bench'",
+      "The Time-Knife",
+      "Jeremy Bearimy",
+      "The points system",
+      "The door out of the Good Place",
+      "Janet's void",
+      "The frog keychain",
+      "The trolley problem"
+    ],
+    "themes": [
+      "Ethics and moral philosophy",
+      "Self-improvement and redemption",
+      "The nature of the afterlife and justice",
+      "Friendship and found family",
+      "The meaning of mortality",
+      "Bureaucracy and systemic flaws",
+      "Free will versus determinism"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Eleanor realizes she is in the Bad Place and says the line.",
+        "locator": "S01E12"
+      },
+      {
+        "summary": "Michael explains the concept of Jeremy Bearimy to the humans.",
+        "locator": "S03E05"
+      },
+      {
+        "summary": "Chidi gives a lecture on the trolley problem and Michael turns it into a real simulation.",
+        "locator": "S02E05"
+      },
+      {
+        "summary": "Eleanor and Chidi say goodbye before Chidi has his memory erased.",
+        "locator": "S03E12"
+      },
+      {
+        "summary": "The group presents their new afterlife system to the Judge.",
+        "locator": "S04E10"
+      },
+      {
+        "summary": "Eleanor walks through the final door after saying goodbye to Chidi.",
+        "locator": "S04E13"
+      }
+    ]
+  }
+}

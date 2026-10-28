@@ -1,0 +1,233 @@
+{
+  "id": 778,
+  "title": "Castlevania",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-24 22:51:07",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "A Netflix animated adaptation of the Castlevania games, beginning with Vlad Dracula Tepes's wife Lisa being burned at the stake by the Church and Dracula summoning an army of demons to wipe out Wallachia. Trevor Belmont, last of a disgraced monster-hunting family, joins the speaker-magician Sypha Belnades and Dracula's half-vampire son Alucard to fight him; they kill Dracula in a climactic battle. The later seasons turn to the power vacuum: Carmilla and her sisters scheme to build a vampire empire, the forge masters Isaac and Hector are drawn into it, and the trio plus a new ally, the vampire hunter Saint Germain, face Death itself, ||who is trying to resurrect Dracula||. The series ends with the trio defeating Death and Dracula and Lisa returning to life.",
+    "characters": [
+      {
+        "name": "Trevor Belmont",
+        "role": "protagonist",
+        "descriptors": [
+          "human",
+          "last of the Belmont monster-hunting line",
+          "whip-wielding, drunk, sardonic"
+        ],
+        "relationships": [
+          "Sypha: partner and eventual lover, bickering equals",
+          "Alucard: reluctant ally turned friend",
+          "his family: a disgraced name he carries with bitterness"
+        ]
+      },
+      {
+        "name": "Sypha Belnades",
+        "role": "protagonist",
+        "descriptors": [
+          "human speaker-magician",
+          "fire, ice and lightning from her hands",
+          "raised by the Speakers, a wandering oral-history people"
+        ],
+        "relationships": [
+          "Trevor: partner and lover",
+          "Alucard: friend and fellow fighter"
+        ]
+      },
+      {
+        "name": "Alucard (Adrian Tepes)",
+        "role": "protagonist",
+        "descriptors": [
+          "dhampir, half-vampire son of Dracula",
+          "long blond hair, pale, sword and shapeshifting"
+        ],
+        "relationships": [
+          "Dracula: son who kills his own father",
+          "Trevor and Sypha: companions",
+          "his mother Lisa: the memory that steers him"
+        ]
+      },
+      {
+        "name": "Vlad Dracula Tepes",
+        "role": "antagonist",
+        "descriptors": [
+          "vampire king",
+          "immensely powerful, grieving, cloaked"
+        ],
+        "relationships": [
+          "Lisa: human wife whose death drives him",
+          "Alucard: son he fights",
+          "his war council of vampires: barely controlled"
+        ]
+      },
+      {
+        "name": "Lisa Tepes",
+        "role": "Dracula's wife",
+        "descriptors": [
+          "human physician and scientist",
+          "burned at the stake"
+        ],
+        "relationships": [
+          "Dracula: husband who loved her",
+          "Alucard: mother"
+        ]
+      },
+      {
+        "name": "Carmilla",
+        "role": "antagonist",
+        "descriptors": [
+          "vampire",
+          "scheming, ambitious, stylish"
+        ],
+        "relationships": [
+          "her sisters (Lenore, Morana, Striga): a coven of plotters",
+          "Dracula's court: undermines it",
+          "Hector: manipulates and enslaves him"
+        ]
+      },
+      {
+        "name": "Isaac",
+        "role": "antagonist turned seeker",
+        "descriptors": [
+          "human forge master",
+          "raises night creatures from corpses",
+          "devout, philosophical"
+        ],
+        "relationships": [
+          "Dracula: loyal servant",
+          "Hector: rival forge master",
+          "his night creatures: companions"
+        ]
+      },
+      {
+        "name": "Hector",
+        "role": "antagonist",
+        "descriptors": [
+          "human forge master",
+          "gentle, naive, animal-loving"
+        ],
+        "relationships": [
+          "Carmilla and Lenore: betrayed and enslaved by them",
+          "Dracula: served him"
+        ]
+      },
+      {
+        "name": "Lenore",
+        "role": "antagonist",
+        "descriptors": [
+          "vampire",
+          "diplomat, red-haired, charming"
+        ],
+        "relationships": [
+          "Carmilla: sister and ally",
+          "Hector: binds him with a ring"
+        ]
+      },
+      {
+        "name": "Saint Germain",
+        "role": "ally",
+        "descriptors": [
+          "human traveler and alchemist",
+          "eccentric, searching for someone"
+        ],
+        "relationships": [
+          "the trio: joins them against Death",
+          "Death: tempted by it"
+        ]
+      },
+      {
+        "name": "Death",
+        "role": "antagonist",
+        "descriptors": [
+          "personification of death",
+          "appears as a gaunt figure"
+        ],
+        "relationships": [
+          "Dracula: seeks to revive him",
+          "Saint Germain: uses him"
+        ]
+      },
+      {
+        "name": "Godbrand",
+        "role": "antagonist",
+        "descriptors": [
+          "viking vampire",
+          "loud, crude, hungry"
+        ],
+        "relationships": [
+          "Dracula's war council: a disruptive member",
+          "Carmilla: she despises him"
+        ]
+      }
+    ],
+    "settings": [
+      "Wallachia, medieval Eastern Europe",
+      "Dracula's castle, which can move",
+      "the Belmont hold and the Speakers' camp",
+      "Carmilla's court and Styria",
+      "Gresit, a besieged town"
+    ],
+    "arcs": [
+      {
+        "summary": "Dracula's war of extermination against humanity after Lisa's death, and the trio's campaign to stop him, ending in his death.",
+        "locator": "Seasons 1-2"
+      },
+      {
+        "summary": "Carmilla's plot to seize power from Dracula and build a vampire empire, drawing Hector and Lenore into it.",
+        "locator": "Seasons 2-3"
+      },
+      {
+        "summary": "Isaac's pilgrimage of vengeance and philosophy after Dracula's fall.",
+        "locator": "Seasons 3-4"
+      },
+      {
+        "summary": "Saint Germain's search and the trio's final fight against Death, ||ending with Dracula and Lisa restored||.",
+        "locator": "Season 4"
+      }
+    ],
+    "motifs": [
+      "the Belmont whip and the family's disgraced name",
+      "blood as both food and bond",
+      "the moving castle",
+      "forged night creatures raised from corpses",
+      "holy water and crosses",
+      "the Speakers' oral storytelling",
+      "running water as a vampire weakness debated at length"
+    ],
+    "themes": [
+      "grief and revenge",
+      "faith and the corruption of the Church",
+      "family legacy and shame",
+      "power and the ambition of the undead",
+      "humanity versus monstrosity"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Lisa is burned at the stake, and Dracula vows to destroy humanity.",
+        "locator": "Season 1"
+      },
+      {
+        "summary": "Trevor, Sypha and Alucard fight Dracula in the castle; Alucard strikes the killing blow.",
+        "locator": "Season 2 finale"
+      },
+      {
+        "summary": "Carmilla mocks Godbrand and the war council descends into squabbling.",
+        "locator": "Season 2"
+      },
+      {
+        "summary": "Lenore binds Hector with a ring, making him her servant.",
+        "locator": "Season 3"
+      },
+      {
+        "summary": "Isaac and Hector's paths converge amid the forge masters' schemes.",
+        "locator": "Season 3"
+      },
+      {
+        "summary": "The trio and Saint Germain confront Death.",
+        "locator": "Season 4"
+      }
+    ]
+  }
+}

@@ -1,0 +1,269 @@
+{
+  "id": 181,
+  "title": "Mushi-Shi",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 92235,
+      "chapters": 48,
+      "from": "S01E01",
+      "to": "S02E23",
+      "file": "181-c4c7692560ed540b.txt"
+    },
+    "posts": 0,
+    "visual": 0,
+    "wiki": null,
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "An episodic supernatural series following Ginko, a wandering mushishi who travels a rural, pre-modern Japan-like countryside diagnosing and settling troubles caused by mushi, primordial life-forms between matter and spirit that ordinary people cannot see. Each episode is largely self-contained: a villager, child or craftsman is afflicted, and the resolution often asks the human to change their life rather than destroy the creature. Ginko's own origin is revealed in fragments, and the series ends on his continued wandering. ||His childhood is shown to begin when he was swallowed by a Tokoyami and lost his memories; he took the name of the light-mushi that gave him his one pale eye.||",
+    "characters": [
+      {
+        "name": "Ginko",
+        "role": "protagonist",
+        "descriptors": [
+          "human mushishi",
+          "white hair, one green eye, one dark eye",
+          "smokes mushi-repellent cigarettes",
+          "carries a medicine box"
+        ],
+        "relationships": [
+          "with mushi: attracts them, so cannot settle anywhere",
+          "with Adashino: old friend and information broker",
+          "with Tanyuu: correspondent and occasional helper"
+        ]
+      },
+      {
+        "name": "Adashino",
+        "role": "recurring ally",
+        "descriptors": [
+          "village doctor and collector of the paranormal",
+          "keeps curios and Mushi specimens"
+        ],
+        "relationships": [
+          "with Ginko: trades stories, goods and favours"
+        ]
+      },
+      {
+        "name": "Tanyuu Karibusa",
+        "role": "recurring ally",
+        "descriptors": [
+          "fourth scribe of the Karibusa family",
+          "black birthmark on her leg, cannot walk",
+          "transcribes mushi records"
+        ],
+        "relationships": [
+          "with the forbidden mushi: it lives sealed in her body",
+          "with Tama: caretaker and former mushishi"
+        ]
+      },
+      {
+        "name": "Ioroi Shinra",
+        "role": "episode lead",
+        "descriptors": [
+          "boy with God's left hand",
+          "draws things to life",
+          "lives alone in a mountain house"
+        ],
+        "relationships": [
+          "with grandmother Renzu: half-mushi guardian who watched over him"
+        ]
+      },
+      {
+        "name": "Renzu",
+        "role": "episode figure",
+        "descriptors": [
+          "half human, half mushi",
+          "chipped green wine cup",
+          "attended a mushi banquet"
+        ],
+        "relationships": [
+          "with Shinra: grandmother who stayed to protect him"
+        ]
+      },
+      {
+        "name": "Sui",
+        "role": "episode lead",
+        "descriptors": [
+          "girl kept in a dark shed",
+          "sees a stream of light behind her eyelids"
+        ],
+        "relationships": [
+          "with Biki: companion who contracts her illness"
+        ]
+      },
+      {
+        "name": "Maho",
+        "role": "episode lead",
+        "descriptors": [
+          "boy with four horns",
+          "hears the voices of mushi"
+        ],
+        "relationships": [
+          "with his dead mother: her hands-over-ears gesture is the cure"
+        ]
+      },
+      {
+        "name": "Jin",
+        "role": "episode lead",
+        "descriptors": [
+          "blacksmith whose dreams become real",
+          "green mould sickness"
+        ],
+        "relationships": [
+          "with wife Kinu and daughter Mayu: killed by his own dream"
+        ]
+      },
+      {
+        "name": "Io",
+        "role": "episode lead",
+        "descriptors": [
+          "girl with green hair",
+          "travels with a moving swamp"
+        ],
+        "relationships": [
+          "with the Suiko swamp: saved by it, becomes part of it"
+        ]
+      },
+      {
+        "name": "Kourou",
+        "role": "episode lead",
+        "descriptors": [
+          "failed bridge engineer",
+          "chases a rainbow with a barrel"
+        ],
+        "relationships": [
+          "with his father: inherits the rainbow obsession"
+        ]
+      },
+      {
+        "name": "Shige",
+        "role": "episode lead",
+        "descriptors": [
+          "girl whose voice rusts everything",
+          "silent for ten years"
+        ],
+        "relationships": [
+          "with Tetsu: the outsider who befriends her"
+        ]
+      },
+      {
+        "name": "Yahagi",
+        "role": "episode lead",
+        "descriptors": [
+          "village mushishi",
+          "burns weeds out of her own gut"
+        ],
+        "relationships": [
+          "with Ginko: fellow mushishi who advises her"
+        ]
+      },
+      {
+        "name": "Kumado",
+        "role": "episode lead",
+        "descriptors": [
+          "heir of the Minai mushishi clan",
+          "soul replaced by an artificial mushi"
+        ],
+        "relationships": [
+          "with Tanyuu: childhood acquaintance"
+        ]
+      },
+      {
+        "name": "Kaya",
+        "role": "episode lead",
+        "descriptors": [
+          "girl with weeds growing from her head",
+          "chosen as mountain lord"
+        ],
+        "relationships": [
+          "with brother Yoshirou: the family tie she cannot keep"
+        ]
+      }
+    ],
+    "settings": [
+      "rural pre-modern countryside of mountains, villages and coasts",
+      "Koumyakusuji, channels where the river of life flows",
+      "the Karibusa archives",
+      "Minai clan territory",
+      "mountain lords and their domains"
+    ],
+    "arcs": [
+      {
+        "summary": "Ginko's fragmentary origin: swallowed by a Tokoyami, losing his memory, taking the name of the light-mushi and one pale eye.",
+        "locator": "S01E12"
+      },
+      {
+        "summary": "The Karibusa scribe Tanyuu and the forbidden mushi sealed in her body, tended by the Minai clan.",
+        "locator": "S01E20"
+      },
+      {
+        "summary": "Kumado's soul is replaced by an artificial mushi and he is nearly consumed by Sanekui in a Path of Overgrowth.",
+        "locator": "S02E11"
+      },
+      {
+        "summary": "Kaya is chosen as mountain lord, returns the power to the mountain and ceases to be herself.",
+        "locator": "S02E23"
+      }
+    ],
+    "motifs": [
+      "mushi-repellent cigarette smoke",
+      "kouki, the shining essence of life",
+      "the green wine cup",
+      "second eyelids and the stream of light behind them",
+      "the sound of bells across a mountain",
+      "rain, snow and water as carriers of mushi",
+      "the moon and false moons",
+      "wandering without a fixed home"
+    ],
+    "themes": [
+      "coexistence rather than extermination",
+      "perception and who is allowed to see",
+      "memory and its loss",
+      "the cost of a place's prosperity",
+      "impermanence and wandering",
+      "humans as one part of nature"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Ginko explains mushi with his hand, thumb to wrist, placing man at the fingertip.",
+        "locator": "S01E01"
+      },
+      {
+        "summary": "Shinra draws the green wine cup with his left hand and his grandmother becomes whole.",
+        "locator": "S01E01"
+      },
+      {
+        "summary": "Sui opens her eyes with her second eyelids closed and the moonlight lures the mushi out.",
+        "locator": "S01E02"
+      },
+      {
+        "summary": "Maho holds his ears and hears the rumble of his own muscles, his mother's sound.",
+        "locator": "S01E03"
+      },
+      {
+        "summary": "Jin cuts his pillow and the dream-world nest spills out.",
+        "locator": "S01E04"
+      },
+      {
+        "summary": "The travelling swamp is netted at the river mouth and Io is pulled out as a pearl-like form.",
+        "locator": "S01E05"
+      },
+      {
+        "summary": "Kourou touches the Kouda and is engulfed by the rising stream.",
+        "locator": "S01E07"
+      },
+      {
+        "summary": "Ginko tells of the Tokoyami and the moon that set and rose again, and how he took his name.",
+        "locator": "S01E12"
+      },
+      {
+        "summary": "Kaya's brother hears the bells and the mountain lord returns to the law.",
+        "locator": "S02E23"
+      }
+    ]
+  }
+}

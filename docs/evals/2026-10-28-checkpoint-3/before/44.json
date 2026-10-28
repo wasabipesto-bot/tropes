@@ -1,0 +1,243 @@
+{
+  "id": 44,
+  "title": "Cyberpunk: Edgerunners",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 14:48:51",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "In Night City, a violent free-market metropolis in the Cyberpunk 2077 setting, street kid David Martinez survives a drive-by shooting that kills his mother and has a military-grade Sandevistan implant, taken from a dead cyborg, grafted onto his spine. He joins the crew of the edgerunner Maine, becomes a rising mercenary, falls for the netrunner Lucy, and takes on ever more chrome until cyberpsychosis sets in. After Maine's death and a massacre at Arasaka Tower, David is hunted by the corporation and dies fighting Adam Smasher while Lucy escapes to the Moon. ||The series ends with David dead, Lucy on the lunar surface, and a montage of the crew's survivors.||",
+    "characters": [
+      {
+        "name": "David Martinez",
+        "role": "protagonist",
+        "descriptors": [
+          "human, chromed street kid",
+          "called David or Davey",
+          "he/him",
+          "yellow jacket, Sandevistan spine implant, glowing eyes when it fires"
+        ],
+        "relationships": [
+          "with his mother Gloria: working-class devotion, her death in a car crash sets him adrift",
+          "with Lucy: romance built on shared dreams of the Moon",
+          "with Maine: mentor bond, he inherits the crew and the chrome habit",
+          "with Faraday: used as a disposable asset"
+        ]
+      },
+      {
+        "name": "Lucy",
+        "role": "deuteragonist, netrunner, love interest",
+        "descriptors": [
+          "human, Arasaka-trained netrunner",
+          "she/her",
+          "white hair, monowire, deep-dive ice baths"
+        ],
+        "relationships": [
+          "with David: partner and lover, she hides her past from him",
+          "with Arasaka: escaped test subject, hunted",
+          "with Kiwi: netrunner mentor turned betrayer"
+        ]
+      },
+      {
+        "name": "Maine",
+        "role": "mentor, crew leader",
+        "descriptors": [
+          "heavily chromed human solo",
+          "he/him",
+          "big frame, arm-mounted projectile launcher, cyberpsychosis"
+        ],
+        "relationships": [
+          "with David: father-figure and cautionary example",
+          "with Dorio: lovers and partners in the crew"
+        ]
+      },
+      {
+        "name": "Dorio",
+        "role": "crew member",
+        "descriptors": [
+          "human solo",
+          "she/her",
+          "muscular, heavy weapons"
+        ],
+        "relationships": [
+          "with Maine: romantic partner, dies beside him"
+        ]
+      },
+      {
+        "name": "Kiwi",
+        "role": "netrunner, traitor",
+        "descriptors": [
+          "human netrunner",
+          "she/her",
+          "mask-like face, cold demeanor"
+        ],
+        "relationships": [
+          "with Lucy: mentor who sells the crew out to Faraday",
+          "with Faraday: cut a deal for survival"
+        ]
+      },
+      {
+        "name": "Pilar",
+        "role": "crew member",
+        "descriptors": [
+          "human techie",
+          "he/him",
+          "long limbs, crude humor"
+        ],
+        "relationships": [
+          "with Rebecca: brother, killed early by a cyberpsycho"
+        ]
+      },
+      {
+        "name": "Rebecca",
+        "role": "crew member",
+        "descriptors": [
+          "human solo",
+          "she/her",
+          "short, pink twin-tails, oversized guns"
+        ],
+        "relationships": [
+          "with David: loyal friend and comrade",
+          "with Pilar: sibling grief"
+        ]
+      },
+      {
+        "name": "Falco",
+        "role": "crew driver",
+        "descriptors": [
+          "human",
+          "he/him",
+          "wheelman, van"
+        ],
+        "relationships": [
+          "with the crew: getaway driver and survivor"
+        ]
+      },
+      {
+        "name": "Faraday",
+        "role": "antagonist, fixer",
+        "descriptors": [
+          "human corporate fixer",
+          "he/him",
+          "suits, Arasaka ties"
+        ],
+        "relationships": [
+          "with David: manipulates him into dangerous jobs",
+          "with Kiwi: conspirator"
+        ]
+      },
+      {
+        "name": "Gloria Martinez",
+        "role": "David's mother",
+        "descriptors": [
+          "human EMT",
+          "she/her",
+          "exhausted, sells salvaged chrome"
+        ],
+        "relationships": [
+          "with David: sacrifices for his schooling, dies in crossfire"
+        ]
+      },
+      {
+        "name": "Adam Smasher",
+        "role": "antagonist, Arasaka enforcer",
+        "descriptors": [
+          "full-body cyborg",
+          "he/him",
+          "hulking armored frame"
+        ],
+        "relationships": [
+          "with David: kills him in the final fight"
+        ]
+      },
+      {
+        "name": "Ripperdoc",
+        "role": "ally, underground surgeon",
+        "descriptors": [
+          "human ripperdoc",
+          "he/him",
+          "clinic full of spare parts"
+        ],
+        "relationships": [
+          "with David: installs his chrome, warns him about cyberpsychosis"
+        ]
+      }
+    ],
+    "settings": [
+      "Night City",
+      "Arasaka Corporation",
+      "Arasaka Tower",
+      "Watson district",
+      "the Moon",
+      "Maine's crew hideout",
+      "ripperdoc clinic",
+      "the Afterlife-style merc economy"
+    ],
+    "arcs": [
+      {
+        "summary": "David loses his mother, gains the Sandevistan, and is taken in by Maine's crew, learning the edgerunner trade.",
+        "locator": "episodes 1-3"
+      },
+      {
+        "summary": "David rises in the crew and begins a romance with Lucy while her Arasaka past closes in.",
+        "locator": "episodes 4-6"
+      },
+      {
+        "summary": "Maine succumbs to cyberpsychosis and dies; David inherits leadership and the chrome habit.",
+        "locator": "episodes 6-7"
+      },
+      {
+        "summary": "Faraday and Kiwi betray the crew; David storms Arasaka Tower and dies fighting Adam Smasher while Lucy reaches the Moon.",
+        "locator": "episodes 8-10"
+      }
+    ],
+    "motifs": [
+      "the Sandevistan spine implant and its glowing activation",
+      "the yellow jacket inherited from Gloria",
+      "the Moon as escape and dream",
+      "deep-dive ice baths for netrunning",
+      "chrome and cyberpsychosis as addiction",
+      "the Braindance of Lucy's memories",
+      "Arasaka logos and corporate surveillance",
+      "the song 'I Really Want to Stay at Your House'"
+    ],
+    "themes": [
+      "class and corporate power",
+      "body modification as self-destruction",
+      "found family and loyalty",
+      "escapism and the unattainable dream",
+      "coming of age in a violent economy"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Gloria dies in a drive-by crossfire and David is left with her ashes and the stolen Sandevistan.",
+        "locator": "episode 1"
+      },
+      {
+        "summary": "David first activates the Sandevistan to survive a gang ambush.",
+        "locator": "episode 1"
+      },
+      {
+        "summary": "Maine's cyberpsychosis overtakes him and Dorio dies; David puts him down.",
+        "locator": "episode 6"
+      },
+      {
+        "summary": "David and Lucy share a braindance of her childhood and the Moon.",
+        "locator": "episode 4"
+      },
+      {
+        "summary": "Kiwi's betrayal sends the crew into an Arasaka trap.",
+        "locator": "episode 9"
+      },
+      {
+        "summary": "David fights Adam Smasher in Arasaka Tower and is killed.",
+        "locator": "episode 10"
+      },
+      {
+        "summary": "Lucy walks on the Moon and sees David's recorded message.",
+        "locator": "episode 10"
+      }
+    ]
+  }
+}

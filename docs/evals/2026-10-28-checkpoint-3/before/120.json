@@ -1,0 +1,224 @@
+{
+  "id": 120,
+  "title": "Delicious in Dungeon",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 14:57:26",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "A party of adventurers descends into a vast dungeon beneath a ruined island to rescue their comrade Falin, who was swallowed by a dragon. With supplies gone, Laios leads the group in hunting and cooking the dungeon's monsters, and the meals become the engine of the journey. The story widens into the dungeon's ecology, the mad sorcerer who rules it, and the truth about the dungeon's origin, ending in ||a confrontation with the winged lion demon and Falin's recovery||.",
+    "characters": [
+      {
+        "name": "Laios Touden",
+        "role": "protagonist, party leader",
+        "descriptors": [
+          "human tall-man",
+          "armored knight",
+          "obsessive monster enthusiast",
+          "blunt and socially awkward"
+        ],
+        "relationships": [
+          "sibling of Falin: devoted older brother who wants to save her",
+          "with Marcille: leader and exasperating colleague",
+          "with Senshi: eager student of dungeon cooking"
+        ]
+      },
+      {
+        "name": "Marcille Donato",
+        "role": "protagonist, mage",
+        "descriptors": [
+          "elf",
+          "long-lived, long-eared",
+          "skilled spellcaster",
+          "squeamish about eating monsters"
+        ],
+        "relationships": [
+          "with Falin: close friend from magic school, fiercely protective",
+          "with Laios: bickering teammate",
+          "with Izutsumi: reluctant caretaker"
+        ]
+      },
+      {
+        "name": "Chilchuck Tims",
+        "role": "protagonist, locksmith and trap expert",
+        "descriptors": [
+          "half-foot",
+          "small stature",
+          "gruff, pragmatic",
+          "married with children"
+        ],
+        "relationships": [
+          "with Laios: hired professional who insists on pay",
+          "with the party: the cautious voice of experience"
+        ]
+      },
+      {
+        "name": "Senshi",
+        "role": "mentor figure, cook",
+        "descriptors": [
+          "dwarf",
+          "heavy armor and beard",
+          "dungeon chef",
+          "obsessed with balanced meals"
+        ],
+        "relationships": [
+          "with the party: guide to dungeon ecology and cuisine",
+          "with Chilchuck: fellow veteran"
+        ]
+      },
+      {
+        "name": "Falin Touden",
+        "role": "the rescued",
+        "descriptors": [
+          "human tall-man",
+          "cleric",
+          "gentle and kind",
+          "later ||merged with a dragon||"
+        ],
+        "relationships": [
+          "sibling of Laios: beloved sister",
+          "with Marcille: dear friend"
+        ]
+      },
+      {
+        "name": "Izutsumi",
+        "role": "later recruit",
+        "descriptors": [
+          "beastman, cat-like",
+          "freed from a curse",
+          "sullen and independent"
+        ],
+        "relationships": [
+          "with the party: grudging member",
+          "with Marcille: combative"
+        ]
+      },
+      {
+        "name": "Kabru",
+        "role": "rival adventurer",
+        "descriptors": [
+          "human tall-man",
+          "charismatic observer",
+          "skilled swordsman"
+        ],
+        "relationships": [
+          "with Laios: wary rival who studies him",
+          "with his own party: leader"
+        ]
+      },
+      {
+        "name": "Thistle",
+        "role": "antagonist, dungeon lord",
+        "descriptors": [
+          "elf",
+          "the mad sorcerer",
+          "keeper of the dungeon"
+        ],
+        "relationships": [
+          "with the winged lion: bound servant",
+          "with the dungeon: its ruler"
+        ]
+      },
+      {
+        "name": "The Winged Lion",
+        "role": "antagonist, demon",
+        "descriptors": [
+          "winged lion",
+          "tempter",
+          "feeds on desire"
+        ],
+        "relationships": [
+          "with Thistle: patron and manipulator",
+          "with Laios: offers a bargain"
+        ]
+      },
+      {
+        "name": "Namari",
+        "role": "former party member",
+        "descriptors": [
+          "dwarf",
+          "warrior",
+          "left the group"
+        ],
+        "relationships": [
+          "with Laios: departed comrade"
+        ]
+      },
+      {
+        "name": "Falin's ghost/dragon",
+        "role": "plot device",
+        "descriptors": [
+          "red dragon",
+          "devourer"
+        ],
+        "relationships": [
+          "with Falin: swallowed her"
+        ]
+      }
+    ],
+    "settings": [
+      "the island dungeon beneath a ruined kingdom",
+      "the adventurers' town and guild above",
+      "the deeper floors and the golden city",
+      "the dungeon lord's domain"
+    ],
+    "arcs": [
+      {
+        "summary": "The party hunts and cooks monsters to survive the descent while searching for Falin.",
+        "locator": null
+      },
+      {
+        "summary": "They find the red dragon and ||rescue Falin, who returns changed||.",
+        "locator": null
+      },
+      {
+        "summary": "The dungeon's lord Thistle and the winged lion's bargain come to the fore.",
+        "locator": null
+      },
+      {
+        "summary": "Kabru's party and the wider adventurer community react to Laios's group.",
+        "locator": null
+      }
+    ],
+    "motifs": [
+      "cooking and eating monsters",
+      "the dungeon's ecology and food chain",
+      "the red dragon",
+      "the winged lion",
+      "the golden city",
+      "desire and hunger",
+      "resurrection magic"
+    ],
+    "themes": [
+      "hunger and appetite",
+      "found family",
+      "the ethics of eating",
+      "obsession",
+      "the cost of resurrection",
+      "community and rivalry among adventurers"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "The party cooks a monster for the first time to survive.",
+        "locator": null
+      },
+      {
+        "summary": "Senshi prepares a meal from dungeon creatures and explains the ecology.",
+        "locator": null
+      },
+      {
+        "summary": "The red dragon is fought and Falin is ||recovered||.",
+        "locator": null
+      },
+      {
+        "summary": "The winged lion offers Laios a bargain.",
+        "locator": null
+      },
+      {
+        "summary": "Kabru observes Laios's party from a distance.",
+        "locator": null
+      }
+    ]
+  }
+}

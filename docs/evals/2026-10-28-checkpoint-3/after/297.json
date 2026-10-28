@@ -1,0 +1,270 @@
+{
+  "id": 297,
+  "title": "Foundation",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 107898,
+      "chapters": 30,
+      "from": "S01E01 1080p",
+      "to": "S03E10 The Darkness - WEBDL",
+      "file": "297-87a4910356e53983.txt"
+    },
+    "posts": 1,
+    "visual": 0,
+    "wiki": "https://asimov.fandom.com/wiki/Foundation_(television_series)",
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "Apple TV+'s loose adaptation of Asimov's Foundation, in which mathematician Hari Seldon predicts the Galactic Empire's collapse and engineers a Foundation on Terminus to shorten the coming dark age. The series splits between the Foundation's centuries-long struggle and the cloned Cleonic dynasty on Trantor, whose three concurrent emperors (Dawn, Day, Dusk) rule under the immortal robot Demerzel. Over two seasons the Foundation survives crises engineered by Seldon's Vault, the Empire's Enclosure of Terminus fails, and the story jumps 150 years to a new generation facing the telepathic conqueror called the Mule. ||The Mule turns out to be a front: the true telepath is Bayta Mallow, who has been converting minds through love, and Gaal Dornick confronts her in the Vault while Dusk destroys the dynasty.||",
+    "characters": [
+      {
+        "name": "Hari Seldon",
+        "role": "mentor and architect of the Plan",
+        "descriptors": [
+          "mathematician",
+          "called the Raven by critics",
+          "appears as hologram, Vault consciousness, and later a cloned body"
+        ],
+        "relationships": [
+          "with Gaal: teacher and manipulator, whose death she witnesses",
+          "with Raych: foster father who engineers his own murder by him",
+          "with Demerzel: secretly built psychohistory using her memories"
+        ]
+      },
+      {
+        "name": "Gaal Dornick",
+        "role": "protagonist",
+        "descriptors": [
+          "Synnaxian mathematician",
+          "counts primes when anxious",
+          "survives jumps awake",
+          "precognitive"
+        ],
+        "relationships": [
+          "with Raych: lover, mother of Salvor by embryo",
+          "with Salvor: daughter she meets as an adult",
+          "with Hari: idol turned adversary"
+        ]
+      },
+      {
+        "name": "Salvor Hardin",
+        "role": "Warden of Terminus, later Gaal's daughter",
+        "descriptors": [
+          "outlier immune to the Vault's null field",
+          "flips a coin to read lies",
+          "carries a ghost whistle"
+        ],
+        "relationships": [
+          "with Mari and Abbas: adoptive parents",
+          "with Hugo: on-off lover and lighthouse",
+          "with Gaal: biological mother she seeks across decades"
+        ]
+      },
+      {
+        "name": "Brother Day",
+        "role": "middle emperor, dominant of the trio",
+        "descriptors": [
+          "Cleon clone",
+          "wears a personal aura",
+          "Lee Pace"
+        ],
+        "relationships": [
+          "with Demerzel: lover and adviser",
+          "with Dusk and Dawn: brothers who are also his selves",
+          "with Sareth: betrothed he may have orphaned"
+        ]
+      },
+      {
+        "name": "Brother Dusk",
+        "role": "eldest emperor, the Conciliator",
+        "descriptors": [
+          "aging Cleon clone",
+          "paints the Mural of Souls"
+        ],
+        "relationships": [
+          "with Rue: former concubine he selected",
+          "with Day: resentful elder brother"
+        ]
+      },
+      {
+        "name": "Brother Dawn",
+        "role": "youngest emperor",
+        "descriptors": [
+          "Cleon clone",
+          "color-blind, secretly divergent"
+        ],
+        "relationships": [
+          "with Azura: gardener lover who shows him the clone tanks",
+          "with Sareth: conspires to father her child"
+        ]
+      },
+      {
+        "name": "Demerzel",
+        "role": "imperial adviser, last robot",
+        "descriptors": [
+          "humaniform robot",
+          "18,000 years old",
+          "bound to serve Empire"
+        ],
+        "relationships": [
+          "with Cleon I: imprisoned and programmed to love him",
+          "with Day: intimate, conflicted",
+          "with Seldon: supplied data for psychohistory"
+        ]
+      },
+      {
+        "name": "Raych Foss",
+        "role": "Seldon's foster son",
+        "descriptors": [
+          "street thief turned disciple",
+          "carries the knife that records Seldon's mind"
+        ],
+        "relationships": [
+          "with Hari: kills him on instruction",
+          "with Gaal: lover he sends away in a cryo-pod"
+        ]
+      },
+      {
+        "name": "Hober Mallow",
+        "role": "con man and Master Trader",
+        "descriptors": [
+          "sells fake relics",
+          "uses a castling device",
+          "owns the whisper-ship Spirit Rising"
+        ],
+        "relationships": [
+          "with Constant: mutual attraction",
+          "with Seldon: sent as a blade against the Spacers"
+        ]
+      },
+      {
+        "name": "Bel Riose",
+        "role": "imperial general",
+        "descriptors": [
+          "Hero of the 20th Fleet",
+          "imprisoned on Lepsis"
+        ],
+        "relationships": [
+          "with Glawen Curr: husband, separated by imprisonment",
+          "with Day: defiant subordinate"
+        ]
+      },
+      {
+        "name": "The Mule",
+        "role": "telepathic conqueror",
+        "descriptors": [
+          "takes Kalgan",
+          "travels with the balladeer Magnifico",
+          "converts minds through love"
+        ],
+        "relationships": [
+          "with Bayta: the true power behind him",
+          "with Gaal: hunts her across a century"
+        ]
+      },
+      {
+        "name": "Tellem Bond",
+        "role": "leader of the Mentalics on Ignis",
+        "descriptors": [
+          "claims to be a goddess incarnate",
+          "body-jumps into children"
+        ],
+        "relationships": [
+          "with Gaal: mentor who tries to steal her body",
+          "with the Sighted: their protector and tyrant"
+        ]
+      },
+      {
+        "name": "Cleon I",
+        "role": "founding emperor",
+        "descriptors": [
+          "the Principium",
+          "kept upright in the Memorium"
+        ],
+        "relationships": [
+          "with Demerzel: captor who made her love him",
+          "with the clones: source of the Genetic Dynasty"
+        ]
+      }
+    ],
+    "settings": [
+      "Trantor, the planet-city and imperial capital",
+      "Terminus and the Vault",
+      "Synnax, Gaal's drowned homeworld",
+      "the slow ship Deliverance and the Raven",
+      "the Maiden and the Luminist faith",
+      "Ignis, the Mentalics' refuge",
+      "Kalgan and the middle band",
+      "the Galactic Library on Trantor"
+    ],
+    "arcs": [
+      {
+        "summary": "Seldon's trial and exile: psychohistory is declared true, the Star Bridge falls, and the Foundation is sent to Terminus.",
+        "locator": "S01E01"
+      },
+      {
+        "summary": "The First Crisis: Anacreon occupies Terminus, Salvor opens the Vault, and the Invictus is turned against the Empire.",
+        "locator": "S01E03 to S01E10"
+      },
+      {
+        "summary": "The Cleonic dynasty frays as Day courts Sareth, Dawn diverges genetically, and Demerzel's origins surface.",
+        "locator": "S02E01 to S02E10"
+      },
+      {
+        "summary": "Gaal and Salvor seek the Second Foundation among the Mentalics while the Mule rises.",
+        "locator": "S02E05 to S03E10"
+      }
+    ],
+    "motifs": [
+      "counting primes as a calming ritual",
+      "the Prime Radiant and its four-dimensional math",
+      "clones decanted in tanks and the Memorium of preserved emperors",
+      "the Mural of Souls and active chroma pigments",
+      "whisper-ships with organic minds",
+      "the ghost whistle and Salvor's coin",
+      "the null field around the Vault",
+      "the balladeer's visi-sonor music"
+    ],
+    "themes": [
+      "psychohistory versus individual agency",
+      "cloning, repetition, and stagnation",
+      "religion built around science",
+      "freedom and programmed loyalty",
+      "empire's decline and the cost of shortening darkness"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Seldon's trial, where Gaal confirms his math and the Star Bridge is destroyed.",
+        "locator": "S01E01"
+      },
+      {
+        "summary": "Raych stabs Hari and puts Gaal in the cryo-pod.",
+        "locator": "S01E02"
+      },
+      {
+        "summary": "Demerzel kneels to Halima and later walks the Spiral.",
+        "locator": "S01E06 to S01E07"
+      },
+      {
+        "summary": "Day reveals the Genetic Dynasty's end to the arena crowd.",
+        "locator": "S02E06"
+      },
+      {
+        "summary": "Demerzel tells her origin story to Dusk and Rue in the hidden chamber.",
+        "locator": "S02E09"
+      },
+      {
+        "summary": "The Mule's cobalt spike destroys Kalgan and the imperial fleet.",
+        "locator": "S03E05"
+      },
+      {
+        "summary": "Gaal confronts Bayta as the true Mule inside the Vault.",
+        "locator": "S03E10"
+      }
+    ]
+  }
+}

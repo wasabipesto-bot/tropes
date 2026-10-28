@@ -1,0 +1,246 @@
+{
+  "id": 370,
+  "title": "The Good Place",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 15:09:55",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "Four humans die and wake in a brightly coloured afterlife neighbourhood run by an architect called Michael, who tells them they are in the Good Place. Eleanor Shellstrop, a selfish Arizona saleswoman, realises she was mistaken for a do-gooder of the same name and recruits her assigned soulmate, ethics professor Chidi, to teach her to be good. ||The neighbourhood is revealed to be a torture experiment designed by Michael and his demon staff; the four humans escape to the afterlife's bureaucracy, petition the Judge, are returned to Earth alive to prove they can improve, and eventually build a new system that lets souls earn their way into the Good Place. The finale has each of them choose, in time, to walk through a door and dissolve into the universe.||",
+    "characters": [
+      {
+        "name": "Eleanor Shellstrop",
+        "role": "protagonist",
+        "descriptors": [
+          "human, deceased",
+          "Arizona saleswoman",
+          "blonde, fond of shrimp and margaritas"
+        ],
+        "relationships": [
+          "soulmate pairing with Chidi: forced at first, then a genuine romance",
+          "antagonistic fondness with Michael: he becomes her mentor and friend",
+          "best-friend bond with Tahani, built on mutual needling"
+        ]
+      },
+      {
+        "name": "Chidi Anagonye",
+        "role": "deuteragonist and ethics teacher",
+        "descriptors": [
+          "human, deceased",
+          "Nigerian-Senegalese professor of moral philosophy",
+          "glasses, ripped build, chronic indecision"
+        ],
+        "relationships": [
+          "soulmate pairing with Eleanor",
+          "ex-girlfriend Simone, also a philosopher",
+          "friendship with Jason, whom he tutors"
+        ]
+      },
+      {
+        "name": "Michael",
+        "role": "architect, later ally",
+        "descriptors": [
+          "demon/afterlife architect",
+          "Ted Danson, white suit, bow tie",
+          "cheerful smile that turns sinister"
+        ],
+        "relationships": [
+          "creator and tormentor of the four humans, later their friend",
+          "subordinate to Shawn",
+          "fascinated by humanity and its mundane details"
+        ]
+      },
+      {
+        "name": "Tahani Al-Jamil",
+        "role": "main cast",
+        "descriptors": [
+          "human, deceased",
+          "wealthy British socialite and philanthropist",
+          "tall, glamorous, name-drops celebrities"
+        ],
+        "relationships": [
+          "soulmate pairing with Jason, which she resents at first",
+          "rivalry and eventual friendship with Eleanor",
+          "lifelong envy of her sister Kamilah"
+        ]
+      },
+      {
+        "name": "Jason Mendoza",
+        "role": "main cast",
+        "descriptors": [
+          "human, deceased",
+          "Florida DJ and amateur criminal from Jacksonville",
+          "bucket hat, Jaguars fandom, Blake Bortles devotion"
+        ],
+        "relationships": [
+          "soulmate pairing with Tahani",
+          "friendship with Chidi",
+          "loyal to his dance crew and his ex-girlfriend Janet"
+        ]
+      },
+      {
+        "name": "Janet",
+        "role": "neighbourhood AI",
+        "descriptors": [
+          "not a robot, not a girl",
+          "all-knowing repository of information",
+          "can produce any object on request"
+        ],
+        "relationships": [
+          "serves Michael as architect's assistant",
+          "romance with Jason, later marriage",
+          "reboots and variants complicate her identity"
+        ]
+      },
+      {
+        "name": "Shawn",
+        "role": "antagonist",
+        "descriptors": [
+          "demon, afterlife judge of the Bad Place",
+          "horned, smug, enjoys torture"
+        ],
+        "relationships": [
+          "Michael's superior and adversary",
+          "delights in the humans' suffering"
+        ]
+      },
+      {
+        "name": "Vicky",
+        "role": "antagonist",
+        "descriptors": [
+          "demon actor",
+          "wants a bigger role in the experiment"
+        ],
+        "relationships": [
+          "works under Michael, resents him",
+          "plays a fake version of Eleanor's friend"
+        ]
+      },
+      {
+        "name": "Mindy St. Claire",
+        "role": "recurring figure",
+        "descriptors": [
+          "human, neither good nor bad",
+          "lives alone in a medium place with cocaine and a sex tape"
+        ],
+        "relationships": [
+          "the only precedent for a middle afterlife",
+          "her case inspires the humans' argument"
+        ]
+      },
+      {
+        "name": "The Judge (Gen)",
+        "role": "arbiter",
+        "descriptors": [
+          "cosmic judge in robes",
+          "bored, whimsical, loves Timothy Olyphant"
+        ],
+        "relationships": [
+          "rules on the humans' fate",
+          "annoyed by Michael's pleading"
+        ]
+      },
+      {
+        "name": "Simone Garnett",
+        "role": "recurring love interest",
+        "descriptors": [
+          "human neuroscientist",
+          "Chidi's ex-girlfriend"
+        ],
+        "relationships": [
+          "romance with Chidi on the reborn Earth",
+          "friend to Eleanor"
+        ]
+      },
+      {
+        "name": "Derek",
+        "role": "recurring comic figure",
+        "descriptors": [
+          "Janet's rebound creation",
+          "wind chimes, limited vocabulary"
+        ],
+        "relationships": [
+          "made by Janet as a boyfriend",
+          "repeatedly rebooted"
+        ]
+      }
+    ],
+    "settings": [
+      "The Good Place neighbourhood, a pastel afterlife suburb",
+      "The Bad Place",
+      "the afterlife bureaucracy and its offices",
+      "Mindy St. Claire's Medium Place",
+      "the Judge's chambers",
+      "Earth, revisited in a second-chance timeline",
+      "Jacksonville, Florida"
+    ],
+    "arcs": [
+      {
+        "summary": "Eleanor hides her mistaken identity and takes ethics lessons from Chidi while the neighbourhood's oddities pile up.",
+        "locator": "season 1"
+      },
+      {
+        "summary": "The neighbourhood is exposed as a Bad Place experiment; Michael is repeatedly rebooted and the humans try to escape.",
+        "locator": "seasons 1-2"
+      },
+      {
+        "summary": "The four petition the Judge, are sent back to Earth alive, and try to become better people in a new timeline.",
+        "locator": "season 3"
+      },
+      {
+        "summary": "Michael and the humans design a new afterlife system where souls can improve over many lifetimes.",
+        "locator": "season 4"
+      },
+      {
+        "summary": "The group reaches the real Good Place, finds it stagnant, and each eventually chooses to leave through the door.",
+        "locator": "season 4 finale"
+      }
+    ],
+    "motifs": [
+      "shrimp (Eleanor's favourite food, served endlessly)",
+      "the phrase 'this is the Bad Place'",
+      "the censored swear word 'fork' and its variants",
+      "Jeremy Bearimy, the looping afterlife timeline",
+      "the Jacksonville Jaguars and Blake Bortles",
+      "Janet's ability to summon objects",
+      "the door out of the Good Place",
+      "frozen yoghurt shops",
+      "the clown painting and other decor in Michael's office"
+    ],
+    "themes": [
+      "what makes a person good and whether people can change",
+      "moral philosophy as a practical tool",
+      "the ethics of punishment and reward",
+      "bureaucracy versus meaningful reform",
+      "friendship and chosen family",
+      "the meaning of an ending"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Eleanor realises she does not belong and confesses to Chidi, who agrees to teach her ethics in secret.",
+        "locator": "season 1"
+      },
+      {
+        "summary": "Michael reveals the neighbourhood is the Bad Place and the humans have been torturing each other.",
+        "locator": "season 1 finale"
+      },
+      {
+        "summary": "Michael explains the Jeremy Bearimy timeline on a whiteboard.",
+        "locator": "season 2"
+      },
+      {
+        "summary": "The Judge rules on the humans and sends them back to Earth.",
+        "locator": "season 3"
+      },
+      {
+        "summary": "The group tours the real Good Place and finds its residents numb and bored.",
+        "locator": "season 4"
+      },
+      {
+        "summary": "Eleanor walks through the door and dissolves into the universe.",
+        "locator": "series finale"
+      }
+    ]
+  }
+}

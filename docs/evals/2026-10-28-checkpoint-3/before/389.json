@@ -1,0 +1,229 @@
+{
+  "id": 389,
+  "title": "Archer",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 15:10:55",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "An animated spy comedy set at ISIS, a dysfunctional intelligence agency run by Malory Archer. Sterling Archer, her vain and womanising top field agent, works alongside ex-girlfriend Lana Kane, accountant Cyril, secretary Cheryl, and the eccentric scientist Krieger, with his valet Woodhouse at home. Episodes usually pair a mission or office crisis with farce, drinking, and callbacks. The series moves through phases: Cold War pastiche, then a season as a cocaine-dealing Miami cartel, then a noir-era detective agency, a South Pacific island adventure, a space season, a 1930s jungle serial, and a coma dream cycle, before Archer wakes and the agency is rebuilt under a private contractor. ||The coma seasons are revealed as fantasies inside Archer's head after he is shot and left in a coma; he eventually wakes, and the final season follows the team working for a new outfit, ending on an unresolved note.||",
+    "characters": [
+      {
+        "name": "Sterling Archer",
+        "role": "protagonist, field agent",
+        "descriptors": [
+          "human",
+          "codename Duchess",
+          "male",
+          "tall, dark hair, turtleneck and tailored suit",
+          "heavy drinker and womaniser"
+        ],
+        "relationships": [
+          "with Malory: mother and boss, a smothering and competitive bond",
+          "with Lana: on-off ex-lovers and partners, rivalry and lingering attachment",
+          "with Woodhouse: dependent on his valet, treats him badly"
+        ]
+      },
+      {
+        "name": "Lana Kane",
+        "role": "deuteragonist, field agent",
+        "descriptors": [
+          "human",
+          "black woman with large hands, often in tactical gear",
+          "competent and exasperated"
+        ],
+        "relationships": [
+          "with Archer: ex-girlfriend and frequent partner",
+          "with Cyril: former and later romantic partner",
+          "with her daughter Abbiejean: mother"
+        ]
+      },
+      {
+        "name": "Malory Archer",
+        "role": "boss, Archer's mother",
+        "descriptors": [
+          "human",
+          "older woman, heavy drinker, glamorous",
+          "runs ISIS"
+        ],
+        "relationships": [
+          "with Archer: mother and employer, controlling",
+          "with Woodhouse and staff: domineering"
+        ]
+      },
+      {
+        "name": "Cyril Figgis",
+        "role": "accountant, comic foil",
+        "descriptors": [
+          "human",
+          "balding, bespectacled",
+          "anxious and pedantic"
+        ],
+        "relationships": [
+          "with Lana: romantic history",
+          "with Archer: bullied by him"
+        ]
+      },
+      {
+        "name": "Cheryl Tunt",
+        "role": "secretary",
+        "descriptors": [
+          "human",
+          "wealthy heiress slumming it",
+          "chaotic, pyromaniac, masochistic"
+        ],
+        "relationships": [
+          "with Archer: occasional sexual encounters",
+          "with the office: source of chaos"
+        ]
+      },
+      {
+        "name": "Pam Poovey",
+        "role": "HR director, later field agent",
+        "descriptors": [
+          "human",
+          "stocky, loud, former underground fighter",
+          "cocaine-fuelled in the cartel season"
+        ],
+        "relationships": [
+          "with Archer: loyal friend and sometime partner"
+        ]
+      },
+      {
+        "name": "Ray Gillette",
+        "role": "agent",
+        "descriptors": [
+          "human",
+          "openly gay, later paraplegic then cyborg legs",
+          "sarcastic"
+        ],
+        "relationships": [
+          "with Archer: long-suffering colleague"
+        ]
+      },
+      {
+        "name": "Algernop Krieger",
+        "role": "scientist",
+        "descriptors": [
+          "human, possibly a clone",
+          "lab coat, unsettling experiments",
+          "references a holographic girlfriend"
+        ],
+        "relationships": [
+          "with the agency: mad-scientist support"
+        ]
+      },
+      {
+        "name": "Woodhouse",
+        "role": "valet",
+        "descriptors": [
+          "human",
+          "elderly, devoted",
+          "former pilot with a heroin history"
+        ],
+        "relationships": [
+          "with Archer: servant and surrogate parent figure"
+        ]
+      },
+      {
+        "name": "Barry Dylan",
+        "role": "antagonist, rival agent",
+        "descriptors": [
+          "human, later cyborg",
+          "ODIN agent",
+          "obsessed with Archer"
+        ],
+        "relationships": [
+          "with Archer: nemesis, repeatedly maimed by him",
+          "with Other Barry: internal voice"
+        ]
+      },
+      {
+        "name": "Slater",
+        "role": "CIA contact",
+        "descriptors": [
+          "human",
+          "black man, terse",
+          "government agent"
+        ],
+        "relationships": [
+          "with the agency: handler and occasional ally"
+        ]
+      }
+    ],
+    "settings": [
+      "ISIS headquarters, a Manhattan office with Malory's glass-walled office",
+      "Archer's apartment and Woodhouse's domain",
+      "ODIN, a rival spy agency",
+      "the cocaine cartel of season five",
+      "a 1940s-style noir city in the detective season",
+      "a South Pacific island",
+      "a space station",
+      "a 1930s jungle adventure setting",
+      "the coma dreamscapes"
+    ],
+    "arcs": [
+      {
+        "summary": "Archer and Lana's on-off romance runs through missions and office politics, complicated by Cyril and by Lana's later pregnancy and daughter.",
+        "locator": null
+      },
+      {
+        "summary": "Archer's rivalry with Barry Dylan escalates as Barry is maimed and rebuilt as a cyborg bent on revenge.",
+        "locator": null
+      },
+      {
+        "summary": "The agency is repeatedly restructured, dissolved, and reborn under different names and business models.",
+        "locator": null
+      },
+      {
+        "summary": "Archer is shot and spends several seasons in coma fantasies before waking.",
+        "locator": null
+      }
+    ],
+    "motifs": [
+      "drinking and the bar cart",
+      "turtlenecks and tailored suits",
+      "codename Duchess",
+      "Woodhouse's devotion and abuse",
+      "Krieger's lab experiments",
+      "Cheryl's fire-starting",
+      "Barry's cyborg body and 'Other Barry'",
+      "the phrase 'phrasing'",
+      "callbacks to earlier episodes"
+    ],
+    "themes": [
+      "dysfunctional family and workplace",
+      "narcissism and incompetence",
+      "sex and rivalry",
+      "loyalty and betrayal",
+      "escapism and fantasy"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Archer and Lana bicker during a mission while the office descends into farce.",
+        "locator": null
+      },
+      {
+        "summary": "Barry is gravely injured and returns as a cyborg nemesis.",
+        "locator": null
+      },
+      {
+        "summary": "The team runs a cocaine cartel in the Miami season.",
+        "locator": null
+      },
+      {
+        "summary": "The detective-agency noir season unfolds.",
+        "locator": null
+      },
+      {
+        "summary": "Archer is shot and the coma seasons begin.",
+        "locator": null
+      },
+      {
+        "summary": "Archer wakes from the coma and the agency is rebuilt.",
+        "locator": null
+      }
+    ]
+  }
+}

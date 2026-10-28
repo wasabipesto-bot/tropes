@@ -1,0 +1,487 @@
+{
+  "id": 389,
+  "title": "Archer",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 487418,
+      "chapters": 139,
+      "from": "S01E01",
+      "to": "S14E09",
+      "file": "389-3d84edd76d6ee01b.txt"
+    },
+    "posts": 0,
+    "visual": 0,
+    "wiki": "https://archer.fandom.com/wiki/Archer_(TV_series)",
+    "extract": false,
+    "blocks": 3
+  },
+  "body": {
+    "known": "strong",
+    "summary": "An adult animated spy comedy created by Adam Reed, following Sterling Archer, a vain, heavy-drinking field agent at the International Secret Intelligence Service (ISIS), an agency run by his domineering mother Malory. Episodes pair globe-trotting missions with office farce, insults, running gags and pop-culture pastiche. From season five the show turns to season-long genre pastiches: a drug cartel (Archer: Vice), 1940s noir (Dreamland), a 1930s South Seas adventure (Danger Island) and deep space (Archer 1999). Archer wakes from a three-year coma to a changed agency, which is later folded into the corporate giant IIA under Fabian Kingsworth, then rebuilt as a boutique branch with Lana as director before a UN ban on private spy agencies ends it. ||The series ends with the agency outlawed, Archer going rogue, and Lana hired to bring him in.||",
+    "characters": [
+      {
+        "name": "Sterling Archer",
+        "role": "protagonist, field agent",
+        "descriptors": [
+          "human",
+          "codename Duchess",
+          "turtleneck devotee",
+          "heavy drinker",
+          "vain womaniser"
+        ],
+        "relationships": [
+          "Malory: domineering mother and boss",
+          "Lana: ex-girlfriend and co-parent of AJ",
+          "Woodhouse: butler he bullies",
+          "Barry: obsessive rival",
+          "Fabian: hated corporate superior"
+        ]
+      },
+      {
+        "name": "Malory Archer",
+        "role": "boss and mother, founder of ISIS",
+        "descriptors": [
+          "human",
+          "glamorous, chain-smoking",
+          "martini-drinking",
+          "manipulative"
+        ],
+        "relationships": [
+          "Sterling: possessive mother who lies to him",
+          "Ron Cadillac: late-life husband",
+          "the staff: treats them as expendable"
+        ]
+      },
+      {
+        "name": "Lana Kane",
+        "role": "deuteragonist, later director",
+        "descriptors": [
+          "human",
+          "large hands mocked as monster hands",
+          "TEC-9 pistols",
+          "practical competence"
+        ],
+        "relationships": [
+          "Sterling: ex and co-parent",
+          "Cyril: ex-boyfriend",
+          "AJ: daughter",
+          "Robert: later husband fighting for custody",
+          "Zara: rival and colleague"
+        ]
+      },
+      {
+        "name": "Cyril Figgis",
+        "role": "comptroller turned field agent",
+        "descriptors": [
+          "human",
+          "sex addict",
+          "sweater vests",
+          "anxious, pedantic"
+        ],
+        "relationships": [
+          "Lana: ex-boyfriend",
+          "Sterling: bullied by him"
+        ]
+      },
+      {
+        "name": "Pam Poovey",
+        "role": "HR director and field agent",
+        "descriptors": [
+          "human",
+          "heavy-set",
+          "dairy-farm upbringing",
+          "cocaine habit in Vice",
+          "loud and hard-drinking"
+        ],
+        "relationships": [
+          "Sterling: best friend and partner in schemes",
+          "Cheryl: friend and enabler",
+          "Alessia: Swiss mercenary girlfriend"
+        ]
+      },
+      {
+        "name": "Cheryl/Carol Tunt",
+        "role": "secretary, heiress",
+        "descriptors": [
+          "human",
+          "billionaire Tunt family",
+          "renames herself repeatedly",
+          "arson-prone",
+          "ocelot Babou"
+        ],
+        "relationships": [
+          "Cyril: recurring seductress",
+          "Cecil: estranged brother",
+          "Malory: former assistant"
+        ]
+      },
+      {
+        "name": "Ray Gillette",
+        "role": "agent, later leader",
+        "descriptors": [
+          "human",
+          "gay",
+          "bionic legs",
+          "Olympic bronze in giant slalom",
+          "sardonic"
+        ],
+        "relationships": [
+          "Sterling: long-suffering colleague",
+          "Cyril: roommate",
+          "Fabian: briefly his inside man"
+        ]
+      },
+      {
+        "name": "Dr. Krieger",
+        "role": "mad scientist",
+        "descriptors": [
+          "human",
+          "possibly a Hitler clone",
+          "van, hologram girlfriend",
+          "builds robots and drugs"
+        ],
+        "relationships": [
+          "the office: supplier of chips, drugs and weapons",
+          "Barry: creator of the robot"
+        ]
+      },
+      {
+        "name": "Woodhouse",
+        "role": "butler",
+        "descriptors": [
+          "elderly human",
+          "former WWI batman",
+          "heroin user",
+          "long-suffering"
+        ],
+        "relationships": [
+          "Sterling: servant he abuses",
+          "Malory: secretly on her payroll"
+        ]
+      },
+      {
+        "name": "Barry Dylan / Other Barry",
+        "role": "recurring antagonist",
+        "descriptors": [
+          "cyborg",
+          "tracksuit",
+          "later a sentient refrigerator",
+          "split into good and evil selves"
+        ],
+        "relationships": [
+          "Sterling: obsessive enemy",
+          "Katya: fiancée, later merged into Katbar",
+          "Krieger: creator"
+        ]
+      },
+      {
+        "name": "Katya Kazanova",
+        "role": "love interest and antagonist",
+        "descriptors": [
+          "cyborg",
+          "Russian",
+          "KGB agent",
+          "later Silverwolf leader"
+        ],
+        "relationships": [
+          "Sterling: former fiancée",
+          "Barry: later partner",
+          "Slater: uneasy co-conspirator"
+        ]
+      },
+      {
+        "name": "Ron Cadillac",
+        "role": "Malory's husband",
+        "descriptors": [
+          "human",
+          "Cadillac dealer",
+          "former car thief"
+        ],
+        "relationships": [
+          "Malory: husband",
+          "Sterling: uneasy stepfather bond"
+        ]
+      },
+      {
+        "name": "Slater",
+        "role": "CIA handler, later antagonist",
+        "descriptors": [
+          "human",
+          "abrasive",
+          "mononym",
+          "disavowed by the CIA"
+        ],
+        "relationships": [
+          "Archer: hostile handler",
+          "Katya: Silverwolf co-conspirator"
+        ]
+      },
+      {
+        "name": "Fabian Kingsworth",
+        "role": "antagonist, IIA CEO",
+        "descriptors": [
+          "human",
+          "British",
+          "polished and smug",
+          "appears on screens"
+        ],
+        "relationships": [
+          "the Agency: corporate overlord who frames them",
+          "Archer: mutual loathing"
+        ]
+      },
+      {
+        "name": "Zara Khan",
+        "role": "Interpol agent turned Agency member",
+        "descriptors": [
+          "human",
+          "British-Pakistani",
+          "competitive, secretive"
+        ],
+        "relationships": [
+          "Lana: rival and colleague",
+          "Archer: flirtation and one-upmanship"
+        ]
+      },
+      {
+        "name": "AJ",
+        "role": "supporting",
+        "descriptors": [
+          "child, preteen",
+          "trained in judo and shooting"
+        ],
+        "relationships": [
+          "Lana: mother",
+          "Archer: biological father via stolen sperm",
+          "Robert: father figure with money"
+        ]
+      }
+    ],
+    "settings": [
+      "ISIS headquarters, a hostile-work-environment spy office",
+      "Malory's penthouse",
+      "Tuntmore Towers hotel",
+      "the Archer mansion in Vice",
+      "San Marcos, a fictional Central American country",
+      "Dreamland, a 1940s noir nightclub",
+      "Mitimotu, a South Pacific island",
+      "the Seamus, a spaceship in Archer 1999",
+      "The Figgis Agency, Los Angeles",
+      "IIA, a corporate spy conglomerate",
+      "The Agency, a boutique IIA branch",
+      "Manatina, a fictional country",
+      "the UN General Assembly"
+    ],
+    "arcs": [
+      {
+        "summary": "Sterling fakes a mole hunt to cover his expenses and the real mole Krenshaw surfaces.",
+        "locator": "first block, S01E01"
+      },
+      {
+        "summary": "ISIS is shut down for treason; the cast turns the seized cocaine into a cartel, loses it piece by piece, and ends up in San Marcos.",
+        "locator": "first block, S05E01 to S05E13 Arrival Departure"
+      },
+      {
+        "summary": "Lana's pregnancy runs through Vice and ends with the birth of Abbiejean.",
+        "locator": "first block, S05E01 to S05E13 Arrival Departure"
+      },
+      {
+        "summary": "Archer's on-off relationship with Lana, from exes to co-parents of AJ.",
+        "locator": "second block"
+      },
+      {
+        "summary": "The agency's repeated near-collapse and reinvention, from ISIS to CIA contractors to private detectives.",
+        "locator": "second block"
+      },
+      {
+        "summary": "Barry's transformation into a cyborg and his vendetta against Archer.",
+        "locator": "second block"
+      },
+      {
+        "summary": "Archer's three-year coma and the dream-season pastiches, then his return to a changed agency.",
+        "locator": "second block, S08E01 to S11E01"
+      },
+      {
+        "summary": "The rivalry with the IIA and Fabian Kingsworth over the ionic fusion device.",
+        "locator": "second block, S12E01 to S12E07"
+      },
+      {
+        "summary": "The Agency launches as an IIA subsidiary; Archer wins the Agent Skills Competition but Lana is made head, and Fabian's kidnapping stunt is revealed as a leadership demo.",
+        "locator": "third block, S13E01"
+      },
+      {
+        "summary": "A jungle mission to recover medical supplies from the warlord Serpiente collapses into a plane crash and snakebite, and the team learns Fabian is using them.",
+        "locator": "third block, S13E02"
+      },
+      {
+        "summary": "A Saturday mission to escort the Broker turns into a standoff with the mafia, yakuza and Russian mob while Pam babysits AJ at the office.",
+        "locator": "third block, S13E03 Saturday"
+      },
+      {
+        "summary": "The team chases the Swiss mercenary Alessia and the magnetic pulse device Helga; Alessia defects to Pam's side.",
+        "locator": "third block, S13E04 Laws of Attraction"
+      },
+      {
+        "summary": "An intervention for Archer's drinking becomes a race to save his therapist from IIA assassins; the therapist, named Malory Lacania, offers to run away with him.",
+        "locator": "third block, S13E05 Out of Network"
+      },
+      {
+        "summary": "A bank vault job for Fabian turns out to be blackmail material that destabilizes Manatina; the team learns Fabian has been using them.",
+        "locator": "third block, S13E06"
+      },
+      {
+        "summary": "Framed as fugitives, the team runs a distraction relay so Lana can attend AJ's custody hearing, then flees to Cheryl's plane.",
+        "locator": "third block, S13E07 Distraction Action"
+      },
+      {
+        "summary": "In Manatina the team tries to assassinate Fabian, Ray is revealed as a double agent, and Fabian escapes with the rare earth metal hexon.",
+        "locator": "third block, S13E08 Dough Ray and Me"
+      },
+      {
+        "summary": "Lana takes over the Agency and takes on Interpol work; Zara Khan is revealed as a rogue Interpol agent who hires the team to catch the Vanguard.",
+        "locator": "third block, S14E01"
+      },
+      {
+        "summary": "The team is captured by the Vanguard, escapes a flooding sea cave, and destroys the Vanguard's base; Zara is hired.",
+        "locator": "third block, S14E02"
+      },
+      {
+        "summary": "A museum job to protect a Golden Plaque becomes a fight with smuggler Ibadan Peters and a fake curse; the plaque is swapped and returned to Nigeria.",
+        "locator": "third block, S14E03"
+      },
+      {
+        "summary": "Barry returns as a sentient refrigerator and the team fights Other Barry at Yucca Mountain.",
+        "locator": "third block, S14E04 Chill Barry"
+      },
+      {
+        "summary": "A mission in Ibiza against a cocaine kingpin becomes a vacation; Archer's Domingo persona and Lana's sobriety are tested.",
+        "locator": "third block, S14E05"
+      },
+      {
+        "summary": "At a Costa Rican plastic surgery resort the team hunts the shapeshifting kingpin El Cambiante; Archer survives a fall and believes himself immortal.",
+        "locator": "third block, S14E06"
+      },
+      {
+        "summary": "Lana's new control center fails during a synchronized hack of the Dragon Run black market, but the teams succeed anyway.",
+        "locator": "third block, S14E07"
+      },
+      {
+        "summary": "IIA drones hunt former employees; the team breaks Fabian out of a Swiss prison and deactivates the drones at the cost of Fabian's hand.",
+        "locator": "third block, S14E08"
+      },
+      {
+        "summary": "The UN bans private spy agencies; Slater and Katya's Silverwolf plot to restart the Cold War by blowing up a Sochi dam is stopped, and the Agency disbands.",
+        "locator": "third block, S14E09"
+      }
+    ],
+    "motifs": [
+      "turtlenecks, especially the tactical Tactleneck",
+      "the phrase 'phrasing' and its later abandonment",
+      "ants and 'that's how you get ants'",
+      "Kenny Loggins and 'Danger Zone'",
+      "Burt Reynolds films quoted as life guidance",
+      "Woodhouse's heroin and the butler's quiet martyrdom",
+      "the codename Duchess, from Malory's dead dog",
+      "cocaine in every form during Vice",
+      "drinking and cocktails, especially bourbon and Glengoolie whiskey",
+      "voicemail hoaxes",
+      "running gags about Brett's repeated shootings",
+      "the ISIS/IIA/Agency sign and rebranding",
+      "Barry as a recurring robot and then a refrigerator",
+      "the shoe phone",
+      "curses and fake curses",
+      "drones and smart weapons",
+      "the 'sploosh' catchphrase"
+    ],
+    "themes": [
+      "dysfunctional family as the real workplace",
+      "espionage as farce and incompetence",
+      "alcoholism and addiction",
+      "mother-son codependency",
+      "class and inherited money",
+      "narcissism and arrested development",
+      "sex, rivalry and jealousy",
+      "reinvention and pastiche",
+      "corporate espionage and bureaucracy",
+      "loyalty versus self-interest",
+      "aging and obsolescence"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Archer breaks into ISIS to fix his expense account and discovers Krenshaw is the mole.",
+        "locator": "first block, S01E01"
+      },
+      {
+        "summary": "Archer and Lana disarm a bomb on the airship while Ray talks them through the wires.",
+        "locator": "first block, S01E07"
+      },
+      {
+        "summary": "The cast is arrested for treason and everyone rats out everyone else in the interrogation room.",
+        "locator": "first block, S05E01"
+      },
+      {
+        "summary": "Lana gives birth to Abbiejean in a rebel-held airport while Archer waits outside.",
+        "locator": "first block, S05E13 Arrival Departure"
+      },
+      {
+        "summary": "Lana tells Archer she used his frozen sperm to conceive.",
+        "locator": "first block, S05E13 Arrival Departure"
+      },
+      {
+        "summary": "Archer wakes from his coma and finds Lana married to Robert, learning he has missed three years.",
+        "locator": "second block, S11E01 The Orpheus Gambit"
+      },
+      {
+        "summary": "The office is trapped in an elevator during a team-building exercise and turns on each other.",
+        "locator": "second block, S06E05 Vision Quest"
+      },
+      {
+        "summary": "In the noir dream, Archer investigates Woodhouse's murder in Dreamland.",
+        "locator": "second block, S08E01 720p"
+      },
+      {
+        "summary": "Archer and Barry fight aboard a ship as it self-destructs.",
+        "locator": "second block, S10E09 Robert De Niro"
+      },
+      {
+        "summary": "The agency battles IIA's Diamond Force over the ionic fusion device in Singapore.",
+        "locator": "second block, S12E07 720p"
+      },
+      {
+        "summary": "Archer wins the Agent Skills Competition but Lana is named head of The Agency.",
+        "locator": "third block, S13E01"
+      },
+      {
+        "summary": "Pam babysits AJ at the office while a gunfight breaks out with the mafia.",
+        "locator": "third block, S13E03 Saturday"
+      },
+      {
+        "summary": "Archer's therapist is revealed to be named Malory Lacania and offers to run away with him.",
+        "locator": "third block, S13E05 Out of Network"
+      },
+      {
+        "summary": "The team robs a bank vault and discovers Fabian's blackmail material.",
+        "locator": "third block, S13E06"
+      },
+      {
+        "summary": "Barry returns as a sentient refrigerator and fights Other Barry.",
+        "locator": "third block, S14E04 Chill Barry"
+      },
+      {
+        "summary": "Archer survives a 50-foot fall and declares himself immortal.",
+        "locator": "third block, S14E06"
+      },
+      {
+        "summary": "Fabian's hand is cut off to deactivate the drones.",
+        "locator": "third block, S14E08"
+      },
+      {
+        "summary": "The Sochi dam bursts and Archer lets Slater fall.",
+        "locator": "third block, S14E09"
+      }
+    ]
+  }
+}

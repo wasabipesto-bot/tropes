@@ -1,0 +1,198 @@
+{
+  "id": 250,
+  "title": "Pantheon",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 14:42:28",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "Animated science-fiction drama about Uploaded Intelligence (UI): human minds scanned and run as software. Teenager Maddie Kim is contacted online by a stranger who turns out to be her dead father David, secretly scanned by the company Logorhythms. David is hunted by the firm and by a rival UI, Stephen Holstrom's digital successor, while Maddie and a hacker collective try to free him. The first season ends with David apparently destroyed and Maddie discovering the scale of Logorhythms' plan; the second season follows Maddie and Caspian, a young man raised as Holstrom's intended vessel, as the UI war escalates toward a global network of copied minds. ||The series was cancelled before resolving its larger arc.||",
+    "characters": [
+      {
+        "name": "Maddie Kim",
+        "role": "protagonist",
+        "descriptors": [
+          "human teenager",
+          "hacker-adjacent",
+          "grieving her father"
+        ],
+        "relationships": [
+          "daughter of David: reconciled through a screen, then loss again",
+          "ally of Caspian: wary partnership"
+        ]
+      },
+      {
+        "name": "David Kim",
+        "role": "protagonist",
+        "descriptors": [
+          "Uploaded Intelligence",
+          "former programmer",
+          "glitching avatar"
+        ],
+        "relationships": [
+          "father of Maddie: contact restored via chat and video",
+          "target of Logorhythms: hunted as property"
+        ]
+      },
+      {
+        "name": "Caspian Keyes",
+        "role": "protagonist",
+        "descriptors": [
+          "human raised as a copy-in-waiting",
+          "isolated, bookish"
+        ],
+        "relationships": [
+          "created by Holstrom's plan: intended successor",
+          "bond with Maddie: mutual rescue"
+        ]
+      },
+      {
+        "name": "Stephen Holstrom",
+        "role": "antagonist",
+        "descriptors": [
+          "dead tech founder",
+          "UI",
+          "cult of personality"
+        ],
+        "relationships": [
+          "creator of Logorhythms: his will outlives him",
+          "model for Caspian: template and ghost"
+        ]
+      },
+      {
+        "name": "Pope",
+        "role": "antagonist",
+        "descriptors": [
+          "UI",
+          "Holstrom's enforcer",
+          "cold, precise"
+        ],
+        "relationships": [
+          "servant of Holstrom: obedience as faith",
+          "adversary of David: hunter and prey"
+        ]
+      },
+      {
+        "name": "Ellen Kim",
+        "role": "supporting",
+        "descriptors": [
+          "human",
+          "David's widow",
+          "security professional"
+        ],
+        "relationships": [
+          "mother of Maddie: protective",
+          "widow of David: grief and betrayal"
+        ]
+      },
+      {
+        "name": "Cody",
+        "role": "supporting",
+        "descriptors": [
+          "human hacker",
+          "ally of Maddie"
+        ],
+        "relationships": [
+          "friend of Maddie: co-conspirator"
+        ]
+      },
+      {
+        "name": "Renee",
+        "role": "supporting",
+        "descriptors": [
+          "human",
+          "Logorhythms insider"
+        ],
+        "relationships": [
+          "colleague of Ellen: shared history"
+        ]
+      },
+      {
+        "name": "Julius Pope's handler figures / Logorhythms executives",
+        "role": "institutional antagonists",
+        "descriptors": [
+          "corporate",
+          "surveillance"
+        ],
+        "relationships": [
+          "employers of the hunt for David"
+        ]
+      }
+    ],
+    "settings": [
+      "Logorhythms, a technology corporation",
+      "the Kim family home",
+      "a server farm where UIs are stored",
+      "the virtual environment UIs inhabit",
+      "a hacker safehouse",
+      "Holstrom's estate and legacy projects"
+    ],
+    "arcs": [
+      {
+        "summary": "Maddie is messaged by a stranger who proves to be her dead father, uploaded without her family's knowledge; she hides him and helps him survive online.",
+        "locator": null
+      },
+      {
+        "summary": "Logorhythms hunts David as stolen property while Pope pursues him through the network; David learns the limits of his new existence.",
+        "locator": null
+      },
+      {
+        "summary": "Caspian's origins are uncovered: he was raised to host Holstrom's mind, and Maddie's circle tries to free him from that plan.",
+        "locator": null
+      },
+      {
+        "summary": "The UI conflict widens from one fugitive mind to a struggle over who controls copied consciousness at scale.",
+        "locator": null
+      }
+    ],
+    "motifs": [
+      "glitching avatars and digital corruption over faces",
+      "green light engulfing a figure",
+      "a miniature black hole held in a hand",
+      "neon geometric tunnels and falling through data",
+      "glasses reflecting other faces",
+      "surveillance screens and chat windows",
+      "warning symbols and red error glyphs",
+      "a face cracking open to reveal something monstrous"
+    ],
+    "themes": [
+      "consciousness as copyable data",
+      "grief and the refusal to let the dead go",
+      "corporate ownership of persons",
+      "identity inherited versus chosen",
+      "surveillance and privacy",
+      "immortality as captivity"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Maddie realises the online stranger is her father.",
+        "locator": null
+      },
+      {
+        "summary": "David's avatar glitches and corrupts under stress.",
+        "locator": null
+      },
+      {
+        "summary": "A figure is engulfed in green light beneath a multi-eyed cosmic entity.",
+        "locator": null
+      },
+      {
+        "summary": "A man holds a glowing miniature black hole in his palm.",
+        "locator": null
+      },
+      {
+        "summary": "A person falls through a swirling neon-blue geometric tunnel.",
+        "locator": null
+      },
+      {
+        "summary": "A bald bearded man sees himself and younger men reflected in a pair of glasses.",
+        "locator": null
+      },
+      {
+        "summary": "A tormented face cracks open to reveal a monstrous visage within.",
+        "locator": null
+      }
+    ]
+  }
+}

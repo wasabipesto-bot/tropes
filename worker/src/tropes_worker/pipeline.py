@@ -39,6 +39,9 @@ def entry_text(subject: dict[str, Any]) -> str:
     return "\n".join(parts)
 
 
+MAX_VIDEO_WORDS = 60_000
+
+
 def ensure_texts(client: Any, settings: Settings, subjects: list[dict[str, Any]]) -> int:
     """Pull the texts the media worker extracted (Phase 5) into the local cache and list them as text sources,
     one file per work in episode order, so the rest of the pipeline reads them like a linked EPUB. Returns fetched."""
@@ -48,6 +51,16 @@ def ensure_texts(client: Any, settings: Settings, subjects: list[dict[str, Any]]
         if m.get("kind") != "media":
             continue
         rows = [s for s in (m.get("localSources") or []) if s.get("indexedAt") and (s.get("meta") or {}).get("textHash")]
+        # A video file whose "subtitles" run to more than 60k words is typesetting residue, not dialogue; it stays out.
+        bloated = [s for s in rows if s.get("kind") == "video" and int((s.get("meta") or {}).get("words") or 0) > MAX_VIDEO_WORDS]
+        if bloated:
+            log.warning(
+                "%s: %d subtitle text(s) over %d words skipped (typesetting residue)",
+                m.get("title"),
+                len(bloated),
+                MAX_VIDEO_WORDS,
+            )
+            rows = [s for s in rows if s not in bloated]
         if not rows:
             continue
         rows.sort(key=lambda s: (s.get("label") or "", s["id"]))

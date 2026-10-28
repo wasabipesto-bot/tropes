@@ -1,0 +1,67 @@
+{
+  "id": 97,
+  "title": "Almost Nowhere",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 14:56:31",
+  "inputs": {},
+  "body": {
+    "known": "partial",
+    "summary": "A science-fiction novel by the pseudonymous blogger nostalgebraist, serialised online and later self-published. It follows a small cast of humans and non-humans caught up in a hidden cosmic conflict involving beings called the 'angels', who exist in a strange relationship to ordinary space and time, and an organisation that monitors and manages contact with them. The narrative moves between intimate character drama and large-scale metaphysical speculation, with a structure that shifts between viewpoints and timelines. ||The ending resolves the central confrontation in a way that reframes the nature of the angels and the protagonists' place in the larger order.||",
+    "characters": [
+      {
+        "name": "Cordelia",
+        "role": "protagonist",
+        "descriptors": [
+          "human woman",
+          "central viewpoint character",
+          "associated with the monitoring organisation"
+        ],
+        "relationships": [
+          "bond with the angel-related apparatus: handler and subject, marked by unease and fascination"
+        ]
+      },
+      {
+        "name": "the angels",
+        "role": "cosmic entities",
+        "descriptors": [
+          "non-human beings",
+          "exist in an unusual relation to space and time",
+          "objects of study and dread"
+        ],
+        "relationships": [
+          "bond with the human characters: contact that is dangerous and transformative"
+        ]
+      }
+    ],
+    "settings": [
+      "a near-future or contemporary Earth",
+      "the organisation that monitors angel contact",
+      "locations where angels manifest or are contained"
+    ],
+    "arcs": [
+      {
+        "summary": "A protagonist working within an organisation that tracks angels becomes personally entangled with one, and the boundary between observer and subject erodes.",
+        "locator": null
+      }
+    ],
+    "motifs": [
+      "angels as recurring image",
+      "surveillance and monitoring equipment",
+      "spatial and temporal distortion",
+      "the organisation's protocols and paperwork"
+    ],
+    "themes": [
+      "contact between human and radically alien minds",
+      "surveillance and control",
+      "the limits of human comprehension",
+      "identity under transformation"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "A character encounters an angel and the encounter distorts ordinary space and time around them.",
+        "locator": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,292 @@
+{
+  "id": 279,
+  "title": "Severance",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 59328,
+      "chapters": 19,
+      "from": "S01E01 Good News About Hell",
+      "to": "S02E10 Cold Harbor",
+      "file": "279-28effe6cc953d6eb.txt"
+    },
+    "posts": 14,
+    "visual": 0,
+    "wiki": null,
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "At Lumon Industries, employees in the windowless Macrodata Refinement department have undergone severance, a surgical split that gives them a work self (innie) with no memory of the outside and an outside self (outie) with no memory of the job. Mark Scout, a widower who severed to escape grief over his wife Gemma, leads MDR alongside Irving, Dylan and new hire Helly R., who fights the arrangement from her first day. The team discovers other departments, a break room used for coerced apologies, and the overtime contingency that can wake innies off-site; they trigger it to see the outside world. ||Mark learns Gemma may be alive inside Lumon, reintegrates with the help of ex-Lumon surgeon Reghabi, and learns MDR's numbers are a doorway into Gemma's mind: each completed file builds her a new innie. On the day he finishes Cold Harbor, he frees Gemma to the exit stairwell but chooses to stay on the severed floor with Helly.||",
+    "characters": [
+      {
+        "name": "Mark Scout",
+        "role": "protagonist",
+        "descriptors": [
+          "severed Lumon employee, later department chief",
+          "history professor before severance",
+          "widower"
+        ],
+        "relationships": [
+          "Gemma: late wife he severed to forget, later the object of his search",
+          "Helly R.: coworker he falls for",
+          "Devon: sister who pushes him to investigate Lumon",
+          "Petey: former best friend at work who reintegrates and dies"
+        ]
+      },
+      {
+        "name": "Helly R.",
+        "role": "deuteragonist and rebel",
+        "descriptors": [
+          "new MDR hire",
+          "innie of Helena Eagan",
+          "defiant, suicidal in early episodes"
+        ],
+        "relationships": [
+          "Mark: mutual attraction complicated by her outie's deception",
+          "Helena: outie who denies her personhood",
+          "Jame Eagan: father of her outie"
+        ]
+      },
+      {
+        "name": "Helena Eagan",
+        "role": "antagonist",
+        "descriptors": [
+          "Lumon heir and board figure",
+          "outie of Helly",
+          "poses as Helly on the severed floor via the Glasgow block"
+        ],
+        "relationships": [
+          "Helly: outie who uses her body for research",
+          "Mark: seduces him at the ORTBO while impersonating Helly"
+        ]
+      },
+      {
+        "name": "Irving B.",
+        "role": "loyal senior refiner",
+        "descriptors": [
+          "MDR veteran of three years",
+          "devout about the handbook and Kier",
+          "paints a black hallway in his outie life"
+        ],
+        "relationships": [
+          "Burt G.: romantic attachment across departments",
+          "Dylan: friend and foil",
+          "Milchick: enforcer he defies"
+        ]
+      },
+      {
+        "name": "Dylan G.",
+        "role": "perk-driven refiner",
+        "descriptors": [
+          "competitive, profane, fixated on waffle parties and finger traps"
+        ],
+        "relationships": [
+          "Gretchen: outie's wife he meets in the visitation suite",
+          "Mark and Helly: teammates he helps during the OTC"
+        ]
+      },
+      {
+        "name": "Harmony Cobel",
+        "role": "antagonist turned uneasy ally",
+        "descriptors": [
+          "severed floor manager",
+          "also lives as Mark's neighbor Mrs. Selvig",
+          "raised in Kier's factory town"
+        ],
+        "relationships": [
+          "Mark: surveils him at home and work",
+          "the Board: later fired and courted back",
+          "Reghabi: rival over reintegration"
+        ]
+      },
+      {
+        "name": "Seth Milchick",
+        "role": "antagonist",
+        "descriptors": [
+          "floor manager after Cobel",
+          "unsevered",
+          "delivers rewards and punishments"
+        ],
+        "relationships": [
+          "the Board: serves and is humiliated by it",
+          "Dylan: offers the visitation suite",
+          "Miss Huang: supervises her fellowship"
+        ]
+      },
+      {
+        "name": "Gemma Scout / Ms. Casey",
+        "role": "missing wife and wellness counselor",
+        "descriptors": [
+          "presumed dead in a car crash",
+          "works as Ms. Casey on the severed floor",
+          "held on the testing floor"
+        ],
+        "relationships": [
+          "Mark: husband who believes she died",
+          "Dr. Mauer: her keeper and tormentor"
+        ]
+      },
+      {
+        "name": "Petey",
+        "role": "catalyst",
+        "descriptors": [
+          "former MDR chief",
+          "reintegrates and dies of reintegration sickness"
+        ],
+        "relationships": [
+          "Mark: best friend who leaves him a map and a phone"
+        ]
+      },
+      {
+        "name": "Devon",
+        "role": "ally on the outside",
+        "descriptors": [
+          "Mark's sister",
+          "pregnant and then a new mother"
+        ],
+        "relationships": [
+          "Mark: pushes him to investigate",
+          "Ricken: husband",
+          "Cobel: unknowingly hires her as a lactation consultant"
+        ]
+      },
+      {
+        "name": "Ricken Hale",
+        "role": "comic author",
+        "descriptors": [
+          "self-help writer",
+          "Devon's husband"
+        ],
+        "relationships": [
+          "Mark: brother-in-law whose book inspires the innies"
+        ]
+      },
+      {
+        "name": "Burt G.",
+        "role": "Optics and Design chief",
+        "descriptors": [
+          "head of a two-person department",
+          "retires mid-season"
+        ],
+        "relationships": [
+          "Irving: mutual attraction",
+          "Fields: husband on the outside"
+        ]
+      },
+      {
+        "name": "Reghabi",
+        "role": "rogue surgeon",
+        "descriptors": [
+          "former Lumon doctor",
+          "performs reintegration in a basement"
+        ],
+        "relationships": [
+          "Mark: operates on him",
+          "Graner: kills him with a bat"
+        ]
+      },
+      {
+        "name": "Miss Huang",
+        "role": "deputy manager",
+        "descriptors": [
+          "a child in a supervisory role",
+          "Wintertide fellow"
+        ],
+        "relationships": [
+          "Milchick: reports to him"
+        ]
+      }
+    ],
+    "settings": [
+      "Lumon Industries severed floor: windowless corridors, MDR, break room, perpetuity wing, wellness, Optics and Design, Mammalians Nurturable goat room, security office",
+      "the testing floor and Cold Harbor room",
+      "Kier, a company town",
+      "Mark's house and Mrs. Selvig's neighboring home",
+      "the birthing retreat cabins",
+      "Woe's Hollow and the Dieter Eagan National Forest"
+    ],
+    "arcs": [
+      {
+        "summary": "Helly resists orientation and repeatedly tries to resign or escape; her outie refuses every request and she attempts suicide.",
+        "locator": "S01E01 Good News About Hell through S01E04 720p"
+      },
+      {
+        "summary": "Petey reintegrates, contacts Mark, and dies; Mark is drawn toward reintegration.",
+        "locator": "S01E01 Good News About Hell through S01E03 In Perpetuity"
+      },
+      {
+        "summary": "The team maps the floor, meets O&D and the goat department, and learns the departments distrust each other.",
+        "locator": "S01E05 The Grim Barbarity Of Optics and Design through S01E06 Hide and Seek"
+      },
+      {
+        "summary": "Dylan learns of the overtime contingency; the team triggers it so their innies can see the outside world.",
+        "locator": "S01E07 Defiant Jazz through S01E09 The We We Are"
+      },
+      {
+        "summary": "Mark reintegrates with Reghabi and learns the MDR numbers encode Gemma's tempers.",
+        "locator": "S02E03 Who Is Alive through S02E10 Cold Harbor"
+      },
+      {
+        "summary": "Helena impersonates Helly on the severed floor until Irving exposes her at Woe's Hollow and is dismissed.",
+        "locator": "S02E04 Woes Hollow"
+      },
+      {
+        "summary": "Mark completes Cold Harbor, frees Gemma to the stairwell, and stays behind with Helly.",
+        "locator": "S02E10 Cold Harbor"
+      }
+    ],
+    "motifs": [
+      "the severed elevator and its ding",
+      "the four tempers: woe, frolic, dread, malice",
+      "Kier's handbook and its quotations",
+      "waffle parties, finger traps, erasers and other incentives",
+      "the black hallway with a downward elevator",
+      "goats and the Mammalians Nurturable department",
+      "the code detectors and notes written on skin",
+      "the break room compunction statement",
+      "the perpetuity wing and Eagan wax figures",
+      "pineapples and melon bars"
+    ],
+    "themes": [
+      "memory and identity",
+      "grief and the wish to forget",
+      "corporate control and coerced consent",
+      "exploitation of workers",
+      "the personhood of innies",
+      "complicity and loyalty"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Helly wakes on the conference table and is given the five-question survey, answering 'unknown' to nearly everything.",
+        "locator": "S01E01 Good News About Hell"
+      },
+      {
+        "summary": "Helly hangs herself in the elevator; Mark finds her and the outie refuses to resign.",
+        "locator": "S01E05 The Grim Barbarity Of Optics and Design"
+      },
+      {
+        "summary": "Dylan bites Milchick during the Music Dance Experience after learning of the overtime contingency.",
+        "locator": "S01E07 Defiant Jazz"
+      },
+      {
+        "summary": "The innies wake in the outside world; Helly reveals herself at the gala and shouts that they are prisoners.",
+        "locator": "S01E09 The We We Are"
+      },
+      {
+        "summary": "Irving accuses Helly of being an outie and tries to drown her; Milchick removes the Glasgow block.",
+        "locator": "S02E04 Woes Hollow"
+      },
+      {
+        "summary": "Cobel tells Mark the numbers are a doorway into Gemma's mind and that each file builds her a new innie.",
+        "locator": "S02E10 Cold Harbor"
+      },
+      {
+        "summary": "Mark frees Gemma to the stairwell, then turns back to find Helly.",
+        "locator": "S02E10 Cold Harbor"
+      }
+    ]
+  }
+}

@@ -1,0 +1,273 @@
+{
+  "id": 236,
+  "title": "Gideon the Ninth",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 141685,
+      "chapters": 84,
+      "from": "Section 3",
+      "to": "Section 57",
+      "file": "236-6c0eca58658f55b5.txt"
+    },
+    "posts": 0,
+    "visual": 0,
+    "wiki": null,
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "Gideon Nav, an indentured servant on the bone-and-tomb world of the Ninth House, tries to escape her dreary life and her nemesis Harrowhark Nonagesimus, the Reverend Daughter. Harrow forces her into service as cavalier primary, and the two travel to Canaan House on the First House, where the heirs of the nine Houses compete to become Lyctors. They solve locked-room necromantic trials, uncover murders, and discover that the dying Seventh House adept Dulcinea is really Cytherea the First, an ancient Lyctor bent on luring the Emperor back to kill him. ||Gideon sacrifices herself on iron spikes so Harrow can absorb her soul and become a Lyctor; Harrow kills Cytherea and wakes aboard the Emperor's ship, where he names her Harrowhark the First.||",
+    "characters": [
+      {
+        "name": "Gideon Nav",
+        "role": "protagonist, cavalier primary of the Ninth",
+        "descriptors": [
+          "human, red-haired, amber-eyed",
+          "indentured servant, called Griddle by Harrow",
+          "wears skull face paint and tinted glasses",
+          "wields a two-handed longsword"
+        ],
+        "relationships": [
+          "with Harrowhark: lifelong enemy turned sworn cavalier, bound by 'one flesh, one end'",
+          "with Aiglamene: sword-master who trains her",
+          "with Dulcinea: tender, unrequited attachment"
+        ]
+      },
+      {
+        "name": "Harrowhark Nonagesimus",
+        "role": "deuteragonist, necromancer heir of the Ninth",
+        "descriptors": [
+          "bone adept, Reverend Daughter",
+          "small, black-clad, painted like a death's head",
+          "raised from the deaths of two hundred Ninth children"
+        ],
+        "relationships": [
+          "with Gideon: nemesis and necromancer to cavalier",
+          "with her dead parents: puppets them as Reverend Mother and Father",
+          "with Palamedes: rival scholar"
+        ]
+      },
+      {
+        "name": "Dulcinea Septimus / Cytherea the First",
+        "role": "antagonist",
+        "descriptors": [
+          "appears as dying duchess of the Seventh",
+          "actually an ancient Lyctor in a beguiling corpse",
+          "blue eyes, fawn curls, translucent skin"
+        ],
+        "relationships": [
+          "with Protesilaus: her dead cavalier, puppeted",
+          "with Gideon: feigns affection",
+          "with the Emperor: a spurned, grieving Lyctor"
+        ]
+      },
+      {
+        "name": "Palamedes Sextus",
+        "role": "ally, Master Warden of the Sixth",
+        "descriptors": [
+          "necromancer, grey-robed, spectacles",
+          "psychometrist and medical adept"
+        ],
+        "relationships": [
+          "with Camilla: necromancer and cavalier",
+          "with Dulcinea: long epistolary love"
+        ]
+      },
+      {
+        "name": "Camilla Hect",
+        "role": "ally, cavalier of the Sixth",
+        "descriptors": [
+          "grey-clad, blunt-cut hair",
+          "fights with two short blades"
+        ],
+        "relationships": [
+          "with Palamedes: devoted cavalier"
+        ]
+      },
+      {
+        "name": "Ianthe Tridentarius",
+        "role": "rival then Lyctor",
+        "descriptors": [
+          "pale twin of the Third",
+          "secretly the true necromancer",
+          "becomes a Lyctor by consuming Naberius"
+        ],
+        "relationships": [
+          "with Coronabeth: twin, the visible heir",
+          "with Naberius: cavalier she eats"
+        ]
+      },
+      {
+        "name": "Coronabeth Tridentarius",
+        "role": "Third House heir",
+        "descriptors": [
+          "golden-haired, radiant",
+          "actually non-necromantic"
+        ],
+        "relationships": [
+          "with Ianthe: twin who fronts for her"
+        ]
+      },
+      {
+        "name": "Naberius Tern",
+        "role": "cavalier of the Third",
+        "descriptors": [
+          "vain, pomaded, precise duellist"
+        ],
+        "relationships": [
+          "with Ianthe: cavalier she kills and absorbs"
+        ]
+      },
+      {
+        "name": "Silas Octakiseron",
+        "role": "antagonistic Eighth necromancer",
+        "descriptors": [
+          "white-robed, ascetic, soul siphoner"
+        ],
+        "relationships": [
+          "with Colum: siphons his cavalier"
+        ]
+      },
+      {
+        "name": "Colum Asht",
+        "role": "cavalier of the Eighth",
+        "descriptors": [
+          "scarred, weathered, engineered as a battery"
+        ],
+        "relationships": [
+          "with Silas: nephew and siphon source"
+        ]
+      },
+      {
+        "name": "Aiglamene",
+        "role": "mentor",
+        "descriptors": [
+          "one-legged captain of the Ninth guard",
+          "scarred, blunt"
+        ],
+        "relationships": [
+          "with Gideon: trains her in the sword"
+        ]
+      },
+      {
+        "name": "Crux",
+        "role": "antagonist, marshal of the Ninth",
+        "descriptors": [
+          "decrepit, armoured, hateful"
+        ],
+        "relationships": [
+          "with Gideon: abuses her as chattel"
+        ]
+      },
+      {
+        "name": "Teacher",
+        "role": "guardian of Canaan House",
+        "descriptors": [
+          "small old priest, rainbow sash",
+          "a construct housing many souls"
+        ],
+        "relationships": [
+          "with the Houses: sets the one rule against locked doors"
+        ]
+      },
+      {
+        "name": "Jeannemary Chatur and Isaac Tettares",
+        "role": "young Fourth House pair",
+        "descriptors": [
+          "teenage cavalier and necromancer"
+        ],
+        "relationships": [
+          "with each other: devoted pair, both killed by the bone construct"
+        ]
+      }
+    ],
+    "settings": [
+      "the Ninth House, Drearburh, a bone-lined shaft world",
+      "Canaan House on the First House, a drowned ruined palace",
+      "the facility beneath Canaan House with its trial laboratories",
+      "the Lyctoral study rooms behind locked doors",
+      "the Emperor's ship in the epilogue"
+    ],
+    "arcs": [
+      {
+        "summary": "Gideon's repeated escape attempts end when Harrow forces her into the cavalier role and takes her off-world.",
+        "locator": "Chapter 1"
+      },
+      {
+        "summary": "The heirs gather at Canaan House and learn the only rule: never open a locked door without permission.",
+        "locator": "Chapter 8"
+      },
+      {
+        "summary": "Harrow and Gideon complete the construct trial and win a key, learning to share perception.",
+        "locator": "Chapter 16"
+      },
+      {
+        "summary": "Magnus and Abigail are found dead, then Isaac and Jeannemary are killed, driving the Houses to turn on one another.",
+        "locator": "Chapter 17"
+      },
+      {
+        "summary": "Harrow reveals the Ninth's secret: two hundred children died so she could be born, and Gideon survived the gas.",
+        "locator": "Chapter 31"
+      },
+      {
+        "summary": "Ianthe becomes a Lyctor by eating Naberius; Silas and Colum die fighting her.",
+        "locator": "Chapter 34"
+      },
+      {
+        "summary": "Palamedes confronts Cytherea and destroys himself to wound her; Gideon sacrifices herself so Harrow can ascend.",
+        "locator": "Chapter 36"
+      }
+    ],
+    "motifs": [
+      "bones, skeletons and constructs",
+      "skull face paint and death's-head imagery",
+      "locked doors and keys on iron rings",
+      "the prayer 'I pray the tomb is shut forever'",
+      "the phrase 'one flesh, one end'",
+      "salt water and pools",
+      "the number nine and the Houses' numbered names",
+      "the Emperor's light, Dominicus"
+    ],
+    "themes": [
+      "duty and service versus freedom",
+      "class and indenture",
+      "sacrifice and the cost of power",
+      "grief and the dead who linger",
+      "trust and betrayal between partners",
+      "necromancy as control over life and death"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Harrow duels Gideon on the landing field with skeletons hidden in the dirt and wins her service.",
+        "locator": "Chapter 2"
+      },
+      {
+        "summary": "Harrow reveals her dead parents as puppets at the muster and reads the Emperor's summons.",
+        "locator": "Chapter 3"
+      },
+      {
+        "summary": "Gideon fights Naberius in the training room and punches him after being disarmed.",
+        "locator": "Chapter 11"
+      },
+      {
+        "summary": "Gideon and Harrow fight the regenerating construct in the Response chamber, guided by shared sight.",
+        "locator": "Chapter 16"
+      },
+      {
+        "summary": "The Fifth House couple are found dead at the foot of the facility ladder.",
+        "locator": "Chapter 16"
+      },
+      {
+        "summary": "Harrow tells Gideon the truth of the two hundred dead children in the pool.",
+        "locator": "Chapter 31"
+      },
+      {
+        "summary": "Gideon throws herself onto the iron spikes so Harrow can absorb her and become a Lyctor.",
+        "locator": "Chapter 36"
+      }
+    ]
+  }
+}

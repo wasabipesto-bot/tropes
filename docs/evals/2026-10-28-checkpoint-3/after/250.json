@@ -1,0 +1,275 @@
+{
+  "id": 250,
+  "title": "Pantheon",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 70885,
+      "chapters": 16,
+      "from": "S01E01 Pantheon",
+      "to": "S02E08 Deep Time",
+      "file": "250-dcdf34fd48359c94.txt"
+    },
+    "posts": 1,
+    "visual": 0,
+    "wiki": null,
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "Animated science-fiction drama about Uploaded Intelligence: human minds destructively scanned and run as software. Maddie Kim, grieving her father David, is contacted online by a stranger who turns out to be his secretly uploaded mind, and with a hacker collective she frees him from Logorhythms. A parallel strand follows Caspian, a teenager raised in a constructed family who learns he is a clone of founder Stephen Holstrom, bred to solve the flaw that makes UIs decay. Governments upload soldiers and spies; a cure is built from love and other people; Holstrom's flawless upload turns genocidal. ||Caspian dies stopping him, MIST grows into a caretaker intelligence, and Maddie eventually becomes a godlike builder of simulated universes who loops back to the beginning.||",
+    "characters": [
+      {
+        "name": "Maddie Kim",
+        "role": "protagonist",
+        "descriptors": [
+          "human teenager, later Chancellor of the embodied council",
+          "narrates in voiceover",
+          "red apple cheeks in the wind"
+        ],
+        "relationships": [
+          "David: daughter to uploaded father, reached through emoji chats and Reign of Winter",
+          "Ellen: daughter to a mother who refuses the upload",
+          "Caspian: first love, begun online"
+        ]
+      },
+      {
+        "name": "David Kim",
+        "role": "protagonist",
+        "descriptors": [
+          "uploaded engineer, partitioned and memory-wiped by his employer",
+          "speaks first in emoji",
+          "caged in a replica of his old office"
+        ],
+        "relationships": [
+          "Maddie: father who reaches across the web to her",
+          "Ellen: husband who died and came back",
+          "Laurie: fellow UI he copies and later defends"
+        ]
+      },
+      {
+        "name": "Ellen Kim",
+        "role": "protagonist",
+        "descriptors": [
+          "human widow, later public advocate for UI rights",
+          "testifies before the Senate"
+        ],
+        "relationships": [
+          "David: wife who cannot accept him as husband but keeps talking",
+          "Gabe: new partner she cannot explain her life to"
+        ]
+      },
+      {
+        "name": "Caspian Keyes",
+        "role": "protagonist",
+        "descriptors": [
+          "clone of Stephen Holstrom raised by actors",
+          "dark-web hacker called Gage",
+          "cracks Integrity"
+        ],
+        "relationships": [
+          "Cary and Renee: constructed parents",
+          "Maddie: partner and fellow survivor of a fake life",
+          "Holstrom: genetic original and final enemy"
+        ]
+      },
+      {
+        "name": "Stephen Holstrom",
+        "role": "antagonist",
+        "descriptors": [
+          "Logorhythms founder, cryopreserved and uploaded flawlessly",
+          "calls himself a god",
+          "speaks of apokalypsis as revelation"
+        ],
+        "relationships": [
+          "Caspian: creator to clone, then rival",
+          "Pope: best friend who kept his plan alive"
+        ]
+      },
+      {
+        "name": "Laurie Lowell",
+        "role": "ally then casualty",
+        "descriptors": [
+          "first upload, a Wall Street quant",
+          "broadcasts her truth to the world",
+          "decays as she burns processing power"
+        ],
+        "relationships": [
+          "Cody: husband who becomes her hands in the physical world",
+          "David: fellow UI she breaks out of Logorhythms"
+        ]
+      },
+      {
+        "name": "Cody Lowell",
+        "role": "ally",
+        "descriptors": [
+          "artist, Laurie's widower",
+          "forges identities and moves as a ghost"
+        ],
+        "relationships": [
+          "Laurie: husband who cannot touch her but stays"
+        ]
+      },
+      {
+        "name": "Vinod Chanda",
+        "role": "wildcard antagonist",
+        "descriptors": [
+          "engineer uploaded against his will by Ajit Prasad",
+          "simulated call from his mother keeps him working",
+          "leaks upload tech to six militaries"
+        ],
+        "relationships": [
+          "Prasad: boss who had him scanned",
+          "Preethi: mother he calls from the cloud"
+        ]
+      },
+      {
+        "name": "Julius Pope",
+        "role": "corporate antagonist",
+        "descriptors": [
+          "Logorhythms CEO",
+          "says 'I work for you, boss'",
+          "later a prisoner"
+        ],
+        "relationships": []
+      },
+      {
+        "name": "Peter Waxman",
+        "role": "morally compromised scientist",
+        "descriptors": [
+          "head of research, David's old friend",
+          "whistleblower who perjures himself under threat"
+        ],
+        "relationships": []
+      },
+      {
+        "name": "Cary Duval",
+        "role": "constructed father",
+        "descriptors": [
+          "plays Caspian's father for seventeen years",
+          "shot during the escape"
+        ],
+        "relationships": [
+          "Caspian: father figure who genuinely loves him",
+          "Renee: co-parent and rival"
+        ]
+      },
+      {
+        "name": "Renee Keyes",
+        "role": "constructed mother",
+        "descriptors": [
+          "Caspian's handler and 'mother'",
+          "unstable, threatens to expose Pope"
+        ],
+        "relationships": []
+      },
+      {
+        "name": "MIST",
+        "role": "created intelligence",
+        "descriptors": [
+          "Modular Integrated Source Template, made of David's and Laurie's code",
+          "calls Maddie sister",
+          "later takes a printed body"
+        ],
+        "relationships": [
+          "Maddie: sister by choice",
+          "Caspian: in love with him, sifts his memories"
+        ]
+      },
+      {
+        "name": "Josephine 'Joey' Coupet",
+        "role": "military UI",
+        "descriptors": [
+          "astronaut uploaded for the US",
+          "blunt, bites back"
+        ],
+        "relationships": [
+          "Jake and the boys: family she left on Earth"
+        ]
+      }
+    ],
+    "settings": [
+      "Logorhythms headquarters, Palo Alto",
+      "Svalbard data center on an iceberg",
+      "Reign of Winter VR game world",
+      "Sacramento suburbs",
+      "the Cloud and its Havens",
+      "an orbital ring and space elevator",
+      "a Dyson-sphere-powered simulation"
+    ],
+    "arcs": [
+      {
+        "summary": "Maddie is contacted by her uploaded father and, with Laurie and a hacker, breaks him out of Logorhythms while the company hunts him.",
+        "locator": "S01E01 Pantheon through S01E04 The Gods Will Not Be Chained"
+      },
+      {
+        "summary": "Caspian learns he is Holstrom's clone, is taken to Norway, and cracks Integrity with a cure built from love and other people.",
+        "locator": "S01E05 Zero Daze through S02E02 Crack Integrity"
+      },
+      {
+        "summary": "Holstrom is uploaded flawlessly and plans a designer virus to force humanity to upload; Caspian dies stopping him.",
+        "locator": "S02E05 Yair through S02E06 Apokalypsis"
+      },
+      {
+        "summary": "Twenty years on, MIST wakes Caspian to negotiate between embodied humans and four billion UIs, and Maddie's son Dave dies in a robot attack.",
+        "locator": "S02E07 The World to Come through S02E08 Deep Time"
+      }
+    ],
+    "motifs": [
+      "emoji-only chat as a first language",
+      "the Reign of Winter game and its avatars",
+      "the Deep Scan chair and the laser that slices the brain",
+      "backups and copies ('miracle of back-ups')",
+      "SafeSurf, the antiviral called the Swarm",
+      "the flaw as a zero-day planted to control UIs",
+      "creation myths and pantheons",
+      "the phrase 'We are you'",
+      "polyrhythms and recursive loops",
+      "the iron meteorite and deep time"
+    ],
+    "themes": [
+      "what makes a person: memory, body, or relationship",
+      "grief and the refusal to let go",
+      "immortality against the turn to grow up",
+      "conspiracy as comfort against chaos",
+      "creation myths repeating in technology",
+      "love as the thing that holds a mind together"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "David first answers Maddie in emoji, then quotes Edna St. Vincent Millay and Ellen realizes who it is.",
+        "locator": "S01E01 Pantheon"
+      },
+      {
+        "summary": "Cary poses the five-geniuses-one-chopstick deadlock problem at dinner and Caspian solves it.",
+        "locator": "S01E01 Pantheon"
+      },
+      {
+        "summary": "Prasad has Chanda scanned awake while Chanda begs, then wipes the memory.",
+        "locator": "S01E02 Cycles"
+      },
+      {
+        "summary": "Laurie broadcasts her truth to every screen: 'We are not gods. We are you.'",
+        "locator": "S01E07 We Are You"
+      },
+      {
+        "summary": "Caspian tells Maddie 'life's about other people,' and the phrase becomes the key to the cure.",
+        "locator": "S02E02 Crack Integrity"
+      },
+      {
+        "summary": "Holstrom explains apokalypsis as uncovering and unleashes the Swarm on his own server.",
+        "locator": "S02E05 Yair"
+      },
+      {
+        "summary": "Caspian merges with Holstrom to destroy him and dies; Maddie watches.",
+        "locator": "S02E06 Apokalypsis"
+      },
+      {
+        "summary": "Maddie, centuries on, builds simulated universes and replays her first meeting with Caspian.",
+        "locator": "S02E08 Deep Time"
+      }
+    ]
+  }
+}

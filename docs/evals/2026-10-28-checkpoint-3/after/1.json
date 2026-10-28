@@ -1,0 +1,283 @@
+{
+  "id": 1,
+  "title": "The Erogamer",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 855851,
+      "chapters": 195,
+      "from": "The Erogamer by Groon the Walker",
+      "to": "Moderation - Rule 8 - No Politics, Please",
+      "file": "The Erogamer - Groon the Walker.epub"
+    },
+    "posts": 0,
+    "visual": 0,
+    "wiki": null,
+    "extract": false,
+    "blocks": 6
+  },
+  "body": {
+    "known": "strong",
+    "summary": "An erotic Quest web serial by Groon the Walker about Cinderella 'Cindy' Sheen, a miserable obese Norville University sophomore who one Sunday afternoon sees a violet status screen listing BOD, LST, SED, FUK, PRV and ERO. The Erogame rebuilds her body and turns her life into an eroge, complete with stats, skills, quests, perks and improbability-driven sexual events. Over roughly a week she poses as an eldritch alien to seduce delivery driver Charles Adan, loses her virginity to him, starts a campus pro-sexuality movement, assembles a harem of twins, scientists and submissives, invents a sexually transmitted cure for aging and disease, and confronts what the Erogame is. ||A disguised 'God' tells her the story is about what she wants, that she cannot truly die, and that the Erogame will never leave her.||",
+    "characters": [
+      {
+        "name": "Cinderella 'Cindy' Sheen / Starry / Illyria / Starastera",
+        "role": "protagonist and viewpoint character",
+        "descriptors": [
+          "human girl remade as an Erogamer",
+          "she/her",
+          "conceptually editable hair, from short black to 'The Coals Relighted'",
+          "second-person 'you' and first-person narrator in different parts"
+        ],
+        "relationships": [
+          "Charles Adan: boyfriend, dom and later fiancé, anchored to her by a ritual",
+          "Winifred Sheen: mother, quest-giver and confidante",
+          "Tammi and Danni Arcadia: twin lovers who tickle her",
+          "Erin Penna / Copper Swallow: submissive she edges and disciplines",
+          "Blake Layton: first sexual partner, given a Good Ending"
+        ]
+      },
+      {
+        "name": "Charles Adan",
+        "role": "love interest, later dom and co-protagonist",
+        "descriptors": [
+          "delivery and technical-sales worker from Nevada, early twenties",
+          "he/him",
+          "Southern drawl, dress shirts, composed under pressure",
+          "gains 'sexy superpowers'"
+        ],
+        "relationships": [
+          "Cindy: courts her believing she is an alien, becomes her boyfriend, dom and fiancé",
+          "his inner 'predator': a second self he struggles to control",
+          "Grandpa Mark: dead grandfather a cosmic entity wears the face of",
+          "Sonia Turk: debates releasing the Ero Virus"
+        ]
+      },
+      {
+        "name": "Winifred 'Mom' Sheen",
+        "role": "mother and quest-giver",
+        "descriptors": [
+          "middle-aged widow, overweight",
+          "she/her",
+          "apron reading 'To Thine Own Thee Be True'"
+        ],
+        "relationships": [
+          "Cindy: fiercely supportive, then a fellow schemer who plays eroges to understand her",
+          "Joseph Greenwood: uncle who raped her as a child",
+          "Pedro de Carvalho: flirtatious guide in Canada"
+        ]
+      },
+      {
+        "name": "Blake Layton",
+        "role": "first sexual partner",
+        "descriptors": [
+          "ex-Mormon college student, 17",
+          "he/him",
+          "button-down church shirt"
+        ],
+        "relationships": [
+          "Cindy: seduced in a Walgreens, discovers a submissive side, given a Good Ending"
+        ]
+      },
+      {
+        "name": "Tammi Arcadia",
+        "role": "twin lover and tickler",
+        "descriptors": [
+          "freckled redhead, mid-twenties",
+          "she/her",
+          "the more careful and apologetic of the two"
+        ],
+        "relationships": [
+          "Danni: identical twin and lover, long estranged, reunited in Norville",
+          "Cindy: lover who ties her up"
+        ]
+      },
+      {
+        "name": "Danni Arcadia",
+        "role": "twin lover and 'Oregon Tickler'",
+        "descriptors": [
+          "freckled redhead, identical to Tammi",
+          "she/her",
+          "cheerful sadist, secretly submissive"
+        ],
+        "relationships": [
+          "Tammi: partner and captor",
+          "Cindy: captor, then tickle-assassin and ally"
+        ]
+      },
+      {
+        "name": "Sonia Turk",
+        "role": "biologist and harem candidate",
+        "descriptors": [
+          "professor in her late fifties, white streak in black hair",
+          "she/her",
+          "rejuvenated by the Ero Virus in a bath of ice"
+        ],
+        "relationships": [
+          "Cindy: co-inventor of the Ero Cure",
+          "Charles: debates rule versus act utilitarianism"
+        ]
+      },
+      {
+        "name": "Karinna Coral",
+        "role": "rival and possible nemesis",
+        "descriptors": [
+          "tall, bald, commanding",
+          "she/her",
+          "leads the Norville Natural Sexuality Movement"
+        ],
+        "relationships": [
+          "Cindy: molests her on live television, rival with benefits"
+        ]
+      },
+      {
+        "name": "Erin Penna / Copper Swallow",
+        "role": "submissive Faeblood",
+        "descriptors": [
+          "beautiful, masochistic, desperate for an owner",
+          "she/her",
+          "copper caged-bird earrings, tiny mask"
+        ],
+        "relationships": [
+          "Illyria: self-appointed Mistress who orders her to edge",
+          "Old Ned: wizard who rescues her",
+          "Charles: submits to him on a rooftop"
+        ]
+      },
+      {
+        "name": "Old Ned Stonefield",
+        "role": "retired wizard and mentor",
+        "descriptors": [
+          "old man in a leather duster and fedora",
+          "he/him",
+          "former supernatural social worker"
+        ],
+        "relationships": [
+          "Erin: rescuer and father figure",
+          "Pi Garrett: fellow retiree he trades war stories with"
+        ]
+      }
+    ],
+    "settings": [
+      "Norville, a small Central California college city",
+      "Norville University and its steam tunnels",
+      "the Norville Arms-Marriott and its penthouse",
+      "Walgreens, Goodwill and the Lightning Arcade",
+      "the Purring Kittens strip club",
+      "the Erogame's violet status screens and quest prompts",
+      "parallel Earths and a biology conference",
+      "Moncton, New Brunswick"
+    ],
+    "arcs": [
+      {
+        "summary": "Cindy awakens to the Erogame, spends her stat points and takes a quest for a vibrator to reach Level 2.",
+        "locator": "1.1.1 through 1.1.2"
+      },
+      {
+        "summary": "She meets Blake at Walgreens, strips for him and dominates him through an edging session.",
+        "locator": "1.2.1 through 2.0.4"
+      },
+      {
+        "summary": "She meets Charles, who gives her a ride and asks her out; their date runs from the arcade to the penthouse where he takes her virginity.",
+        "locator": "2.1.1 through 2.5.1"
+      },
+      {
+        "summary": "She accidentally founds a campus pro-sexuality march and is molested on television by Karinna Coral.",
+        "locator": "3.3.1 through 3.4.1"
+      },
+      {
+        "summary": "She works one shift at the Purring Kittens, is fired after refusing blackmail, and decides to help Felice.",
+        "locator": "4.0.3 through 4.2.5"
+      },
+      {
+        "summary": "She enters the Arcadia twins' hotel room and brokers a reconciliation between them; later she is handcuffed and tickled while Charles negotiates her release by phone.",
+        "locator": "4.4.1 through 4.4.4"
+      },
+      {
+        "summary": "Cindy reconciles the twins and discovers Danni's submissiveness, gives Blake a Good Ending, and hosts the biology-conference orgy that produces the Ero Virus cure.",
+        "locator": "5.0.5 through 5.11.6"
+      },
+      {
+        "summary": "Cindy is raped by the Masked Rapist, revealed as her mother's uncle, and then joins the Scoobies as Illyria.",
+        "locator": "6.3.1 through 6.5.f"
+      },
+      {
+        "summary": "Cindy confesses to Charles that she was never an alien; he walks Norville confronting his hypocrisy, and a ritual anchors his reality and grants him powers.",
+        "locator": "6.8.b through 7.13.g"
+      },
+      {
+        "summary": "Sonia takes the Ero Virus and is rejuvenated; Erin is disciplined and lectured; Charles dominates her into a rental; Winifred is exiled to Canada and learns she is inside a story.",
+        "locator": "7.14.e through 7.14.j"
+      },
+      {
+        "summary": "Cindy wakes and is told by her mother what 'God' said about her freedom and immortality; she keeps a traffic light red to prove death cannot be experienced.",
+        "locator": "7.16.1 through 7.16.3"
+      }
+    ],
+    "motifs": [
+      "The violet status screen and its Info submenus",
+      "Stat abbreviations (BOD, LST, SED, FUK, PRV, ERO)",
+      "Quest prompts with Accept: Y/N and a Failure line",
+      "Hair as a metaphysical object; aria recitations unlocking its subskills",
+      "High heels that confer parkour and speed",
+      "Tickling as a weapon and a fetish",
+      "Orgasm denial and edging as discipline",
+      "Charles's 'inner predator' and Cindy's badbrains",
+      "The Ero Virus and phemelanotide",
+      "Cellphones dying at plot-critical moments"
+    ],
+    "themes": [
+      "Self-transformation and the cost of getting the body and life you wanted",
+      "Consent, dubious consent and the erogame's logic",
+      "Free will versus a game system or author",
+      "Sanity versus normality",
+      "Transhumanism and the ethics of curing the body",
+      "Domination, submission and trust",
+      "Found family and harem as mutual care"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Cindy spends her first stat points on BOD and cries in front of the mirror at being 'not ugly'.",
+        "locator": "1.1.1: One Sunday Afternoon Like Any Other"
+      },
+      {
+        "summary": "She strips topless in a Walgreens and orders Blake to help with her bra.",
+        "locator": "1.2.1 [BL]: Things Found in a Walgreens"
+      },
+      {
+        "summary": "In the penthouse she begs Charles to stop as he takes her virginity, and he calls her Cinderella Sheen.",
+        "locator": "2.4.d [CA]: Her and His Temptation"
+      },
+      {
+        "summary": "The Arcadia twins are reconciled while Tammi is still handcuffed to the bed.",
+        "locator": "4.4.3 [TDA]: Relationship Counseling"
+      },
+      {
+        "summary": "Ticklish trivia: Starry guesses Tammi's freckle count correctly, then loses on the swallow question and is tickled.",
+        "locator": "4.4.4 [TDA,CS]: Off the Road"
+      },
+      {
+        "summary": "Cindy wakes handcuffed between the Arcadia twins and is paid $7000.",
+        "locator": "5.0.5 [TDA]: Denouement Scene"
+      },
+      {
+        "summary": "Cindy is tased and raped by the Masked Rapist, who is revealed as her mother's uncle.",
+        "locator": "6.3.3: Perfect Victim"
+      },
+      {
+        "summary": "Sonia lowers herself into the bathtub and takes the needle while Charles watches, thinking it feels like a funeral.",
+        "locator": "6.7.b [HRM]: Without Ceremony"
+      },
+      {
+        "summary": "Charles kneels in the ashes, picks the last flower and offers it to the Princess.",
+        "locator": "7.13.g [CA]: Charles Adan"
+      },
+      {
+        "summary": "Cindy walks a misty street, holds a lonely boy's hand, and keeps a traffic light red to prove death cannot be experienced.",
+        "locator": "7.16.3: Leaving Troubles Behind"
+      }
+    ]
+  }
+}

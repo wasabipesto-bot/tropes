@@ -1,0 +1,270 @@
+{
+  "id": 236,
+  "title": "Gideon the Ninth",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 15:02:24",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "On the dying planet of the Ninth House, the indentured orphan Gideon Nav trains with swords and dreams of escape, while the Reverend Daughter Harrowhark Nonagesimus prepares to answer the Emperor's summons. The Emperor has called the heirs of the nine Houses to Canaan House to compete to become Lyctors, immortal necromantic hands of the Emperor. Each heir must bring a cavalier, a sworn sword. Harrow, a bone necromancer, forces Gideon into the role. At Canaan House the pairs explore locked rooms, decipher a puzzle, and fight monsters and each other. ||Gideon dies to save Harrow during the fight with the resurrected Lyctor Cytherea, and Harrow absorbs her soul, becoming a Lyctor.||",
+    "characters": [
+      {
+        "name": "Gideon Nav",
+        "role": "protagonist and narrator",
+        "descriptors": [
+          "human, raised in the Ninth House",
+          "cavalier to Harrowhain",
+          "she/her",
+          "tall, red-haired, skull-painted face, two-handed sword"
+        ],
+        "relationships": [
+          "Harrowhain: lifelong enemy turned reluctant partner, bound by a cavalier's oath and a shared secret",
+          "the Ninth House: hates it and longs to leave"
+        ]
+      },
+      {
+        "name": "Harrowhain Nonagesimus",
+        "role": "deuteragonist, Gideon's necromancer",
+        "descriptors": [
+          "bone necromancer, Reverend Daughter of the Ninth",
+          "she/her",
+          "small, black-robed, face painted as a skull"
+        ],
+        "relationships": [
+          "Gideon: rival and only ally, tied by oath and by ||Gideon's sacrifice||",
+          "her parents: haunted by their deaths"
+        ]
+      },
+      {
+        "name": "Ianthe Tridentarius",
+        "role": "rival heir",
+        "descriptors": [
+          "Third House necromancer",
+          "she/her",
+          "golden-haired, one arm withered"
+        ],
+        "relationships": [
+          "Coronabeth: twin sister and cavalier",
+          "Harrow: uneasy ally"
+        ]
+      },
+      {
+        "name": "Coronabeth Tridentarius",
+        "role": "cavalier of the Third",
+        "descriptors": [
+          "Third House",
+          "she/her",
+          "beautiful, charismatic twin"
+        ],
+        "relationships": [
+          "Ianthe: twin, devoted and overshadowed"
+        ]
+      },
+      {
+        "name": "Palamedes Sextus",
+        "role": "rival heir and scholar",
+        "descriptors": [
+          "Sixth House necromancer",
+          "he/him",
+          "bookish, bespectacled"
+        ],
+        "relationships": [
+          "Camilla Hect: cavalier and closest companion",
+          "Dulcinea: correspondent and friend"
+        ]
+      },
+      {
+        "name": "Camilla Hect",
+        "role": "cavalier of the Sixth",
+        "descriptors": [
+          "Sixth House",
+          "she/her",
+          "quiet, deadly with knives"
+        ],
+        "relationships": [
+          "Palamedes: loyal cavalier"
+        ]
+      },
+      {
+        "name": "Dulcinea Septimus",
+        "role": "heir of the Seventh",
+        "descriptors": [
+          "Seventh House",
+          "she/her",
+          "frail, coughing, dressed in pink"
+        ],
+        "relationships": [
+          "Palamedes: pen pal",
+          "Protesilaus: her cavalier"
+        ]
+      },
+      {
+        "name": "Cytherea the First",
+        "role": "antagonist",
+        "descriptors": [
+          "Lyctor, centuries old",
+          "she/her",
+          "poses as Dulcinea"
+        ],
+        "relationships": [
+          "the Emperor: former Lyctor",
+          "the heirs: hunts them"
+        ]
+      },
+      {
+        "name": "Protesilaus Ebdoma",
+        "role": "cavalier of the Seventh",
+        "descriptors": [
+          "Seventh House",
+          "he/him",
+          "huge, silent"
+        ],
+        "relationships": [
+          "Dulcinea: sworn cavalier"
+        ]
+      },
+      {
+        "name": "Silas Octakiseron",
+        "role": "rival heir",
+        "descriptors": [
+          "Eighth House necromancer",
+          "he/him",
+          "pious, black-clad"
+        ],
+        "relationships": [
+          "Colum: cavalier and half-brother"
+        ]
+      },
+      {
+        "name": "Colum Asht",
+        "role": "cavalier of the Eighth",
+        "descriptors": [
+          "Eighth House",
+          "he/him"
+        ],
+        "relationships": [
+          "Silas: half-brother and cavalier"
+        ]
+      },
+      {
+        "name": "Abigail Pent",
+        "role": "heir of the Fifth",
+        "descriptors": [
+          "Fifth House necromancer",
+          "she/her"
+        ],
+        "relationships": [
+          "Magnus: husband and cavalier"
+        ]
+      },
+      {
+        "name": "Magnus Quinn",
+        "role": "cavalier of the Fifth",
+        "descriptors": [
+          "Fifth House",
+          "he/him"
+        ],
+        "relationships": [
+          "Abigail: husband"
+        ]
+      },
+      {
+        "name": "Jeannemary Chatur",
+        "role": "cavalier of the Fourth",
+        "descriptors": [
+          "Fourth House",
+          "she/her",
+          "young, eager"
+        ],
+        "relationships": [
+          "Isaac: necromancer and partner"
+        ]
+      },
+      {
+        "name": "Isaac Tettares",
+        "role": "heir of the Fourth",
+        "descriptors": [
+          "Fourth House necromancer",
+          "he/him",
+          "a child"
+        ],
+        "relationships": [
+          "Jeannemary: cavalier"
+        ]
+      }
+    ],
+    "settings": [
+      "the Ninth House, a dark planet of bone and tombs",
+      "Canaan House, the Emperor's ruined palace on a sea world",
+      "the nine Houses of the Empire",
+      "the Locked Tomb"
+    ],
+    "arcs": [
+      {
+        "summary": "Gideon tries to escape the Ninth House and is caught; Harrow forces her to serve as cavalier.",
+        "locator": "early chapters"
+      },
+      {
+        "summary": "The heirs arrive at Canaan House and begin exploring its locked rooms and testing the puzzle.",
+        "locator": "middle chapters"
+      },
+      {
+        "summary": "Heirs and cavaliers are killed one by one; suspicion falls on the survivors.",
+        "locator": "middle to late chapters"
+      },
+      {
+        "summary": "The truth of Dulcinea and Cytherea emerges, and the survivors fight her.",
+        "locator": "late chapters"
+      },
+      {
+        "summary": "||Gideon dies to save Harrow, who becomes a Lyctor.||",
+        "locator": "climax"
+      }
+    ],
+    "motifs": [
+      "skull face paint",
+      "bones and bone constructs",
+      "the two-handed sword",
+      "locked doors and keys",
+      "the number nine and the nine Houses",
+      "cavalier oaths and leashes",
+      "the sea around Canaan House",
+      "pornographic magazines hidden in the Ninth House"
+    ],
+    "themes": [
+      "loyalty and sworn service",
+      "class and indenture",
+      "grief and inheritance",
+      "necromancy as body horror",
+      "queer desire and rivalry",
+      "immortality and its cost"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Gideon's escape attempt is foiled and she is dragged back to serve Harrow.",
+        "locator": null
+      },
+      {
+        "summary": "Harrow and Gideon spar and negotiate the cavalier bargain.",
+        "locator": null
+      },
+      {
+        "summary": "The heirs gather at Canaan House and are introduced.",
+        "locator": null
+      },
+      {
+        "summary": "A locked room is opened and a monster attacks the heirs.",
+        "locator": null
+      },
+      {
+        "summary": "Bodies of heirs and cavaliers are found as the killings mount.",
+        "locator": null
+      },
+      {
+        "summary": "||Gideon fights Cytherea and dies so Harrow can become a Lyctor.||",
+        "locator": null
+      }
+    ]
+  }
+}

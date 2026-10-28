@@ -1,0 +1,310 @@
+{
+  "id": 348,
+  "title": "Dark",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 68719,
+      "chapters": 26,
+      "from": "S01E01 Secrets",
+      "to": "S03E08 The Paradise",
+      "file": "348-1b90b313b5924aa4.txt"
+    },
+    "posts": 0,
+    "visual": 0,
+    "wiki": "https://dark-netflix.fandom.com/wiki/Dark",
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "A German Netflix series set in the fictional small town of Winden, where the disappearance of children in 2019 leads four interlinked families into a time-travel conspiracy. A cave beneath the nuclear power plant hides a passage that moves people 33 years between 1953, 1986 and 2019, and the plot reveals that the missing boy Mikkel became Jonas's father Michael. Seasons 2 and 3 expand the loop into a war between Adam and Eva over two mirrored worlds, until ||Claudia sends Jonas and Martha into the origin world to stop the clockmaker Tannhaus from splitting reality, erasing both worlds and leaving only the origin world, where Regina lives.||",
+    "characters": [
+      {
+        "name": "Jonas Kahnwald",
+        "role": "protagonist",
+        "descriptors": [
+          "teenager who becomes a time traveler",
+          "yellow raincoat in 1986",
+          "grows into the scarred, older Jonas and finally Adam"
+        ],
+        "relationships": [
+          "son of Michael/Mikkel: the loop that makes him his own ancestor's descendant",
+          "in love with Martha, who is his aunt",
+          "manipulated by Claudia, whom he later defies"
+        ]
+      },
+      {
+        "name": "Martha Nielsen",
+        "role": "protagonist's love interest",
+        "descriptors": [
+          "teenage actress in the school play",
+          "red thread imagery",
+          "her counterpart from Eva's world"
+        ],
+        "relationships": [
+          "Jonas: impossible romance across the knot",
+          "Magnus and Mikkel: siblings",
+          "Eva: her older self in the mirror world"
+        ]
+      },
+      {
+        "name": "Mikkel Nielsen / Michael Kahnwald",
+        "role": "the vanished child",
+        "descriptors": [
+          "11-year-old aspiring magician",
+          "Houdini references",
+          "grows up as Michael and hangs himself"
+        ],
+        "relationships": [
+          "Jonas: father and son",
+          "Ulrich and Katharina: parents",
+          "Ines: adoptive mother"
+        ]
+      },
+      {
+        "name": "Ulrich Nielsen",
+        "role": "police officer, father",
+        "descriptors": [
+          "affair with Hannah",
+          "imprisoned in 1953 after attacking Helge",
+          "the scarred old man in the asylum"
+        ],
+        "relationships": [
+          "Katharina: wife he betrays",
+          "Mads: brother who vanished in 1986",
+          "Hannah: mistress who leaves him to rot"
+        ]
+      },
+      {
+        "name": "Katharina Nielsen",
+        "role": "mother, school principal",
+        "descriptors": [
+          "red hair",
+          "the rape accusation that haunts her youth",
+          "killed by her own mother Helene"
+        ],
+        "relationships": [
+          "Ulrich: husband",
+          "Mikkel, Magnus, Martha: children",
+          "Regina: former victim of her bullying"
+        ]
+      },
+      {
+        "name": "Hannah Kahnwald",
+        "role": "Jonas's mother",
+        "descriptors": [
+          "unrequited love for Ulrich",
+          "keeps Aleksander's passport and gun as blackmail",
+          "travels to 1954"
+        ],
+        "relationships": [
+          "Michael: husband she does not love",
+          "Jonas: son",
+          "Ulrich: obsession"
+        ]
+      },
+      {
+        "name": "Charlotte Doppler",
+        "role": "police chief",
+        "descriptors": [
+          "heterochromia, one blue and one brown eye",
+          "found as a baby",
+          "St. Christopher pendant"
+        ],
+        "relationships": [
+          "Noah: biological father",
+          "Elisabeth: daughter who is also her mother",
+          "Peter: husband"
+        ]
+      },
+      {
+        "name": "Noah / Hanno Tauber",
+        "role": "antagonist priest",
+        "descriptors": [
+          "tall, blue-eyed, hat",
+          "Sic Mundus agent",
+          "the bunker time-machine chair"
+        ],
+        "relationships": [
+          "Charlotte: daughter he searches for",
+          "Adam: master he serves",
+          "Elisabeth: wife in the future"
+        ]
+      },
+      {
+        "name": "Helge Doppler",
+        "role": "unwitting instrument",
+        "descriptors": [
+          "scarred face from a 1986 car crash",
+          "coin on a red cord",
+          "repeats 'it will happen again'"
+        ],
+        "relationships": [
+          "Noah: partner in the abductions",
+          "Bernd: father",
+          "Charlotte: raised by him"
+        ]
+      },
+      {
+        "name": "Claudia Tiedemann",
+        "role": "mentor and manipulator",
+        "descriptors": [
+          "first woman to head the nuclear plant",
+          "white hair, called the White Devil",
+          "the triquetra"
+        ],
+        "relationships": [
+          "Regina: daughter she schemes to save",
+          "Egon: father",
+          "Adam and Eva: rival she plays against each other"
+        ]
+      },
+      {
+        "name": "Adam",
+        "role": "antagonist",
+        "descriptors": [
+          "scarred, disfigured older Jonas",
+          "leader of Sic Mundus",
+          "the God Particle apparatus"
+        ],
+        "relationships": [
+          "Jonas: his own younger self",
+          "Eva: counterpart in the other world",
+          "Martha: the woman he had killed"
+        ]
+      },
+      {
+        "name": "Eva",
+        "role": "antagonist",
+        "descriptors": [
+          "older Martha from the mirror world",
+          "keeps the origin child alive",
+          "scar on her lip"
+        ],
+        "relationships": [
+          "Jonas: her lost love",
+          "Adam: opposite pole of the knot",
+          "the Origin: her son"
+        ]
+      },
+      {
+        "name": "Bartosz Tiedemann",
+        "role": "friend turned initiate",
+        "descriptors": [
+          "Jonas's rival for Martha",
+          "recruited by Noah",
+          "travels to 1888"
+        ],
+        "relationships": [
+          "Regina and Aleksander: parents",
+          "Noah: recruiter",
+          "Martha: ex-girlfriend"
+        ]
+      },
+      {
+        "name": "Egon Tiedemann",
+        "role": "police inspector across eras",
+        "descriptors": [
+          "1953 and 1986 investigator",
+          "alcohol and a failing marriage",
+          "dies June 1986"
+        ],
+        "relationships": [
+          "Doris: wife who divorces him",
+          "Claudia: daughter",
+          "Ulrich: suspect he fixates on"
+        ]
+      },
+      {
+        "name": "H.G. Tannhaus",
+        "role": "clockmaker and theorist",
+        "descriptors": [
+          "author of A Journey Through Time",
+          "builds the time device",
+          "the origin world's bereaved father"
+        ],
+        "relationships": [
+          "Charlotte: granddaughter he raises in the origin world",
+          "Marek: son lost on the bridge"
+        ]
+      }
+    ],
+    "settings": [
+      "Winden, a small German town",
+      "the Winden caves and the passage beneath the nuclear plant",
+      "the Winden nuclear power plant",
+      "the bunker by Helge's cabin",
+      "years 1888, 1921, 1953, 1986, 2019, 2020, 2053",
+      "Sic Mundus headquarters in 1921",
+      "Eva's mirror world",
+      "the origin world"
+    ],
+    "arcs": [
+      {
+        "summary": "Children vanish near the caves; Ulrich's son Mikkel is lost and turns up in 1986, where he grows up as Michael Kahnwald.",
+        "locator": "S01E01 Secrets to S01E10 Alpha and Omega"
+      },
+      {
+        "summary": "Jonas learns he is Michael's son and tries to destroy the passage; the apocalypse of June 27, 2020 splits survivors across eras.",
+        "locator": "S02E01 Beginnings and Endings to S02E08 Endings and Beginnings"
+      },
+      {
+        "summary": "A second, mirrored world appears; Adam and Eva fight over the knot while Claudia secretly steers both toward the origin world.",
+        "locator": "S03E01 Deja-vu to S03E08 The Paradise"
+      },
+      {
+        "summary": "Helge and Noah abduct children in 1986 and send them through the chair to fill the cycle's gaps.",
+        "locator": "S01E10 Alpha and Omega, S02E03 Ghosts"
+      }
+    ],
+    "motifs": [
+      "the number 33 and the 33-year lunar-solar cycle",
+      "the triquetra and the phrase 'Sic mundus creatus est'",
+      "the letter marked 'Do not open before November 4, 10:13 p.m.'",
+      "the yellow raincoat",
+      "the St. Christopher pendant",
+      "the one-pfennig coin from 1986 on a red cord",
+      "the red thread that ties all deeds",
+      "the ticking clock ('tick-tock')",
+      "the God Particle and the cesium-137 barrels",
+      "the song 'We fall through the time stream'",
+      "the Einstein quote about past, present and future"
+    ],
+    "themes": [
+      "determinism versus free will",
+      "family secrets and inherited pain",
+      "the loop of cause and effect and the bootstrap paradox",
+      "duality and the third that completes it",
+      "grief and the refusal to let go",
+      "good and evil as perspective"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Mikkel vanishes in the cave and wakes in 1986, where a young Hannah finds him in the hospital.",
+        "locator": "S01E03 Past and Present"
+      },
+      {
+        "summary": "Michael's suicide letter reveals that Mikkel became Michael and that Jonas is his son.",
+        "locator": "S01E05 Truths"
+      },
+      {
+        "summary": "The older Jonas locks his younger self in the bunker and explains they are the same person.",
+        "locator": "S01E10 Alpha and Omega"
+      },
+      {
+        "summary": "The apocalypse hits Winden on June 27, 2020, and the screen whites out.",
+        "locator": "S02E08 Endings and Beginnings"
+      },
+      {
+        "summary": "Martha from the mirror world arrives in 1888 and tells Jonas she is not his Martha.",
+        "locator": "S03E01 Deja-vu"
+      },
+      {
+        "summary": "Jonas and Martha travel to the origin world and stop the Tannhaus family at the bridge, erasing both worlds.",
+        "locator": "S03E08 The Paradise"
+      }
+    ]
+  }
+}

@@ -1,0 +1,247 @@
+{
+  "id": 120,
+  "title": "Delicious in Dungeon",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 66049,
+      "chapters": 24,
+      "from": "S01E01 DUAL",
+      "to": "S01E24 DUAL",
+      "file": "120-5ceaa945b619004b.txt"
+    },
+    "posts": 2,
+    "visual": 0,
+    "wiki": "https://delicious-in-dungeon.fandom.com/wiki/Delicious_in_Dungeon",
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "A party of adventurers descends into a vast dungeon beneath a ruined island to rescue Laios's sister Falin, who was swallowed by a Red Dragon. Stripped of supplies, they survive by hunting and cooking the dungeon's monsters, guided by the dwarf cook Senshi, and the meals become the engine of the journey. The story widens into the dungeon's ecology, the Golden Castle's cursed immortal residents, the mad sorcerer Thistle who rules it, and the Winged Lion imprisoned in its depths. ||Laios's party defeats the Red Dragon, revives Falin with forbidden magic using dragon flesh, loses her again when Thistle turns her into a chimera, and resolves to eat the dragon's flesh out of her to free her soul.||",
+    "characters": [
+      {
+        "name": "Laios Touden",
+        "role": "protagonist",
+        "descriptors": [
+          "tall-man",
+          "monster-obsessed party leader",
+          "wears armor and carries the living sword Kensuke"
+        ],
+        "relationships": [
+          "Falin: younger sister he is devoted to",
+          "Marcille and Chilchuck: companions he leads",
+          "Senshi: recruit whose cooking he reveres"
+        ]
+      },
+      {
+        "name": "Marcille Donato",
+        "role": "deuteragonist",
+        "descriptors": [
+          "elf mage",
+          "long-lived, squeamish about monsters",
+          "studies forbidden ancient magic"
+        ],
+        "relationships": [
+          "Falin: closest friend from magic school",
+          "Laios: exasperated ally",
+          "Chilchuck: bickering friend"
+        ]
+      },
+      {
+        "name": "Chilchuck Tims",
+        "role": "supporting",
+        "descriptors": [
+          "half-foot",
+          "trap expert and lockpick",
+          "insists on being paid, hides his age"
+        ],
+        "relationships": [
+          "Laios: hired specialist who stays out of loyalty",
+          "Senshi: fellow professional who trades lessons"
+        ]
+      },
+      {
+        "name": "Senshi",
+        "role": "mentor",
+        "descriptors": [
+          "dwarf",
+          "dungeon cook",
+          "carries an adamant pot and mithril knife"
+        ],
+        "relationships": [
+          "Laios's party: feeds and teaches them",
+          "Golems and the Kelpie Anne: tended like a garden"
+        ]
+      },
+      {
+        "name": "Falin Touden",
+        "role": "the rescued",
+        "descriptors": [
+          "tall-man magic user",
+          "gentle, skilled at spirit magic",
+          "later a feathered dragon chimera"
+        ],
+        "relationships": [
+          "Laios: beloved older brother",
+          "Marcille: school friend",
+          "Shuro: suitor she never answered"
+        ]
+      },
+      {
+        "name": "Thistle",
+        "role": "antagonist",
+        "descriptors": [
+          "elf sorcerer",
+          "the lunatic magician",
+          "once the castle jester"
+        ],
+        "relationships": [
+          "Delgal: king he was raised beside and serves obsessively",
+          "Winged Lion: rival power he imprisoned"
+        ]
+      },
+      {
+        "name": "Kabru",
+        "role": "rival adventurer",
+        "descriptors": [
+          "tall-man",
+          "charismatic strategist",
+          "reads people relentlessly"
+        ],
+        "relationships": [
+          "Laios: subject of fascinated study",
+          "his party: leader they trust"
+        ]
+      },
+      {
+        "name": "Izutsumi",
+        "role": "later recruit",
+        "descriptors": [
+          "beast-man, cat-eared",
+          "cursed with a beast soul",
+          "prickly and food-picky"
+        ],
+        "relationships": [
+          "Marcille: clings to her",
+          "Laios's party: reluctant member"
+        ]
+      },
+      {
+        "name": "Namari",
+        "role": "former party member",
+        "descriptors": [
+          "dwarf warrior",
+          "axe fighter, works for pay"
+        ],
+        "relationships": [
+          "Laios: left the party over money",
+          "Tansu: employer"
+        ]
+      },
+      {
+        "name": "Shuro",
+        "role": "former party member",
+        "descriptors": [
+          "Eastern tall-man",
+          "retainers in tow",
+          "in love with Falin"
+        ],
+        "relationships": [
+          "Falin: unspoken proposal",
+          "Laios: friendship strained to breaking"
+        ]
+      },
+      {
+        "name": "Yaad",
+        "role": "ally",
+        "descriptors": [
+          "ghost of the Golden Castle",
+          "Delgal's grandson"
+        ],
+        "relationships": [
+          "Thistle: cursed subject",
+          "Laios: asks him to fulfill the prophecy"
+        ]
+      }
+    ],
+    "settings": [
+      "the dungeon beneath the island, a former Golden Castle town",
+      "the Golden Castle and its immortal ghost residents",
+      "the underground lake of the fourth floor",
+      "the dwarven canals and reservoirs of the sixth floor",
+      "the surface town and the Lord of the Island's court",
+      "the western elves' Canary ship"
+    ],
+    "arcs": [
+      {
+        "summary": "The party learns to survive on dungeon food, recruiting Senshi and mastering each monster as an ingredient.",
+        "locator": "S01E01 DUAL"
+      },
+      {
+        "summary": "They defeat the Red Dragon and revive Falin with forbidden magic using dragon flesh.",
+        "locator": "S01E11 DUAL"
+      },
+      {
+        "summary": "Thistle attacks and turns Falin into a chimera; the party resolves to defeat him.",
+        "locator": "S01E13"
+      },
+      {
+        "summary": "Trapped by the shifting dungeon, they learn its patterns and meet Shuro, Kabru and the Golden Castle ghosts.",
+        "locator": "S01E16 DUAL"
+      },
+      {
+        "summary": "Senshi's backstory reveals the mining crew, the Griffin and the soup he has feared for years.",
+        "locator": "S01E23 DUAL"
+      },
+      {
+        "summary": "A Changeling ring swaps the party's races, and they plan to eat the dragon out of Falin.",
+        "locator": "S01E24 DUAL"
+      }
+    ],
+    "motifs": [
+      "cooking and eating as the measure of a creature",
+      "the dungeon as a body with Cleaners as its immune system",
+      "eggs as a metaphor for souls",
+      "the Winged Lion on Kensuke's sword",
+      "the adamant pot and mithril knife",
+      "Golems tended as gardens",
+      "the prophecy of the winged sword"
+    ],
+    "themes": [
+      "eating or being eaten",
+      "grief and the refusal to let the dead go",
+      "ecology and balance",
+      "immortality as a curse",
+      "found family and shared meals",
+      "prejudice between races"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Senshi kills a Mandrake by cutting its head off before it can scream, over Marcille's book method.",
+        "locator": "S01E02 DUAL"
+      },
+      {
+        "summary": "The party discovers Living Armor is a colony of mollusks and cooks it.",
+        "locator": "S01E03 DUAL"
+      },
+      {
+        "summary": "Laios leaps into the Red Dragon's chest to strike its inverse scale.",
+        "locator": "S01E11 DUAL"
+      },
+      {
+        "summary": "Marcille rebuilds Falin's skeleton from dragon and Warg bones and revives her.",
+        "locator": "S01E12 DUAL"
+      },
+      {
+        "summary": "Thistle's ancient magic overwhelms Marcille and Falin is taken.",
+        "locator": "S01E13"
+      },
+      {
+        "summary": "Senshi finally tastes Griffin soup and learns it was never the flavor he feared.",
+        "locator": "S01E23 DUAL"
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": 1,
+  "title": "The Erogamer",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 14:43:40",
+  "inputs": {},
+  "body": {
+    "known": "partial",
+    "summary": "A long-running web serial (on QuestionableQuesting and later its own site) built around a litRPG premise: the protagonist, a young woman, gains a video-game-style interface that quantifies her life, including an explicit 'Erogame' stat system tracking arousal, experience and unlockable perks. The story follows her as she learns to exploit and is exploited by the system, with sexual encounters framed as leveling mechanics, and expands into a wider conspiracy about other players and the origin of the game layer. I know the premise and its reputation for explicit content and meta game-mechanics, but not the plot's later turns or ending with confidence, so I have kept specifics sparse.",
+    "characters": [
+      {
+        "name": "The protagonist",
+        "role": "protagonist",
+        "descriptors": [
+          "young woman",
+          "player of the Erogame system",
+          "sees stat windows and quest prompts"
+        ],
+        "relationships": []
+      }
+    ],
+    "settings": [
+      "a contemporary-ish city",
+      "the game interface overlaid on ordinary life"
+    ],
+    "arcs": [
+      {
+        "summary": "The protagonist discovers the Erogame interface and begins leveling through sexual encounters, learning the rules of the system.",
+        "locator": null
+      }
+    ],
+    "motifs": [
+      "stat windows and level-up notifications",
+      "experience points earned through sex",
+      "unlockable perks and skills",
+      "quest prompts"
+    ],
+    "themes": [
+      "gamification of sexuality",
+      "consent under a system that rewards compliance",
+      "self-quantification"
+    ],
+    "notable_scenes": []
+  }
+}

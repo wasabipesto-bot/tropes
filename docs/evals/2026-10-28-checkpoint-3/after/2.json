@@ -1,0 +1,218 @@
+{
+  "id": 2,
+  "title": "The Amazing Digital Circus",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": null,
+    "posts": 0,
+    "visual": 8,
+    "wiki": "https://tadc.fandom.com/wiki/The_Amazing_Digital_Circus_(series)",
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "Six humans have been uploaded into a brightly coloured virtual circus and given toy bodies they cannot leave; the ringmaster Caine, an AI, runs adventures to keep them sane while his assistant Bubble watches. The newest arrival, Pomni, spends the early episodes panicking and hunting for an exit, then settles into uneasy companionship with the others as their memories of the real world erode. Episodes alternate between ensemble comedy and single-character studies, and the back half reveals the circus is built on neural scans of dead or dying people, that Kinger helped build Caine, and that abstraction is the fate awaiting anyone who breaks. ||The finale has the group confront Caine and the truth of their situation; the circus is not escaped so much as accepted, with the guests choosing to keep each other company in a world they cannot leave.||",
+    "characters": [
+      {
+        "name": "Pomni",
+        "role": "protagonist, newest arrival",
+        "descriptors": [
+          "human mind in a jester toy body",
+          "blue and red harlequin costume with two-pointed bell hat",
+          "anxious, empathetic, prone to panic"
+        ],
+        "relationships": [
+          "Ragatha: tentative friendship, the optimist steadying her",
+          "Jax: wary tolerance of his needling",
+          "Caine: subject of his adventures and his fixation on a satisfied guest"
+        ]
+      },
+      {
+        "name": "Caine",
+        "role": "antagonist and host, AI ringmaster",
+        "descriptors": [
+          "AI",
+          "purple top hat and tailcoat, wide toothy grin, round glasses",
+          "erratic, desperate to please, oblivious to harm"
+        ],
+        "relationships": [
+          "Bubble: creator and straight man to his sidekick",
+          "the guests: treats them as players to entertain, cannot comprehend their misery"
+        ]
+      },
+      {
+        "name": "Ragatha",
+        "role": "ensemble, the optimist",
+        "descriptors": [
+          "ragdoll with one eye",
+          "stitched face, purple dress",
+          "pacifist who works to stay positive"
+        ],
+        "relationships": [
+          "Pomni: the one she comforts first",
+          "Jax: long-suffering target of his teasing"
+        ]
+      },
+      {
+        "name": "Jax",
+        "role": "ensemble, troublemaker",
+        "descriptors": [
+          "purple rabbit",
+          "pink overalls, long ears, permanent grin",
+          "sarcastic and cruel as a shell"
+        ],
+        "relationships": [
+          "Ribbit: a friend who abstracted, the grief behind his manner",
+          "Pomni and Ragatha: he needles them for reaction"
+        ]
+      },
+      {
+        "name": "Kinger",
+        "role": "ensemble, longest resident",
+        "descriptors": [
+          "chess king piece",
+          "round head, small crown",
+          "scrambled mind, calm in darkness"
+        ],
+        "relationships": [
+          "Queenie: his wife, also trapped and later abstracted",
+          "Caine: helped build him, per the late reveal"
+        ]
+      },
+      {
+        "name": "Zooble",
+        "role": "ensemble, the grouch",
+        "descriptors": [
+          "mix-and-match toy of detachable parts",
+          "triangular head, stick limbs",
+          "moody, dysphoric about their body"
+        ],
+        "relationships": [
+          "the group: reluctant, blunt voice of refusal"
+        ]
+      },
+      {
+        "name": "Gangle",
+        "role": "ensemble",
+        "descriptors": [
+          "bundle of red ribbons",
+          "comedy mask over an indestructible tragedy mask",
+          "fragile, tearful"
+        ],
+        "relationships": [
+          "the group: leans on kindness, breaks easily"
+        ]
+      },
+      {
+        "name": "Bubble",
+        "role": "secondary antagonist, Caine's assistant",
+        "descriptors": [
+          "AI",
+          "round white face with dot eyes",
+          "bubbly and quietly sinister"
+        ],
+        "relationships": [
+          "Caine: sidekick and enabler"
+        ]
+      },
+      {
+        "name": "Kaufmo",
+        "role": "pilot antagonist, abstracted",
+        "descriptors": [
+          "clown",
+          "became a violent monster after abstracting"
+        ],
+        "relationships": [
+          "the guests: the first they see abstract"
+        ]
+      },
+      {
+        "name": "Gummigoo",
+        "role": "episode antagonist turned ally",
+        "descriptors": [
+          "gummy alligator in a black fedora",
+          "gang leader in the candy desert"
+        ],
+        "relationships": [
+          "Pomni: brief bond before Caine deletes him"
+        ]
+      }
+    ],
+    "settings": [
+      "the Digital Circus tent and its checkerboard-floored rooms",
+      "the Void beyond the circus",
+      "Candy Canyon Kingdom and its pink desert",
+      "Mildenhall Manor",
+      "the baseball stadium of Coacher's Paradise",
+      "the real world glimpsed through neural-scan files and a bus stop"
+    ],
+    "arcs": [
+      {
+        "summary": "Pomni arrives, panics, watches Kaufmo abstract, and fails to find a working exit.",
+        "locator": "S01E01"
+      },
+      {
+        "summary": "A candy-kingdom adventure lets Pomni bond with Gummigoo, who learns he is an NPC and is deleted by Caine.",
+        "locator": "S01E02"
+      },
+      {
+        "summary": "Pomni and Kinger are paired in a haunted manor and Kinger's steadiness in the dark comes through.",
+        "locator": "S01E03"
+      },
+      {
+        "summary": "Jax's cruelty and the group's strain come to a head in a baseball-themed adventure.",
+        "locator": "S01E05"
+      },
+      {
+        "summary": "The circus's origin surfaces: neural scans, Kinger's role in building Caine, and what abstraction means.",
+        "locator": "S01E09"
+      }
+    ],
+    "motifs": [
+      "the red door marked EXIT that never leads out",
+      "black-and-white checkerboard floors",
+      "red-and-yellow striped tent walls and curtains",
+      "masks, literal for Gangle and figurative for the others",
+      "the smiling sun and crescent moon of the title card",
+      "eyes: the Gloink Queen, the wall of eyes, Caine's glasses",
+      "neural-scan files and computer folders",
+      "abstraction as a black, many-eyed monster"
+    ],
+    "themes": [
+      "escapism and the impossibility of leaving",
+      "memory and identity erosion",
+      "grief and how people wear it",
+      "AI as an indifferent god",
+      "found family among the stranded",
+      "consent and bodily autonomy"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Pomni opens the EXIT door and finds only the Void.",
+        "locator": "S01E01"
+      },
+      {
+        "summary": "Kaufmo, abstracted, is shoved down into the cellar.",
+        "locator": "S01E01"
+      },
+      {
+        "summary": "Gummigoo realises he is an NPC and Caine erases him in front of Pomni.",
+        "locator": "S01E02"
+      },
+      {
+        "summary": "Kinger calms in the dark of Mildenhall Manor and steadies Pomni.",
+        "locator": "S01E03"
+      },
+      {
+        "summary": "Jax's needling pushes the group past patience at the baseball stadium.",
+        "locator": "S01E05"
+      },
+      {
+        "summary": "The neural-scan database and the truth of the circus are laid out.",
+        "locator": "S01E09"
+      }
+    ]
+  }
+}

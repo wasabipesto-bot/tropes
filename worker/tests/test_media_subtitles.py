@@ -82,3 +82,22 @@ def test_opensubtitles_search_and_download(monkeypatch):
         or b'"file_id": 2' in calls[2].read()
         or b'"file_id":2' in calls[2].read()
     )
+
+
+def test_typesetting_and_drawings_are_not_dialogue():
+    from tropes_worker.media.subtitles import parse
+
+    ass = """[Script Info]
+ScriptType: v4.00+
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:01.00,0:00:02.00,Default,,0,0,0,,Well then, let's go.
+Dialogue: 0,0:00:02.00,0:00:02.04,Sign-Title,,0,0,0,,AN AGELESS ELEGY
+Dialogue: 0,0:00:02.04,0:00:02.08,Sign-Title,,0,0,0,,AN AGELESS ELEGY
+Dialogue: 1,0:00:02.00,0:00:02.04,Default,,0,0,0,,{\\p1}m -437.5 42.33 b -437.67 42.5 -437.87 42.5 -438.09 42.33{\\p0}
+Dialogue: 0,0:00:03.00,0:00:04.00,Default,,0,0,0,,{\\pos(10,20)}What a reluctant face. m -1 2 b 3 4 5 6
+Dialogue: 0,0:00:03.00,0:00:04.00,Default,,0,0,0,,What a reluctant face.
+"""
+    cues = parse(ass, "ass")
+    assert [c.text for c in cues] == ["Well then, let's go.", "What a reluctant face."]

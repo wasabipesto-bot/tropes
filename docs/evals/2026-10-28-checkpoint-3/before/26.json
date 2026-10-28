@@ -1,0 +1,229 @@
+{
+  "id": 26,
+  "title": "Station Eleven",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 14:47:48",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "A flu pandemic wipes out most of humanity; the series moves between the first days of collapse and a travelling Shakespeare troupe called the Travelling Symphony, twenty years on, that performs for scattered settlements under the motto 'Survival is insufficient.' The through-line is a comic book, Station Eleven, drawn by Miranda Carroll, which passes between strangers and becomes a talisman. In the present-day thread, young Kirsten Raymonde, a child actor when the outbreak hit, carries a copy and hunts the Prophet, a cult leader who was once a boy named Tyler Leander and who claims the flu was divine. The two timelines converge at a Severn City airport community and at a final performance where the Prophet is unmasked and the separated threads of the story are reconciled. ||The ending is hopeful: the Symphony and the airport settlement reunite, Tyler's hold breaks, and Kirsten finds evidence that Miranda's second volume exists.||",
+    "characters": [
+      {
+        "name": "Kirsten Raymonde",
+        "role": "protagonist",
+        "descriptors": [
+          "human survivor",
+          "child actor turned knife-carrying scout",
+          "carries a dog-eared comic",
+          "tattooed 'Survival is insufficient'"
+        ],
+        "relationships": [
+          "with Arthur Leander: brief childhood encounter on the night of his death, remembered as a formative loss",
+          "with the Travelling Symphony: family and home, bound by performance",
+          "with Tyler: hunter and hunted, mirror images of pandemic childhood"
+        ]
+      },
+      {
+        "name": "Arthur Leander",
+        "role": "pivot character",
+        "descriptors": [
+          "aging Hollywood actor",
+          "dies on stage playing King Lear",
+          "three marriages"
+        ],
+        "relationships": [
+          "with Miranda: first wife, distant marriage, she draws the comic he never reads",
+          "with Clark: old friend from a failed relationship",
+          "with Tyler: father who abandons him",
+          "with Kirsten: the child actor beside him when he dies"
+        ]
+      },
+      {
+        "name": "Miranda Carroll",
+        "role": "artist and origin of the talisman",
+        "descriptors": [
+          "graphic novelist",
+          "obsessive draftsman",
+          "isolated"
+        ],
+        "relationships": [
+          "with Arthur: estranged husband",
+          "with the comic Station Eleven: creator, its world her private refuge"
+        ]
+      },
+      {
+        "name": "Clark Thompson",
+        "role": "keeper of the airport community",
+        "descriptors": [
+          "former corporate consultant",
+          "archivist",
+          "gay, once Arthur's lover"
+        ],
+        "relationships": [
+          "with Arthur: old flame and friend",
+          "with the Severn City airport survivors: de facto leader and curator of a museum of the old world"
+        ]
+      },
+      {
+        "name": "Tyler Leander / the Prophet",
+        "role": "antagonist",
+        "descriptors": [
+          "charismatic cult leader",
+          "raised on the road by a religious zealot",
+          "claims the flu was a cleansing"
+        ],
+        "relationships": [
+          "with Arthur: absent father he mythologises",
+          "with Kirsten: rival reader of Station Eleven, sees himself in its villain",
+          "with his followers: messianic hold"
+        ]
+      },
+      {
+        "name": "Jeevan Chaudhary",
+        "role": "survivor and caretaker",
+        "descriptors": [
+          "former paparazzo turned paramedic",
+          "anxious, bookish"
+        ],
+        "relationships": [
+          "with Arthur: tries to save him on stage",
+          "with Kirsten: shelters her through the first winter"
+        ]
+      },
+      {
+        "name": "Frank Chaudhary",
+        "role": "Jeevan's brother",
+        "descriptors": [
+          "disabled journalist",
+          "reclusive",
+          "writes a book on the collapse"
+        ],
+        "relationships": [
+          "with Jeevan: sibling bond strained by dependence"
+        ]
+      },
+      {
+        "name": "Sarah",
+        "role": "Symphony member",
+        "descriptors": [
+          "older actor",
+          "plays Lear",
+          "declining health"
+        ],
+        "relationships": [
+          "with Kirsten: mentor figure in the troupe"
+        ]
+      },
+      {
+        "name": "Alex",
+        "role": "young Symphony actor",
+        "descriptors": [
+          "born after the flu",
+          "restless",
+          "drawn to the Prophet"
+        ],
+        "relationships": [
+          "with Kirsten: protégée and source of tension",
+          "with the Prophet: seduced by his message"
+        ]
+      },
+      {
+        "name": "Elizabeth",
+        "role": "airport survivor",
+        "descriptors": [
+          "former journalist",
+          "Tyler's mother",
+          "religious convert"
+        ],
+        "relationships": [
+          "with Arthur: ex-wife",
+          "with Tyler: mother who follows his cult"
+        ]
+      },
+      {
+        "name": "Dieter",
+        "role": "Symphony musician",
+        "descriptors": [
+          "cellist",
+          "gentle, funny"
+        ],
+        "relationships": [
+          "with Kirsten: close friend in the troupe"
+        ]
+      }
+    ],
+    "settings": [
+      "Toronto and Severn City in the first days of the Georgia flu",
+      "the Severn City airport, sealed and turned into a settlement",
+      "the Travelling Symphony's circuit of settlements twenty years later",
+      "the fictional comic-book world of Station Eleven (an astronaut adrift)"
+    ],
+    "arcs": [
+      {
+        "summary": "Arthur Leander dies of a heart attack on stage as the flu begins; Jeevan tries to revive him and then shelters Kirsten through the collapse.",
+        "locator": "episodes 1-3"
+      },
+      {
+        "summary": "Miranda finishes her comic and dies; the comic passes to Kirsten, who carries it for twenty years.",
+        "locator": null
+      },
+      {
+        "summary": "Clark builds the airport into a community and a museum of the lost world.",
+        "locator": null
+      },
+      {
+        "summary": "Kirsten and the Symphony confront the Prophet's cult; Alex is drawn toward him and the troupe fractures.",
+        "locator": null
+      },
+      {
+        "summary": "The threads converge at the airport; ||Tyler is exposed and the Symphony performs for the settlement||.",
+        "locator": "final episodes"
+      }
+    ],
+    "motifs": [
+      "the comic book Station Eleven and its astronaut",
+      "the phrase 'Survival is insufficient'",
+      "Shakespeare performed after the collapse",
+      "the museum of mundane pre-collapse objects at the airport",
+      "the Georgia flu and its swift spread",
+      "the knife Kirsten carries",
+      "letters and messages passed between strangers",
+      "the Lear production as a frame"
+    ],
+    "themes": [
+      "art and performance as what makes survival worthwhile",
+      "chance connections between strangers",
+      "loss of the old world and memory of it",
+      "fathers and absent parents",
+      "faith and cult authority",
+      "childhood interrupted"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Arthur collapses mid-Lear; Jeevan performs CPR as Kirsten watches.",
+        "locator": "episode 1"
+      },
+      {
+        "summary": "Miranda's comic is completed and its pages shown.",
+        "locator": null
+      },
+      {
+        "summary": "The Symphony performs for a settlement under the 'Survival is insufficient' banner.",
+        "locator": null
+      },
+      {
+        "summary": "Kirsten and the Prophet meet and recognise each other's copies of the comic.",
+        "locator": null
+      },
+      {
+        "summary": "Clark's airport museum of everyday objects is toured.",
+        "locator": null
+      },
+      {
+        "summary": "The final performance at the airport reunites the separated groups.",
+        "locator": "final episode"
+      }
+    ]
+  }
+}

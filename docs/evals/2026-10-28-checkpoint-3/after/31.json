@@ -1,0 +1,278 @@
+{
+  "id": 31,
+  "title": "To Be Hero X",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 52897,
+      "chapters": 24,
+      "from": "S01E01",
+      "to": "S01E24 TBA",
+      "file": "31-3397434ce7331f32.txt"
+    },
+    "posts": 2,
+    "visual": 0,
+    "wiki": "https://to-be-hero-x.fandom.com/wiki/To_Be_Hero_X_(Donghua)",
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "In a city where public Trust and Fear physically transform people into heroes or monsters, the Hero Affairs Commission ranks heroes and awards the title X to the most believed. The series is an anthology of linked arcs: Lin Ling, an ad writer, is forced to impersonate the dead perfect hero Nice and rises to the top ten; the firefighter Firm Man confronts the girl he once saved; the E-Soul impersonator Yang Cheng duels the original; the orphan Cyan becomes a luck-bringing idol; the inventor Loli and her father Ghostblade collide with the Spotlight Organization's Fear experiments; and the masked X, a clock-punching office worker, is targeted by the Commission itself. ||The finale reveals X's identity, the truth that Zero was never destroyed, and Lin Ling's decision to defy fate.||",
+    "characters": [
+      {
+        "name": "Lin Ling",
+        "role": "protagonist of the first arc, later the Commoner hero",
+        "descriptors": [
+          "ordinary human",
+          "ad copywriter turned hero",
+          "Nice's borrowed face and eye color"
+        ],
+        "relationships": [
+          "Moon: contractual fake romance that becomes real affection",
+          "Miss J: handler who blackmails him into the role",
+          "Enlighter/God Eye: investigator who exposes him"
+        ]
+      },
+      {
+        "name": "Moon",
+        "role": "hero and reluctant girlfriend",
+        "descriptors": [
+          "teleporter",
+          "travel blogger",
+          "goddess persona she despises"
+        ],
+        "relationships": [
+          "Lin Ling: fellow captive in the locked floor who warms to him",
+          "Miss J: contract holder"
+        ]
+      },
+      {
+        "name": "Miss J",
+        "role": "Treeman Corporation handler",
+        "descriptors": [
+          "sharp-suited manager",
+          "brand protector"
+        ],
+        "relationships": [
+          "Lin Ling: employer who stages his persona",
+          "Mr. Shand: subordinate"
+        ]
+      },
+      {
+        "name": "Enlighter / God Eye",
+        "role": "antagonist investigator",
+        "descriptors": [
+          "Eye of Truth",
+          "later masked Fear-user"
+        ],
+        "relationships": [
+          "Lin Ling: nemesis who hunts the fake Nice",
+          "Spotlight Organization: recruit"
+        ]
+      },
+      {
+        "name": "Firm Man",
+        "role": "top-ten firefighter hero",
+        "descriptors": [
+          "cannot bend or kneel",
+          "red stole",
+          "diamond statue"
+        ],
+        "relationships": [
+          "Wolf Girl: the child he saved, now his destroyer"
+        ]
+      },
+      {
+        "name": "Yang Cheng",
+        "role": "protagonist of the E-Soul arc",
+        "descriptors": [
+          "children's theater actor",
+          "zero Trust Value orphan",
+          "electric gloves"
+        ],
+        "relationships": [
+          "Xia Qing: classmate he loves",
+          "Shang Chao: sponsor and friend",
+          "Old E-Soul: idol and rival"
+        ]
+      },
+      {
+        "name": "Cyan",
+        "role": "luck hero and singer",
+        "descriptors": [
+          "green hair",
+          "Sacred Maiden",
+          "guitar"
+        ],
+        "relationships": [
+          "Luo: orphanage friend who taught her music",
+          "the Dean: exploiter",
+          "Ken of DOS: manager"
+        ]
+      },
+      {
+        "name": "Ghostblade",
+        "role": "top-five assassin hero",
+        "descriptors": [
+          "mute by choice",
+          "butcher's knife",
+          "whisper flowers"
+        ],
+        "relationships": [
+          "Wang Nuonuo: daughter he secretly watches",
+          "Loli: the bad influence he fixates on",
+          "Zhang Lan: late wife"
+        ]
+      },
+      {
+        "name": "Loli",
+        "role": "teen inventor hero",
+        "descriptors": [
+          "pink hair",
+          "homemade armor",
+          "kowtow crossbow"
+        ],
+        "relationships": [
+          "Wang Nuonuo: best friend and lab partner",
+          "Professor Luo: father who forbids heroics"
+        ]
+      },
+      {
+        "name": "Queen",
+        "role": "ambitious young hero",
+        "descriptors": [
+          "graduated at fourteen",
+          "rule-setting power"
+        ],
+        "relationships": [
+          "Bowa: rival for X",
+          "Little Johnny: friend"
+        ]
+      },
+      {
+        "name": "Little Johnny",
+        "role": "FOMO hero",
+        "descriptors": [
+          "cheerful talker",
+          "controls creatures",
+          "Big Johnny's keeper"
+        ],
+        "relationships": [
+          "Big Johnny: adopted alien beast he calls his son",
+          "Ghostblade: escort partner he chatters at"
+        ]
+      },
+      {
+        "name": "X",
+        "role": "reigning top hero",
+        "descriptors": [
+          "masked",
+          "office worker",
+          "clock-punching"
+        ],
+        "relationships": [
+          "the Commission: hunted by it",
+          "Ahu: fellow fugitive"
+        ]
+      },
+      {
+        "name": "Ahu",
+        "role": "dog hero",
+        "descriptors": [
+          "circus dog",
+          "collar",
+          "throwing knives"
+        ],
+        "relationships": [
+          "Xin Ya: owner who believes in him"
+        ]
+      }
+    ],
+    "settings": [
+      "Hero Tower, floors assigned by rank",
+      "Hero Affairs Commission",
+      "Treeman Corporation, MG, DOS, FOMO",
+      "Glimmer Lab and the alien spaceship wreckage",
+      "District 70 orphanage",
+      "Hero Avenue and its statues"
+    ],
+    "arcs": [
+      {
+        "summary": "Lin Ling is coerced into replacing the suicided Nice, survives a live exposé, marries Moon on paper, and finally confesses his real identity to the public.",
+        "locator": "S01E01"
+      },
+      {
+        "summary": "Firm Man's statue is threatened by Wolf Girl, the girl he once rescued, and he chooses to let the statue fall.",
+        "locator": "S01E03"
+      },
+      {
+        "summary": "Yang Cheng's New E-Soul rises, is framed for staging a kidnapping, and duels the original E-Soul.",
+        "locator": "S01E05"
+      },
+      {
+        "summary": "Cyan's luck is exposed as bought with the plane crash's dead, and she recovers her reputation through the cabin recording.",
+        "locator": "S01E08"
+      },
+      {
+        "summary": "Ghostblade stalks his estranged daughter, then escorts the Glimmer Lab mission where Fear leaks and Nice attacks.",
+        "locator": "S01E15"
+      },
+      {
+        "summary": "The Commission moves to assassinate X before the tournament; Ahu and X flee together and X reveals Zero's buried history.",
+        "locator": "S01E24"
+      }
+    ],
+    "motifs": [
+      "Trust Value read on the wrist",
+      "Fear as a leaked substance and amplifier",
+      "Hero Tower floors as rank",
+      "statues and monuments",
+      "the red stole",
+      "whisper flowers",
+      "Lucky Cyan's song 'My Color'",
+      "the X title and crown",
+      "clocking out on time",
+      "spotlight imagery"
+    ],
+    "themes": [
+      "belief manufacturing heroes",
+      "fame as packaging versus self",
+      "parental love and estrangement",
+      "fear versus trust as power sources",
+      "manipulation by agencies and the Commission",
+      "luck and its cost"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Nice leaps from a rooftop mid-commercial and Lin Ling is drafted to replace him.",
+        "locator": "S01E01"
+      },
+      {
+        "summary": "On live TV Lin Ling answers Enlighter's lie-detector question by calling Moon his goddess.",
+        "locator": "S01E01"
+      },
+      {
+        "summary": "Wolf Girl forces Firm Man to choose between the statue and the child.",
+        "locator": "S01E03"
+      },
+      {
+        "summary": "Yang Cheng and Old E-Soul fight as supporters' Trust shifts mid-battle.",
+        "locator": "S01E07"
+      },
+      {
+        "summary": "The cabin recording reveals the crash victims' wishes created Cyan's luck.",
+        "locator": "S01E10"
+      },
+      {
+        "summary": "Ghostblade's diary entries about learning his daughter's favorite flower and song.",
+        "locator": "S01E16"
+      },
+      {
+        "summary": "X deflects Dragon Boy into the river before the crowd.",
+        "locator": "S01E22"
+      }
+    ]
+  }
+}

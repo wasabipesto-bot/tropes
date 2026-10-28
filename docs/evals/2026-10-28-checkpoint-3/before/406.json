@@ -1,0 +1,246 @@
+{
+  "id": 406,
+  "title": "The Matrix",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 15:11:57",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "A hacker called Neo, who has spent years sensing that something is wrong with the world, is contacted by the crew of a hovercraft and offered a choice between two pills. He wakes outside the Matrix, a simulation built by machines to farm human bodies for power, and joins the resistance as the man they believe will end the war. Training, betrayal and a rescue mission follow; ||after Neo is shot dead by an agent, Trinity's confession of love brings him back, and he sees the code of the world and destroys the agent pursuing them.||",
+    "characters": [
+      {
+        "name": "Neo / Thomas Anderson",
+        "role": "protagonist",
+        "descriptors": [
+          "human, born inside the Matrix",
+          "hacker alias Neo",
+          "he/him",
+          "pale, gaunt, long black coat, small round sunglasses"
+        ],
+        "relationships": [
+          "Morpheus: recruit and mentor, Morpheus believes in him before he believes in himself",
+          "Trinity: fellow crew member who first makes contact and later loves him",
+          "Agent Smith: hunter and quarry"
+        ]
+      },
+      {
+        "name": "Morpheus",
+        "role": "mentor",
+        "descriptors": [
+          "human, freed from the Matrix",
+          "captain of the Nebuchadnezzar",
+          "he/him",
+          "bald, dark skin, round sunglasses, long leather coat"
+        ],
+        "relationships": [
+          "Neo: treats him as the prophesied One and risks everything for him",
+          "Trinity: old comrade who questions his certainty",
+          "Agent Smith: captive and interrogator"
+        ]
+      },
+      {
+        "name": "Trinity",
+        "role": "ally and love interest",
+        "descriptors": [
+          "human, freed from the Matrix",
+          "first mate of the Nebuchadnezzar",
+          "she/her",
+          "short black hair, black leather, sunglasses"
+        ],
+        "relationships": [
+          "Neo: she makes first contact and later revives him with a kiss",
+          "Morpheus: loyal subordinate who doubts his faith in the prophecy"
+        ]
+      },
+      {
+        "name": "Agent Smith",
+        "role": "antagonist",
+        "descriptors": [
+          "sentient program, an Agent of the system",
+          "he/him",
+          "pale, earpiece, dark suit, sunglasses, speaks in flat contempt"
+        ],
+        "relationships": [
+          "Neo: pursues him through the simulation",
+          "Morpheus: interrogates him while he is captive"
+        ]
+      },
+      {
+        "name": "Cypher",
+        "role": "traitor",
+        "descriptors": [
+          "human, freed from the Matrix",
+          "crew member",
+          "he/him",
+          "ordinary-looking, tired of the real world"
+        ],
+        "relationships": [
+          "Morpheus: betrays him to the Agents in exchange for reintegration",
+          "Trinity: resents her rejection of him"
+        ]
+      },
+      {
+        "name": "Tank",
+        "role": "operator",
+        "descriptors": [
+          "human, born free in Zion",
+          "hovercraft operator",
+          "he/him",
+          "cheerful, guides crew through the Matrix by console"
+        ],
+        "relationships": [
+          "Neo: teaches him combat programs and pulls him out of the simulation",
+          "Dozer: brother"
+        ]
+      },
+      {
+        "name": "Dozer",
+        "role": "crew",
+        "descriptors": [
+          "human, born free in Zion",
+          "hovercraft crew",
+          "he/him"
+        ],
+        "relationships": [
+          "Tank: brother"
+        ]
+      },
+      {
+        "name": "Mouse",
+        "role": "crew",
+        "descriptors": [
+          "human, freed from the Matrix",
+          "crew member",
+          "he/him",
+          "young, builds a program of a woman in red"
+        ],
+        "relationships": []
+      },
+      {
+        "name": "Switch",
+        "role": "crew",
+        "descriptors": [
+          "human, freed from the Matrix",
+          "crew member",
+          "white-haired, androgynous"
+        ],
+        "relationships": []
+      },
+      {
+        "name": "Apoc",
+        "role": "crew",
+        "descriptors": [
+          "human, freed from the Matrix",
+          "crew member"
+        ],
+        "relationships": []
+      },
+      {
+        "name": "The Oracle",
+        "role": "prophet figure",
+        "descriptors": [
+          "program living in the Matrix",
+          "she/her",
+          "older woman in a kitchen, baking cookies, chain-smoking"
+        ],
+        "relationships": [
+          "Neo: tells him he is not the One and that he will have to choose"
+        ]
+      },
+      {
+        "name": "The Architect's counterpart, the Agents",
+        "role": "antagonists",
+        "descriptors": [
+          "programs in suits and earpieces",
+          "they can dodge bullets and possess any plugged-in body"
+        ],
+        "relationships": [
+          "Smith: leads them"
+        ]
+      }
+    ],
+    "settings": [
+      "The Matrix, a simulated late-1990s city",
+      "the Nebuchadnezzar, a hovercraft in the ruined real world",
+      "the training construct, an endless white space",
+      "the Oracle's apartment",
+      "a government building lobby and rooftop in the simulation",
+      "the real world after machine conquest"
+    ],
+    "arcs": [
+      {
+        "summary": "Neo is tracked down through cryptic messages and a meeting with Trinity, then offered the red and blue pills by Morpheus and wakes in the real world.",
+        "locator": null
+      },
+      {
+        "summary": "Neo learns the history of the Matrix and begins training, failing to accept his limits until Morpheus tells him to free his mind.",
+        "locator": null
+      },
+      {
+        "summary": "The Oracle tells Neo he is not the One, and the crew is ambushed when Cypher sells them out; Morpheus is captured.",
+        "locator": null
+      },
+      {
+        "summary": "Neo chooses to go back into the Matrix to rescue Morpheus rather than accept the prophecy's cost, and the crew storms the government building.",
+        "locator": null
+      },
+      {
+        "summary": "||Neo is shot by Smith, Trinity's kiss revives him, and he returns to see the code itself and destroys Smith from inside.||",
+        "locator": null
+      }
+    ],
+    "motifs": [
+      "red and blue pills",
+      "mirrors and reflective surfaces, including the mirror that swallows Neo's hand",
+      "sunglasses and dark suits",
+      "telephones as exits from the simulation",
+      "green falling code",
+      "white rabbits and the phrase 'follow the white rabbit'",
+      "doors and keys",
+      "the spoon that bends",
+      "bullet time"
+    ],
+    "themes": [
+      "reality as simulation and the unreliability of the senses",
+      "fate versus choice, especially the choice to believe",
+      "control and liberation",
+      "love as a force that overrides the system",
+      "transformation of the self and chosen names"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Morpheus offers the red and blue pills in a bare room, and Neo takes the red one.",
+        "locator": null
+      },
+      {
+        "summary": "Neo touches a mirror that crawls up his arm and he wakes inside a pod, plugged into the machine harvest.",
+        "locator": null
+      },
+      {
+        "summary": "In the white training construct, Morpheus demonstrates that the rules can be broken and leaps across a gap.",
+        "locator": null
+      },
+      {
+        "summary": "The Oracle tells Neo he is not the One, and he accepts it.",
+        "locator": null
+      },
+      {
+        "summary": "Cypher unplugs crew members and kills them, then makes his deal with the Agents.",
+        "locator": null
+      },
+      {
+        "summary": "Neo and Trinity fight through the lobby and rescue Morpheus from the rooftop helicopter.",
+        "locator": null
+      },
+      {
+        "summary": "||Neo dodges bullets on the rooftop, is shot, and is revived by Trinity's kiss.||",
+        "locator": null
+      },
+      {
+        "summary": "||Neo stops bullets with his hand and destroys Smith, then speaks to the Matrix itself before flying off.||",
+        "locator": null
+      }
+    ]
+  }
+}

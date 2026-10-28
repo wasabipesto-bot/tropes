@@ -1,0 +1,153 @@
+{
+  "id": 40,
+  "title": "Friends at the Table: Marielda",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 14:47:48",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "An actual-play podcast using Blades in the Dark, set in the city of Marielda in the weeks before the events of the Hieron seasons. A crew of amateur criminals, the Six Fingers of the Hand of the City, are drawn into a scheme to steal the estate of the nobleman Lysander, then into a larger conspiracy involving the cult-like Maelgwyn and the city's founding. The season moves from heist to investigation to a confrontation with the forces behind Marielda's history, ending with ||the crew's actions reshaping the city and setting up the world of Hieron||.",
+    "characters": [
+      {
+        "name": "Hella Varal",
+        "role": "protagonist, fighter",
+        "descriptors": [
+          "human",
+          "member of the Six Fingers",
+          "blunt, physical, carries a sword"
+        ],
+        "relationships": [
+          "crewmate of the other Fingers: loyalty tested by the heist",
+          "rivalry and respect with the city's authorities"
+        ]
+      },
+      {
+        "name": "Hadrian",
+        "role": "protagonist, the church's man",
+        "descriptors": [
+          "human",
+          "devout follower of Samothes",
+          "armoured, earnest"
+        ],
+        "relationships": [
+          "bound to the church of Samothes: faith as leash",
+          "crewmate of the Fingers: uneasy conscience"
+        ]
+      },
+      {
+        "name": "Adaire",
+        "role": "protagonist, thief",
+        "descriptors": [
+          "human",
+          "nimble, secretive",
+          "knives and shadows"
+        ],
+        "relationships": [
+          "crewmate of the Fingers: the one who plans",
+          "history with the city's underworld"
+        ]
+      },
+      {
+        "name": "Ephrim",
+        "role": "protagonist, spellcaster",
+        "descriptors": [
+          "human",
+          "magic-user",
+          "curious, reckless"
+        ],
+        "relationships": [
+          "crewmate of the Fingers: magic as the crew's wild card"
+        ]
+      },
+      {
+        "name": "Lem",
+        "role": "protagonist, the face",
+        "descriptors": [
+          "human",
+          "charming, talkative",
+          "social operator"
+        ],
+        "relationships": [
+          "crewmate of the Fingers: the one who talks them in"
+        ]
+      },
+      {
+        "name": "Lysander",
+        "role": "antagonist, mark",
+        "descriptors": [
+          "nobleman",
+          "wealthy, guarded",
+          "estate full of treasures"
+        ],
+        "relationships": [
+          "target of the Six Fingers: the heist's mark"
+        ]
+      },
+      {
+        "name": "Maelgwyn",
+        "role": "antagonist, cult figure",
+        "descriptors": [
+          "mysterious",
+          "leader of a following",
+          "associated with the city's deeper history"
+        ],
+        "relationships": [
+          "opposes the Fingers: the conspiracy behind the heist"
+        ]
+      }
+    ],
+    "settings": [
+      "Marielda, a city of canals and old noble houses",
+      "the estate of Lysander",
+      "the city's underworld and taverns",
+      "the era before the events of Hieron"
+    ],
+    "arcs": [
+      {
+        "summary": "The Six Fingers plan and execute a heist on Lysander's estate, learning the city's criminal rules along the way.",
+        "locator": null
+      },
+      {
+        "summary": "The crew uncovers a conspiracy tied to Maelgwyn and the city's founding, shifting from thieves to investigators.",
+        "locator": null
+      },
+      {
+        "summary": "The crew confronts the forces behind the conspiracy, and their choices reshape Marielda's future.",
+        "locator": null
+      }
+    ],
+    "motifs": [
+      "the Hand of the City and its fingers",
+      "canals and water",
+      "old noble houses and their secrets",
+      "the church of Samothes",
+      "heist planning and scores",
+      "the city's founding myth"
+    ],
+    "themes": [
+      "crime and loyalty among a crew",
+      "faith and its demands",
+      "the weight of a city's history",
+      "who gets to write a city's story"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "The crew's first planning session for the Lysander heist, establishing the score and the crew's dynamics.",
+        "locator": null
+      },
+      {
+        "summary": "The infiltration of Lysander's estate and the complications that arise inside.",
+        "locator": null
+      },
+      {
+        "summary": "A confrontation with Maelgwyn's followers that reveals the larger conspiracy.",
+        "locator": null
+      },
+      {
+        "summary": "The crew's final confrontation with the forces behind Marielda's history.",
+        "locator": null
+      }
+    ]
+  }
+}

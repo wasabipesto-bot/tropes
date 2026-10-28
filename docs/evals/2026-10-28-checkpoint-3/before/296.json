@@ -1,0 +1,270 @@
+{
+  "id": 296,
+  "title": "Arcane",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 15:06:02",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "Animated series set in the divided city of Piltover and its undercity, Zaun. Two sisters, Vi and Powder, are orphaned by a failed uprising and taken in by the rebel Vander. Years later a heist on a Piltover apartment goes wrong, and the resulting explosion pushes the two cities toward war. Vi is imprisoned, Powder is taken in by the crime lord Silco and remade as Jinx, and the scientist Jayce and his partner Viktor develop hextech, magic harnessed through crystals. The season ends with a missile fired from the undercity into the Piltover council chamber. ||Jinx kills Silco and fires the rocket at the council while Vi watches.||",
+    "characters": [
+      {
+        "name": "Vi",
+        "role": "protagonist",
+        "descriptors": [
+          "human",
+          "undercity fighter",
+          "she",
+          "pink hair, gauntlets, bandaged knuckles"
+        ],
+        "relationships": [
+          "Powder/Jinx: older sister, the bond carried by a shared childhood and a promise to return",
+          "Vander: surrogate father figure",
+          "Caitlyn: reluctant ally turned romantic interest"
+        ]
+      },
+      {
+        "name": "Jinx (Powder)",
+        "role": "protagonist and antagonist",
+        "descriptors": [
+          "human",
+          "inventor and gunman",
+          "she",
+          "blue braids, chalk-blue cloud tattoos, hallucinated voices"
+        ],
+        "relationships": [
+          "Vi: sister she cannot forgive for leaving",
+          "Silco: adoptive father and patron",
+          "Vander: the father she believes abandoned her"
+        ]
+      },
+      {
+        "name": "Vander",
+        "role": "mentor",
+        "descriptors": [
+          "human",
+          "former rebel, now barkeep",
+          "he",
+          "scarred, hulking, keeps a pair of gauntlets hidden"
+        ],
+        "relationships": [
+          "Vi and Powder: adoptive father",
+          "Silco: former comrade turned enemy"
+        ]
+      },
+      {
+        "name": "Silco",
+        "role": "antagonist",
+        "descriptors": [
+          "human",
+          "undercity crime lord",
+          "he",
+          "one scarred eye, a knife, a chair by a window"
+        ],
+        "relationships": [
+          "Jinx: adoptive daughter, the one person he trusts",
+          "Vander: betrayed former partner"
+        ]
+      },
+      {
+        "name": "Jayce Talis",
+        "role": "protagonist",
+        "descriptors": [
+          "human",
+          "Piltover inventor and councillor",
+          "he",
+          "hammer, white coat, hextech gauntlet"
+        ],
+        "relationships": [
+          "Viktor: scientific partner",
+          "Mel: political patron and lover",
+          "Heimerdinger: former teacher"
+        ]
+      },
+      {
+        "name": "Viktor",
+        "role": "protagonist",
+        "descriptors": [
+          "human",
+          "scientist from the undercity",
+          "he",
+          "cane, wasted leg, later a metal hand"
+        ],
+        "relationships": [
+          "Jayce: partner and friend",
+          "Singed: the doctor who treats him"
+        ]
+      },
+      {
+        "name": "Caitlyn Kiramman",
+        "role": "ally",
+        "descriptors": [
+          "human",
+          "Piltover enforcer",
+          "she",
+          "rifle, blue uniform, wealthy family"
+        ],
+        "relationships": [
+          "Vi: partner in the investigation and love interest",
+          "Jinx: target of her pursuit"
+        ]
+      },
+      {
+        "name": "Mel Medarda",
+        "role": "politician",
+        "descriptors": [
+          "human",
+          "Piltover councillor",
+          "she",
+          "gold jewellery, gilded armour motif"
+        ],
+        "relationships": [
+          "Jayce: patron and lover",
+          "Ambessa: her mother"
+        ]
+      },
+      {
+        "name": "Heimerdinger",
+        "role": "mentor",
+        "descriptors": [
+          "yordle",
+          "council member and professor",
+          "he",
+          "small, furry, long-lived"
+        ],
+        "relationships": [
+          "Jayce and Viktor: former students"
+        ]
+      },
+      {
+        "name": "Ekko",
+        "role": "ally",
+        "descriptors": [
+          "human",
+          "Firelight leader",
+          "he",
+          "white face paint, clock-hand sword, hoverboard"
+        ],
+        "relationships": [
+          "Powder: childhood friend",
+          "Jinx: the friend he lost"
+        ]
+      },
+      {
+        "name": "Singed",
+        "role": "antagonist",
+        "descriptors": [
+          "human",
+          "chemist and doctor",
+          "he",
+          "masked, hunched, keeps a caged creature"
+        ],
+        "relationships": [
+          "Silco: supplier",
+          "Viktor: former colleague"
+        ]
+      },
+      {
+        "name": "Sevika",
+        "role": "henchwoman",
+        "descriptors": [
+          "human",
+          "Silco's enforcer",
+          "she",
+          "mechanical arm, scarred face"
+        ],
+        "relationships": [
+          "Silco: loyal lieutenant",
+          "Jinx: rival"
+        ]
+      },
+      {
+        "name": "Ambessa Medarda",
+        "role": "antagonist",
+        "descriptors": [
+          "human",
+          "Noxian general",
+          "she",
+          "armoured, commanding"
+        ],
+        "relationships": [
+          "Mel: mother"
+        ]
+      }
+    ],
+    "settings": [
+      "Piltover, the wealthy upper city",
+      "Zaun, the undercity beneath it",
+      "the Last Drop tavern",
+      "the Piltover academy and council chamber",
+      "Stillwater prison",
+      "the Firelights' hideout"
+    ],
+    "arcs": [
+      {
+        "summary": "A heist by Vi, Powder and friends explodes in a Piltover apartment, setting off the conflict between the cities.",
+        "locator": "episodes 1-3"
+      },
+      {
+        "summary": "Vi is jailed and later freed by Caitlyn; the two investigate the undercity and grow close.",
+        "locator": "episodes 4-6"
+      },
+      {
+        "summary": "Powder is taken in by Silco and becomes Jinx, torn between her old family and her new father.",
+        "locator": "episodes 3-9"
+      },
+      {
+        "summary": "Jayce and Viktor develop hextech from a crystal and a stolen notebook, then clash over its use as a weapon.",
+        "locator": "episodes 2-9"
+      },
+      {
+        "summary": "The council votes on peace with Zaun; Jinx's rocket interrupts the vote.",
+        "locator": "episode 9"
+      }
+    ],
+    "motifs": [
+      "blue crystals and hextech gems",
+      "the monkey toy and Powder's drawings",
+      "chalk-blue cloud tattoos",
+      "the song played on a gramophone",
+      "caged and mutated creatures",
+      "the number and name change from Powder to Jinx",
+      "gauntlets and mechanical arms",
+      "the Firelights' glowing green tree"
+    ],
+    "themes": [
+      "sisters divided by class and circumstance",
+      "progress built on exploitation of the underclass",
+      "grief and the making of a monster",
+      "loyalty versus ambition",
+      "science as both cure and weapon"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "The heist explosion in the Piltover apartment kills friends and sets the plot in motion.",
+        "locator": "episode 1"
+      },
+      {
+        "summary": "Vander fights Silco's men and is taken; the sisters are separated.",
+        "locator": "episode 3"
+      },
+      {
+        "summary": "Vi and Caitlyn visit a brothel and later a shimmer den in the undercity.",
+        "locator": "episode 5"
+      },
+      {
+        "summary": "Jinx lights a flare on a rooftop to signal Vi.",
+        "locator": "episode 6"
+      },
+      {
+        "summary": "Jinx stages a dinner with Vi, Caitlyn and Silco and forces Vi to choose.",
+        "locator": "episode 9"
+      },
+      {
+        "summary": "Jinx fires the rocket into the council chamber as the vote is held.",
+        "locator": "episode 9"
+      }
+    ]
+  }
+}

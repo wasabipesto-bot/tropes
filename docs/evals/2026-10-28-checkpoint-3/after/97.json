@@ -1,0 +1,281 @@
+{
+  "id": 97,
+  "title": "Almost Nowhere",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 323597,
+      "chapters": 48,
+      "from": "I",
+      "to": "XXX",
+      "file": "almost-nowhere.epub"
+    },
+    "posts": 1,
+    "visual": 0,
+    "wiki": null,
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "A nested, self-referential novel about imprisonment, translation and the refusal to repeat a wound. Anne Twenty-Six lives in a tower inside a crash built by the alien shade Michael, who wants her to teach him the 'trick' that lets humans break his worlds. Elsewhere, Grant and Azad are thawed from the Mooncrash into a suburban house run by the shade Sylvie, while Cordelia, once a student in the Chester Chrestomath crash, becomes a Wolf Squadron agent under Hector Stein. Twenty-Seven (formerly Twenty-Six) learns she is the author of the Nowhere-to-Hide event that poisoned the world, and is ordered by Hector to rebase reality itself. ||She refuses, choosing a self-selecting rebase that leaves history scarred but intact, and the book ends with the collaborators finishing their manuscript.||",
+    "characters": [
+      {
+        "name": "Anne Twenty-Six / Twenty-Seven",
+        "role": "protagonist",
+        "descriptors": [
+          "bilateral human, the twenty-sixth Anne",
+          "renumbered Twenty-Seven after crossing into a new timeline",
+          "dark hair, bright blue dress in Cordelia's memory, later a Blackhat trilby and camo fatigues",
+          "called 'Anne' by Michael"
+        ],
+        "relationships": [
+          "Michael: creator and captor, addressed as father",
+          "Azad: first friend and confidant, later a source of disillusion",
+          "Cordelia: lover and rescuer",
+          "Annabel Lee: revered elder sister known only through letters",
+          "Twenty-Five: oldest friend, later estranged"
+        ]
+      },
+      {
+        "name": "Michael",
+        "role": "antagonist and mentor",
+        "descriptors": [
+          "anomaling shade",
+          "tall, grey-white hair, empty stare",
+          "speaks in halting, over-precise sentences"
+        ],
+        "relationships": [
+          "Twenty-Seven: creator and experimental subject",
+          "Azad: guest and interpreter",
+          "the Whole-Thing: a fragment of it"
+        ]
+      },
+      {
+        "name": "Azad",
+        "role": "translator, trickster, love interest",
+        "descriptors": [
+          "bilateral human",
+          "thin, golden, theatrical, endlessly talking",
+          "translator of the alien signal"
+        ],
+        "relationships": [
+          "Grant: old roommate and unspoken love",
+          "Twenty-Five: lover who becomes his tormentor",
+          "Twenty-Seven: friend and failed mentor",
+          "Michael: guest and interpreter"
+        ]
+      },
+      {
+        "name": "Grant",
+        "role": "protagonist of the Mooncrash thread",
+        "descriptors": [
+          "bilateral human",
+          "former head of security",
+          "gamer, wheelchair-bound after thawing",
+          "keeps a dog named Sylvie"
+        ],
+        "relationships": [
+          "Azad: roommate and best friend",
+          "Cordelia: wife in advanced containment",
+          "Sylvie: master and dog"
+        ]
+      },
+      {
+        "name": "Cordelia",
+        "role": "Wolf Squadron agent, later Twenty-Seven's lover",
+        "descriptors": [
+          "bilateral human",
+          "bright blue tiered dress",
+          "self-described ugly girl with a funny name",
+          "mediator in advanced containment"
+        ],
+        "relationships": [
+          "Twenty-Seven: lover",
+          "the Ells: favorite student",
+          "Grant: husband in advanced containment",
+          "Moon: seducer"
+        ]
+      },
+      {
+        "name": "Sylvie / Sylvester",
+        "role": "World Regent, god-figure",
+        "descriptors": [
+          "anomaling shade, formerly a golden retriever",
+          "halo above the head, later scarred face and glowing eyes",
+          "called 'good boy'"
+        ],
+        "relationships": [
+          "Grant: owner and master",
+          "Lucifer and Lilith: friends and co-regents",
+          "the Whole-Thing: a fragment that became an individual"
+        ]
+      },
+      {
+        "name": "Lucifer Vance",
+        "role": "Headmaster, fictive, mediator",
+        "descriptors": [
+          "fictive character from Chester Chrestomath",
+          "spiky hair, paternal, a 'dad'"
+        ],
+        "relationships": [
+          "Lilith: wife",
+          "Cordelia: mentor",
+          "Sylvie: friend"
+        ]
+      },
+      {
+        "name": "Lilith Vance",
+        "role": "Dean of Students, fictive, mediator",
+        "descriptors": [
+          "fictive character",
+          "sturdy, warm, practical"
+        ],
+        "relationships": [
+          "Lucifer: wife",
+          "Cordelia: mentor and confidante",
+          "Sylvie: friend"
+        ]
+      },
+      {
+        "name": "Hector Stein",
+        "role": "antagonist, founder of Stein's Rock",
+        "descriptors": [
+          "bilateral human",
+          "charismatic, bombastic, looks like Laurence Fishburne",
+          "camo, soundboard rhetoric"
+        ],
+        "relationships": [
+          "Annabel Lee: lost partner",
+          "Twenty-Five: lover and weapon",
+          "the Ells: former allies",
+          "Sylvie: rival"
+        ]
+      },
+      {
+        "name": "Twenty-Five / Moon",
+        "role": "antagonist, Hector's lover",
+        "descriptors": [
+          "Anne, later a demonic seductress",
+          "small, bony, harlequin makeup, bowler hat",
+          "many tentacles in her subcrash"
+        ],
+        "relationships": [
+          "Azad: ex-boyfriend she imprisons",
+          "Hector: lover and god",
+          "Twenty-Seven: oldest friend",
+          "Eleven: rival"
+        ]
+      },
+      {
+        "name": "Annabel Lee / Seventeen",
+        "role": "legendary predecessor",
+        "descriptors": [
+          "Anne, dead before the story",
+          "brilliant, ruthless, wears a Cheshire Cat grin veil"
+        ],
+        "relationships": [
+          "Hector: partner",
+          "Twenty-Seven: admired sister",
+          "Michael: the one who killed her"
+        ]
+      },
+      {
+        "name": "Eleven",
+        "role": "Anne in the white room, keeper of Michael's crash",
+        "descriptors": [
+          "Anne, aging then young again",
+          "sings, loves musicals",
+          "surrounded by helmeted animals"
+        ],
+        "relationships": [
+          "Toto: dog friend",
+          "her animals: kin",
+          "Twenty-Five: estranged sister"
+        ]
+      }
+    ],
+    "settings": [
+      "Michael's tower and crash",
+      "the Mooncrash house",
+      "CC-Crash 09μ and the Hector G. Stein Academy",
+      "advanced containment and Subspace",
+      "Stein's Rock",
+      "the Ell and Sylvester house in rural Minnesota",
+      "the white room housing Michael's crash machine"
+    ],
+    "arcs": [
+      {
+        "summary": "Twenty-Six is taken from her tower by Cordelia, becomes Twenty-Seven, and is pressed by Michael to discover the trick that breaks crashes.",
+        "locator": "I through XII"
+      },
+      {
+        "summary": "Grant and Azad are thawed from the Mooncrash into Sylvie's house, where Grant becomes addicted to a game and Azad is later freed.",
+        "locator": "II through XXVII"
+      },
+      {
+        "summary": "Cordelia trains as a Wolf, falls for Twenty-Seven, and hides her link to the Ells and Sylvie.",
+        "locator": "IV through XXVIII"
+      },
+      {
+        "summary": "Hector Stein wages war on the beasts and the Silence, and orders Twenty-Seven to rebase reality.",
+        "locator": "XXII through XXIX"
+      },
+      {
+        "summary": "Twenty-Seven refuses Hector twice, learns the truth of the Nowhere-to-Hide event, and performs a self-selecting rebase.",
+        "locator": "XXI through XXX"
+      }
+    ],
+    "motifs": [
+      "NOWHERE TO HIDE written in letters and blood",
+      "the purple blinds and their violet light",
+      "the record player and its songs",
+      "the halo above Sylvie's head",
+      "the box / comm link and the rebase console",
+      "numbers instead of names for the Annes",
+      "the Cheshire Cat grin",
+      "cats and dogs with metal helmets and blinking red lights",
+      "the long straight path of Ratleak",
+      "the tower and the mirror"
+    ],
+    "themes": [
+      "imprisonment and the refusal to escape",
+      "translation and the violence of language",
+      "repetition and the return to the site of trauma",
+      "consent and the ethics of creation",
+      "memory, forgetting and autobiography",
+      "love as a force stronger than piety"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Cordelia opens the box in a bathroom stall and becomes a shrivel in a vast, recoiling space.",
+        "locator": "I"
+      },
+      {
+        "summary": "The blue woman with the sword takes Anne from Michael's tower.",
+        "locator": "III"
+      },
+      {
+        "summary": "Grant meets the goopball and learns that everything is different from everything else.",
+        "locator": "VII"
+      },
+      {
+        "summary": "Twenty-Seven delivers her monologue to Michael explaining that bilaterals harden under strain.",
+        "locator": "XVI"
+      },
+      {
+        "summary": "Sylvie, scarred and grinning, writes his essay on the Mirzakhani field in silence.",
+        "locator": "XXVI"
+      },
+      {
+        "summary": "Twenty-Seven arbitrates with Arthur the raccoon and learns of the undo-button trick.",
+        "locator": "XXVIII"
+      },
+      {
+        "summary": "Twenty-Seven speaks to Twenty-Six in a dream and plays Move 77.",
+        "locator": "XXX"
+      }
+    ]
+  }
+}

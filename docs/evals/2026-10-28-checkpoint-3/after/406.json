@@ -1,0 +1,258 @@
+{
+  "id": 406,
+  "title": "The Matrix",
+  "depth": "text",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-28 00:32:16",
+  "inputs": {
+    "text": {
+      "words": 8562,
+      "chapters": 1,
+      "from": "The Matrix",
+      "to": null,
+      "file": "406-5bfa1d1b293518b5.txt"
+    },
+    "posts": 15,
+    "visual": 0,
+    "wiki": "https://tropedia.fandom.com/wiki/The_Matrix",
+    "extract": false
+  },
+  "body": {
+    "known": "strong",
+    "summary": "A hacker called Neo, who has spent years sensing that something is wrong with the world, is drawn out of his ordinary life by Trinity and Morpheus and offered a choice between a red pill and a blue pill. He wakes in a pod aboard the hovercraft Nebuchadnezzar and learns that the world he knew is a simulation the machines built to farm human bodies, and that the resistance believes he is the One prophesied to end the war. When the traitor Cypher sells Morpheus to the Agents, Neo goes back into the Matrix to rescue him, is shot dead by Agent Smith, and is revived by Trinity's confession of love; he then sees the code for what it is and destroys Smith from the inside. The film ends with Neo on a phone call, promising to show the people a world without rules, then flying off.",
+    "characters": [
+      {
+        "name": "Neo / Thomas A. Anderson",
+        "role": "protagonist",
+        "descriptors": [
+          "human, born inside the Matrix",
+          "hacker alias Neo, office name Thomas Anderson",
+          "he/him",
+          "black coat and sunglasses once he believes"
+        ],
+        "relationships": [
+          "mentored by Morpheus, who believes he is the One",
+          "loved by Trinity, who revives him with a confession",
+          "hunted by Agent Smith, who calls him Mr. Anderson"
+        ]
+      },
+      {
+        "name": "Morpheus",
+        "role": "mentor, captain of the Nebuchadnezzar",
+        "descriptors": [
+          "free-born human",
+          "bald, dark glasses, long leather coat",
+          "speaks in riddles and scripture"
+        ],
+        "relationships": [
+          "believes in Neo as the One to the point of sacrificing himself",
+          "father figure to his crew",
+          "captured and interrogated by Agent Smith"
+        ]
+      },
+      {
+        "name": "Trinity",
+        "role": "action lead, love interest",
+        "descriptors": [
+          "free-born human",
+          "hacker who cracked the IRS database",
+          "black leather, short hair"
+        ],
+        "relationships": [
+          "loves Neo, told by the Oracle she would fall in love with the One",
+          "loyal to Morpheus above all",
+          "object of Cypher's unrequited longing"
+        ]
+      },
+      {
+        "name": "Agent Smith",
+        "role": "antagonist",
+        "descriptors": [
+          "sentient program, an Agent of the system",
+          "earpiece, suit, sunglasses",
+          "calls Neo Mr. Anderson"
+        ],
+        "relationships": [
+          "opposite number to Neo",
+          "interrogates Morpheus for the Zion codes",
+          "disgusted by humanity, which he calls a virus"
+        ]
+      },
+      {
+        "name": "Cypher",
+        "role": "traitor within the crew",
+        "descriptors": [
+          "free-born human",
+          "bearded, sardonic"
+        ],
+        "relationships": [
+          "betrays Morpheus for reinsertion into the Matrix",
+          "loved Trinity unrequitedly",
+          "kills Apoc, Switch and Dozer"
+        ]
+      },
+      {
+        "name": "Tank",
+        "role": "operator",
+        "descriptors": [
+          "free-born human, natural-born child of Zion",
+          "no body plugs"
+        ],
+        "relationships": [
+          "brother of Dozer",
+          "runs the jack-in console and saves Neo by pulling Cypher's plug"
+        ]
+      },
+      {
+        "name": "Dozer",
+        "role": "crew, pilot",
+        "descriptors": [
+          "free-born human",
+          "Tank's big brother"
+        ],
+        "relationships": [
+          "brother of Tank",
+          "killed by Cypher"
+        ]
+      },
+      {
+        "name": "The Oracle",
+        "role": "prophet",
+        "descriptors": [
+          "program appearing as an elderly woman baking cookies",
+          "knows more than she says"
+        ],
+        "relationships": [
+          "guide to Morpheus and Neo",
+          "tells Neo he is not the One yet and that he will choose between his life and Morpheus's"
+        ]
+      },
+      {
+        "name": "Apoc",
+        "role": "crew",
+        "descriptors": [
+          "free-born human"
+        ],
+        "relationships": [
+          "killed by Cypher"
+        ]
+      },
+      {
+        "name": "Switch",
+        "role": "crew",
+        "descriptors": [
+          "free-born human",
+          "androgynous, white clothing in the Matrix"
+        ],
+        "relationships": [
+          "killed by Cypher"
+        ]
+      },
+      {
+        "name": "Mouse",
+        "role": "crew, program designer",
+        "descriptors": [
+          "free-born human, youngest of the crew"
+        ],
+        "relationships": [
+          "designed the woman in the red dress",
+          "killed by the Agents during the ambush"
+        ]
+      },
+      {
+        "name": "The woman in the red dress",
+        "role": "training program",
+        "descriptors": [
+          "program",
+          "red dress, distracting"
+        ],
+        "relationships": [
+          "designed by Mouse as a lesson in distraction"
+        ]
+      }
+    ],
+    "settings": [
+      "the Matrix, a simulation of a late-20th-century city",
+      "the Nebuchadnezzar, a hovercraft in the sewers and tunnels",
+      "the Construct, the crew's loading program",
+      "Zion, the last human city near the Earth's core",
+      "the pod fields where humans are grown",
+      "the military-controlled building where Morpheus is held"
+    ],
+    "arcs": [
+      {
+        "summary": "Neo is contacted, tested and freed, then trained in the Construct until he can fight and begins to suspect he is not the One.",
+        "locator": "The Matrix"
+      },
+      {
+        "summary": "The Oracle's prophecy sets up a choice between Morpheus's life and Neo's own; Cypher's betrayal forces it.",
+        "locator": "The Matrix"
+      },
+      {
+        "summary": "Neo and Trinity storm the building to rescue Morpheus, and Neo's belief lets him outrun and then destroy Agent Smith.",
+        "locator": "The Matrix"
+      }
+    ],
+    "motifs": [
+      "the red pill and the blue pill",
+      "the white rabbit and Alice in Wonderland references",
+      "mirrors and reflective sunglasses",
+      "the green falling code of the Matrix",
+      "the spoon and 'there is no spoon'",
+      "déjà vu as a glitch, signalled by a black cat",
+      "the splinter in the mind",
+      "the phone as the exit from the Matrix",
+      "Tastee Wheat and the single-celled protein goop"
+    ],
+    "themes": [
+      "reality as simulation and the unreliability of the senses",
+      "freedom versus comfortable ignorance",
+      "fate and prophecy versus choice",
+      "humans as a virus or a plague",
+      "belief as the thing that bends rules",
+      "love as the force that brings the dead back"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Trinity escapes two Agents across rooftops and vanishes into a phone booth.",
+        "locator": "The Matrix"
+      },
+      {
+        "summary": "Morpheus offers the red and blue pills in a bare room.",
+        "locator": "The Matrix"
+      },
+      {
+        "summary": "Neo wakes in a pod, is flushed out, and sees the fields of humans for the first time.",
+        "locator": "The Matrix"
+      },
+      {
+        "summary": "The child bends the spoon and tells Neo there is no spoon.",
+        "locator": "The Matrix"
+      },
+      {
+        "summary": "The Oracle tells Neo he is not the One and that he will have to choose between his life and Morpheus's.",
+        "locator": "The Matrix"
+      },
+      {
+        "summary": "Cypher pulls the plugs on Apoc and Switch and taunts Trinity before Tank shoots him.",
+        "locator": "The Matrix"
+      },
+      {
+        "summary": "Neo and Trinity shoot their way through the lobby and Neo lifts Morpheus onto a helicopter.",
+        "locator": "The Matrix"
+      },
+      {
+        "summary": "Neo dodges bullets on the rooftop and is shot dead by Smith, then revived by Trinity's kiss.",
+        "locator": "The Matrix"
+      },
+      {
+        "summary": "Neo sees the code, dives into Smith and destroys him from within.",
+        "locator": "The Matrix"
+      },
+      {
+        "summary": "Neo hangs up the phone and flies over the city.",
+        "locator": "The Matrix"
+      }
+    ]
+  }
+}

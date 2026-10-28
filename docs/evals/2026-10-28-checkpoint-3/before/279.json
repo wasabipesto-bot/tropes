@@ -1,0 +1,279 @@
+{
+  "id": 279,
+  "title": "Severance",
+  "depth": "knowledge",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "builtAt": "2026-10-20 15:04:52",
+  "inputs": {},
+  "body": {
+    "known": "strong",
+    "summary": "At Lumon Industries, employees undergo a surgical procedure that splits their memory between a work self (the 'innie') and an outside self (the 'outie'), so neither remembers the other's life. Mark Scout, a widower who chose severance to escape grief over his wife Gemma, leads the Macrodata Refinement team on the severed floor, where numbers must be sorted into bins by feel. New hire Helly R. resists the arrangement violently, and the team's discovery of the outside world through the Overtime Contingency leads to a rebellion; ||the season ends with the innies briefly surfacing outside, Mark learning his wife may still be alive as Ms. Casey, and Helly revealing herself as Helena Eagan, an heir to the company.||",
+    "characters": [
+      {
+        "name": "Mark Scout",
+        "role": "protagonist",
+        "descriptors": [
+          "human, severed",
+          "innie and outie versions",
+          "grieving widower outside, team lead inside",
+          "wears a lanyard and white shirt"
+        ],
+        "relationships": [
+          "Gemma/Ms. Casey: wife he believes dead, who appears as a wellness counselor on the severed floor",
+          "Helly: innie colleague he grows close to",
+          "Devon: sister who pushes him to look outward",
+          "Petey: former best friend who reintegrates"
+        ]
+      },
+      {
+        "name": "Helly R.",
+        "role": "deuteragonist and rebel",
+        "descriptors": [
+          "human, severed",
+          "new hire who refuses the job",
+          "dark hair, red-haired actress",
+          "defiant, suicidal in captivity"
+        ],
+        "relationships": [
+          "Mark: innie colleague and romantic interest",
+          "Helena Eagan: her outie, whom she despises",
+          "the board: her own family, unknown to her"
+        ]
+      },
+      {
+        "name": "Helena Eagan",
+        "role": "antagonist, hidden",
+        "descriptors": [
+          "human, unsevered executive",
+          "Eagan dynasty heir",
+          "outie of Helly"
+        ],
+        "relationships": [
+          "Helly: the self she created and watches",
+          "Jame Eagan: father and company patriarch"
+        ]
+      },
+      {
+        "name": "Irving B.",
+        "role": "team member, believer turned skeptic",
+        "descriptors": [
+          "human, severed",
+          "older, devout follower of Kier lore",
+          "paints the dark hallway obsessively outside"
+        ],
+        "relationships": [
+          "Burt G.: innie romance across departments",
+          "the severed floor: faith in the company's rules"
+        ]
+      },
+      {
+        "name": "Burt G.",
+        "role": "love interest in Optics and Design",
+        "descriptors": [
+          "human, severed",
+          "gentle, older",
+          "works with paintings and prints"
+        ],
+        "relationships": [
+          "Irving: mutual affection ended by retirement"
+        ]
+      },
+      {
+        "name": "Dylan G.",
+        "role": "team member, family man",
+        "descriptors": [
+          "human, severed",
+          "competitive about perks",
+          "proud of his outie's family"
+        ],
+        "relationships": [
+          "Gretchen: outie wife he meets through a visitation room",
+          "his innie self: jealousy over shared life"
+        ]
+      },
+      {
+        "name": "Harmony Cobel",
+        "role": "antagonist, floor supervisor",
+        "descriptors": [
+          "human, unsevered",
+          "Mrs. Selvig outside",
+          "stern, watchful, keeps a shrine to Kier"
+        ],
+        "relationships": [
+          "Mark: monitors him as neighbor and boss",
+          "the board: desperate for its approval"
+        ]
+      },
+      {
+        "name": "Seth Milchick",
+        "role": "antagonist, middle management",
+        "descriptors": [
+          "human, unsevered",
+          "enforcer of rules and rewards",
+          "smiling, unsettling"
+        ],
+        "relationships": [
+          "Cobel: subordinate and rival",
+          "the innies: administers punishments and perks"
+        ]
+      },
+      {
+        "name": "Ms. Casey",
+        "role": "wellness counselor",
+        "descriptors": [
+          "human, severed",
+          "calm, clinical",
+          "reads soothing scripts"
+        ],
+        "relationships": [
+          "Mark: unknowing husband",
+          "the testing floor: her true origin"
+        ]
+      },
+      {
+        "name": "Gemma Scout",
+        "role": "lost wife",
+        "descriptors": [
+          "human, presumed dead",
+          "appears as Ms. Casey"
+        ],
+        "relationships": [
+          "Mark: marriage he mourns"
+        ]
+      },
+      {
+        "name": "Devon",
+        "role": "ally outside",
+        "descriptors": [
+          "human, unsevered",
+          "Mark's sister",
+          "pregnant"
+        ],
+        "relationships": [
+          "Mark: sibling who worries for him",
+          "Ricken: husband"
+        ]
+      },
+      {
+        "name": "Ricken Hale",
+        "role": "comic author",
+        "descriptors": [
+          "human, unsevered",
+          "self-help writer",
+          "pompous"
+        ],
+        "relationships": [
+          "Devon: husband",
+          "Mark: brother-in-law who mocks his book"
+        ]
+      },
+      {
+        "name": "Petey",
+        "role": "catalyst",
+        "descriptors": [
+          "human, reintegrated",
+          "former Macrodata employee",
+          "deteriorating"
+        ],
+        "relationships": [
+          "Mark: old friend who recruits him",
+          "Reghabi: his reintegration surgeon"
+        ]
+      },
+      {
+        "name": "Reghabi",
+        "role": "rogue surgeon",
+        "descriptors": [
+          "human, unsevered",
+          "performs reintegration",
+          "secretive"
+        ],
+        "relationships": [
+          "Petey: patient",
+          "Mark: later contact"
+        ]
+      }
+    ],
+    "settings": [
+      "Lumon Industries severed floor, windowless white corridors",
+      "Macrodata Refinement office",
+      "the Break Room",
+      "the Perpetuity Wing with Eagan wax figures",
+      "Mark's outie home in Kier, PE",
+      "the birthing cabin",
+      "the testing floor"
+    ],
+    "arcs": [
+      {
+        "summary": "Helly refuses severance, attempts escape and self-harm, and is forced through the Break Room until she accepts the work.",
+        "locator": "season 1, early episodes"
+      },
+      {
+        "summary": "Mark investigates Petey's reintegration and death, and begins to suspect the company's reach into his own life.",
+        "locator": "season 1"
+      },
+      {
+        "summary": "The team discovers the Overtime Contingency and uses it to surface their innies outside Lumon.",
+        "locator": "season 1 finale"
+      },
+      {
+        "summary": "Irving and Burt's cross-department romance is ended by Burt's retirement.",
+        "locator": "season 1"
+      },
+      {
+        "summary": "Dylan learns his outie has a family and meets his wife in the visitation room.",
+        "locator": "season 1"
+      }
+    ],
+    "motifs": [
+      "four tempers and the Kier Eagan doctrine",
+      "numbers sorted into bins by intuition",
+      "the Break Room and its repeated apology",
+      "waffle parties and finger traps as rewards",
+      "the dark hallway Irving paints",
+      "goats on the severed floor",
+      "pineapples and melon parties",
+      "the Overtime Contingency switches",
+      "blue-green Lumon branding and the color red",
+      "Ms. Casey's wellness scripts"
+    ],
+    "themes": [
+      "memory and identity",
+      "grief and avoidance",
+      "corporate control and consent",
+      "labor and personhood",
+      "class and dynasty",
+      "love across divided selves"
+    ],
+    "notable_scenes": [
+      {
+        "summary": "Helly's first attempt to leave, ending with her suspended in the stairwell doorway.",
+        "locator": "season 1, episode 1"
+      },
+      {
+        "summary": "The team watches Helly's orientation video and learns the rules of the severed floor.",
+        "locator": "season 1, episode 1"
+      },
+      {
+        "summary": "Petey's funeral and Mark's discovery of the map and photo.",
+        "locator": "season 1"
+      },
+      {
+        "summary": "The MDR team stages a waffle party and Dylan triggers the Overtime Contingency.",
+        "locator": "season 1 finale"
+      },
+      {
+        "summary": "Mark's innie surfaces at Ricken's reading and shouts about Gemma.",
+        "locator": "season 1 finale"
+      },
+      {
+        "summary": "Helly's outie is revealed as Helena Eagan at the gala.",
+        "locator": "season 1 finale"
+      },
+      {
+        "summary": "Ms. Casey is sent to the testing floor after her final wellness session with Mark.",
+        "locator": "season 1"
+      }
+    ]
+  }
+}
