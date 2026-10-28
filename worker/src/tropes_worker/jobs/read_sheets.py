@@ -63,6 +63,14 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
             return None
         return {"mediaId": m["id"], "source": "visual", "label": s.get("label") or "", "text": "\n".join(parts)[:6000]}
 
-    results = await llm.gather([one(m, s) for m, s in todo])
-    notes = [r for r in results if r]
-    return {"summary": {"sources": len(todo), "notes": len(notes)}, "notes": notes, "usage": llm.usage.as_dict()}
+    # In batches: thousands of sources at once would download every sheet before the first model call and
+    # leave the job silent past the queue's stale window; a batch of 40 posts its notes and a heartbeat as it goes.
+    notes: list[dict[str, Any]] = []
+    for i in range(0, len(todo), 40):
+        batch = await llm.gather([one(m, s) for m, s in todo[i : i + 40]])
+        got = [r for r in batch if r]
+        if got:
+            ctx.client._post("/api/dossiers", {"dossiers": [], "notes": got})
+            notes += got
+        ctx.progress(min(i + 40, len(todo)), len(todo), "reading sheets")
+    return {"summary": {"sources": len(todo), "notes": len(notes)}, "notes": [], "usage": llm.usage.as_dict()}
