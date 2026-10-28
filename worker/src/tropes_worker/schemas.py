@@ -91,6 +91,11 @@ class VisualNotesOut(BaseModel):
     notes: list[str] = []
 
 
+class RewriteInstanceOut(BaseModel):
+    who: str = ""
+    text: str = ""
+
+
 class LookOut(BaseModel):
     seen: bool
     note: str = ""

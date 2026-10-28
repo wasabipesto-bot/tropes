@@ -34,7 +34,8 @@ export function reviewItems(db: Db): ReviewItems {
     .select({ id: instance.id, createdAt: instance.createdAt, tropeName: trope.name, tropeSlug: trope.slug, subjectId: instance.subjectId, subjectKind: instance.subjectKind })
     .from(instance)
     .innerJoin(trope, eq(trope.id, instance.tropeId))
-    .where(and(eq(instance.origin, 'auto'), eq(instance.verified, false), gte(instance.createdAt, since)))
+    // Added by the automatic path, or given a model-written text (write_instances), recently and not yet looked at.
+    .where(and(eq(instance.verified, false), gte(instance.updatedAt, since)))
     .orderBy(desc(instance.id))
     .all();
   const titles = new Map(rows.length ? db.select({ id: media.id, title: media.title }).from(media).where(inArray(media.id, rows.map((r) => r.subjectId))).all().map((r) => [r.id, r.title]) : []);

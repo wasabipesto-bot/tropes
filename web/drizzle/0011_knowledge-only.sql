@@ -1,0 +1,1 @@
+ALTER TABLE `media` ADD `knowledge_only` integer DEFAULT false NOT NULL;

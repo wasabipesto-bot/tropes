@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
 import type { Db } from '../../db/open';
-import { dossier, job, media, mediaNote, proposal, type Job } from '../../db/schema';
+import { dossier, instance, job, media, mediaNote, proposal, type Job } from '../../db/schema';
 import type { z } from 'astro/zod';
 import type { dossiersBody } from './schemas';
 import { payloadByKind, type JobKind, type ResultBody } from './schemas';
@@ -119,6 +119,10 @@ export function completeJob(db: Db, id: number, body: ResultBody): void {
       const pl = parseJson<any>(p.payload, {});
       pl.look = { seen: v.seen, note: v.note };
       tx.update(proposal).set({ flags: JSON.stringify(flags), payload: JSON.stringify(pl), score: v.seen ? p.score : Math.round(p.score * 50) / 100 }).where(eq(proposal.id, p.id)).run();
+    }
+    // Entry texts written for instances that had none (write_instances): stored, unverified, for the owner to read.
+    for (const r of body.rewrites ?? []) {
+      tx.update(instance).set({ who: r.who, text: r.text, verified: false, updatedAt: sql`(datetime('now'))` }).where(eq(instance.id, r.instanceId)).run();
     }
     // Model-written description drafts never replace the owner's words.
     for (const d of body.descriptions ?? []) {

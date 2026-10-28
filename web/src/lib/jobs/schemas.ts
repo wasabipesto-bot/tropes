@@ -39,6 +39,8 @@ export const readSheetsPayload = z.object({ sourceIds: z.array(z.number().int().
 export const transcribePayload = z.object({ sourceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false), model: z.string().optional(), threads: z.number().int().positive().max(48).optional() });
 /** find_videos: openings, endings and title sequences from AnimeThemes, Art of the Title and TMDB; no model. */
 export const findVideosPayload = z.object({ mediaIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false), sources: z.array(z.enum(['animethemes', 'artofthetitle', 'tmdb'])).optional() });
+/** write_instances: entry texts for instances that have none, from the work's text-depth dossier. */
+export const writeInstancesPayload = z.object({ instanceIds: z.array(z.number().int().positive()).optional(), auto: z.boolean().default(false) });
 /** look_frames: the model looks at the frames grabbed for a scan's proposals of visual tropes (plan D12). */
 export const lookFramesPayload = z.object({ forJob: z.number().int().positive(), auto: z.boolean().default(false) });
 /** fetch_wiki: Fandom summaries (and transcripts, when a wiki has them) for pinned works (plan T12). */
@@ -68,6 +70,7 @@ export const payloadByKind = {
   fetch_wiki: fetchWikiPayload,
   transcribe: transcribePayload,
   find_videos: findVideosPayload,
+  write_instances: writeInstancesPayload,
 } as const;
 export type JobKind = (typeof JOB_KINDS)[number];
 
@@ -120,10 +123,14 @@ export const usageIn = z.object({
 /** look_frames: what the model saw in a proposal's frames. */
 export const verdictIn = z.object({ proposalId: z.number().int().positive(), seen: z.boolean(), note: z.string().default('') });
 
+/** write_instances: a text for an instance that had none; the instance becomes unverified until the owner looks. */
+export const rewriteIn = z.object({ instanceId: z.number().int().positive(), who: z.string().default(''), text: z.string().min(1), flags: z.array(z.string()).default([]) });
+
 export const resultBody = z.object({
   summary: z.record(z.string(), z.unknown()).default({}),
   proposals: z.array(proposalIn).default([]),
   verdicts: z.array(verdictIn).default([]),
+  rewrites: z.array(rewriteIn).default([]),
   dossiers: z.array(dossierIn).default([]),
   notes: z.array(noteIn).default([]),
   descriptions: z.array(descriptionIn).default([]),

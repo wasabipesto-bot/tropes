@@ -32,7 +32,7 @@ describe('job queue', () => {
       dossiers: [{ subject: { kind: 'media', id: m1.id }, depth: 'knowledge', body: { known: 'strong' }, model: 'm', promptVersion: 1 }],
       notes: [{ mediaId: m1.id, source: 'tumblr', url: null, text: 'a post', label: '' }],
       usage: { calls: 3, promptTokens: 10, completionTokens: 5, cachedTokens: 0, costUsd: 0.01 },
-      verdicts: [], descriptions: [], warnings: [],
+      verdicts: [], rewrites: [], descriptions: [], warnings: [],
     });
     const done = db.select().from(job).where(eq(job.id, j.id)).get()!;
     expect(done.status).toBe('done');
@@ -70,7 +70,7 @@ describe('job queue', () => {
         { subject: { kind: 'media', id: m1.id }, kind: 'instance', score: 0.9, prominence: 'core', who: 'A', text: 'One.', evidence: [{ kind: 'quote', content: 'q1', locator: '' }], seed: false, rejectedBefore: false, flags: [], payload: {} },
         { subject: { kind: 'media', id: m2.id }, kind: 'instance', score: 0.6, prominence: 'brief', who: 'B', text: 'Two.', evidence: [], seed: false, rejectedBefore: false, flags: [], payload: {} },
       ],
-      dossiers: [], notes: [], verdicts: [], descriptions: [], warnings: [],
+      dossiers: [], notes: [], verdicts: [], rewrites: [], descriptions: [], warnings: [],
     });
     const ids = db.select().from(proposal).all().map((p) => p.id);
     const out = commitProposals(db, j.id, new Set([ids[0]]), { [String(ids[0])]: 'recurring' });
@@ -102,7 +102,7 @@ describe('job queue', () => {
         { tropeId: t.id, subject: { kind: 'media', id: m1.id }, kind: 'instance', score: 0.9, prominence: 'core', who: '', text: 'One.', evidence: [], seed: false, rejectedBefore: false, flags: [], payload: {} },
         { tropeId: t.id, subject: { kind: 'media', id: m2.id }, kind: 'instance', score: 0.55, prominence: 'brief', who: '', text: 'Two.', evidence: [], seed: false, rejectedBefore: false, flags: [], payload: {} },
       ],
-      dossiers: [], notes: [], verdicts: [], descriptions: [], warnings: [],
+      dossiers: [], notes: [], verdicts: [], rewrites: [], descriptions: [], warnings: [],
     });
     const ids = db.select().from(proposal).all();
     commitProposals(db, j.id, new Set([ids[0].id]), {}, { verified: false, rejectRest: false });

@@ -85,8 +85,11 @@ def ensure_texts(client: Any, settings: Settings, subjects: list[dict[str, Any]]
 
 
 def load_subject_text(settings: Settings, subject: dict[str, Any], texts_by_media: dict[int, Text] | None = None) -> Text | None:
-    """The work's text when a source is linked; for a series, the members' texts concatenated."""
+    """The work's text when a source is linked; for a series, the members' texts concatenated. A work the owner marked
+    knowledge-only has no text as far as the pipeline is concerned."""
     if subject["kind"] == "media":
+        if subject.get("knowledgeOnly"):
+            return None
         paths = subject.get("textSources") or []
         if not paths:
             return None

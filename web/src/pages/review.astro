@@ -90,9 +90,9 @@ const empty = items.jobs.length + items.identity.length + items.missing.length +
   )}
 
   <section>
-    <h2>Added without review <span class="quiet" style="font-weight: 400; font-size: 16px">last {AUTO_WINDOW_DAYS} days</span></h2>
+    <h2>Added or rewritten without review <span class="quiet" style="font-weight: 400; font-size: 16px">last {AUTO_WINDOW_DAYS} days</span></h2>
     {items.auto.length === 0 ? (
-      <p class="quiet" style="margin: 0; font-size: 15px">No instances were added by the automatic path recently.</p>
+      <p class="quiet" style="margin: 0; font-size: 15px">Nothing was added or rewritten without review recently.</p>
     ) : (
       <ul>
         {items.auto.map((a) => <li><a href={`/media/${a.subjectId}?edit=${a.id}`}>{a.title}</a><span class="quiet"> · </span><a href={`/tropes/${a.tropeSlug}`} style="color: inherit">{a.tropeName}</a><span class="quiet"> · {fmt(a.createdAt)}</span></li>)}

@@ -407,12 +407,12 @@ export const server = {
    */
   updateMedia: defineAction({
     accept: 'form',
-    input: z.object({ mediaId: id, identity: z.string().nullable().optional().transform((v) => v ?? 'keep'), seedUrl: text, description: text, aliases: text, poster: text, posterUrl: text }),
+    input: z.object({ mediaId: id, identity: z.string().nullable().optional().transform((v) => v ?? 'keep'), seedUrl: text, description: text, aliases: text, knowledgeOnly: checkbox, poster: text, posterUrl: text }),
     handler: async (input, context) => {
       requireOwner(context);
       const m = db.select().from(media).where(eq(media.id, input.mediaId)).get();
       if (!m) throw new ActionError({ code: 'NOT_FOUND', message: 'No such entry.' });
-      if (input.aliases !== m.aliases) db.update(media).set({ aliases: input.aliases, updatedAt: now() }).where(eq(media.id, m.id)).run();
+      if (input.aliases !== m.aliases || input.knowledgeOnly !== m.knowledgeOnly) db.update(media).set({ aliases: input.aliases, knowledgeOnly: input.knowledgeOnly, updatedAt: now() }).where(eq(media.id, m.id)).run();
       const candidates: Candidate[] = JSON.parse(m.identityCandidates || '[]');
       let refresh = false;
       let posterWanted: string | null = null;

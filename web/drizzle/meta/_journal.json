@@ -78,6 +78,13 @@
       "when": 1793059557797,
       "tag": "0010_media-videos",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1793150195477,
+      "tag": "0011_knowledge-only",
+      "breakpoints": true
     }
   ]
 }

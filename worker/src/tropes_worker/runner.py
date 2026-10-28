@@ -47,6 +47,7 @@ def registry() -> dict[str, JobFn]:
         sync_notion,
         transcribe,
         write_blurbs,
+        write_instances,
     )
 
     return {
@@ -66,6 +67,7 @@ def registry() -> dict[str, JobFn]:
         "look_frames": look_frames.run,
         "fetch_wiki": fetch_wiki.run,
         "find_videos": find_videos.run,
+        "write_instances": write_instances.run,
         "transcribe": transcribe.run,
     }
 

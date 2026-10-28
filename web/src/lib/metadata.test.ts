@@ -80,7 +80,7 @@ describe('metadata commit', () => {
         { subject: { kind: 'media', id: a.id }, kind: 'match', score: 1, prominence: 'brief', who: '', text: 'Pantheon', evidence: [], seed: false, rejectedBefore: false, flags: [], payload: { ...payload, poster: null } },
         { subject: { kind: 'media', id: b.id }, kind: 'match', score: 0.4, prominence: 'brief', who: '', text: 'No match', evidence: [], seed: false, rejectedBefore: false, flags: [], payload: { ...payload, status: 'check', chosen: other, candidates: [other], poster: null } },
       ],
-      dossiers: [], notes: [], verdicts: [], descriptions: [{ mediaId: a.id, text: 'A draft.' }], warnings: [],
+      dossiers: [], notes: [], verdicts: [], rewrites: [], descriptions: [{ mediaId: a.id, text: 'A draft.' }], warnings: [],
     });
     afterJobDone(db, db.select().from(job).where(eq(job.id, j.id)).get()!);
     expect(db.select().from(media).where(eq(media.id, a.id)).get()!.identity).toBe('pinned');
@@ -97,7 +97,7 @@ describe('metadata commit', () => {
     db.update(media).set({ description: 'Mine.', descriptionOrigin: 'owner' }).where(eq(media.id, a.id)).run();
     const j2 = createJob(db, 'write_blurbs', { mediaIds: [a.id] });
     claimJob(db, ['write_blurbs']);
-    completeJob(db, j2.id, { summary: {}, proposals: [], dossiers: [], notes: [], verdicts: [], descriptions: [{ mediaId: a.id, text: 'Another draft.' }], warnings: [] });
+    completeJob(db, j2.id, { summary: {}, proposals: [], dossiers: [], notes: [], verdicts: [], rewrites: [], descriptions: [{ mediaId: a.id, text: 'Another draft.' }], warnings: [] });
     expect(db.select().from(media).where(eq(media.id, a.id)).get()!.description).toBe('Mine.');
   });
 });

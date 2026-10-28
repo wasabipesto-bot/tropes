@@ -94,6 +94,7 @@ const identityLine =
       <label for="aliases" style="display: block; margin-top: 14px; font-weight: 600">Also known as</label>
       <input id="aliases" name="aliases" class="fld" value={m.aliases} placeholder="DGHDA, Dirk Gently" />
       <p class="quiet" style="margin: 4px 0 0; font-size: 15px">Comma-separated. The Tumblr search for your posts tries these as well as the title, its initialism and the part after a colon.</p>
+      <label class="ck" style="margin-top: 14px"><input type="checkbox" name="knowledgeOnly" checked={m.knowledgeOnly} /><span>Knowledge only: never read this work's text <span class="quiet">(dossier and scans go on what the model knows; saves the model time a long show would cost)</span></span></label>
       {m.wikiExtract && <p class="quiet" style="margin: 10px 0 0; font-size: 15px"><span style="font-style: italic">Wikipedia:</span> {m.wikiExtract}</p>}
     </section>
 

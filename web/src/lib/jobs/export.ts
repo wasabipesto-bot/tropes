@@ -41,6 +41,7 @@ export function exportSubjects(db: Db) {
     year: m.loggedDate ? Number(m.loggedDate.slice(0, 4)) : null,
     description: m.description,
     aliases: m.aliases,
+    knowledgeOnly: m.knowledgeOnly,
     links: links.filter((l) => l.mediaId === m.id).map(({ site, url }) => ({ site, url })),
     videos: videos.filter((v) => v.mediaId === m.id).map(({ kind, url, origin }) => ({ kind, url, origin })),
     genres: genres.filter((g) => g.mediaId === m.id).map((g) => g.genre),

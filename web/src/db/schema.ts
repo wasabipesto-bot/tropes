@@ -57,6 +57,8 @@ export const media = sqliteTable(
     reviewNote: text('review_note'),
     /** Other names the owner's posts use for it, comma-separated: initialisms, nicknames. The Tumblr search reads them. */
     aliases: text('aliases').notNull().default(''),
+    /** Knowledge only: the pipeline never reads this work's text (a long sitcom not worth the model time). */
+    knowledgeOnly: integer('knowledge_only', { mode: 'boolean' }).notNull().default(false),
     ratingMedium: real('rating_medium'),
     ratingStory: real('rating_story'),
     ratingTone: real('rating_tone'),
@@ -301,7 +303,7 @@ export const mediaNote = sqliteTable('media_note', {
   fetchedAt: text('fetched_at').notNull().default(sql`(datetime('now'))`),
 });
 
-export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs', 'find_evidence', 'index_local', 'extract_text', 'extract_evidence', 'make_sheets', 'read_sheets', 'look_frames', 'fetch_wiki', 'transcribe', 'find_videos'] as const;
+export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs', 'find_evidence', 'index_local', 'extract_text', 'extract_evidence', 'make_sheets', 'read_sheets', 'look_frames', 'fetch_wiki', 'transcribe', 'find_videos', 'write_instances'] as const;
 /** Job kinds that read the media disk; the media worker on celebrimbor claims these and nothing else. */
 export const MEDIA_JOB_KINDS = ['index_local', 'extract_text', 'extract_evidence', 'make_sheets', 'transcribe'] as const;
 export const JOB_STATUSES = ['queued', 'running', 'done', 'failed', 'cancelled'] as const;
