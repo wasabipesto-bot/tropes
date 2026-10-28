@@ -29,10 +29,13 @@ def wants_transcript(source: dict[str, Any]) -> bool:
     )
 
 
-def cues_from_segments(segments: Any) -> list[Cue]:
-    """faster-whisper segments (start, end, text) as cues; empty and bracketed non-speech lines are dropped."""
+def cues_from_segments(segments: Any, tick: Any = None) -> list[Cue]:
+    """faster-whisper segments (start, end, text) as cues; empty and bracketed non-speech lines are dropped.
+    `tick(seconds_done)` is called every 40 segments so a long file keeps the job's heartbeat alive."""
     out: list[Cue] = []
-    for s in segments:
+    for i, s in enumerate(segments):
+        if tick and i % 40 == 39:
+            tick(float(s.end))
         text = " ".join(str(s.text).split())
         if not text or (text.startswith(("[", "(")) and text.endswith(("]", ")"))):
             continue
@@ -40,7 +43,7 @@ def cues_from_segments(segments: Any) -> list[Cue]:
     return out
 
 
-def transcribe_file(path: Path, model: Any) -> list[Cue]:
+def transcribe_file(path: Path, model: Any, tick: Any = None) -> list[Cue]:
     import numpy as np
 
     raw = ffmpeg.audio_f32(path)
@@ -48,7 +51,7 @@ def transcribe_file(path: Path, model: Any) -> list[Cue]:
         return []
     audio = np.frombuffer(raw, dtype=np.float32)
     segments, _info = model.transcribe(audio, language="en", vad_filter=True, beam_size=1, condition_on_previous_text=False)
-    return cues_from_segments(segments)
+    return cues_from_segments(segments, tick)
 
 
 def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
@@ -78,8 +81,13 @@ def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     for n, (m, s) in enumerate(todo, 1):
         path = root / s["path"]
         t0 = time.monotonic()
+
+        # A feature film takes longer than the queue's stale window, so the heartbeat ticks as segments come out.
+        def tick(at: float, n: int = n, label: str = s.get("label") or "film") -> None:
+            ctx.progress(n - 1, len(todo), f"whisper {name}: {label} at {int(at // 60)} min")
+
         try:
-            cues = transcribe_file(path, model) if path.is_file() else []
+            cues = transcribe_file(path, model, tick) if path.is_file() else []
         except Exception as e:  # noqa: BLE001 - one bad file must not stop the batch
             log.warning("transcribe %s: %s", s["path"], e)
             cues = []
