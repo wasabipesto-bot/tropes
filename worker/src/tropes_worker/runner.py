@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import threading
 import time
 import traceback
 from collections.abc import Callable
@@ -25,7 +26,16 @@ class Context:
         self.job_id = job_id
 
     def progress(self, done: int, total: int, note: str | None = None) -> None:
+        self.last = (done, total, note)
         self.client.progress(self.job_id, done, total, note)
+
+    def heartbeat(self) -> None:
+        """Re-post the last progress so the queue's stale rule does not take a slow stretch for a dead worker."""
+        done, total, note = getattr(self, "last", (0, 0, "working"))
+        try:
+            self.client.progress(self.job_id, done, total, note)
+        except Exception:  # noqa: BLE001 - the heartbeat is best effort
+            pass
 
 
 def registry() -> dict[str, JobFn]:
@@ -106,8 +116,16 @@ def run_one(settings: Settings, client: SiteClient, kinds: list[str] | None = No
     log.info("job %d %s claimed (attempt %d)", job.id, job.kind, job.attempts)
     ctx = Context(settings, client, job.id)
     started = time.monotonic()
+    stop = threading.Event()
+
+    def beat() -> None:
+        while not stop.wait(120):
+            ctx.heartbeat()
+
+    threading.Thread(target=beat, name=f"heartbeat-{job.id}", daemon=True).start()
     try:
         result = handlers[job.kind](ctx, job.payload)
+        stop.set()
         post_result(client, job.id, result)
         log.info("job %d done in %.0fs", job.id, time.monotonic() - started)
     except JobCancelled:
@@ -115,6 +133,8 @@ def run_one(settings: Settings, client: SiteClient, kinds: list[str] | None = No
     except Exception as e:  # noqa: BLE001 - the job must be marked failed whatever happened
         log.error("job %d failed: %s", job.id, e)
         client.fail(job.id, f"{type(e).__name__}: {e}\n{traceback.format_exc()[-2000:]}")
+    finally:
+        stop.set()
     return True
 
 

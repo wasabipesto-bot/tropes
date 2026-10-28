@@ -25,7 +25,12 @@ export const POST: APIRoute = async ({ request }) => {
       for (const s of w.sources) {
         const row = existing.find((e) => e.path === s.path);
         if (row) {
-          tx.update(localSource).set({ kind: s.kind, label: s.label, meta: JSON.stringify(s.meta) }).where(eq(localSource.id, row.id)).run();
+          // The probe's facts replace the old probe's, but what later jobs recorded on the row (its extracted text,
+          // its contact sheets) survives a re-index.
+          const old = JSON.parse(row.meta || '{}');
+          const keep: Record<string, unknown> = {};
+          for (const k of ['sheets', 'textHash', 'textSource', 'words', 'whisperModel', 'whisperSeconds']) if (old[k] !== undefined) keep[k] = old[k];
+          tx.update(localSource).set({ kind: s.kind, label: s.label, meta: JSON.stringify({ ...s.meta, ...keep }) }).where(eq(localSource.id, row.id)).run();
           kept++;
         } else {
           tx.insert(localSource).values({ mediaId: w.mediaId, kind: s.kind, path: s.path, label: s.label, meta: JSON.stringify(s.meta) }).run();
