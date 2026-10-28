@@ -59,8 +59,11 @@ repo root. Values in parentheses are defaults.
 - `scan_trope`: pass 1 scores every subject from its dossier in batches; pass
   2 reads the candidates (full text when a source is linked) and writes the
   entry; quotes are checked verbatim against the text and dropped if absent.
-  Payload `{mode: add|recheck, tropeId?, draft?}`. Rechecks also look for new
-  evidence on existing instances that have a text source.
+  Payload `{mode: add|recheck, tropeId?, draft?}`; a draft's seeds are
+  `{title, note, subject}` as the site resolved them (loose matching, a
+  bracketed note split off), and the note reaches the examples block and
+  pass 2 for that seed. Rechecks also look for new evidence on existing
+  instances that have a text source.
 - `check_subject`: one work or series against every trope in one call, plus
   new evidence for its existing instances on a recheck. Payload `{mode, subject}`.
 
@@ -108,6 +111,11 @@ that read what it produced:
   a subtitle file and posted as source `whisper`. Needs
   `uv sync --extra whisper` on the media worker. Payload
   `{sourceIds?, auto, model?, threads?}`.
+- `draft_instance`: the owner added an association from a title and a
+  note; the model writes who, the entry, the prominence and up to three
+  verbatim quotes from the work's dossier and text, steered by the note.
+  The text lands on the instance unverified; the quotes attach and frames
+  follow. Payload `{instanceId, note}`.
 - `read_sheets`: the model looks at each sheet and writes down what is shown
   but never said (looks, props, settings, on-screen text), stored as
   `media_note` rows with source `visual` and the episode label; the dossier

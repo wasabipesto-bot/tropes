@@ -1,4 +1,6 @@
 ---
+import { tropeSeed } from '../../db/schema';
+import { eq } from 'drizzle-orm';
 import { plainText } from '../../lib/text';
 import { actions } from 'astro:actions';
 import Base from '../../layouts/Base.astro';
@@ -29,6 +31,7 @@ const editing = owner && /^\d+$/.test(p.get('edit') ?? '') ? Number(p.get('edit'
 
 const render = { tropeHref: tropeHrefResolver(db) };
 const items = instancesForTrope(db, t.id);
+const seeds = db.select().from(tropeSeed).where(eq(tropeSeed.tropeId, t.id)).all();
 const notable = notableFor(db, t.id, items);
 const here = `/tropes/${t.slug}`;
 const returnTo = Astro.url.pathname + Astro.url.search;
@@ -57,7 +60,17 @@ const returnTo = Astro.url.pathname + Astro.url.search;
           <textarea id="desc" name="description" class="fld" rows="5">{t.description}</textarea>
           <p class="quiet" style="margin: 4px 0 0; font-size: 15px">[[Trope name]] links to another trope.</p>
           <label style="display: flex; gap: 10px; align-items: baseline; font-size: 16px; margin-top: 10px"><input type="checkbox" name="visual" checked={t.visual} /> Visual trope, use screenshots <span class="quiet" style="font-size: 15px">(the model checks the frame at each quoted moment before proposing)</span></label>
+          <p class="quiet" style="margin: 14px 0 4px; font-size: 15px">Examples the scans calibrate on:</p>
+          {seeds.map((sd) => (
+            <p style="margin: 0; font-size: 15px; display: flex; gap: 12px; align-items: baseline">{sd.title}{sd.note && <span class="quiet">— {sd.note}</span>}{!sd.mediaId && <span class="quiet">(not matched to a work)</span>}<button type="submit" class="t danger" formaction={actions.removeSeed} name="seedId" value={sd.id} style="padding: 2px 0; font-size: 14px">Remove</button></p>
+          ))}
           <p style="margin: 8px 0 0; font-size: 16px; display: flex; gap: 16px"><button type="submit" class="t" style="padding: 8px 0">Save</button><a href={here} class="quiet" style="padding: 8px 0">Cancel</a></p>
+        </form>
+        <form method="POST" action={actions.addSeed} style="margin-top: 6px; display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; font-size: 15px">
+          <input type="hidden" name="tropeId" value={t.id} /><input type="hidden" name="returnTo" value={`${here}?edit=desc`} />
+          <input name="title" list="subjects" placeholder="Add an example" class="line" style="width: 220px" autocomplete="off" />
+          <input name="note" placeholder="note (optional)" class="line" style="width: 180px" />
+          <button type="submit" class="t" style="padding: 4px 0">Add example</button>
         </form>
       ) : (
         <>
@@ -86,9 +99,11 @@ const returnTo = Astro.url.pathname + Astro.url.search;
         <input type="hidden" name="tropeId" value={t.id} />
         <input type="hidden" name="returnTo" value={here} />
         <label for="addm" class="quiet">Add media to this trope</label>
-        <input id="addm" name="title" list="subjects" placeholder="Title" class="line" style="width: 260px" autocomplete="off" />
+        <input id="addm" name="title" list="subjects" placeholder="Title" class="line" style="width: 240px" autocomplete="off" />
         <datalist id="subjects">{subjectTitles(db).map((s) => <option value={s}></option>)}</datalist>
-        <button type="submit" class="t" style="padding: 8px 0">Add</button>
+        <input name="note" placeholder="note for the model (optional)" class="line" style="width: 240px" />
+        <button type="submit" class="t" name="mode" value="draft" style="padding: 8px 0">Add and write it</button>
+        <button type="submit" class="t quiet" name="mode" value="manual" style="padding: 8px 0">Add, I'll write it</button>
       </form>
       <div></div>
     </div>

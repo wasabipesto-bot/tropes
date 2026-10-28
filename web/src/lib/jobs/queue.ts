@@ -124,7 +124,7 @@ export function completeJob(db: Db, id: number, body: ResultBody): void {
     }
     // Entry texts written for instances that had none (write_instances): stored, unverified, for the owner to read.
     for (const r of body.rewrites ?? []) {
-      tx.update(instance).set({ who: r.who, text: r.text, verified: false, updatedAt: sql`(datetime('now'))` }).where(eq(instance.id, r.instanceId)).run();
+      tx.update(instance).set({ who: r.who, text: r.text, verified: false, updatedAt: sql`(datetime('now'))`, ...(r.prominence ? { prominence: r.prominence } : {}) }).where(eq(instance.id, r.instanceId)).run();
     }
     // Model-written description drafts never replace the owner's words.
     for (const d of body.descriptions ?? []) {

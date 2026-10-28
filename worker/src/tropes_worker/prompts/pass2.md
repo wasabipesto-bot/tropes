@@ -1,5 +1,5 @@
 ---
-version: 3
+version: 4
 ---
 Decide whether this work contains the trope as described, and if so write the entry for it.
 
@@ -11,6 +11,8 @@ The owner's own examples of this trope. They set the bar: a work that fits the d
 
 The work:
 {{entry}}
+
+The owner's note on this work for this trope, when they gave one (which character, pair or element to look at): {{note}}
 
 Dossier:
 {{dossier}}

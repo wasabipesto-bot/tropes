@@ -109,6 +109,32 @@ def load_subject_text(settings: Settings, subject: dict[str, Any], texts_by_medi
     return None
 
 
+class LazyTexts:
+    """media id -> Text, loaded on first use and kept for a handful of works at a time (plan D8's memory lesson)."""
+
+    def __init__(self, settings: Settings, media: list[dict[str, Any]], keep: int = 6) -> None:
+        self._settings = settings
+        self._media = {m["id"]: m for m in media if m.get("textSources")}
+        self._keep = keep
+        self._cache: dict[int, Any] = {}
+
+    def __contains__(self, mid: int) -> bool:
+        return mid in self._media and self[mid] is not None
+
+    def __getitem__(self, mid: int) -> Any:
+        if mid in self._cache:
+            return self._cache[mid]
+        m = self._media.get(mid)
+        text = load_subject_text(self._settings, m) if m else None
+        if len(self._cache) >= self._keep:
+            self._cache.pop(next(iter(self._cache)))
+        self._cache[mid] = text
+        return text
+
+    def get(self, mid: int, default: Any = None) -> Any:
+        return self[mid] if mid in self._media else default
+
+
 # Dossiers -----------------------------------------------------------------
 
 
@@ -282,6 +308,9 @@ class TropeSpec:
     rejected: set[str] = field(default_factory=set)
     # title -> (who, text) for seeds that already have an entry, so pass 2 sees the bar concretely.
     seed_entries: dict[str, tuple[str, str]] = field(default_factory=dict)
+    # title -> the owner's note ("Luke", "the hand, not the arm"); subject key -> note for pass 2.
+    seed_notes: dict[str, str] = field(default_factory=dict)
+    notes_by_key: dict[str, str] = field(default_factory=dict)
 
     def seeds_block(self) -> str:
         if not self.seeds:
@@ -289,7 +318,8 @@ class TropeSpec:
         lines = []
         for title in self.seeds:
             who, text = self.seed_entries.get(title, ("", ""))
-            lines.append(f"- {title}: {who}. {text}".rstrip(". ") + "." if text else f"- {title}")
+            name = f"{title} — {self.seed_notes[title]}" if self.seed_notes.get(title) else title
+            lines.append(f"- {name}: {who}. {text}".rstrip(". ") + "." if text else f"- {name}")
         return "\n".join(lines)
 
 
@@ -455,6 +485,7 @@ async def pass2(
             "trope_description": trope.description,
             "seeds": trope.seeds_block(),
             "entry": entry_text(s),
+            "note": trope.notes_by_key.get(key) or "(none)",
             "dossier": dossier_block(dossiers, key),
             "text_section": text_section(text),
         },

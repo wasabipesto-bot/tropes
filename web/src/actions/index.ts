@@ -5,6 +5,7 @@ import { and, eq, sql } from 'drizzle-orm';
 import type { ActionAPIContext } from 'astro:actions';
 import { db } from '../db';
 import { applyCaps } from '../lib/caps';
+import { matchSubject, parseExample } from '../lib/examples';
 import { upsertVideo } from '../lib/videos';
 import { PROMINENCES, VIDEO_KINDS, dossier, evidence, instance, job, localSource, media, mediaGenre, mediaLink, mediaVideo, notable, proposal, series, trope, tropeAlias, tropeSeed } from '../db/schema';
 import { cancelJob, createJob, jobById, parseJson } from '../lib/jobs/queue';
@@ -108,32 +109,29 @@ export const server = {
     },
   }),
 
-  /** Manual association from a trope page: type a title, press Add. */
+  /** From a trope page: a title and a note. The model drafts the entry (draft_instance), or the owner writes it (manual). */
   addInstanceByTitle: defineAction({
     accept: 'form',
-    input: z.object({ tropeId: id, title: z.string().trim().min(1), returnTo }),
+    input: z.object({ tropeId: id, title: z.string().trim().min(1), note: text, mode: z.string().nullable().optional().transform((v) => (v === 'manual' ? 'manual' : 'draft')), returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
-      const subject = resolveSubject(db, input.title);
-      if (!subject) throw new ActionError({ code: 'NOT_FOUND', message: `Nothing in the library is called “${input.title}”.` });
+      const m = matchSubject(db, input.title);
+      if (!m) throw new ActionError({ code: 'NOT_FOUND', message: `Nothing in the library is called “${input.title}”.` });
       const t = db.select().from(trope).where(eq(trope.id, input.tropeId)).get();
       if (!t) throw new ActionError({ code: 'NOT_FOUND', message: 'No such trope.' });
-      const created = db.insert(instance).values({ tropeId: t.id, subjectKind: subject.kind, subjectId: subject.id, verified: true, origin: 'manual' }).returning().get();
-      return { returnTo: `/tropes/${t.slug}?edit=${created.id}&text=1` };
+      return { returnTo: startInstance(t.id, m.kind, m.id, input.mode, input.note, `/tropes/${t.slug}`) };
     },
   }),
 
-  /** Manual association from a media or series page: type a trope name, press Add. */
+  /** From a media or series page: a trope name and a note; drafted by the model or written by the owner. */
   addInstanceByTrope: defineAction({
     accept: 'form',
-    input: z.object({ subjectKind: z.enum(['media', 'series']), subjectId: id, tropeName: z.string().trim().min(1), returnTo }),
+    input: z.object({ subjectKind: z.enum(['media', 'series']), subjectId: id, tropeName: z.string().trim().min(1), note: text, mode: z.string().nullable().optional().transform((v) => (v === 'manual' ? 'manual' : 'draft')), returnTo }),
     handler: async (input, context) => {
       requireOwner(context);
       const t = resolveTrope(db, input.tropeName);
       if (!t) throw new ActionError({ code: 'NOT_FOUND', message: `There is no trope called “${input.tropeName}”.` });
-      const created = db.insert(instance).values({ tropeId: t.id, subjectKind: input.subjectKind, subjectId: input.subjectId, verified: true, origin: 'manual' }).returning().get();
-      const base = input.returnTo ?? '/tropes';
-      return { returnTo: `${base}${base.includes('?') ? '&' : '?'}edit=${created.id}&text=1` };
+      return { returnTo: startInstance(t.id, input.subjectKind, input.subjectId, input.mode, input.note, input.returnTo ?? '/tropes') };
     },
   }),
 
@@ -243,17 +241,57 @@ export const server = {
     },
   }),
 
-  /** Add-trope step 1: nothing is saved; the draft travels in the job. */
+  /** Add-trope step 1: resolve the examples and show what each one means before anything runs. */
+  previewTropeScan: defineAction({
+    accept: 'form',
+    input: z.object({ name: z.string().trim().min(1), description: text, example: z.array(z.string()).default([]), note: z.array(z.string()).default([]), visual: checkbox }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const q = new URLSearchParams({ preview: '1', name: input.name, description: input.description });
+      if (input.visual) q.set('visual', 'on');
+      input.example.forEach((ex, i) => {
+        if (!ex.trim()) return;
+        const parsed = parseExample(ex);
+        q.append('example', parsed.title);
+        q.append('note', (input.note[i] ?? '').trim() || parsed.note);
+      });
+      return { returnTo: `/add/trope?${q}` };
+    },
+  }),
+
+  /** Add-trope step 2: nothing is saved; the draft, with its resolved examples, travels in the job. */
   startTropeScan: defineAction({
     accept: 'form',
-    input: z.object({ name: z.string().trim().min(1), description: text, examples: text, visual: checkbox }),
+    input: z.object({ name: z.string().trim().min(1), description: text, example: z.array(z.string()).default([]), note: z.array(z.string()).default([]), subject: z.array(z.string()).default([]), visual: checkbox }),
     handler: async (input, context) => {
       requireOwner(context);
       if (!slugify(input.name)) throw new ActionError({ code: 'BAD_REQUEST', message: 'The name needs at least one letter or digit.' });
       if (db.select().from(trope).where(eq(trope.slug, slugify(input.name))).get()) throw new ActionError({ code: 'CONFLICT', message: 'A trope with that name already exists. Recheck it from its page instead.' });
-      const seeds = input.examples.split('\n').map((l) => l.trim()).filter(Boolean);
+      const seeds = input.example.map((title, i) => ({ title: title.trim(), note: (input.note[i] ?? '').trim(), subject: parseSubjectRef(input.subject[i]) ?? refOf(matchSubject(db, title)) })).filter((s) => s.title);
       const j = createJob(db, 'scan_trope', { mode: 'add', draft: { name: input.name, description: input.description, seeds, visual: input.visual } });
       return { returnTo: `/add/trope?job=${j.id}` };
+    },
+  }),
+
+  /** Examples on an existing trope: add one (with a note) or remove one; the next recheck uses them. */
+  addSeed: defineAction({
+    accept: 'form',
+    input: z.object({ tropeId: id, title: z.string().trim().min(1), note: text, returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      const parsed = parseExample(input.title);
+      const m = matchSubject(db, parsed.title);
+      db.insert(tropeSeed).values({ tropeId: input.tropeId, title: m?.title ?? parsed.title, note: input.note || parsed.note, mediaId: m?.kind === 'media' ? m.id : null }).run();
+      return { returnTo: input.returnTo ?? '/tropes' };
+    },
+  }),
+  removeSeed: defineAction({
+    accept: 'form',
+    input: z.object({ seedId: id, returnTo }),
+    handler: async (input, context) => {
+      requireOwner(context);
+      db.delete(tropeSeed).where(eq(tropeSeed.id, input.seedId)).run();
+      return { returnTo: input.returnTo ?? '/tropes' };
     },
   }),
 
@@ -619,3 +657,23 @@ export const server = {
 };
 
 // Jobs and proposals ------------------------------------------------------------
+
+/** Create the association; in draft mode queue the model to write it and land on the row, in manual mode open the edit panel. */
+function startInstance(tropeId: number, subjectKind: 'media' | 'series', subjectId: number, mode: 'draft' | 'manual', note: string, base: string): string {
+  if (mode === 'manual') {
+    const created = db.insert(instance).values({ tropeId, subjectKind, subjectId, verified: true, origin: 'manual' }).returning().get();
+    return `${base}${base.includes('?') ? '&' : '?'}edit=${created.id}&text=1`;
+  }
+  const created = db.insert(instance).values({ tropeId, subjectKind, subjectId, verified: false, origin: 'model', who: '', text: '' }).returning().get();
+  createJob(db, 'draft_instance', { instanceId: created.id, note });
+  return `${base}#i-${created.id}`;
+}
+
+function parseSubjectRef(v: string | undefined): { kind: 'media' | 'series'; id: number } | null {
+  const m = /^(media|series):(\d+)$/.exec(v ?? '');
+  return m ? { kind: m[1] as 'media' | 'series', id: Number(m[2]) } : null;
+}
+
+function refOf(m: { kind: 'media' | 'series'; id: number } | null): { kind: 'media' | 'series'; id: number } | null {
+  return m ? { kind: m.kind, id: m.id } : null;
+}

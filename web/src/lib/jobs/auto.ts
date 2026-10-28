@@ -55,8 +55,8 @@ export function afterNotionSync(db: Db, report: ImportReport): { lookups: number
 export function afterJobDone(db: Db, j: Job): void {
   const payload = parseJson<any>(j.payload, {});
   if (j.kind === 'lookup_media') supersedeOlderMatches(db, j, payload.mediaIds ?? []);
-  if (j.kind === 'scan_trope' || j.kind === 'check_subject' || j.kind === 'find_evidence') queueFrames(db, j);
-  if (j.kind === 'find_evidence') {
+  if (j.kind === 'scan_trope' || j.kind === 'check_subject' || j.kind === 'find_evidence' || j.kind === 'draft_instance') queueFrames(db, j);
+  if (j.kind === 'find_evidence' || j.kind === 'draft_instance') {
     // The owner asked for these by name, so they go straight onto the instance; Remove is one click away.
     const rows = db.select({ id: proposal.id }).from(proposal).where(and(eq(proposal.jobId, j.id), eq(proposal.kind, 'evidence'))).all();
     if (rows.length > 0) commitProposals(db, j.id, new Set(rows.map((r) => r.id)), {});

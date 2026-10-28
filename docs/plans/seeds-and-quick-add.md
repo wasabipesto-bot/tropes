@@ -4,6 +4,12 @@
 flows, one idea underneath: you name the work (and say a word about why) and
 the model does the digging; you edit afterwards.
 
+Status: approved the same day ("sounds good, proceed") and built: example
+rows with notes and a preview step on /add/trope, loose matching
+(`web/src/lib/examples.ts`), seeds editable on the trope page, the note in
+the scan prompts, and the `draft_instance` job behind "Add and write it" on
+trope and media pages ("Add, I'll write it" keeps the manual path).
+
 ## 1. Seeds for a new trope
 
 Today "Examples" is a textarea, one title a line, matched to the library by

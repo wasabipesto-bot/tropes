@@ -38,9 +38,9 @@ export function commitProposals(db: Db, jobId: number, accepted: Set<number>, pr
       const row = existing ?? tx.insert(trope).values({ name: d.name, slug, description: d.description, visual: Boolean(d.visual) }).returning().get();
       tropeId = row.id;
       if (!existing) {
-        for (const title of d.seeds ?? []) {
-          const subject = resolveSubject(tx as unknown as Db, title);
-          tx.insert(tropeSeed).values({ tropeId: row.id, title, mediaId: subject?.kind === 'media' ? subject.id : null }).run();
+        for (const seed of d.seeds ?? []) {
+          const s = typeof seed === 'string' ? { title: seed, note: '', subject: resolveSubject(tx as unknown as Db, seed) ?? null } : seed;
+          tx.insert(tropeSeed).values({ tropeId: row.id, title: s.title, note: s.note ?? '', mediaId: s.subject?.kind === 'media' ? s.subject.id : null }).run();
         }
       }
       returnTo = `/tropes/${slug}`;

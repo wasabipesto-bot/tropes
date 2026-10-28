@@ -4,11 +4,15 @@ import { DOSSIER_DEPTHS, JOB_KINDS, PROMINENCES, PROPOSAL_KINDS, SOURCE_KINDS, S
 
 export const subjectRef = z.object({ kind: z.enum(SUBJECT_KINDS), id: z.number().int().positive() });
 
+/** An example the owner gave for a trope: the title as typed, the work it resolved to (if any) and the owner's note. */
+export const seedIn = z.object({ title: z.string().min(1), note: z.string().default(''), subject: subjectRef.nullable().optional() });
+/** draft_instance: the model writes a just-added association (who, text, prominence, quotes) from the dossier and text, steered by the owner's note. */
+export const draftInstancePayload = z.object({ instanceId: z.number().int().positive(), note: z.string().default('') });
 /** scan_trope: an existing trope (tropeId) or a draft one carried in the payload. */
 export const scanTropePayload = z.object({
   mode: z.enum(['add', 'recheck']),
   tropeId: z.number().int().positive().optional(),
-  draft: z.object({ name: z.string().min(1), description: z.string(), seeds: z.array(z.string()), visual: z.boolean().default(false) }).optional(),
+  draft: z.object({ name: z.string().min(1), description: z.string(), seeds: z.array(z.union([z.string(), seedIn])), visual: z.boolean().default(false) }).optional(),
 });
 /** `auto` marks a job on the automatic path for Notion-synced entries (plan T14): its result is committed without review. */
 export const checkSubjectPayload = z.object({ mode: z.enum(['add', 'recheck']), subject: subjectRef, auto: z.boolean().default(false) });
@@ -71,6 +75,7 @@ export const payloadByKind = {
   transcribe: transcribePayload,
   find_videos: findVideosPayload,
   write_instances: writeInstancesPayload,
+  draft_instance: draftInstancePayload,
 } as const;
 export type JobKind = (typeof JOB_KINDS)[number];
 
@@ -124,7 +129,7 @@ export const usageIn = z.object({
 export const verdictIn = z.object({ proposalId: z.number().int().positive(), seen: z.boolean(), note: z.string().default('') });
 
 /** write_instances: a text for an instance that had none; the instance becomes unverified until the owner looks. */
-export const rewriteIn = z.object({ instanceId: z.number().int().positive(), who: z.string().default(''), text: z.string().min(1), flags: z.array(z.string()).default([]) });
+export const rewriteIn = z.object({ instanceId: z.number().int().positive(), who: z.string().default(''), text: z.string().min(1), prominence: z.enum(PROMINENCES).optional(), flags: z.array(z.string()).default([]) });
 
 export const resultBody = z.object({
   summary: z.record(z.string(), z.unknown()).default({}),

@@ -5,6 +5,8 @@ import { PROMINENCES } from '../db/schema';
 import { db } from '../db';
 import { visibleEvidence } from '../lib/caps';
 import { evidenceSearchFor } from '../lib/jobs/pending';
+import { and, eq, inArray } from 'drizzle-orm';
+import { job } from '../db/schema';
 import { parseJson } from '../lib/jobs/queue';
 import { PROMINENCE_LABEL, groupByProminence, type InstanceView } from '../lib/queries';
 import { formatLocator, renderInline, type RenderOptions } from '../lib/text';
@@ -35,6 +37,14 @@ const quotes = (ev: Evidence[]) => visibleEvidence(ev, owner).filter((e) => e.ki
 // Over a fair-use cap (plan Phase 6): kept, shown to the owner with a tag, hidden from visitors.
 const ownerOnly = (e: Evidence) => owner && !e.public;
 const search = owner && editing ? evidenceSearchFor(db, editing) : undefined;
+// Associations the model is still writing (draft_instance): the row says so and polls until the text lands.
+const drafting = new Map<number, number>();
+if (items.length > 0) {
+  for (const j of db.select().from(job).where(and(eq(job.kind, 'draft_instance'), inArray(job.status, ['queued', 'running']))).all()) {
+    const iid = Number(parseJson<any>(j.payload, {}).instanceId);
+    if (items.some((v) => v.inst.id === iid)) drafting.set(iid, j.id);
+  }
+}
 const searchLine = (() => {
   if (!search) return null;
   const r = parseJson<any>(search.result, {});
@@ -124,11 +134,15 @@ const searchLine = (() => {
           </div>
         </div>
       ) : (
+        drafting.has(v.inst.id) ? (
+          <p class="quiet status live" style="margin: 2px 0 0" data-job={drafting.get(v.inst.id)}>Writing the entry from the dossier and the text…</p>
+        ) : (
         <p style="margin: 2px 0 0">
           {v.inst.who && <span style="font-style: italic">{v.inst.who}.</span>}
           {v.inst.who && ' '}
           <Fragment set:html={renderInline(v.inst.text, render)} />
         </p>
+        )
       )}
     </div>
     <aside class="mar">
@@ -154,22 +168,24 @@ const searchLine = (() => {
 )))}
 
 <script>
-  // While an evidence search runs, poll it and reload once it lands so the quotes appear.
-  const el = document.querySelector<HTMLElement>('.status.live[data-job]');
-  if (el) {
-    const id = el.dataset.job;
+  // While an evidence search or a draft runs, poll it and reload once it lands so the text and quotes appear.
+  const live = Array.from(document.querySelectorAll<HTMLElement>('.status.live[data-job]'));
+  if (live.length > 0) {
+    const ids = [...new Set(live.map((el) => el.dataset.job!))];
     const tick = async () => {
       try {
-        const r = await fetch(`/api/jobs/${id}`, { headers: { accept: 'application/json' } });
-        if (r.ok) {
-          const j = await r.json();
-          if (j.status !== 'running' && j.status !== 'queued') { location.reload(); return; }
+        for (const id of ids) {
+          const r = await fetch(`/api/jobs/${id}`, { headers: { accept: 'application/json' } });
+          if (r.ok) {
+            const j = await r.json();
+            if (j.status !== 'running' && j.status !== 'queued') { location.reload(); return; }
+          }
         }
       } finally {
-        setTimeout(tick, 2000);
+        setTimeout(tick, 2500);
       }
     };
-    setTimeout(tick, 2000);
+    setTimeout(tick, 2500);
   }
 </script>
 

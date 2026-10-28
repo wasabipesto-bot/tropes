@@ -1,0 +1,1 @@
+ALTER TABLE `trope_seed` ADD `note` text DEFAULT '' NOT NULL;

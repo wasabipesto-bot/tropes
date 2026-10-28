@@ -165,9 +165,11 @@ const fmt = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateS
         <input type="hidden" name="subjectId" value={m.id} />
         <input type="hidden" name="returnTo" value={here} />
         <label for="addt" class="quiet">Add a trope</label>
-        <input id="addt" name="tropeName" list="tropelist" placeholder="Trope name" class="line" style="width: 260px" autocomplete="off" />
+        <input id="addt" name="tropeName" list="tropelist" placeholder="Trope name" class="line" style="width: 240px" autocomplete="off" />
         <datalist id="tropelist">{allTropes(db).map((t) => <option value={t.name}></option>)}</datalist>
-        <button type="submit" class="t" style="padding: 8px 0">Add</button>
+        <input name="note" placeholder="note for the model (optional)" class="line" style="width: 240px" />
+        <button type="submit" class="t" name="mode" value="draft" style="padding: 8px 0">Add and write it</button>
+        <button type="submit" class="t quiet" name="mode" value="manual" style="padding: 8px 0">Add, I'll write it</button>
       </form>
       <div></div>
     </div>

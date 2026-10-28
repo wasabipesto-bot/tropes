@@ -167,6 +167,8 @@ export const tropeSeed = sqliteTable('trope_seed', {
   tropeId: integer('trope_id').notNull().references(() => trope.id, { onDelete: 'cascade' }),
   title: text('title').notNull(),
   mediaId: integer('media_id').references(() => media.id, { onDelete: 'set null' }),
+  /** The owner's word on why this example counts ("Luke", "the hand, not the arm"); the scan reads it. */
+  note: text('note').notNull().default(''),
 });
 
 /** Former names of a renamed trope: old URLs redirect and old [[links]] still resolve. */
@@ -303,7 +305,7 @@ export const mediaNote = sqliteTable('media_note', {
   fetchedAt: text('fetched_at').notNull().default(sql`(datetime('now'))`),
 });
 
-export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs', 'find_evidence', 'index_local', 'extract_text', 'extract_evidence', 'make_sheets', 'read_sheets', 'look_frames', 'fetch_wiki', 'transcribe', 'find_videos', 'write_instances'] as const;
+export const JOB_KINDS = ['ping', 'build_dossiers', 'scan_trope', 'check_subject', 'lookup_media', 'sync_notion', 'write_blurbs', 'find_evidence', 'index_local', 'extract_text', 'extract_evidence', 'make_sheets', 'read_sheets', 'look_frames', 'fetch_wiki', 'transcribe', 'find_videos', 'write_instances', 'draft_instance'] as const;
 /** Job kinds that read the media disk; the media worker on celebrimbor claims these and nothing else. */
 export const MEDIA_JOB_KINDS = ['index_local', 'extract_text', 'extract_evidence', 'make_sheets', 'transcribe'] as const;
 export const JOB_STATUSES = ['queued', 'running', 'done', 'failed', 'cancelled'] as const;

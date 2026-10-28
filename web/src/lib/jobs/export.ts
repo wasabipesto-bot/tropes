@@ -14,7 +14,7 @@ export function exportTropes(db: Db) {
     slug: t.slug,
     description: t.description,
     visual: t.visual,
-    seeds: seeds.filter((s) => s.tropeId === t.id).map((s) => ({ title: s.title, mediaId: s.mediaId })),
+    seeds: seeds.filter((s) => s.tropeId === t.id).map((s) => ({ title: s.title, mediaId: s.mediaId, note: s.note })),
     instances: insts.filter((i) => i.tropeId === t.id).map(({ tropeId: _t, ...rest }) => rest),
     rejected: rejected.filter((r) => r.tropeId === t.id).map((r) => ({ kind: r.kind, id: r.subjectId })),
   }));

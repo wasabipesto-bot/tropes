@@ -8,6 +8,7 @@ from typing import Any
 from ..llm import LLM
 from ..pipeline import (
     Candidate,
+    LazyTexts,
     TropeSpec,
     choose_candidates,
     ensure_texts,
@@ -21,32 +22,6 @@ from ..pipeline import (
 from ..runner import Context
 
 log = logging.getLogger("tropes_worker.jobs.scan_trope")
-
-
-class LazyTexts:
-    """media id -> Text, loaded on first use and kept for a handful of works at a time (plan D8's memory lesson)."""
-
-    def __init__(self, settings: Any, media: list[dict[str, Any]], keep: int = 6) -> None:
-        self._settings = settings
-        self._media = {m["id"]: m for m in media if m.get("textSources")}
-        self._keep = keep
-        self._cache: dict[int, Any] = {}
-
-    def __contains__(self, mid: int) -> bool:
-        return mid in self._media and self[mid] is not None
-
-    def __getitem__(self, mid: int) -> Any:
-        if mid in self._cache:
-            return self._cache[mid]
-        m = self._media.get(mid)
-        text = load_subject_text(self._settings, m) if m else None
-        if len(self._cache) >= self._keep:
-            self._cache.pop(next(iter(self._cache)))
-        self._cache[mid] = text
-        return text
-
-    def get(self, mid: int, default: Any = None) -> Any:
-        return self[mid] if mid in self._media else default
 
 
 def resolve_title(title: str, media: list[dict[str, Any]], series: list[dict[str, Any]]) -> str | None:
@@ -65,9 +40,15 @@ def trope_spec_from(
 ) -> tuple[TropeSpec, list[str]]:
     """Build the spec from an existing trope id or the draft in the payload. Returns (spec, unresolved seed titles)."""
     unresolved: list[str] = []
+    given: dict[str, dict[str, Any]] = {}  # title -> {note, subject} when the site resolved it
     if payload.get("tropeId"):
         t = next(x for x in tropes if x["id"] == payload["tropeId"])
         spec = TropeSpec(id=t["id"], name=t["name"], description=t["description"], seeds=[s["title"] for s in t.get("seeds", [])])
+        for s in t.get("seeds", []):
+            if s.get("note"):
+                spec.seed_notes[s["title"]] = s["note"]
+            if s.get("mediaId"):
+                given[s["title"]] = {"subject": {"kind": "media", "id": s["mediaId"]}}
         spec.existing = {subject_key(i["kind"], i["subjectId"]): i for i in t.get("instances", [])}
         # A series instance covers its members, so members are not re-proposed on their own.
         for s in series:
@@ -77,11 +58,28 @@ def trope_spec_from(
         spec.rejected = {subject_key(r["kind"], r["id"]) for r in t.get("rejected", [])}
     else:
         d = payload["draft"]
-        spec = TropeSpec(id=None, name=d["name"], description=d["description"], seeds=list(d.get("seeds", [])))
+        titles = []
+        for s in d.get("seeds", []):
+            if isinstance(s, str):
+                titles.append(s)
+            else:
+                titles.append(s["title"])
+                if s.get("note"):
+                    spec_note = s["note"]
+                    given.setdefault(s["title"], {})["note"] = spec_note
+                if s.get("subject"):
+                    given.setdefault(s["title"], {})["subject"] = s["subject"]
+        spec = TropeSpec(id=None, name=d["name"], description=d["description"], seeds=titles)
+        for title, g in given.items():
+            if g.get("note"):
+                spec.seed_notes[title] = g["note"]
     for title in spec.seeds:
-        key = resolve_title(title, media, series)
+        g = given.get(title) or {}
+        key = subject_key(g["subject"]["kind"], g["subject"]["id"]) if g.get("subject") else resolve_title(title, media, series)
         if key:
             spec.seed_subjects.add(key)
+            if spec.seed_notes.get(title):
+                spec.notes_by_key[key] = spec.seed_notes[title]
             inst = spec.existing.get(key)
             if inst and inst.get("text"):
                 spec.seed_entries[title] = (inst.get("who") or "", inst["text"])

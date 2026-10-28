@@ -10,7 +10,8 @@ import { framesJobFor } from '../../lib/jobs/pending';
 import { UNCHECKED_BELOW, calibrationLine, proposalsFor } from '../../lib/jobs/view';
 import { count } from 'drizzle-orm';
 import { media } from '../../db/schema';
-import { tropeHrefResolver } from '../../lib/queries';
+import { matchSubject } from '../../lib/examples';
+import { subjectTitles, tropeHrefResolver } from '../../lib/queries';
 import { parseJson } from '../../lib/jobs/queue';
 
 if (!Astro.locals.owner) return Astro.redirect('/login');
@@ -22,8 +23,16 @@ const draft = job ? parseJson<any>(job.payload, {}).draft : null;
 const items = job?.status === 'done' ? proposalsFor(db, job, summary.uncheckedBelow ?? UNCHECKED_BELOW) : [];
 const render = { tropeHref: tropeHrefResolver(db) };
 const step = !job ? 'Step 1 of 2: describe it' : job.status === 'done' ? 'Step 2 of 2: check the scan. Nothing is saved until you commit.' : 'Scanning';
-const describeHref = draft ? `/add/trope?name=${encodeURIComponent(draft.name)}&description=${encodeURIComponent(draft.description)}&examples=${encodeURIComponent((draft.seeds ?? []).join('\n'))}` : '/add/trope';
+const describeHref = draft
+  ? `/add/trope?name=${encodeURIComponent(draft.name)}&description=${encodeURIComponent(draft.description)}${(draft.seeds ?? []).map((x: any) => `&example=${encodeURIComponent(typeof x === 'string' ? x : x.title)}&note=${encodeURIComponent(typeof x === 'string' ? '' : x.note ?? '')}`).join('')}${draft.visual ? '&visual=on' : ''}`
+  : '/add/trope';
 const q = Astro.url.searchParams;
+// Step 1b: the examples as typed, each resolved to a work (or not), shown before anything runs.
+const preview = !job && q.get('preview') === '1';
+const typed = q.getAll('example').map((title, i) => ({ title, note: q.getAll('note')[i] ?? '' })).filter((e) => e.title.trim());
+const resolved = preview ? typed.map((e) => ({ ...e, match: matchSubject(db, e.title) })) : [];
+const rows = Math.max(4, typed.length + 1);
+const describeHrefFromQuery = () => { const c = new URLSearchParams(q); c.delete('preview'); return `/add/trope?${c}`; };
 ---
 
 <Base title="Add a trope" current="add-trope">
@@ -31,7 +40,7 @@ const q = Astro.url.searchParams;
   <p class="quiet" style="margin: 4px 0 0; font-size: 15px">{step}</p>
 
   {!job && (
-    <form method="POST" action={actions.startTropeScan} style="max-width: 680px; margin-top: 32px; display: flex; flex-direction: column; gap: 22px">
+    <form method="POST" action={preview ? actions.startTropeScan : actions.previewTropeScan} style="max-width: 680px; margin-top: 32px; display: flex; flex-direction: column; gap: 22px">
       <div>
         <label for="n" style="display: block; font-weight: 600; margin-bottom: 4px">Name</label>
         <input id="n" name="name" class="fld" type="text" required value={q.get('name') ?? ''} />
@@ -42,14 +51,39 @@ const q = Astro.url.searchParams;
         <textarea id="d" name="description" class="fld" rows="3">{q.get('description') ?? ''}</textarea>
       </div>
       <div>
-        <label for="e" style="display: block; font-weight: 600">Examples</label>
-        <p class="quiet" style="margin: 0 0 6px; font-size: 15px">One per line. Used to check the scan, so pick clear ones.</p>
-        <textarea id="e" name="examples" class="fld" rows="3">{q.get('examples') ?? ''}</textarea>
+        <span style="display: block; font-weight: 600">Examples</span>
+        <p class="quiet" style="margin: 0 0 6px; font-size: 15px">Works that have it, with a word on what to look at if it helps ("Luke", "the hand, not the arm"). They set the bar for the scan.</p>
+        {preview ? (
+          <table class="ex">
+            <thead><tr><th><span class="th">Typed</span></th><th><span class="th">Resolved to</span></th><th><span class="th">Note</span></th></tr></thead>
+            <tbody>
+              {resolved.map((e) => (
+                <tr>
+                  <td>{e.title}<input type="hidden" name="example" value={e.match?.title ?? e.title} /><input type="hidden" name="subject" value={e.match ? `${e.match.kind}:${e.match.id}` : ''} /></td>
+                  <td>{e.match ? <><a href={e.match.kind === 'media' ? `/media/${e.match.id}` : `/series/${e.match.id}`}>{e.match.title}</a>{e.match.how !== 'exact' && <span class="quiet"> (matched loosely)</span>}</> : <span style="color: #9A2B1E">not in the library — the scan runs without it</span>}</td>
+                  <td><input name="note" class="line" value={e.note} placeholder="note" style="width: 180px" /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div class="exrows" id="exrows">
+            {Array.from({ length: rows }, (_, i) => (
+              <div class="exrow">
+                <input name="example" list="subjects" class="line" placeholder="Title" value={typed[i]?.title ?? ''} autocomplete="off" style="flex: 1 1 260px" />
+                <input name="note" class="line" placeholder="note (optional)" value={typed[i]?.note ?? ''} style="flex: 1 1 180px" />
+              </div>
+            ))}
+            <datalist id="subjects">{subjectTitles(db).map((t) => <option value={t}></option>)}</datalist>
+            <button type="button" class="t" id="more-ex" style="align-self: flex-start; padding: 6px 0">Add another example</button>
+          </div>
+        )}
       </div>
-      <label style="display: flex; gap: 10px; align-items: baseline; font-size: 16px"><input type="checkbox" name="visual" /> Visual trope, use screenshots <span class="quiet" style="font-size: 15px">(the model checks the frame at each quoted moment before proposing)</span></label>
+      <label style="display: flex; gap: 10px; align-items: baseline; font-size: 16px"><input type="checkbox" name="visual" checked={q.get('visual') === 'on'} /> Visual trope, use screenshots <span class="quiet" style="font-size: 15px">(the model checks the frame at each quoted moment before proposing)</span></label>
       {error && <p class="quiet" style="margin: 0; font-size: 15px">{error}</p>}
       <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
-        <button type="submit" class="go">Scan {total} entries</button>
+        <button type="submit" class="go">{preview ? `Scan ${total} entries` : 'Check the examples'}</button>
+        {preview && <a href={describeHrefFromQuery()} style="font-size: 16px">Change the examples</a>}
         <a href="/tropes" style="font-size: 16px">Cancel</a>
       </div>
     </form>
@@ -79,3 +113,21 @@ const q = Astro.url.searchParams;
     </>
   )}
 </Base>
+
+<script>
+  // Another example row, cloned from the first.
+  document.getElementById('more-ex')?.addEventListener('click', () => {
+    const rows = document.getElementById('exrows')!;
+    const first = rows.querySelector('.exrow') as HTMLElement;
+    const row = first.cloneNode(true) as HTMLElement;
+    row.querySelectorAll('input').forEach((i) => { i.value = ''; });
+    rows.insertBefore(row, document.getElementById('more-ex'));
+    (row.querySelector('input') as HTMLInputElement).focus();
+  });
+</script>
+
+<style>
+  .exrows { display: flex; flex-direction: column; gap: 8px; }
+  .exrow { display: flex; flex-wrap: wrap; gap: 8px 12px; }
+  table.ex td { vertical-align: baseline; }
+</style>

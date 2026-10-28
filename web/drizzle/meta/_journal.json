@@ -85,6 +85,13 @@
       "when": 1793150195477,
       "tag": "0011_knowledge-only",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1793213813401,
+      "tag": "0012_seed-notes",
+      "breakpoints": true
     }
   ]
 }
