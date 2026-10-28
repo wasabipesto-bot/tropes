@@ -58,8 +58,13 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
 
     async def batch(items: list[tuple[dict[str, Any], Any]]) -> None:
         nonlocal done, built, notes_total
-        results = await llm.gather([one(s, t) for s, t in items])
-        ctx.client._post("/api/dossiers", {"dossiers": [d for d, _ in results], "notes": [n for _, ns in results for n in ns]})
+        got, bad = await llm.gather_safely([one(s, t) for s, t in items], "dossier")
+        warnings.extend(bad)
+        results = [r for r in got if r]
+        if results:
+            ctx.client._post(
+                "/api/dossiers", {"dossiers": [d for d, _ in results], "notes": [n for _, ns in results for n in ns]}
+            )
         built += len(results)
         notes_total += sum(len(ns) for _, ns in results)
         done += len(items)
@@ -101,5 +106,5 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
     return {
         "summary": {"built": built, "notes": notes_total, "skipped": len(media) - len(todo)},
         "usage": llm.usage.as_dict(),
-        "warnings": warnings,
+        "warnings": warnings[:40] + warnings,
     }

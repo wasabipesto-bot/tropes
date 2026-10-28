@@ -78,9 +78,11 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
         ctx.progress(done, len(todo), "writing")
         return {"instanceId": inst["id"], "who": (out.who or inst.get("who") or "").strip(), "text": text.strip(), "flags": flags}
 
-    rewrites = await llm.gather([one(t, i, m) for t, i, m in todo])
+    got, warnings = await llm.gather_safely([one(t, i, m) for t, i, m in todo], "instance")
+    rewrites = [r for r in got if r and r["text"]]
     return {
-        "summary": {"instances": len(todo), "written": sum(1 for r in rewrites if r["text"])},
-        "rewrites": [r for r in rewrites if r["text"]],
+        "summary": {"instances": len(todo), "written": len(rewrites), "failed": len(warnings)},
+        "rewrites": rewrites,
         "usage": llm.usage.as_dict(),
+        "warnings": warnings[:40],
     }

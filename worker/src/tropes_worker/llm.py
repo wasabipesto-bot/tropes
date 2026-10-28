@@ -217,3 +217,20 @@ class LLM:
 
     async def gather(self, coros: list[Any]) -> list[Any]:
         return await asyncio.gather(*coros)
+
+    async def gather_safely(self, coros: list[Any], label: str = "item") -> tuple[list[Any], list[str]]:
+        """Like gather, but an item whose model reply failed validation (or any other error) becomes None and a
+        warning instead of killing the job; batches already posted stay posted."""
+        results = await asyncio.gather(*coros, return_exceptions=True)
+        out: list[Any] = []
+        warnings: list[str] = []
+        for i, r in enumerate(results):
+            if isinstance(r, BaseException):
+                if isinstance(r, asyncio.CancelledError):
+                    raise r
+                log.warning("%s %d failed: %s", label, i, str(r)[:200])
+                warnings.append(f"{label} {i} skipped: {str(r).splitlines()[0][:160]}")
+                out.append(None)
+            else:
+                out.append(r)
+        return out, warnings

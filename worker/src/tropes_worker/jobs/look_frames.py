@@ -53,6 +53,12 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
         )
         return {"proposalId": item["proposalId"], "seen": out.seen, "note": out.note.strip()[:200]}
 
-    verdicts = await llm.gather([one(i) for i in items])
+    got, warnings = await llm.gather_safely([one(i) for i in items], "frame")
+    verdicts = [v for v in got if v]
     seen = sum(1 for v in verdicts if v["seen"])
-    return {"summary": {"looked": len(verdicts), "seen": seen}, "verdicts": verdicts, "usage": llm.usage.as_dict()}
+    return {
+        "summary": {"looked": len(verdicts), "seen": seen, "failed": len(warnings)},
+        "verdicts": verdicts,
+        "usage": llm.usage.as_dict(),
+        "warnings": warnings[:40],
+    }

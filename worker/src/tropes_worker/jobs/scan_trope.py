@@ -23,6 +23,32 @@ from ..runner import Context
 log = logging.getLogger("tropes_worker.jobs.scan_trope")
 
 
+class LazyTexts:
+    """media id -> Text, loaded on first use and kept for a handful of works at a time (plan D8's memory lesson)."""
+
+    def __init__(self, settings: Any, media: list[dict[str, Any]], keep: int = 6) -> None:
+        self._settings = settings
+        self._media = {m["id"]: m for m in media if m.get("textSources")}
+        self._keep = keep
+        self._cache: dict[int, Any] = {}
+
+    def __contains__(self, mid: int) -> bool:
+        return mid in self._media and self[mid] is not None
+
+    def __getitem__(self, mid: int) -> Any:
+        if mid in self._cache:
+            return self._cache[mid]
+        m = self._media.get(mid)
+        text = load_subject_text(self._settings, m) if m else None
+        if len(self._cache) >= self._keep:
+            self._cache.pop(next(iter(self._cache)))
+        self._cache[mid] = text
+        return text
+
+    def get(self, mid: int, default: Any = None) -> Any:
+        return self[mid] if mid in self._media else default
+
+
 def resolve_title(title: str, media: list[dict[str, Any]], series: list[dict[str, Any]]) -> str | None:
     t = title.strip().lower()
     for s in series:
@@ -82,11 +108,14 @@ async def scan(
             text = load_subject_text(settings, c.subject, texts_by_media)
             return await pass2(llm, settings, spec, c, dossiers, text)
 
-        return await llm.gather([one(c) for c in cands])
+        got, bad = await llm.gather_safely([one(c) for c in cands], "candidate")
+        pass2_warnings.extend(bad)
+        return got
 
+    pass2_warnings: list[str] = []
     results = await all_pass2()
     proposals = [p for p in results if p]
-    return proposals, scores, cands
+    return proposals, scores, cands, pass2_warnings
 
 
 def run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
@@ -106,18 +135,16 @@ async def _run(ctx: Context, payload: dict[str, Any]) -> dict[str, Any]:
 
     # Subjects: every media item plus every series. Members of a series stay scannable on their own.
     subjects = [*media, *series]
-    texts_by_media: dict[int, Any] = {}
-    for m in media:
-        if m.get("textSources"):
-            t = load_subject_text(settings, m)
-            if t:
-                texts_by_media[m["id"]] = t
+    # Texts load when a candidate or a series member needs them, a few at a time: the whole library's text is far
+    # more than ivory's spare memory, and loading it up front is what killed the worker.
+    texts_by_media = LazyTexts(settings, media)
 
     total_steps = len(subjects) + 1
     ctx.progress(0, total_steps, "pass 1")
-    proposals, scores, cands = await scan(
+    proposals, scores, cands, pass2_warnings = await scan(
         ctx, settings, llm, spec, subjects, dossiers, texts_by_media, lambda d, t, n: ctx.progress(d, total_steps, n)
     )
+    warnings.extend(pass2_warnings)
 
     # Rechecks: new evidence for existing instances where a text exists.
     evidence_added = 0
