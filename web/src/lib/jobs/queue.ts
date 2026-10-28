@@ -32,7 +32,9 @@ export function claimJob(db: Db, kinds: JobKind[]): Job | undefined {
   reclaimStale(db);
   if (kinds.length === 0) return undefined;
   return db.transaction((tx) => {
-    const next = tx.select({ id: job.id }).from(job).where(and(eq(job.status, 'queued'), inArray(job.kind, kinds))).orderBy(asc(job.id)).get();
+    // Short jobs first: frames for a review page should not wait behind a day of contact sheets or Whisper.
+    const rank = sql`case ${job.kind} when 'extract_evidence' then 0 when 'look_frames' then 0 when 'find_evidence' then 0 when 'ping' then 0 when 'make_sheets' then 2 when 'transcribe' then 2 else 1 end`;
+    const next = tx.select({ id: job.id }).from(job).where(and(eq(job.status, 'queued'), inArray(job.kind, kinds))).orderBy(rank, asc(job.id)).get();
     if (!next) return undefined;
     return tx
       .update(job)
