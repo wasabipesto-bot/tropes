@@ -5,7 +5,8 @@ import Base from '../../../layouts/Base.astro';
 import JobStatus from '../../../components/JobStatus.astro';
 import ProposalList from '../../../components/ProposalList.astro';
 import { db } from '../../../db';
-import { localSource, media } from '../../../db/schema';
+import { VIDEO_KINDS, localSource, media } from '../../../db/schema';
+import { VIDEO_KIND_LABEL, videosFor } from '../../../lib/videos';
 import { afterAction } from '../../../lib/after-action';
 import { candidateLine } from '../../../lib/jobs/matches';
 import { reviewState } from '../../../lib/jobs/page';
@@ -51,6 +52,8 @@ const fileLine = [
   texts.length > 0 && `${texts.length} linked ${texts.length === 1 ? 'text' : 'texts'} (${texts.map((t) => t.label || t.path.split('/').pop()).join(', ')})`,
 ].filter(Boolean).join('; ');
 const refresh = refreshStatusFor(db, m.id);
+const clips = videosFor(db, m.id, true);
+const here = `/update/media/${m.id}`;
 const fmtWhen = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleString('en-GB', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
 const ids = parseIds(m);
 const candidates = parseCandidates(m);
@@ -123,6 +126,26 @@ const identityLine =
 
     <div class="commit"><button type="submit" class="go">Save</button><a href={`/media/${m.id}`} style="font-size: 16px">Cancel</a></div>
   </form>
+
+  <section style="margin-top: 48px">
+    <h2>Videos</h2>
+    <p class="quiet" style="margin: 0 0 10px; font-size: 15px">Openings, endings, title sequences, edits and trailers, embedded on the work's page. The worker fills in AnimeThemes, Art of the Title and TMDB; paste anything else here.</p>
+    {clips.map((v) => (
+      <div style="display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; font-size: 15px; padding: 3px 0" class:list={{ quiet: v.hidden }}>
+        <span><span class="quiet">{VIDEO_KIND_LABEL[v.kind]}</span> {v.label && v.label !== VIDEO_KIND_LABEL[v.kind] && v.label} <a href={v.url} class="quiet" style="margin-left: 6px">{v.origin === 'owner' ? 'yours' : v.origin}</a></span>
+        <form method="POST" action={actions.setVideoHidden} style="display: inline"><input type="hidden" name="videoId" value={v.id} /><input type="hidden" name="returnTo" value={here} />{!v.hidden && <input type="hidden" name="hidden" value="on" />}<button type="submit" class="t" style="padding: 2px 0">{v.hidden ? 'Show' : 'Hide'}</button></form>
+        <form method="POST" action={actions.removeVideo} style="display: inline" onsubmit="return confirm('Remove this video?')"><input type="hidden" name="videoId" value={v.id} /><input type="hidden" name="returnTo" value={here} /><button type="submit" class="t danger" style="padding: 2px 0">Remove</button></form>
+      </div>
+    ))}
+    <form method="POST" action={actions.addVideo} style="display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; margin-top: 10px; font-size: 15px">
+      <input type="hidden" name="mediaId" value={m.id} /><input type="hidden" name="returnTo" value={here} />
+      <label for="vid-url" class="quiet">Add</label>
+      <input id="vid-url" name="url" type="url" class="line" placeholder="https://www.youtube.com/watch?v=…" style="flex: 1 1 260px" />
+      <select name="kind" class="line" style="width: auto">{VIDEO_KINDS.map((k) => <option value={k}>{VIDEO_KIND_LABEL[k]}</option>)}</select>
+      <input name="label" class="line" placeholder="label (OP1 · song — artist)" style="flex: 1 1 200px" />
+      <button type="submit" class="t">Add</button>
+    </form>
+  </section>
 
   <section style="margin-top: 48px">
     <h2>Files on the disk</h2>

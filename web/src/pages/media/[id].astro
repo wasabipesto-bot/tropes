@@ -83,8 +83,6 @@ const fmt = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateS
           {m.description && <Fragment set:html={renderText(m.description, render, ' style="margin: 20px 0 0"')} />}
           {owner && (
             <p style="margin: 8px 0 0; font-size: 15px; display: flex; gap: 16px; flex-wrap: wrap; align-items: baseline">
-              <a href={`${here}?edit=desc`} style="padding: 6px 0">{m.description ? 'Edit description' : 'Write a description'}</a>
-              {m.descriptionOrigin === 'model' && <span class="quiet" title="Written by the model; edit or keep it">draft</span>}
               <a href={`/update/media/${m.id}`} style="padding: 6px 0">Update</a>
               <a href={`/media/${m.id}/dossier`} style="padding: 6px 0">Dossier</a>
             </p>
@@ -149,7 +147,7 @@ const fmt = (iso: string) => new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateS
   </div>
 
   {items.length === 0 && <div class="row" style="margin-top: 48px"><div class="lab"></div><p class="quiet" style="margin: 0">No tropes yet.</p><div></div></div>}
-  {(videos.length > 0 || owner) && (
+  {videos.length > 0 && (
     <div class="row" style="margin-top: 36px">
       <div class="lab"><div class="sc">Titles &amp; openings</div></div>
       <div><VideoStrip mediaId={m.id} videos={videos} owner={owner} returnTo={returnTo} /></div>

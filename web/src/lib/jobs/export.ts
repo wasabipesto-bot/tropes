@@ -27,8 +27,12 @@ export function exportSubjects(db: Db) {
   const links = db.select({ mediaId: mediaLink.mediaId, site: mediaLink.site, url: mediaLink.url }).from(mediaLink).all();
   const videos = db.select({ mediaId: mediaVideo.mediaId, kind: mediaVideo.kind, url: mediaVideo.url, origin: mediaVideo.origin }).from(mediaVideo).all();
   const genres = db.select().from(mediaGenre).all();
-  const built = db.select({ kind: dossier.subjectKind, id: dossier.subjectId, depth: dossier.depth, promptVersion: dossier.promptVersion, sourceHash: dossier.sourceHash, body: dossier.body }).from(dossier).all()
-    .map(({ body, ...rest }) => ({ ...rest, known: (() => { try { return JSON.parse(body).known ?? null; } catch { return null; } })() as string | null }));
+  const built = db.select({ kind: dossier.subjectKind, id: dossier.subjectId, depth: dossier.depth, promptVersion: dossier.promptVersion, sourceHash: dossier.sourceHash, body: dossier.body, inputs: dossier.inputs }).from(dossier).all()
+    .map(({ body, inputs, ...rest }) => ({
+      ...rest,
+      known: (() => { try { return JSON.parse(body).known ?? null; } catch { return null; } })() as string | null,
+      visual: (() => { try { return Number(JSON.parse(inputs || '{}').visual ?? 0); } catch { return 0; } })(),
+    }));
   const members = db.select().from(seriesMember).all();
   const dossierFor = (kind: 'media' | 'series', id: number) => built.find((b) => b.kind === kind && b.id === id) ?? null;
   const mediaRows = db.select().from(media).all().map((m) => ({

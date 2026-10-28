@@ -136,6 +136,10 @@ def dossier_needed(subject: dict[str, Any], prompt_version: int, has_text: bool,
         return True
     if not has_text and wants_extract(subject) and d.get("sourceHash") != extract_hash(subject):
         return True
+    # Visual notes that arrived after the dossier was built (sheets read later) are worth a rebuild.
+    visual_now = sum(1 for n in subject.get("notes") or [] if n.get("source") == "visual")
+    if visual_now > int(d.get("visual") or 0):
+        return True
     return False
 
 

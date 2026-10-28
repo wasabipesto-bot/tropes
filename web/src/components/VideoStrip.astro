@@ -1,6 +1,6 @@
 ---
 import { actions } from 'astro:actions';
-import { VIDEO_KINDS, type MediaVideo } from '../db/schema';
+import type { MediaVideo } from '../db/schema';
 import { VIDEO_KIND_LABEL, embedFor } from '../lib/videos';
 
 /** Openings, endings, title sequences and edits for a work: click-to-play, nothing loads from a third party until then. */
@@ -10,7 +10,7 @@ const shown = videos.filter((v) => owner || !v.hidden);
 const title = (v: MediaVideo) => v.label || VIDEO_KIND_LABEL[v.kind];
 ---
 
-{(shown.length > 0 || owner) && (
+{shown.length > 0 && (
   <section class="vids">
     {shown.length > 0 && (
       <div class="strip">
@@ -49,16 +49,6 @@ const title = (v: MediaVideo) => v.label || VIDEO_KIND_LABEL[v.kind];
         })}
       </div>
     )}
-    {owner && (
-      <form method="POST" action={actions.addVideo} class="addvid">
-        <input type="hidden" name="mediaId" value={mediaId} /><input type="hidden" name="returnTo" value={returnTo} />
-        <label for="vid-url" class="quiet">Video</label>
-        <input id="vid-url" name="url" type="url" class="line" placeholder="https://www.youtube.com/watch?v=…" style="flex: 1 1 260px" />
-        <select name="kind" class="line">{VIDEO_KINDS.map((k) => <option value={k}>{VIDEO_KIND_LABEL[k]}</option>)}</select>
-        <input name="label" class="line" placeholder="label (OP1 · song — artist)" style="flex: 1 1 200px" />
-        <button type="submit" class="t">Add</button>
-      </form>
-    )}
   </section>
 )}
 
@@ -88,6 +78,4 @@ const title = (v: MediaVideo) => v.label || VIDEO_KIND_LABEL[v.kind];
   .sc { font-variant: small-caps; letter-spacing: .04em; }
   .own { margin-left: 8px; display: inline-flex; gap: 10px; }
   .own .t { padding: 2px 0; font-size: 14px; }
-  .addvid { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; margin-top: 14px; font-size: 15px; }
-  .addvid select.line { width: auto; }
 </style>
