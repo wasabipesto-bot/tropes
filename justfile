@@ -142,7 +142,7 @@ health:
 
 # Run tonight's backup now (the backup container does this daily at 03:30 UTC).
 backup:
-    docker compose run --rm backup /backup.sh
+    docker compose run --rm --entrypoint /backup.sh backup
 
 # Copy the site's and the worker's data to another host before its first start: just seed-data timbre
 seed-data host:
