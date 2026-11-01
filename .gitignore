@@ -1,25 +1,24 @@
-# dependencies and build output
-node_modules/
-dist/
-.astro/
-.venv/
-__pycache__/
-*.pyc
 
-# local data: database, evidence files, posters, media indexes
+.astro/
+backups/
 data/
 *.db
-*.db-wal
 *.db-shm
-
-# secrets and local config
+*.db-wal
+# dependencies and build output
+dist/
+.DS_Store
+# editor and OS noise
 .env
 .env.*
 !.env.example
-*.local.json
-
-# editor and OS noise
-.DS_Store
 .idea/
+# local data: database, evidence files, posters, media indexes
+*.local.json
+node_modules/
+*.pyc
+__pycache__/
+# secrets and local config
+.venv/
 .vscode/
-backups/
+worker-data/

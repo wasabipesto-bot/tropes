@@ -4,7 +4,7 @@ import { actions } from 'astro:actions';
 import Base from '../layouts/Base.astro';
 import JobStatus from '../components/JobStatus.astro';
 import { db } from '../db';
-import { dossier, job } from '../db/schema';
+import { apiKey, dossier, job } from '../db/schema';
 import { afterAction } from '../lib/after-action';
 import { reviewState } from '../lib/jobs/page';
 import { parseJson } from '../lib/jobs/queue';
@@ -39,12 +39,20 @@ for (const j of db.select({ finishedAt: job.finishedAt, createdAt: job.createdAt
 }
 const dayMax = Math.max(0.01, ...perDay.values());
 const monthName = today.toLocaleDateString('en-GB', { month: 'long' });
+// Who is listening: each worker's key records its last call; quiet for more than ten minutes means it is probably down.
+const workers = db.select().from(apiKey).all().map((k) => {
+  const t = k.lastUsedAt ? new Date(k.lastUsedAt.replace(' ', 'T') + (k.lastUsedAt.endsWith('Z') ? '' : 'Z')).getTime() : null;
+  const mins = t ? Math.round((Date.now() - t) / 60000) : null;
+  const ago = mins === null ? 'never seen' : mins < 1 ? 'just now' : mins < 60 ? `${mins} min ago` : mins < 1440 ? `${Math.round(mins / 60)} h ago` : `${Math.round(mins / 1440)} d ago`;
+  return { name: k.name, lastUsedAt: k.lastUsedAt, ago, stale: mins === null || mins > 10 };
+});
 ---
 
 <Base title="Jobs" noindex>
   <h1>Jobs</h1>
   <p class="quiet" style="margin: 4px 0 0; font-size: 15px">{dossiers} dossiers built. The worker runs on ivory with `just worker`.{quiet > 0 && ` ${quiet} Notion syncs with nothing to do are not listed.`} <a href="/metadata">Metadata lookups</a></p>
   {error && <p class="quiet" style="margin: 8px 0 0; font-size: 15px">{error}</p>}
+  <p class="quiet" style="margin: 10px 0 0; font-size: 15px">Workers: {workers.map((w, i) => <><span class:list={{ warn: w.stale }} title={w.lastUsedAt ?? 'never'}>{w.name} {w.ago}</span>{i < workers.length - 1 ? ' · ' : ''}</>)}</p>
   <section class="spend">
     <p style="margin: 0; font-size: 16px"><span style="font-weight: 700">${monthTotal.toFixed(2)}</span> <span class="quiet">spent on the model in {monthName}</span></p>
     <svg viewBox="0 0 300 48" width="300" height="48" role="img" aria-label={`Cost per day over the last 30 days, peak $${dayMax.toFixed(2)}`} style="display: block; margin-top: 6px; overflow: visible">
@@ -81,5 +89,6 @@ const monthName = today.toLocaleDateString('en-GB', { month: 'long' });
   </div>
 </Base>
 <style>
+  .warn { color: #9A2B1E; }
   .spend { margin-top: 20px; }
 </style>

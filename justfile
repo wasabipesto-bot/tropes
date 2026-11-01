@@ -2,8 +2,8 @@
 set shell := ["bash", "-cu"]
 
 # Checkout location on remote hosts, for `just on <host> <recipe>`.
-REPO_DIR := env("TROPES_REPO_DIR", "~/projects/tropes")
-SITE := env("TROPES_SITE_URL", "http://127.0.0.1:4321")
+REPO_DIR := env("TROPES_REPO_DIR", "~/tropes")
+SITE := env("TROPES_SITE_URL", "http://127.0.0.1:" + env("TROPES_PORT", "4321"))
 DB := env("DATABASE_PATH", "web/data/tropes.db")
 
 default:
@@ -115,26 +115,43 @@ setup-media:
 hash-password password:
     npx tsx scripts/hash-password.ts '{{password}}'
 
-# Nightly backup: a SQLite snapshot (14 daily, 8 weekly) plus evidence, posters, sources and texts, rsynced to braize (ops/backup.sh).
-backup:
-    ops/backup.sh
-
-# Build and start the containers.
-up:
-    docker compose up --build -d
+# Start (or update) the containers from the images named by TROPES_TAG; add --build to build locally.
+up *flags:
+    docker compose up -d --remove-orphans {{flags}}
 
 # Stop the containers.
 [confirm("Stop the site containers?")]
 down:
     docker compose down
 
-# Follow the site container's logs.
-logs:
-    docker compose logs -f --tail=100 web
+# Pull the latest images, restart what changed, check the site answers.
+deploy:
+    git pull --ff-only
+    docker compose pull
+    docker compose up -d --remove-orphans
+    sleep 3
+    just health
 
-# Ask the running site whether it is healthy.
+# Follow the containers' logs: just logs web
+logs *service:
+    docker compose logs -f --tail=100 {{service}}
+
+# Does the site answer?
 health:
     curl -sf {{SITE}}/api/health && echo
+
+# Run tonight's backup now (the backup container does this daily at 03:30 UTC).
+backup:
+    docker compose run --rm backup /backup.sh
+
+# Copy the site's and the worker's data to another host before its first start: just seed-data timbre
+seed-data host:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    rsync -a --info=progress2 --exclude 'posters/pending' web/data/ "{{host}}:{{REPO_DIR}}/data/"
+    rsync -a --info=progress2 data/sources/ "{{host}}:{{REPO_DIR}}/worker-data/sources/"
+    rsync -a --info=progress2 data/text/ "{{host}}:{{REPO_DIR}}/worker-data/text/"
+    echo "data copied to {{host}}:{{REPO_DIR}} (lookup cache skipped; it refills)"
 
 # Ask the worker to ping the site.
 [working-directory('worker')]
@@ -151,10 +168,3 @@ on host recipe *args:
     # shellcheck disable=SC2086
     exec ssh $tty "{{host}}" "bash -lc 'cd {{REPO_DIR}} && just {{recipe}} {{args}}'"
 
-# Pull main, rebuild and restart the containers, then check health. Run on the host.
-[confirm("Pull main and redeploy the containers here?")]
-deploy:
-    git pull --ff-only
-    docker compose up --build -d
-    sleep 2
-    just health

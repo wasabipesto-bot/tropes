@@ -1,11 +1,64 @@
+# Trope Log in production: the site, the model worker and the nightly backup. Images come from GHCR, built by CI
+# on every push to main; `build:` is kept so a change can be tried locally without waiting for CI.
+# The media worker is not here: it runs on the host that holds the files (ops/tropes-media-worker.service).
+#
+#   .env          secrets and settings for both the site and the worker (see .env.example)
+#   TROPES_DATA   the site's data directory (default ./data): database, posters, evidence, sheets, texts
+#   TROPES_WORKER_DATA  the worker's (default ./worker-data): the owner's linked sources, text and lookup caches
+#   TROPES_PORT   the port published on 127.0.0.1 (default 4321); compose.timbre.yml adds the tailnet binding
 services:
   web:
+    image: ghcr.io/wasabipesto-bot/tropes-web:${TROPES_TAG:-main}
     build: ./web
-    image: tropes-web
     restart: unless-stopped
     ports:
-      - "127.0.0.1:4321:4321"
+      - "127.0.0.1:${TROPES_PORT:-4321}:4321"
     volumes:
-      - ./data:/app/data
+      - ${TROPES_DATA:-./data}:/app/data
+    env_file: .env
     environment:
       DATABASE_PATH: /app/data/tropes.db
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4321/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    mem_limit: 1g
+
+  worker:
+    image: ghcr.io/wasabipesto-bot/tropes-worker:${TROPES_TAG:-main}
+    build: ./worker
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      TROPES_SITE_URL: http://web:4321
+      TROPES_SOURCES_DIR: /data/sources
+      TROPES_TEXT_CACHE_DIR: /data/text
+      TROPES_LOOKUP_CACHE_DIR: /data/cache/lookup
+    volumes:
+      - ${TROPES_WORKER_DATA:-./worker-data}:/data
+
+  backup:
+    image: ghcr.io/wasabipesto-bot/tropes-backup:${TROPES_TAG:-main}
+    build:
+      context: .
+      dockerfile: ops/docker/backup.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+    environment:
+      TROPES_BACKUP_REMOTE: ${TROPES_BACKUP_REMOTE-braize:tropes}
+      BACKUP_UTC_HOUR: ${TROPES_BACKUP_HOUR:-3}
+      BACKUP_UTC_MINUTE: ${TROPES_BACKUP_MINUTE:-30}
+      RUN_AT_START: ${TROPES_BACKUP_AT_START:-0}
+    volumes:
+      - ${TROPES_DATA:-./data}:/data:ro
+      - ${TROPES_WORKER_DATA:-./worker-data}:/worker-data:ro
+      - ${TROPES_BACKUPS:-./backups}:/backups
+      # The storage box key, its config (host braize, port 23) and known_hosts, read-only.
+      - ${TROPES_SSH_DIR:-./ops/ssh}:/root/.ssh:ro

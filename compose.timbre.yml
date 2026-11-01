@@ -1,0 +1,6 @@
+# timbre: the media worker on celebrimbor reaches the site over Tailscale, so the port is also published on the
+# tailnet address. Activated by COMPOSE_FILE=compose.yml:compose.timbre.yml in .env.
+services:
+  web:
+    ports:
+      - "100.117.226.30:${TROPES_PORT:-4321}:4321"

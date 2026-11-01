@@ -1,96 +1,140 @@
 # Trope Log
 
 A personal TVTropes-style catalogue built on a media log. Each trope has a page
-describing it and listing every logged work where it appears; each work has a
-page listing its tropes, ratings and links. Associations are proposed by a
-language model that reads the log and the source material, then verified by hand.
+describing it and listing every logged work where it appears, with the quotes,
+frames and clips that show it; each work has a page with its tropes, ratings,
+links, and the openings and title sequences worth watching. Associations are
+proposed by a language model that reads the log, the works' own text and
+frames of their footage, and are verified by hand before they count.
 
-Status: Phases 0 to 3 built. Library, media pages, search, tropes with
-instances and evidence, owner login and inline editing, and the matching
-pipeline: a worker builds a dossier per work, scans the library for a new
-trope, checks a work against every trope, and the owner reviews proposals
-before anything is saved. External metadata (Phase 4) is next. See
-`docs/ROADMAP.md`.
+Live at https://tropes.wasabipesto.com. MIT licensed; Source Serif 4 is bundled
+under the SIL Open Font License (`web/public/fonts/LICENSE.md`).
+
+## How it works
+
+- **The log.** A Notion database of everything watched, read and played is the
+  source of truth for what exists. The worker syncs it every fifteen minutes;
+  new entries are looked up, described and checked automatically.
+- **Identity and metadata.** Each entry is matched to a Wikidata item (the
+  owner's Notion link wins when there is one), then enriched from TMDB,
+  MyAnimeList, Steam, Open Library, MusicBrainz, iTunes, IMDb, Rotten
+  Tomatoes, Metacritic and Goodreads: details, scores, genres, links, a poster.
+- **Text.** A second worker next to the media files extracts subtitles (sidecar,
+  embedded, OpenSubtitles, Whisper as the last resort) and book text, and makes
+  a contact sheet of frames per episode which the model reads into "visual
+  notes". Fandom articles and the owner's Tumblr posts about a work join in.
+- **Dossiers.** For every work the model writes an internal dossier — characters,
+  settings, arcs, motifs, themes, notable scenes with locators — from
+  everything above. Dossiers are public at `/media/<id>/dossier` and say what
+  they were built from.
+- **Scans.** A new trope is a name, a description and a few examples. Pass 1
+  scores every dossier; pass 2 reads the candidates' text, writes the entry
+  and copies exact quotes, which are checked verbatim. Frames are grabbed at
+  quoted moments; for tropes marked visual the model looks at them before
+  proposing. Proposals wait on `/review`.
+- **Verification.** The owner accepts, edits or rejects. Anything the owner
+  has not looked at is marked. Adding an association by hand is one field:
+  a title and a note, and the model drafts the rest.
 
 ## Layout
 
-- `web/`: the site. Astro 7 in server mode, Node adapter, one SQLite file via
+- `web/` — the site: Astro 7 in server mode, Node adapter, one SQLite file via
   better-sqlite3 and Drizzle. The only process that writes the database.
-- `worker/`: the pipeline. Python, run with `uv`, next to the media library.
-  Talks to the site over HTTP and never opens the database.
-- `docs/`: `SPEC.md` (design handoff), `ROADMAP.md` (plan and decisions),
-  `notes/` (verified reference notes), `canvas/` (design artboards).
+  Migrations in `web/drizzle/` apply at startup.
+- `worker/` — the pipeline: Python, `uv`. Two roles from one package: the
+  **model worker** (talks to OpenRouter and the metadata sources) and the
+  **media worker** (set `TROPES_MEDIA_ROOT`; it then takes only the file jobs
+  — indexing, subtitles, frames, sheets, Whisper). Both talk to the site over
+  HTTP with an API key and never open the database. Documented in
+  `worker/README.md`.
+- `ops/` — the backup container and the media worker's systemd unit.
+- `compose.yml` — production: site, model worker, backup.
 
-## Run it
-
-```
-just setup     # npm ci + uv sync
-just dev       # site on http://127.0.0.1:4321 with live reload
-just ci        # type-check, lint, test, build
-just up        # docker compose, site on 127.0.0.1:4321, data in ./data
-just ping      # worker asks the site for its health
-just api-key ivory-worker   # mint the worker's bearer token, once
-just worker    # run the pipeline worker (needs OPENROUTER_API_KEY in .env)
-```
-
-The worker is documented in `worker/README.md`. Text sources for works live
-under `data/sources/` and are registered with `just link-sources`.
-
-The database path comes from `DATABASE_PATH` (default `./data/tropes.db`);
-migrations in `web/drizzle/` apply at startup.
-
-License: MIT. Source Serif 4 is bundled under the SIL Open Font License, see
-`web/public/fonts/LICENSE.md`.
-
-## Importing the log
-
-Export the Notion "Media Log" as CSV and run `just import path/to/export.csv`.
-Re-running is safe: rows match by Notion id when the file has one, otherwise by
-title and type, and only Notion-owned fields (title, type, creator, ratings,
-date, links) are overwritten. Add `--dry-run` to see what would change.
-
-## Owner login
-
-The site is public and read-only; editing needs the owner session. Put a
-password hash in `web/.env` (or the container's environment):
+## Running it
 
 ```
-just hash-password 'your password'      # prints OWNER_PASSWORD_HASH=…
+just setup            # npm ci + uv sync
+just dev              # site on http://127.0.0.1:4321 with live reload (just dev <host> to expose it)
+just ci               # type-check, lint, test, build
+just worker           # the model worker against the dev site (needs .env)
+just api-key <name>   # mint a worker's bearer token, once per worker
+just queue <kind> '<json>'   # put a job on the queue by hand
 ```
 
-Then log in at `/login`. Sessions last 90 days. There is one owner and no
-user table by design.
+Configuration is one `.env` at the repo root (`.env.example` lists everything):
+OpenRouter and Notion keys, the metadata sources' keys, the owner password hash
+(`just hash-password 'secret'`), `SITE_ORIGIN`, fair-use caps and rate limits,
+`TROPES_MEDIA_ROOT` and the OpenSubtitles login on the media host, the
+backup target.
 
-## Seed content
+Astro notes that bit us: one background dev server per project (`astro dev
+--background`, `astro dev stop/status/logs`); form actions build their input
+from the zod shape, so repeated fields are arrays, a blank field arrives as
+`null`, and an unticked checkbox is absent; cookies set in an API route attach
+to the returned `Response`; the dev server's Vite only admits IPs and
+`*.localhost` as hosts.
 
-`web/seed/tropes.json` holds the starting tropes, series and instances.
-`just seed` loads whatever is not already present; `just seed --replace`
-reloads tropes that exist, replacing their instances.
+## Deployment
+
+The site and the model worker run on one host in Docker Compose from images
+that CI publishes to GHCR on every push to `main`
+(`ghcr.io/wasabipesto-bot/tropes-{web,worker,backup}`, tags `main` and
+`sha-<commit>`). The media worker runs on the host that holds the files.
+
+On the server, once:
+
+```
+git clone --depth 1 https://github.com/wasabipesto-bot/tropes ~/tropes && cd ~/tropes
+cp .env.example .env            # fill in secrets; set TROPES_PORT, SITE_ORIGIN, TROPES_TRUSTED_PROXY=1 behind a tunnel or proxy
+mkdir -p data worker-data ops/ssh   # ops/ssh: the storage box key, config and known_hosts (see ops/ssh/README.md)
+docker compose pull && docker compose up -d
+```
+
+Then from any checkout, `just on <host> deploy` pulls the images and restarts
+what changed; `just on <host> health`, `logs web`, `logs worker`, `backup`.
+Data lives in `data/` (database, posters, evidence, sheets, texts) and
+`worker-data/` (the owner's linked sources, the worker's text and lookup
+caches); `just seed-data <host>` copies both from a development checkout before
+the first start. An extra compose file (`compose.timbre.yml`) publishes the
+port on the Tailscale address so the media worker can reach the site; enable
+it with `COMPOSE_FILE=compose.yml:compose.timbre.yml` in `.env`.
+
+The media worker: `ops/tropes-media-worker.service` as a user unit, `uv sync
+--extra whisper` for Whisper, `TROPES_SITE_URL` pointing at the site's
+Tailscale address, its own API key. It re-indexes the disk weekly.
+
+**Backups.** The backup container snapshots the database nightly at 03:30 UTC
+(`sqlite3 .backup`, gzipped, 14 daily and 8 weekly kept) and rsyncs the
+snapshots with evidence, posters, texts and the owner's sources to the Hetzner
+storage box; contact sheets and the lookup cache are regenerable and are not
+copied. Restore = stop, drop the `.sqlite` back as `data/tropes.db`, start.
+
+**Hardening.** Fair-use caps for visitors (quotes to 100 words, 10 frames per
+work per trope, clips to 30 seconds — over-cap evidence stays, owner-only);
+rate limits per address (30 searches, 120 pages, 60 API calls a minute);
+`robots.txt`, OG tags and canonical links from `SITE_ORIGIN`; passkeys for the
+owner with the password as fallback.
 
 ## Read API
 
-Public, no key, JSON, CORS open, cached for five minutes; spoilers stay in
+Public, no key, JSON, CORS open, cached five minutes; spoilers stay in
 `||bars||` as on the pages.
 
-- `GET /api/v1/tropes`: every trope with its instance count.
-- `GET /api/v1/tropes/<slug>`: a trope with every instance and its evidence
+- `GET /api/v1/tropes` — every trope with its instance count.
+- `GET /api/v1/tropes/<slug>` — a trope with every instance and its evidence
   (quotes, frames and clips as URLs). Old slugs resolve.
-- `GET /api/v1/media`: the library.
-- `GET /api/v1/media/<id>`: a work with its links, genres, series, instances
+- `GET /api/v1/media` — the library.
+- `GET /api/v1/media/<id>` — a work with its links, genres, series, instances
   and dossier.
 
-The `/api/export/*`, `/api/jobs/*` and `/api/sources/*` routes are the
-workers' and need an API key.
+Everything under `/api/export`, `/api/jobs`, `/api/sources`, `/api/evidence`,
+`/api/dossiers`, `/api/videos` and `/api/import` is for the workers and needs
+an API key.
 
-## Backups
+## History
 
-`just backup` (ops/backup.sh) snapshots the database with `VACUUM INTO`
-(safe while the site runs), gzips it, keeps 14 daily and 8 weekly copies in
-`backups/`, and rsyncs that directory plus the files that cannot be
-regenerated — `web/data/evidence`, `web/data/posters`, `data/sources` and the
-extracted texts in `data/text` — to `TROPES_BACKUP_REMOTE` (default
-`braize:tropes`, the Hetzner storage box over ssh port 23). Snapshots mirror
-the local retention remotely; files are only ever added. Contact sheets and
-the lookup cache are regenerable and are not copied. `ops/tropes-backup.timer`
-runs it nightly at 03:30 UTC; set the variable empty to skip the copy.
-
+Built October 2026 in phases: the site and library import; metadata and
+posters; the matching pipeline and review; local media (subtitles, frames,
+Whisper, visual notes); public hardening; openings and title sequences from
+AnimeThemes, Art of the Title and TMDB; noted examples and one-field
+associations. Moved to its own server in November 2026.
