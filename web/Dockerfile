@@ -1,4 +1,6 @@
 FROM node:24-bookworm-slim AS build
+# better-sqlite3 has no prebuilt binary for this Node; node-gyp needs these to compile it (build stage only).
+RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
