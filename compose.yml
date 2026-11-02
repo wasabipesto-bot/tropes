@@ -57,4 +57,4 @@ services:
       - ${TROPES_WORKER_DATA:-./worker-data}:/worker-data:ro
       - ${TROPES_BACKUPS:-./backups}:/backups
       # The storage box key, its config (host braize, port 23) and known_hosts, read-only.
-      - ${TROPES_SSH_DIR:-./ops/ssh}:/root/.ssh:ro
+      - ${TROPES_SSH_DIR:-./ops/ssh}:/ssh:ro

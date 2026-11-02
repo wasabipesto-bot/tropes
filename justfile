@@ -1,5 +1,7 @@
 # Trope Log: a personal TVTropes-style catalogue built on a media log.
 set shell := ["bash", "-cu"]
+# Recipes read the repo .env (TROPES_PORT, TROPES_API_TOKEN, TROPES_SITE_URL …) the same way the containers do.
+set dotenv-load := true
 
 # Checkout location on remote hosts, for `just on <host> <recipe>`.
 REPO_DIR := env("TROPES_REPO_DIR", "~/tropes")
@@ -142,7 +144,7 @@ health:
 
 # Run tonight's backup now (the backup container does this daily at 03:30 UTC).
 backup:
-    docker compose run --rm --entrypoint /backup.sh backup
+    docker compose run --rm backup /backup.sh
 
 # Copy the site's and the worker's data to another host before its first start: just seed-data timbre
 seed-data host:
@@ -156,7 +158,13 @@ seed-data host:
 # Ask the worker to ping the site.
 [working-directory('worker')]
 ping:
-    uv run tropes-worker ping --site {{SITE}}
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ -n "$(docker compose ps -q worker 2>/dev/null)" ]; then
+      docker compose exec worker uv run --no-sync tropes-worker ping --site http://web:4321
+    else
+      cd worker && uv run tropes-worker ping --site {{SITE}}
+    fi
 
 # `bash -lc` below so a `just` installed under ~/.cargo/bin is found by non-interactive ssh.
 
