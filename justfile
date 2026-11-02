@@ -155,8 +155,7 @@ seed-data host:
     rsync -a --mkpath --info=progress2 data/text/ "{{host}}:{{REPO_DIR}}/worker-data/text/"
     echo "data copied to {{host}}:{{REPO_DIR}} (lookup cache skipped; it refills)"
 
-# Ask the worker to ping the site.
-[working-directory('worker')]
+# Ask the worker to ping the site (through the worker container when the stack is running).
 ping:
     #!/usr/bin/env bash
     set -euo pipefail
