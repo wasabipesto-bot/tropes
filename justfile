@@ -148,9 +148,9 @@ backup:
 seed-data host:
     #!/usr/bin/env bash
     set -euo pipefail
-    rsync -a --info=progress2 --exclude 'posters/pending' web/data/ "{{host}}:{{REPO_DIR}}/data/"
-    rsync -a --info=progress2 data/sources/ "{{host}}:{{REPO_DIR}}/worker-data/sources/"
-    rsync -a --info=progress2 data/text/ "{{host}}:{{REPO_DIR}}/worker-data/text/"
+    rsync -a --mkpath --info=progress2 --exclude 'posters/pending' web/data/ "{{host}}:{{REPO_DIR}}/data/"
+    rsync -a --mkpath --info=progress2 data/sources/ "{{host}}:{{REPO_DIR}}/worker-data/sources/"
+    rsync -a --mkpath --info=progress2 data/text/ "{{host}}:{{REPO_DIR}}/worker-data/text/"
     echo "data copied to {{host}}:{{REPO_DIR}} (lookup cache skipped; it refills)"
 
 # Ask the worker to ping the site.
